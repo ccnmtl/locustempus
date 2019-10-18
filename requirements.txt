@@ -112,3 +112,5 @@ django-smtp-ssl==1.0
 django-contact-us==0.4.1
 
 entrypoints==0.3
+
+django-courseaffils==2.2.2
