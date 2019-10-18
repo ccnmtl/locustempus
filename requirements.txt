@@ -1,0 +1,114 @@
+Django==2.2.6
+pytz==2019.2
+httplib2==0.14.0
+feedparser==5.2.1
+Markdown==2.6.11 # pyup: < 3
+psycopg2==2.8.3
+Pillow==6.2.0
+versiontools==1.9.1
+statsd==3.3.0
+pep8==1.7.1
+pyflakes==2.1.1
+mccabe==0.6.1
+configparser==4.0.2
+pycodestyle==2.5.0
+flake8==3.7.7
+tornado==6.0.3
+beautifulsoup4==4.8.0
+cssselect==1.1.0
+lxml==4.4.1
+fuzzywuzzy==0.17.0
+sure==1.4.11
+traitlets==4.3.3  # ipython
+ipython_genutils==0.2.0  # ipython
+decorator==4.4.0  # ipython
+ptyprocess==0.6.0  # ipython
+pexpect==4.7.0  # ipython
+pathlib2==2.3.5  # ipython
+pickleshare==0.7.5  # ipython
+simplegeneric==0.8.1  # ipython
+path.py==12.0.1  # ipython
+backports.shutil_get_terminal_size==1.0.0  # ipython
+wcwidth==0.1.7  # ipython
+prompt_toolkit==2.0.9  # ipython
+pygments==2.4.2  # ipython
+scandir==1.10.0  # ipython
+ipython==7.8.0
+coverage==4.5.4
+pyasn1==0.4.7
+cryptography==2.8  # pyOpenSSL
+pyOpenSSL==19.0.0
+ndg-httpsclient==0.5.1
+urllib3==1.25.6  # requests
+chardet==3.0.4  # requests
+idna==2.8  # requests
+certifi==2019.9.11  # requests
+requests==2.22.0
+astroid==2.3.2
+pylint==2.4.3
+six==1.12.0
+ipaddress==1.0.23  # faker
+faker==2.0.3  # factory_boy
+factory_boy==2.12.0
+ldap3==2.6.1
+sqlparse==0.3.0
+boto==2.49.0
+python-dateutil==2.8.0
+
+djangowind==1.2.2
+django-indexer==0.3.0
+django-templatetag-sugar==1.0
+django-paging==0.2.5
+django-annoying==0.10.5
+django-appconf==1.0.3
+rcssmin==1.0.6  # django-compressor
+rjsmin==1.1.0  # django-compressor
+django-compressor==2.3
+django-statsd-mozilla==0.4.0
+raven==6.10.0
+django-bootstrap4==1.0.1
+django-debug-toolbar==2.0
+django-waffle==0.17.0
+django-jenkins==0.110.0
+django-smoketest==1.1.0
+# For django-extensions
+typing==3.7.4.1; python_version < '3.5'
+django-extensions==2.2.3
+django-stagingcontext==0.1.0
+django-ga-context==0.1.0
+django-impersonate==1.4.1
+django-markwhat==1.6.2
+gunicorn==19.9.0
+django-infranil==1.1.0
+django-flatblocks==0.9.4
+django-storages-redux==1.3.3
+
+djangorestframework==3.10.3
+
+ccnmtlsettings==1.5.0
+
+django-reversion==3.0.4
+text_unidecode==1.3
+
+django-taggit==1.1.0
+
+django-cacheds3storage==0.2.1
+
+nameparser==1.0.4
+oauth2==1.9.0.post1
+oauthlib==3.1.0
+pylti==0.7.0
+django-lti-provider==0.3.3
+
+pyparsing==2.4.2
+edtf==3.0.0 # pyup: <4.0.0
+
+pbr==5.4.3 # bandit
+pyyaml==5.1.2 # bandit
+stevedore==1.31.0  # bandit
+bandit==1.6.2
+
+django-smtp-ssl==1.0
+django-contact-us==0.4.1
+
+entrypoints==0.3
