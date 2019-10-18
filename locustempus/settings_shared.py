@@ -17,6 +17,7 @@ INSTALLED_APPS += [  # noqa
     'bootstrap4',
     'infranil',
     'django_extensions',
+    'courseaffils',
 
     'locustempus.main',
 ]
