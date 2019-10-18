@@ -14,14 +14,15 @@ if hasattr(settings, 'CAS_BASE'):
 
 urlpatterns = [
     auth_urls,
-    url(r'^$', views.IndexView.as_view()),
+    url(r'^$', views.IndexView.as_view(), name='course-list-view'),
     url(r'^admin/', admin.site.urls),
     url(r'^_impersonate/', include('impersonate.urls')),
-    url(r'^stats/$$', TemplateView.as_view(template_name="stats.html")),
+    url(r'^stats/$$', TemplateView.as_view(template_name='stats.html')),
     url(r'smoketest/', include('smoketest.urls')),
     url(r'infranil/', include('infranil.urls')),
     url(r'^uploads/(?P<path>.*)$$',
         serve, {'document_root': settings.MEDIA_ROOT}),
+    url(r'^course/create/', views.CourseCreateView.as_view())
 ]
 
 
