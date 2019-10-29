@@ -1,0 +1,10 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Course Detail {{ object.title }}</h1>
+{{ object.group }}
+{{ object.faculty_group }}
+
+<a href="/course/{{ object.pk }}/">View Course</a>
+<a href="/course/{{ object.pk }}/edit/">Edit Course</a>
+{% endblock %}
