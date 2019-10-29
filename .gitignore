@@ -15,3 +15,4 @@ media/CACHE
 node_modules
 uploads
 reports
+.mypy_cache
