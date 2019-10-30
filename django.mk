@@ -23,6 +23,7 @@ MAX_COMPLEXITY ?= 10
 INTERFACE ?= localhost
 RUNSERVER_PORT ?= 8000
 PY_DIRS ?= $(APP)
+MYPY ?= $(VE)/bin/mypy
 
 # Travis has issues here. See:
 # https://github.com/travis-ci/travis-ci/issues/9524
@@ -36,7 +37,7 @@ else
 	PIP ?= $(VE)/bin/pip
 endif
 
-jenkins: check flake8 test eslint bandit
+jenkins: check flake8 mypy test eslint bandit
 
 $(PY_SENTINAL): $(REQUIREMENTS)
 	rm -rf $(VE)
@@ -58,6 +59,9 @@ bandit: $(PY_SENTINAL)
 
 flake8: $(PY_SENTINAL)
 	$(FLAKE8) $(PY_DIRS) --max-complexity=$(MAX_COMPLEXITY) --exclude=*/migrations/*.py --extend-ignore=$(FLAKE8_IGNORE)
+
+mypy: $(PY_SENTINAL)
+	$(MYPY)
 
 runserver: check
 	$(MANAGE) runserver $(INTERFACE):$(RUNSERVER_PORT)
@@ -102,4 +106,4 @@ install: jenkins
 	createdb $(APP)
 	make migrate
 
-.PHONY: jenkins test flake8 runserver migrate check shell clean pull rebase install
+.PHONY: jenkins test flake8 runserver migrate check shell clean pull rebase install mypy
