@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.mixins import (
     LoginRequiredMixin
 )
+from django.http import HttpResponse
 from django.urls.base import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
@@ -23,10 +24,10 @@ class CourseCreateView(LoggedInSuperuserMixin, CreateView):
     template_name = 'main/course_create.html'
     fields = ['title', 'group', 'faculty_group']
 
-    def get_success_url(self):
+    def get_success_url(self) -> str:
         return reverse('course-list-view')
 
-    def form_valid(self, form):
+    def form_valid(self, form) -> HttpResponse:
         title = form.cleaned_data['title']
 
         result = CreateView.form_valid(self, form)
