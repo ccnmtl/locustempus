@@ -21,12 +21,13 @@ class LoggedInCourseMixin(UserPassesTestMixin):
         try:
             course_pk = self.kwargs.get('pk')
             course = Course.objects.get(pk=course_pk)
-            return (
-                in_course(self.request.user.username, course) or
-                course.is_faculty(self.request.user)
-            )
         except Course.DoesNotExist:
             return False
+
+        return (
+            in_course(self.request.user.username, course) or
+            course.is_faculty(self.request.user)
+        )
 
 
 class LoggedInFacultyMixin(UserPassesTestMixin):
@@ -45,9 +46,10 @@ class LoggedInFacultyMixin(UserPassesTestMixin):
         try:
             course_pk = self.kwargs.get('pk')
             course = Course.objects.get(pk=course_pk)
-            return course.is_faculty(self.request.user)
         except Course.DoesNotExist:
             return False
+
+        return course.is_faculty(self.request.user)
 
 
 class LoggedInSuperuserMixin(UserPassesTestMixin):
