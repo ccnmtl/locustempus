@@ -1,6 +1,6 @@
 from django.test import TestCase
 from locustempus.main.tests.factories import (
-    CourseFactory, CourseTestMixin, UserFactory
+    CourseFactory, CourseTestMixin
 )
 
 

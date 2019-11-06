@@ -30,7 +30,6 @@ class CourseCreateView(LoggedInSuperuserMixin, CreateView):
         title = form.cleaned_data['title']
 
         result = CreateView.form_valid(self, form)
-        # TODO: error handling here?
 
         messages.add_message(
             self.request, messages.SUCCESS,
