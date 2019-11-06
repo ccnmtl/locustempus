@@ -23,7 +23,6 @@ MAX_COMPLEXITY ?= 10
 INTERFACE ?= localhost
 RUNSERVER_PORT ?= 8000
 PY_DIRS ?= $(APP)
-MYPY ?= $(VE)/bin/mypy
 
 # Travis has issues here. See:
 # https://github.com/travis-ci/travis-ci/issues/9524
@@ -31,10 +30,12 @@ ifeq ($(TRAVIS),true)
 	BANDIT ?= bandit
 	FLAKE8 ?= flake8
 	PIP ?= pip
+	MYPY ?= mypy
 else
 	BANDIT ?= $(VE)/bin/bandit
 	FLAKE8 ?= $(VE)/bin/flake8
 	PIP ?= $(VE)/bin/pip
+	MYPY ?= $(VE)/bin/mypy
 endif
 
 jenkins: check flake8 mypy test eslint bandit
