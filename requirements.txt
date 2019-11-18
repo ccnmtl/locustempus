@@ -35,7 +35,7 @@ pygments==2.4.2  # ipython
 scandir==1.10.0  # ipython
 ipython==7.8.0
 coverage==4.5.4
-pyasn1==0.4.7
+pyasn1==0.4.8
 cryptography==2.8  # pyOpenSSL
 pyOpenSSL==19.1.0
 ndg-httpsclient==0.5.1
