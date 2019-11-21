@@ -52,7 +52,7 @@ faker==2.0.4  # factory_boy
 factory_boy==2.12.0
 ldap3==2.6.1
 sqlparse==0.3.0
-boto==2.49.0
+boto3==1.10.23
 python-dateutil==2.8.1
 
 djangowind==1.2.2
