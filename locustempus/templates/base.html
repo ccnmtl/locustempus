@@ -162,20 +162,24 @@
      data-main="{{STATIC_URL}}js/src/main.js"
      src="{{STATIC_URL}}js/lib/require/require.js"></script>
 
-{% if SENTRY_PUBLIC_DSN %}
-    <script src="https://cdn.ravenjs.com/3.21.0/raven.min.js"></script>
-    <script>
-     Raven.config('{{ SENTRY_PUBLIC_DSN }}').install();
+{% if SENTRY_DSN %}
+    <script src="https://browser.sentry-cdn.com/5.9.1/bundle.min.js" integrity="sha384-/x1aHz0nKRd6zVUazsV6CbQvjJvr6zQL2CHbQZf3yoLkezyEtZUpqUNnOLW9Nt3v" crossorigin="anonymous">
+    </script>
+     Sentry.init({ dsn: '{{ SENTRY_DSN }}'});
 
      {% if user.is_anonymous %}
-     Raven.setUserContext({
-         email: 'none',
-         id: 'anonymous'
+     Sentry.configureScope(function(scope) {
+         scope.setUser({
+            "email": 'none',
+            "id": 'anonymous'
+         });
      });
      {% else %}
-     Raven.setUserContext({
-         email: '{{ user.email }}',
-         id: '{{ user.username }}'
+     Sentry.configureScope(function(scope) {
+         scope.setUser({
+            "email": {{ user.email }},
+            "id": '{{ user.username }}'
+         });
      });
      {% endif %}
     </script>
