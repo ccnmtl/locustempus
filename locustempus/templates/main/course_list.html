@@ -6,6 +6,7 @@
 {% for course in object_list %}
 {{ course.title }}
 <a href="{% url 'course-detail-view' course.pk %}">View Course</a>
-<a href="/course/{{ course.pk }}/edit/">Edit Course</a>
+<a href="{% url 'course-edit-view' course.pk %}">Edit Course</a>
+<a href="{% url 'course-delete-view' course.pk %}">Delete Course</a>
 {% endfor %}
 {% endblock %}

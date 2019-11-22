@@ -29,7 +29,9 @@ urlpatterns = [
     url(r'^course/(?P<pk>\d+)/$', views.CourseDetailView.as_view(),
         name='course-detail-view'),
     url(r'^course/(?P<pk>\d+)/edit/$', views.CourseEditView.as_view(),
-        name='course-edit-view')
+        name='course-edit-view'),
+    url(r'^course/(?P<pk>\d+)/delete/$', views.CourseDeleteView.as_view(),
+        name='course-delete-view')
 
 ]
 

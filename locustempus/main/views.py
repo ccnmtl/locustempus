@@ -7,7 +7,7 @@ from django.http import HttpResponse
 from django.urls.base import reverse
 from django.views.generic.base import TemplateView
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.views.generic.list import ListView
 
 from locustempus.mixins import (
@@ -58,3 +58,11 @@ class CourseEditView(LoggedInFacultyMixin, UpdateView):
 
     def get_success_url(self):
         return reverse('course-detail-view', kwargs={'pk': self.object.pk})
+
+
+class CourseDeleteView(LoggedInFacultyMixin, DeleteView):
+    model = Course
+    template_name = 'main/course_delete.html'
+
+    def get_success_url(self) -> str:
+        return reverse('course-list-view')
