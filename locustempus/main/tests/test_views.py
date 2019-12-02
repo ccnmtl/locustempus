@@ -242,11 +242,11 @@ class CourseTest(CourseTestMixin, TestCase):
             "/course/{}/".format(self.course.pk))
 
     def test_delete_anon(self):
-        response = self.client.get("/course/{}/edit/".format(self.course.pk))
+        response = self.client.get("/course/{}/delete/".format(self.course.pk))
         self.assertEquals(response.status_code, 302)
         self.assertEquals(
             response.url,
-            "/accounts/login/?next=/course/{}/edit/".format(self.course.pk))
+            "/accounts/login/?next=/course/{}/delete/".format(self.course.pk))
 
     def test_delete_faculty(self):
         self.assertTrue(
@@ -255,7 +255,7 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/edit/".format(self.course.pk))
+        response = self.client.get("/course/{}/delete/".format(self.course.pk))
         self.assertEquals(response.status_code, 200)
 
     def test_delete_faculty_post(self):
@@ -265,8 +265,10 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.post("/course/{}/edit/".format(self.course.pk))
-        self.assertEquals(response.status_code, 200)
+        response = self.client.post(
+            "/course/{}/delete/".format(self.course.pk))
+        self.assertEquals(response.status_code, 302)
+        self.assertEquals(response.url, '/course/list/')
 
     def test_delete_faculty_not_in_course(self):
         alternate_course = CourseFactory()
