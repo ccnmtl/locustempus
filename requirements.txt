@@ -100,6 +100,7 @@ django-cacheds3storage==0.2.1
 nameparser==1.0.4
 oauth2==1.9.0.post1
 oauthlib==3.1.0
+httplib2==0.14.0
 pylti==0.7.0
 django-lti-provider==0.3.3
 

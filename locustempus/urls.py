@@ -16,6 +16,7 @@ urlpatterns = [
     auth_urls,
     url(r'^$', views.IndexView.as_view(), name='course-list-view'),
     url(r'^admin/', admin.site.urls),
+    url(r'^lti/', include('lti_provider.urls')),
     url(r'^_impersonate/', include('impersonate.urls')),
     url(r'^stats/$$', TemplateView.as_view(template_name='stats.html')),
     url(r'smoketest/', include('smoketest.urls')),
