@@ -43,7 +43,7 @@ LTI_TOOL_CONFIGURATION = {
     'embed_tool_id': '',
     'landing_url': '{}://{}/',
     'course_aware': True,
-    'navigation': False,
+    'navigation': True,
     'new_tab': False,
     'frame_width': 1024,
     'frame_height': 1024
