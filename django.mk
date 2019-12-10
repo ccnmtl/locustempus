@@ -83,6 +83,7 @@ clean:
 	rm -f celerybeat-schedule
 	rm -f .coverage
 	rm -rf node_modules
+	rm -rf media/build
 	find . -name '*.pyc' -exec rm {} \;
 
 pull:

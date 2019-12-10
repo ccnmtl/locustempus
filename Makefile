@@ -1,5 +1,5 @@
 APP=locustempus
-JS_FILES=media/js/src media/js/tests
+JS_FILES=media/src media/tests
 
 all: jenkins
 

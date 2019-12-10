@@ -33,4 +33,7 @@ eslint: $(JS_SENTINAL)
 jstest: $(JS_SENTINAL)
 	npm test
 
+webpack: $(JS_SENTINAL)
+	npm run dev
+
 .PHONY: eslint jstest
