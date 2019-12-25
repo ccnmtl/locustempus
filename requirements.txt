@@ -104,7 +104,7 @@ httplib2==0.15.0
 pylti==0.7.0
 django-lti-provider==0.3.4
 
-pyparsing==2.4.5
+pyparsing==2.4.6
 edtf==4.0.1 # pyup: <4.0.0
 
 pbr==5.4.4 # bandit
