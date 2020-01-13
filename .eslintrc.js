@@ -5,7 +5,8 @@ module.exports = {
         "jquery": true
     },
     "parserOptions": {
-        "ecmaVersion": 6
+        "ecmaVersion": 6,
+        "sourceType": "module"
     },
     "plugins": [
         "security",
@@ -15,7 +16,7 @@ module.exports = {
     "extends": [
         "eslint:recommended",
         "plugin:security/recommended"
-    ],  
+    ],
     "rules": {
         "indent": [
             "error",
