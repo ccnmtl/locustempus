@@ -27,22 +27,23 @@ class CourseFactory(factory.DjangoModelFactory):
 
 class CourseTestMixin(object):
     def setup_course(self) -> None:
-        self.superuser: User = UserFactory(
+        self.superuser: User = UserFactory.create(
             first_name='Super',
             last_name='User',
             email='superuser@example.com',
             is_superuser=True
         )
         self.course: Course = CourseFactory.create()
-        self.student: User = UserFactory(
+        self.student: User = UserFactory.create(
             first_name='Student',
             last_name='One',
             email='studentone@example.com'
         )
         self.course.group.user_set.add(self.student)
-        self.faculty: User = UserFactory(
+        self.faculty: User = UserFactory.create(
             first_name='Faculty',
             last_name='One',
             email='facultyone@example.com'
         )
+        self.course.group.user_set.add(self.faculty)
         self.course.faculty_group.user_set.add(self.faculty)
