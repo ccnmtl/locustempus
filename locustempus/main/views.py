@@ -66,3 +66,8 @@ class CourseDeleteView(LoggedInFacultyMixin, DeleteView):
 
     def get_success_url(self) -> str:
         return reverse('course-list-view')
+
+
+class CourseRosterView(LoggedInFacultyMixin, DetailView):
+    model = Course
+    template_name = 'main/course_roster.html'

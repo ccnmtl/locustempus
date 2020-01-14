@@ -204,7 +204,7 @@ class CourseTest(CourseTestMixin, TestCase):
             "/course/{}/".format(self.course.pk))
 
     def test_edit_faculty_not_in_course(self):
-        alternate_course = CourseFactory()
+        alternate_course = CourseFactory.create()
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
@@ -303,3 +303,48 @@ class CourseTest(CourseTestMixin, TestCase):
             "/course/{}/delete/".format(self.course.pk))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/course/list/")
+
+    def test_course_roster_faculty(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.get(
+            "/course/{}/roster/".format(self.course.pk))
+        self.assertEqual(response.status_code, 200)
+
+    def test_course_roster_faculty_not_in_course(self):
+        alternate_course = CourseFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.get(
+            "/course/{}/roster/".format(alternate_course.pk))
+        self.assertEqual(response.status_code, 403)
+
+    def test_course_roster_superuser(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.superuser.username,
+                password='test'
+            )
+        )
+        response = self.client.get(
+            "/course/{}/roster/".format(self.course.pk))
+        self.assertEqual(response.status_code, 200)
+
+    def test_course_roster_student(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.get(
+            "/course/{}/roster/".format(self.course.pk))
+        self.assertEqual(response.status_code, 403)
