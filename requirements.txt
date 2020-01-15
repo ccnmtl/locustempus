@@ -45,6 +45,8 @@ idna==2.8  # requests
 certifi==2019.11.28  # requests
 requests==2.22.0
 astroid==2.3.2
+wrapt==1.11.2
+lazy-object-proxy==1.4.3
 pylint==2.4.3
 six==1.13.0
 ipaddress==1.0.23  # faker
