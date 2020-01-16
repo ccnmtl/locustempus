@@ -92,4 +92,5 @@ class CourseRosterView(LoggedInFacultyMixin, DetailView):
                 user_display_name(user))
 
         messages.add_message(request, messages.INFO, msg)
-        return HttpResponseRedirect('')
+        return HttpResponseRedirect(
+            reverse('course-roster-view', args=[course.pk]))

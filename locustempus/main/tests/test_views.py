@@ -362,7 +362,8 @@ class CourseTest(CourseTestMixin, TestCase):
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '')
+        self.assertEqual(response.url,
+                         "/course/{}/roster/".format(self.course.pk))
         self.assertTrue(self.course.is_true_faculty(self.student))
 
     def test_course_roster_demote(self):
@@ -378,7 +379,8 @@ class CourseTest(CourseTestMixin, TestCase):
             {'user_id': self.faculty.pk}
         )
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '')
+        self.assertEqual(response.url,
+                         "/course/{}/roster/".format(self.course.pk))
         # Check that the demoted user is still a member of the course
         self.assertTrue(self.course.is_member(self.faculty))
         self.assertFalse(self.course.is_true_faculty(self.faculty))
