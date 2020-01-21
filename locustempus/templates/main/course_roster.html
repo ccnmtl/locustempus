@@ -26,7 +26,7 @@
                 {% if is_faculty %}Faculty{% else %}Student{% endif %}
             </td>
             <td>
-                <form action="{# TODO url 'some-view' #}" method="post">
+                <form action="." method="post">
                     {% csrf_token %}
                     <input type="hidden" name="user_id" id="user_id" value="{{ member.id }}">
                     <button type="submit" class="btn btn-default btn-sm">

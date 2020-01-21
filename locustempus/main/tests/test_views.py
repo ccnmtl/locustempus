@@ -348,3 +348,54 @@ class CourseTest(CourseTestMixin, TestCase):
         response = self.client.get(
             "/course/{}/roster/".format(self.course.pk))
         self.assertEqual(response.status_code, 403)
+
+    def test_course_roster_promote(self):
+        """Test that a faculty can demote a user"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/".format(self.course.pk),
+            {'user_id': self.student.pk}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+                         "/course/{}/roster/".format(self.course.pk))
+        self.assertTrue(self.course.is_true_faculty(self.student))
+
+    def test_course_roster_demote(self):
+        """Test that a faculty can demote a user"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/".format(self.course.pk),
+            {'user_id': self.faculty.pk}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+                         "/course/{}/roster/".format(self.course.pk))
+        # Check that the demoted user is still a member of the course
+        self.assertTrue(self.course.is_member(self.faculty))
+        self.assertFalse(self.course.is_true_faculty(self.faculty))
+
+    def test_course_roster_non_members(self):
+        """Test that users who are not faculty can not
+        promote/demote course members"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/".format(self.course.pk),
+            {'user_id': self.student.pk}
+        )
+        self.assertEqual(response.status_code, 403)
