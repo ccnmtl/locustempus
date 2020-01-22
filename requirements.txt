@@ -23,7 +23,7 @@ traitlets==4.3.3  # ipython
 ipython_genutils==0.2.0  # ipython
 decorator==4.4.1  # ipython
 ptyprocess==0.6.0  # ipython
-pexpect==4.7.0  # ipython
+pexpect==4.8.0  # ipython
 pathlib2==2.3.5  # ipython
 pickleshare==0.7.5  # ipython
 simplegeneric==0.8.1  # ipython
