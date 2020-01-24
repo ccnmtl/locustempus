@@ -33,6 +33,13 @@
                         {% if is_faculty %}Demote{% else %}Promote{% endif %}
                     </button>
                 </form>
+                <form action="{% url 'course-detail-view' object.pk %}roster/remove/" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_id" id="user_id" value="{{ member.id }}">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Remove 
+                    </button>
+                </form>
             </td>
         </tr>
         {% endfor %}

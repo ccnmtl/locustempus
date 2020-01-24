@@ -46,7 +46,10 @@ urlpatterns = [
         name='course-roster-promote-view'),
     url(r'^course/(?P<pk>\d+)/roster/demote/$',
         views.CourseRosterDemoteView.as_view(),
-        name='course-roster-demote-view')
+        name='course-roster-demote-view'),
+    url(r'^course/(?P<pk>\d+)/roster/remove/$',
+        views.CourseRosterRemoveView.as_view(),
+        name='course-roster-remove-view')
 
 ]
 

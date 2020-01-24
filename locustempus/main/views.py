@@ -100,7 +100,7 @@ class CourseRosterPromoteView(LoggedInFacultyMixin, View):
             course.faculty_group.user_set.add(user)
             msg = u'{} is now faculty'.format(user_display_name(user))
         else:
-            msg = u'{} is not a user in this course'.format(
+            msg = u'{} is not a member of this course'.format(
                 user_display_name(user))
 
         messages.add_message(request, messages.INFO, msg)
@@ -113,19 +113,44 @@ class CourseRosterDemoteView(LoggedInFacultyMixin, View):
     http_method_names = ['post']
 
     def post(self, request, *args, **kwargs):
-        """Toggles the role of course users between faculty/student"""
         user = get_object_or_404(
             User, id=request.POST.get('user_id', None))
         course = get_object_or_404(Course, id=kwargs.get('pk', None))
 
         if course.is_true_faculty(user):
             course.faculty_group.user_set.remove(user)
-            msg = u'{} is now a student'.format(user_display_name(user))
+            msg = u'{} is now only a member of this course'.format(
+                user_display_name(user))
         elif course.is_member(user):
-            msg = u'{} is already a student in this course'.format(
+            msg = u'{} is already a member of this course'.format(
                 user_display_name(user))
         else:
             msg = u'{} is not a user in this course'.format(
+                user_display_name(user))
+
+        messages.add_message(request, messages.INFO, msg)
+        return HttpResponseRedirect(
+            reverse('course-roster-view', args=[course.pk]))
+
+
+class CourseRosterRemoveView(LoggedInFacultyMixin, View):
+    """Removes a user from a course"""
+    http_method_names = ['post']
+
+    def post(self, request, *args, **kwargs):
+        user = get_object_or_404(
+            User, id=request.POST.get('user_id', None))
+        course = get_object_or_404(Course, id=kwargs.get('pk', None))
+
+        if course.is_true_faculty(user):
+            course.faculty_group.user_set.remove(user)
+
+        if course.is_member(user):
+            course.group.user_set.remove(user)
+            msg = u'{} is no longer a member of this course'.format(
+                user_display_name(user))
+        else:
+            msg = u'{} was not a member in this course'.format(
                 user_display_name(user))
 
         messages.add_message(request, messages.INFO, msg)
