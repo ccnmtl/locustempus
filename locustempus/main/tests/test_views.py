@@ -367,7 +367,7 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/".format(self.course.pk),
+            "/course/{}/roster/promote/".format(self.course.pk),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 302)
@@ -384,7 +384,7 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/".format(self.course.pk),
+            "/course/{}/roster/demote/".format(self.course.pk),
             {'user_id': self.faculty.pk}
         )
         self.assertEqual(response.status_code, 302)
@@ -404,7 +404,12 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/".format(self.course.pk),
+            "/course/{}/roster/promote/".format(self.course.pk),
+            {'user_id': self.student.pk}
+        )
+        self.assertEqual(response.status_code, 403)
+        response = self.client.post(
+            "/course/{}/roster/demote/".format(self.course.pk),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 403)
