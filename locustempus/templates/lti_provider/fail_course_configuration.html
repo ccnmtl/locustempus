@@ -1,0 +1,35 @@
+{% load coursetags static %}
+{% get_instructor_courses user as courses %}
+<html>
+    <head>
+        <title>Course Configuration</title>
+    </head>
+    <body>
+         {% if not is_instructor and not is_administrator %}
+            <div>
+                <p>
+                    Your {{title}} course has not been configured to use this component.<br />
+                    Contact your instructor for more information.
+                </p>
+            </div>
+         {% else %}
+            <div>
+                <p>
+                    Locus Tempus is an open-source platform for exploration, analysis, and organization of location-based content.
+                </p>
+                <p>
+                    Connect your Canvas course to Locus Tempus.
+                </p>
+                <form class="text-center" action="{% url 'lti-course-create' %}" method='POST'>
+                    <input type="hidden" name="lms_course" value="{{lms_course}}">
+                    <input type="hidden" name="lms_course_title" value="{{lms_course_title}}">
+                    <input type="hidden" name="sis_course_id" value="{{sis_course_id}}">
+                    <input type="hidden" name="domain" value="{{domain}}">
+                    <p>
+                        <button type="submit" class="btn btn-primary btn-lg">Connect Now</button>
+                    </p>
+                </form>
+            </div>
+        {% endif %}
+    </body>
+</html>
