@@ -2,17 +2,30 @@
 {% load is_course_faculty %}
 
 {% block content %}
-<h1>{{ object.title }} Course Roster</h1>
-<a href="/course/{{ object.pk }}/">Back to View Course</a>
+<div class="row">
+    <div class="col-12">
+        <h1>{{ object.title }}: Course Roster</h1>
+    </div>
+</div>
 
-<table class="table table-hover">
+<div class="row course-roster__subhead">
+    <div class="col-md-6">
+        <a href="/course/{{ object.pk }}/">Back to View Course</a>
+    </div>
+    <div class="col-md-6">
+        <a href="#" class="btn btn-sm btn-primary">Invite Columbia Affiliate (UNI Required)</a>
+        <a href="#" class="btn btn-sm btn-primary">Invite Non-Columbia Affiliate</a>
+    </div>
+</div>
+
+<table class="table table-hover course-roster__table tablesorter">
     <thead>
         <tr>
             <th scope="col">First Name</th>
             <th scope="col">Last Name</th>
             <th scope="col">User Name</th>
             <th scope="col">Role</th>
-            <th scope="col">Actions</th>
+            <th scope="col" class="sorter-false">Actions</th>
         </tr>
     </thead>
     <tbody>
