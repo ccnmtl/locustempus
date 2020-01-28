@@ -1,9 +1,11 @@
+from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.conf import settings
 from django.views.generic import TemplateView
 from django.views.static import serve
+
 from locustempus.main import views
+
 
 admin.autodiscover()
 
@@ -17,6 +19,10 @@ urlpatterns = [
     url(r'^$', views.IndexView.as_view(), name='course-list-view'),
     url(r'^admin/', admin.site.urls),
     url(r'^lti/', include('lti_provider.urls')),
+    url(r'^course/lti/create/$',
+        views.LTICourseCreate.as_view(), name='lti-course-create'),
+    url(r'^course/lti/(?P<context>\w[^/]*)/$',
+        views.LTICourseSelector.as_view(), name='lti-course-select'),
     url(r'^_impersonate/', include('impersonate.urls')),
     url(r'^stats/$$', TemplateView.as_view(template_name='stats.html')),
     url(r'smoketest/', include('smoketest.urls')),
