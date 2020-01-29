@@ -367,7 +367,7 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/".format(self.course.pk),
+            "/course/{}/roster/promote/".format(self.course.pk),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 302)
@@ -384,7 +384,7 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/".format(self.course.pk),
+            "/course/{}/roster/demote/".format(self.course.pk),
             {'user_id': self.faculty.pk}
         )
         self.assertEqual(response.status_code, 302)
@@ -404,8 +404,68 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/".format(self.course.pk),
+            "/course/{}/roster/promote/".format(self.course.pk),
             {'user_id': self.student.pk}
+        )
+        self.assertEqual(response.status_code, 403)
+        response = self.client.post(
+            "/course/{}/roster/demote/".format(self.course.pk),
+            {'user_id': self.student.pk}
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_course_roster_remove_student(self):
+        """Test that a faculty can demote a user"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/remove/".format(self.course.pk),
+            {'user_id': self.student.pk}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+                         "/course/{}/roster/".format(self.course.pk))
+        self.assertFalse(self.course.is_true_member(self.student))
+
+    def test_course_roster_remove_faculty(self):
+        """Test that a faculty can demote a user"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        self.course.faculty_group.user_set.add(self.student)
+        response = self.client.post(
+            "/course/{}/roster/remove/".format(self.course.pk),
+            {'user_id': self.student.pk}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+                         "/course/{}/roster/".format(self.course.pk))
+        self.assertFalse(self.course.is_true_member(self.student))
+
+    def test_course_roster_remove_non_members(self):
+        """Test that users who are not faculty can not
+        remove course members"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/remove/".format(self.course.pk),
+            {'user_id': self.student.pk}
+        )
+        self.assertEqual(response.status_code, 403)
+        response = self.client.post(
+            "/course/{}/roster/demote/".format(self.course.pk),
+            {'user_id': self.faculty.pk}
         )
         self.assertEqual(response.status_code, 403)
 

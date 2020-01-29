@@ -5,7 +5,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     entry: {
-        main: './media/src/main.jsx',
+        main: './media/src/main.js',
     },
     mode: process.env.WEBPACK_SERVE ? 'development' : 'production',
     output: {
@@ -29,7 +29,7 @@ module.exports = {
                 }
             },
             {
-                test: /\.(scss)$/,
+                test: /\.(css|scss)$/,
                 use: [
                     {
                         loader: MiniCssExtractPlugin.loader,

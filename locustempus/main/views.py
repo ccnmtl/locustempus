@@ -8,7 +8,7 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin
 )
 from django.contrib.auth.models import User, Group
-from django.http import HttpResponse, HttpResponseRedirect
+from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
@@ -83,20 +83,74 @@ class CourseRosterView(LoggedInFacultyMixin, DetailView):
     model = Course
     template_name = 'main/course_roster.html'
 
-    def post(self, request, *args, **kwargs):
-        """Toggles the role of course users between faculty/student"""
+
+class CourseRosterPromoteView(LoggedInFacultyMixin, View):
+    """Promotes a student to course faculty"""
+    http_method_names = ['post']
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        user = get_object_or_404(
+            User, id=request.POST.get('user_id', None))
+        course = get_object_or_404(Course, id=kwargs.get('pk', None))
+
+        if course.is_true_faculty(user):
+            msg = u'{} is already faculty in this course'.format(
+                user_display_name(user))
+        elif course.is_member(user):
+            course.faculty_group.user_set.add(user)
+            msg = u'{} is now faculty'.format(user_display_name(user))
+        else:
+            msg = u'{} is not a member of this course'.format(
+                user_display_name(user))
+
+        messages.add_message(request, messages.INFO, msg)
+        return HttpResponseRedirect(
+            reverse('course-roster-view', args=[course.pk]))
+
+
+class CourseRosterDemoteView(LoggedInFacultyMixin, View):
+    """Demotes a course faculty to a student"""
+    http_method_names = ['post']
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         user = get_object_or_404(
             User, id=request.POST.get('user_id', None))
         course = get_object_or_404(Course, id=kwargs.get('pk', None))
 
         if course.is_true_faculty(user):
             course.faculty_group.user_set.remove(user)
-            msg = u'{} is now a student'.format(user_display_name(user))
+            msg = u'{} is now only a member of this course'.format(
+                user_display_name(user))
         elif course.is_member(user):
-            course.faculty_group.user_set.add(user)
-            msg = u'{} is now faculty'.format(user_display_name(user))
+            msg = u'{} is already a member of this course'.format(
+                user_display_name(user))
         else:
             msg = u'{} is not a user in this course'.format(
+                user_display_name(user))
+
+        messages.add_message(request, messages.INFO, msg)
+        return HttpResponseRedirect(
+            reverse('course-roster-view', args=[course.pk]))
+
+
+class CourseRosterRemoveView(LoggedInFacultyMixin, View):
+    """Removes a user from a course"""
+    http_method_names = ['post']
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        user = get_object_or_404(
+            User, id=request.POST.get('user_id', None))
+        course = get_object_or_404(Course, id=kwargs.get('pk', None))
+
+        if course.is_true_faculty(user):
+            course.faculty_group.user_set.remove(user)
+
+        if course.is_member(user):
+            course.group.user_set.remove(user)
+            msg = u'{} is no longer a member of this course'.format(
+                user_display_name(user))
+        else:
+            msg = u'{} was not a member in this course'.format(
                 user_display_name(user))
 
         messages.add_message(request, messages.INFO, msg)

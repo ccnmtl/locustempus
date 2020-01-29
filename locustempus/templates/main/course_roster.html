@@ -2,17 +2,30 @@
 {% load is_course_faculty %}
 
 {% block content %}
-<h1>{{ object.title }} Course Roster</h1>
-<a href="/course/{{ object.pk }}/">Back to View Course</a>
+<div class="row">
+    <div class="col-12">
+        <h1>{{ object.title }}: Course Roster</h1>
+    </div>
+</div>
 
-<table class="table">
+<div class="row course-roster__subhead">
+    <div class="col-md-6">
+        <a href="/course/{{ object.pk }}/">Back to View Course</a>
+    </div>
+    <div class="col-md-6">
+        <a href="#" class="btn btn-sm btn-primary">Invite Columbia Affiliate (UNI Required)</a>
+        <a href="#" class="btn btn-sm btn-primary">Invite Non-Columbia Affiliate</a>
+    </div>
+</div>
+
+<table class="table table-hover course-roster__table tablesorter">
     <thead>
         <tr>
-            <td scope="col">First Name</td>
-            <td scope="col">Last Name</td>
-            <td scope="col">User Name</td>
-            <td scope="col">Role</td>
-            <td scope="col">Actions</td>
+            <th scope="col">First Name</th>
+            <th scope="col">Last Name</th>
+            <th scope="col">User Name</th>
+            <th scope="col">Role</th>
+            <th scope="col" class="sorter-false">Actions</th>
         </tr>
     </thead>
     <tbody>
@@ -26,11 +39,18 @@
                 {% if is_faculty %}Faculty{% else %}Student{% endif %}
             </td>
             <td>
-                <form action="." method="post">
+                <form action="{% url 'course-detail-view' object.pk %}roster/{% if is_faculty %}demote{% else %}promote{% endif %}/" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="user_id" id="user_id" value="{{ member.id }}">
-                    <button type="submit" class="btn btn-default btn-sm">
+                    <button type="submit" class="btn btn-primary btn-sm">
                         {% if is_faculty %}Demote{% else %}Promote{% endif %}
+                    </button>
+                </form>
+                <form action="{% url 'course-detail-view' object.pk %}roster/remove/" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_id" id="user_id" value="{{ member.id }}">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Remove 
                     </button>
                 </form>
             </td>
