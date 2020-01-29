@@ -18,7 +18,7 @@ REQUIREMENTS ?= requirements.txt
 SYS_PYTHON ?= python3
 PY_SENTINAL ?= $(VE)/sentinal
 WHEEL_VERSION ?= 0.33.6
-PIP_VERSION ?= 19.2.2
+PIP_VERSION ?= 19.3.1
 MAX_COMPLEXITY ?= 10
 INTERFACE ?= localhost
 RUNSERVER_PORT ?= 8000
@@ -30,11 +30,13 @@ ifeq ($(TRAVIS),true)
 	BANDIT ?= bandit
 	FLAKE8 ?= flake8
 	PIP ?= pip
+	COVERAGE ?= coverage
 	MYPY ?= mypy
 else
 	BANDIT ?= $(VE)/bin/bandit
 	FLAKE8 ?= $(VE)/bin/flake8
 	PIP ?= $(VE)/bin/pip
+	COVERAGE ?= $(VE)/bin/coverage
 	MYPY ?= $(VE)/bin/mypy
 endif
 
@@ -50,7 +52,8 @@ $(PY_SENTINAL): $(REQUIREMENTS)
 	touch $@
 
 test: $(PY_SENTINAL)
-	$(MANAGE) jenkins --pep8-exclude=migrations --enable-coverage --coverage-rcfile=.coveragerc
+	$(COVERAGE) run --source='.' --omit=$(VE)/* $(MANAGE) test $(APP)
+	$(COVERAGE) xml -o reports/coverage.xml
 
 parallel-tests: $(PY_SENTINAL)
 	$(MANAGE) test --parallel
@@ -59,7 +62,7 @@ bandit: $(PY_SENTINAL)
 	$(BANDIT) --ini ./.bandit -r $(PY_DIRS)
 
 flake8: $(PY_SENTINAL)
-	$(FLAKE8) $(PY_DIRS) --max-complexity=$(MAX_COMPLEXITY) --exclude=*/migrations/*.py --extend-ignore=$(FLAKE8_IGNORE)
+	$(FLAKE8) $(PY_DIRS) --max-complexity=$(MAX_COMPLEXITY) --exclude=*/local_settings.py,*/migrations/*.py --extend-ignore=$(FLAKE8_IGNORE)
 
 mypy: $(PY_SENTINAL)
 	$(MYPY)
