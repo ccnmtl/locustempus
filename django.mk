@@ -70,6 +70,9 @@ mypy: $(PY_SENTINAL)
 runserver: check
 	$(MANAGE) runserver $(INTERFACE):$(RUNSERVER_PORT)
 
+fakeserver: check
+	$(MANAGE) fakeserver $(INTERFACE):$(RUNSERVER_PORT) --noinput
+
 migrate: check jenkins
 	$(MANAGE) migrate
 
