@@ -31,6 +31,7 @@ Selected explanations of various make targets
 - `make eslint`: runs ESLint on project
 - `make jstest`: runs Mocha tests on project js files
 - `make webpack`: runs Webpack in watch mode, watches files and rebuils on change
-- `make cypress`: runs Cypress tests in headless mode, uses `make fakeserver`
-- `make cypress-open`: runs Cypress tests in headed mode, uses `make fakeserver` 
+- `make cypress-run`: runs Cypress tests in headless mode, does not bring up test server
+- `make cypress-open`: runs Cypress tests in headed mode, does not bring up test server
+- `make cypress-test`: runs Cypress tests in headless mode, uses `make fakeserver`
 - `make cypress-watch`: runs `make fakeserver`, `make webpack`, and `make cypress-open` all at once

@@ -5,12 +5,12 @@ It reimplements the testserver functionality except that it generates
 test data dynamically using factories
 """
 from courseaffils.models import Course
-from django.contrib.auth.models import User, Group
+from django.contrib.auth.models import User
 from django.core.management import call_command
-from django.core.management.base import BaseCommand, CommandError
+from django.core.management.base import BaseCommand
 from django.db import connection
 from locustempus.main.tests.factories import (
-    UserFactory, GroupFactory, CourseFactory
+    UserFactory, CourseFactory
 )
 
 

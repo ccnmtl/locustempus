@@ -2,7 +2,8 @@ module.exports = {
     "env": {
         "browser": true,
         "amd": true,
-        "jquery": true
+        "jquery": true,
+        "cypress/globals": true
     },
     "parserOptions": {
         "ecmaVersion": 6,
@@ -11,7 +12,8 @@ module.exports = {
     "plugins": [
         "security",
         "scanjs-rules",
-        "no-unsafe-innerhtml"
+        "no-unsafe-innerhtml",
+        "cypress"
     ],
     "extends": [
         "eslint:recommended",

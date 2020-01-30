@@ -40,7 +40,7 @@ else
 	MYPY ?= $(VE)/bin/mypy
 endif
 
-jenkins: check flake8 mypy test eslint bandit
+jenkins: check flake8 mypy test eslint bandit cypress-test
 
 $(PY_SENTINAL): $(REQUIREMENTS)
 	rm -rf $(VE)
@@ -52,7 +52,7 @@ $(PY_SENTINAL): $(REQUIREMENTS)
 	touch $@
 
 test: $(PY_SENTINAL)
-	$(COVERAGE) run --source='.' --omit=$(VE)/* $(MANAGE) test $(APP)
+	$(COVERAGE) run --source='.' --omit=$(VE)/* $(MANAGE) test $(APP) --noinput
 	$(COVERAGE) xml -o reports/coverage.xml
 
 parallel-tests: $(PY_SENTINAL)
@@ -68,7 +68,7 @@ mypy: $(PY_SENTINAL)
 	$(MYPY)
 
 runserver: check
-	$(MANAGE) runserver $(INTERFACE):$(RUNSERVER_PORT)
+	$(MANAGE) runserver $(INTERFACE):$(RUNSERVER_PORT) --noinput
 
 fakeserver: check
 	$(MANAGE) fakeserver $(INTERFACE):$(RUNSERVER_PORT) --noinput
