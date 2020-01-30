@@ -114,4 +114,4 @@ install: jenkins
 	createdb $(APP)
 	make migrate
 
-.PHONY: jenkins test flake8 runserver migrate check shell clean pull rebase install mypy
+.PHONY: jenkins test flake8 runserver fakeserver migrate check shell clean pull rebase install mypy

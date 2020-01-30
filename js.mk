@@ -40,6 +40,9 @@ cypress: $(JS_SENTINAL)
 	npm run cypress:test
 
 cypress-dev: $(JS_SENTINAL)
+	npm run cypress:open
+
+cypress-watch: $(JS_SENTINAL)
 	npm run cypress:watch 
 
-.PHONY: eslint jstest webpack cypress cypress-dev
+.PHONY: eslint jstest webpack cypress cypress-dev cypress-watch
