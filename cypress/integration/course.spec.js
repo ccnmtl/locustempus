@@ -7,6 +7,7 @@ describe('Course Navigation', function() {
         cy.get('#id_password').type('test').blur();
         cy.get('#login-local-form__submit').click();
         cy.visit('http://localhost:8000/course/1/');
+        cy.url().should('match', /course\/1\/$/);
     });
 });
 
