@@ -33,19 +33,4 @@ eslint: $(JS_SENTINAL)
 jstest: $(JS_SENTINAL)
 	npm test
 
-webpack: $(JS_SENTINAL)
-	npm run dev
-
-cypress-run: $(JS_SENTINAL)
-	npm run cypress:run
-
-cypress-open: $(JS_SENTINAL)
-	npm run cypress:open
-
-cypress-test: $(JS_SENTINAL)
-	npm run cypress:test
-
-cypress-watch: $(JS_SENTINAL)
-	npm run cypress:watch 
-
-.PHONY: eslint jstest webpack cypress-run cypress-open cypress-test cypress-watch
+.PHONY: eslint jstest
