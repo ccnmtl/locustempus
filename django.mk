@@ -66,7 +66,7 @@ flake8: $(PY_SENTINAL)
 	$(FLAKE8) $(PY_DIRS) --max-complexity=$(MAX_COMPLEXITY) --exclude=*/local_settings.py,*/migrations/*.py --extend-ignore=$(FLAKE8_IGNORE)
 
 runserver: check
-	$(MANAGE) runserver $(INTERFACE):$(RUNSERVER_PORT) --noinput
+	$(MANAGE) runserver $(INTERFACE):$(RUNSERVER_PORT)
 
 migrate: check jenkins
 	$(MANAGE) migrate

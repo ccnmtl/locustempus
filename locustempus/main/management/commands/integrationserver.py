@@ -1,4 +1,10 @@
-"""Fakeserver: site populated with fake data
+"""Integrationserver: brings up a test server populated with fake data
+
+This is meant to be used for two cases:
+- Front-end integration testing: just point the testing framework at the
+running test server.
+- Local dev: It can be tedious to recreate models for local dev after
+deleting a database.
 
 This is largely copied from django.core.management.commands.testserver
 It reimplements the testserver functionality except that it generates

@@ -14,8 +14,8 @@ endif
 mypy: $(PY_SENTINAL)
 	$(MYPY)
 
-fakeserver: check
-	$(MANAGE) fakeserver $(INTERFACE):$(RUNSERVER_PORT) --noinput
+integrationserver: check
+	$(MANAGE) integrationserver $(INTERFACE):$(RUNSERVER_PORT) --noinput
 
 webpack: $(JS_SENTINAL)
 	npm run dev
@@ -32,4 +32,7 @@ cypress-test: $(JS_SENTINAL)
 cypress-watch: $(JS_SENTINAL)
 	npm run cypress:watch 
 
-.PHONY: mypy fakeserver webpack cypress-run cypress-open cypress-test cypress-watch
+dev:
+	trap 'kill 0' EXIT; make integrationserver & make webpack & make cypress-open
+
+.PHONY: mypy integrationserver webpack cypress-run cypress-open cypress-test cypress-watch dev

@@ -8,9 +8,9 @@
     "build": "webpack",
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
-    "cypress:test": "start-server-and-test 'make fakeserver' http://localhost:8000 cypress:run",
-    "fakeserver:webpack": "start-server-and-test 'make fakeserver' http://localhost:8000 dev",
-    "cypress:watch": "start-server-and-test fakeserver:webpack http://localhost:8000 cypress:open"
+    "cypress:test": "start-server-and-test 'make integrationserver' http://localhost:8000 cypress:run",
+    "integrationserver:webpack": "start-server-and-test 'make integrationserver' http://localhost:8000 dev",
+    "cypress:watch": "start-server-and-test integrationserver:webpack http://localhost:8000 cypress:open"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
