@@ -3,5 +3,6 @@
         "*googletagmanager.com",
         "*google-analytics.com",
         "*doubleclick.net"
-    ]
+    ],
+    "pageLoadTimeout": 180000
 }
