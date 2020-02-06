@@ -10,6 +10,6 @@ $('.course-roster__table').tablesorter({
 
 // Login form
 $('#guest-login').click(function(evt) {
-    $('.login-local-form').show();
+    $('#login-local-form__field-wrapper').show();
     $(this).hide();
 });

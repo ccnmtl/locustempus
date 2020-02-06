@@ -27,7 +27,7 @@
         <p>If you have a guest account</p>
         <form class="text-center" name="login_local" method="post" action=".">
             {% csrf_token %}
-            <div class="login-local-form" {% if not form.errors %}style="display: none"{% endif %}>
+            <div id="login-local-form__field-wrapper" class="login-local-form" {% if not form.errors %}style="display: none"{% endif %}>
                 <div class="form-group">
                     <label for="id_username">Username</label>
                     <input id="id_username" maxlength="254"
