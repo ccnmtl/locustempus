@@ -7,3 +7,9 @@ import './scss/main.scss';
 $('.course-roster__table').tablesorter({
     theme: 'bootstrap',
 });
+
+// Login form
+$('#guest-login').click(function(evt) {
+    $('.login-local-form').show();
+    $(this).hide();
+});
