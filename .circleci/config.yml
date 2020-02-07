@@ -8,6 +8,7 @@ jobs:
       - restore_cache:
           keys:
           - cache-{{ .Branch }}-{{ checksum "package.json" }}
+      - run: apt-get install python3-venv -y
       - run: 
           name: Test
           command: make all
