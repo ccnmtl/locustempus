@@ -11,7 +11,7 @@ jobs:
       - run: apt-get install python3-venv libpq-dev python3-dev build-essential libssl-dev libffi-dev -y
       - run: 
           name: Test
-          command: make all
+          command: DEBUG=cypress:* make all
       - save_cache:
           key: cache-{{ .Branch }}-{{ checksum "package.json" }}
           paths:
