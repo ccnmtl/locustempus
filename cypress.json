@@ -4,8 +4,8 @@
         "*google-analytics.com",
         "*doubleclick.net"
     ],
-    "defaultCommandTimeout": 60000,
-    "pageLoadTimeout": 180000,
+    "defaultCommandTimeout": 30000,
+    "pageLoadTimeout": 60000,
     "video": false,
     "waitForAnimations": false
 }

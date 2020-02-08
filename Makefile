@@ -15,7 +15,7 @@ mypy: $(PY_SENTINAL)
 	$(MYPY)
 
 integrationserver: check
-	$(MANAGE) integrationserver $(INTERFACE):$(RUNSERVER_PORT) --noinput
+	$(MANAGE) integrationserver --addrport $(INTERFACE):$(RUNSERVER_PORT) --noinput
 
 webpack: $(JS_SENTINAL)
 	npm run dev

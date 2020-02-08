@@ -27,10 +27,6 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
-            'args', metavar='fixture', nargs='*',
-            help='Path(s) to fixtures to load before running the server.',
-        )
-        parser.add_argument(
             '--noinput', '--no-input', action='store_false',
             dest='interactive',
             help='Tells Django to NOT prompt the user for input of any kind.',
@@ -75,22 +71,22 @@ class Command(BaseCommand):
         course.group.user_set.add(faculty)
         course.faculty_group.user_set.add(faculty)
 
-        # Run the development server. Turn off auto-reloading because it causes
-        # a strange error -- it causes this handle() method to be called
-        # multiple times.
         shutdown_message = (
             '\nServer stopped.\nNote that the test database, %r, has not been '
             'deleted. You can explore it on your own.' % db_name
         )
-        use_threading = connection.features.test_db_allows_multiple_connections
 
-        # Because we defer to 'runserver' there's no easy way to clean up the
+        # - Because we defer to 'runserver' there's no easy way to clean up the
         # test database. Therefore, we always autoclobber it
+        # - Turn off auto-reloading because it causes this handle() method
+        # to be called multiple times.
+        # - Always use_threading, requests from the integration server need
+        # to be handled concurrently
         call_command(
             'runserver',
             addrport=options['addrport'],
             shutdown_message=shutdown_message,
             use_reloader=False,
             use_ipv6=options['use_ipv6'],
-            use_threading=use_threading
+            use_threading=True
         )
