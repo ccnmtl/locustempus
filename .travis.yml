@@ -13,4 +13,4 @@ python:
   - "3.7"
   - "3.8"
 script:
-  - DEBUG=cypress:* make all
+  - make all

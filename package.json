@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "webpack -d --watch",
     "build": "webpack",
-    "cypress:run": "cypress run -b chrome --headless",
+    "cypress:run": "cypress run",
     "cypress:open": "cypress open",
     "cypress:test": "start-server-and-test 'make integrationserver' http-get://localhost:8000 cypress:run",
     "integrationserver:webpack": "start-server-and-test 'make integrationserver' http-get://localhost:8000 dev",
