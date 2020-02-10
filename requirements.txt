@@ -99,7 +99,7 @@ django-taggit==1.1.0
 
 django-cacheds3storage==0.2.1
 
-nameparser==1.0.5
+nameparser==1.0.6
 oauth2==1.9.0.post1
 oauthlib==3.1.0
 httplib2==0.17.0
