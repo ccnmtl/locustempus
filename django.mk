@@ -1,6 +1,9 @@
-# VERSION=1.7.0
+# VERSION=1.8.0
 
 # CHANGES:
+# 1.9.0              - Use coverage tool directly to generate coverage
+#                      reports.
+# 1.8.0 - 2019-10-21 - Don't run flake8 on local_settings.py
 # 1.7.0 - 2018-05-31 - Now using python 3 by default
 #                    - Removed virtualenv.py in favor of python 3's
 #                      builtin venv capability.
@@ -31,16 +34,14 @@ ifeq ($(TRAVIS),true)
 	FLAKE8 ?= flake8
 	PIP ?= pip
 	COVERAGE ?= coverage
-	MYPY ?= mypy
 else
 	BANDIT ?= $(VE)/bin/bandit
 	FLAKE8 ?= $(VE)/bin/flake8
 	PIP ?= $(VE)/bin/pip
 	COVERAGE ?= $(VE)/bin/coverage
-	MYPY ?= $(VE)/bin/mypy
 endif
 
-jenkins: check flake8 mypy test eslint bandit
+jenkins: check flake8 test eslint bandit
 
 $(PY_SENTINAL): $(REQUIREMENTS)
 	rm -rf $(VE)
@@ -52,7 +53,7 @@ $(PY_SENTINAL): $(REQUIREMENTS)
 	touch $@
 
 test: $(PY_SENTINAL)
-	$(COVERAGE) run --source='.' --omit=$(VE)/* $(MANAGE) test $(APP)
+	$(COVERAGE) run --source='.' --omit=$(VE)/* $(MANAGE) test $(APP) --noinput
 	$(COVERAGE) xml -o reports/coverage.xml
 
 parallel-tests: $(PY_SENTINAL)
@@ -63,9 +64,6 @@ bandit: $(PY_SENTINAL)
 
 flake8: $(PY_SENTINAL)
 	$(FLAKE8) $(PY_DIRS) --max-complexity=$(MAX_COMPLEXITY) --exclude=*/local_settings.py,*/migrations/*.py --extend-ignore=$(FLAKE8_IGNORE)
-
-mypy: $(PY_SENTINAL)
-	$(MYPY)
 
 runserver: check
 	$(MANAGE) runserver $(INTERFACE):$(RUNSERVER_PORT)
@@ -86,7 +84,6 @@ clean:
 	rm -f celerybeat-schedule
 	rm -f .coverage
 	rm -rf node_modules
-	rm -rf media/build
 	find . -name '*.pyc' -exec rm {} \;
 
 pull:
@@ -111,4 +108,4 @@ install: jenkins
 	createdb $(APP)
 	make migrate
 
-.PHONY: jenkins test flake8 runserver migrate check shell clean pull rebase install mypy
+.PHONY: jenkins test flake8 runserver migrate check shell clean pull rebase install

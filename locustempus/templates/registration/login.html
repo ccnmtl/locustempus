@@ -27,7 +27,7 @@
         <p>If you have a guest account</p>
         <form class="text-center" name="login_local" method="post" action=".">
             {% csrf_token %}
-            <div class="login-local-form" {% if not form.errors %}style="display: none"{% endif %}>
+            <div id="login-local-form__field-wrapper" class="login-local-form" {% if not form.errors %}style="display: none"{% endif %}>
                 <div class="form-group">
                     <label for="id_username">Username</label>
                     <input id="id_username" maxlength="254"
@@ -40,9 +40,8 @@
                     <input id="id_password" name="password" type="password" class="form-control">
                 </div>
             </div>
-            <input id="guest-login" class="btn btn-primary" type="button" value="Guest Log In" {% if form.errors %}style="display: none"{% endif %}
-                onclick="jQuery('.login-local-form').show(); jQuery(this).hide(); return false;"/>
-            <input class="btn btn-primary login-local-form" type="submit" value="Log In" {% if not form.errors %}style="display: none;"{% endif %} />                        
+            <input id="guest-login" class="btn btn-primary" type="button" value="Guest Log In" {% if form.errors %}style="display: none"{% endif %}/>
+            <input id="login-local-form__submit" class="btn btn-primary login-local-form" type="submit" value="Log In" {% if not form.errors %}style="display: none;"{% endif %} />                        
             <input type="hidden" name="next" value="{{ next|urlencode }}" />
             <p class="small pt-2"><a href="/accounts/password_reset/">Forgot Password?</a></p>
         </form>

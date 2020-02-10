@@ -1,5 +1,6 @@
 # Django settings for locustempus project.
 import os.path
+import sys
 from ccnmtlsettings.shared import common
 
 project = 'locustempus'
@@ -48,3 +49,21 @@ LTI_TOOL_CONFIGURATION = {
     'frame_width': 1024,
     'frame_height': 1024
 }
+
+# Needed to get Cypress to run
+if 'integrationserver' in sys.argv:
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': ':memory:',
+            'HOST': '',
+            'PORT': '',
+            'USER': '',
+            'PASSWORD': '',
+            'ATOMIC_REQUESTS': True,
+        }
+    }
+
+    PASSWORD_HASHERS = (
+        'django.contrib.auth.hashers.MD5PasswordHasher',
+    )
