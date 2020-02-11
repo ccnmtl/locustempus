@@ -2,6 +2,7 @@
 import os.path
 import sys
 from ccnmtlsettings.shared import common
+from courseaffils.columbia import CourseStringMapper
 
 project = 'locustempus'
 base = os.path.dirname(__file__)
@@ -49,6 +50,8 @@ LTI_TOOL_CONFIGURATION = {
     'frame_width': 1024,
     'frame_height': 1024
 }
+
+COURSEAFFILS_COURSESTRING_MAPPER = CourseStringMapper
 
 # Needed to get Cypress to run
 if 'integrationserver' in sys.argv:
