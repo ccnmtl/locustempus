@@ -17,7 +17,7 @@ tornado==6.0.3
 beautifulsoup4==4.8.2
 cssselect==1.1.0
 lxml==4.5.0
-fuzzywuzzy==0.17.0
+fuzzywuzzy==0.18.0
 sure==1.4.11
 traitlets==4.3.3  # ipython
 ipython_genutils==0.2.0  # ipython
