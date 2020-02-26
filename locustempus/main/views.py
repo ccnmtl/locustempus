@@ -16,7 +16,7 @@ from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import (
-    CreateView, UpdateView, DeleteView, FormView
+    CreateView, UpdateView, DeleteView
 )
 from django.views.generic.list import ListView
 from lti_provider.models import LTICourseContext
@@ -29,7 +29,6 @@ from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin, LoggedInSuperuserMixin
 )
 from locustempus.utils import user_display_name
-from typing import List
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
