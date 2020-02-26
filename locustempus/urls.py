@@ -49,7 +49,10 @@ urlpatterns = [
         name='course-roster-demote-view'),
     url(r'^course/(?P<pk>\d+)/roster/remove/$',
         views.CourseRosterRemoveView.as_view(),
-        name='course-roster-remove-view')
+        name='course-roster-remove-view'),
+    url(r'^course/(?P<pk>\d+)/roster/invite/$',
+        views.CourseRosterInviteUser.as_view(),
+        name='course-roster-invite-user')
 
 ]
 

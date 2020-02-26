@@ -9,21 +9,27 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.auth.models import User, Group
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
 from django.views.generic.base import TemplateView, View
 from django.views.generic.detail import DetailView
-from django.views.generic.edit import CreateView, UpdateView, DeleteView
+from django.views.generic.edit import (
+    CreateView, UpdateView, DeleteView, FormView
+)
 from django.views.generic.list import ListView
 from lti_provider.models import LTICourseContext
 
+from locustempus.main.forms import (
+    InviteUNIFormset
+)
 from locustempus.main.utils import send_template_email
 from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin, LoggedInSuperuserMixin
 )
 from locustempus.utils import user_display_name
+from typing import List
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -156,6 +162,70 @@ class CourseRosterRemoveView(LoggedInFacultyMixin, View):
         messages.add_message(request, messages.INFO, msg)
         return HttpResponseRedirect(
             reverse('course-roster-view', args=[course.pk]))
+
+
+class CourseRosterInviteUser(LoggedInFacultyMixin, View):
+    """Invites a new user to the course by UNI"""
+    http_method_names = ['get', 'post']
+    template_name = 'main/course_roster_invite.html'
+    email_template = 'main/email/new_user.txt'
+    uni_formset = InviteUNIFormset
+
+    @staticmethod
+    def get_or_create_user(uni: str) -> User:
+        try:
+            user = User.objects.get(username=uni)
+        except User.DoesNotExist:
+            user = User(username=uni)
+            user.set_unusable_password()
+            user.save()
+        return user
+
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        course = get_object_or_404(Course, pk=kwargs.get('pk'))
+        return render(request, self.template_name, {
+            'course': course,
+            'uni_formset': self.uni_formset(prefix='uni'),
+        })
+
+    def post(self, request, *args, **kwargs) -> HttpResponse:
+        course = get_object_or_404(Course, pk=kwargs.get('pk'))
+        uni_formset = self.uni_formset(
+            request.POST, request.FILES, prefix='uni')
+
+        if uni_formset.is_valid():
+            unis = [el['invitee'] for el in uni_formset.cleaned_data if el]
+
+            for uni in unis:
+                user = self.get_or_create_user(uni)
+                display_name = user_display_name(user)
+                if course.is_true_member(user):
+                    msg = '{} ({}) is already a course member'.format(
+                        display_name, uni)
+                    messages.add_message(request, messages.WARNING, msg)
+                else:
+                    email = '{}@columbia.edu'.format(uni)
+                    course.group.user_set.add(user)
+                    subj = 'Locus Tempus Invite: {}'.format(course.title)
+                    send_template_email(
+                        subj,
+                        self.email_template,
+                        {'course_title': course.title},
+                        email
+                    )
+                    msg = (
+                        '{} is now a course member. An email was sent to '
+                        '{} notifying the user.').format(display_name, email)
+
+                    messages.add_message(request, messages.SUCCESS, msg)
+
+            return HttpResponseRedirect(
+                reverse('course-roster-view', args=[course.pk]))
+        else:
+            return render(request, self.template_name, {
+                'course': course,
+                'uni_formset': uni_formset,
+            })
 
 
 @method_decorator(xframe_options_exempt, name='dispatch')

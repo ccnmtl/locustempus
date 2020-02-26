@@ -58,12 +58,14 @@ class Command(BaseCommand):
         )
         course: Course = CourseFactory.create()
         student: User = UserFactory.create(
+            username='student',
             first_name='Student',
             last_name='One',
             email='studentone@example.com'
         )
         course.group.user_set.add(student)
         faculty: User = UserFactory.create(
+            username='faculty',
             first_name='Faculty',
             last_name='One',
             email='facultyone@example.com'

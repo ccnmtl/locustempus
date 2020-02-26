@@ -22,6 +22,7 @@ INSTALLED_APPS += [  # noqa
     'courseaffils',
     'lti_provider',
     'locustempus.main',
+    'widget_tweaks',
 ]
 
 

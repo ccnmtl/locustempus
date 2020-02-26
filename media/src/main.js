@@ -2,6 +2,7 @@ window.jQuery = window.$ = require('jquery');
 require('tablesorter');
 
 import './scss/main.scss';
+import './js/course-roster-invite.js';
 
 // Table sorter
 $('.course-roster__table').tablesorter({

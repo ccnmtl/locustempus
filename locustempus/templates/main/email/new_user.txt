@@ -1,0 +1,9 @@
+Hello,
+
+An instructor has added you to the Locus Tempus course: {{course_title}}.
+
+You can login to Locus Tempus at https://locustempus.ctl.columbia.edu with your Columbia University Network ID (UNI).
+
+Thanks,
+The Locus Tempus Team
+
