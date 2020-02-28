@@ -220,11 +220,11 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
 
             return HttpResponseRedirect(
                 reverse('course-roster-view', args=[course.pk]))
-        else:
-            return render(request, self.template_name, {
-                'course': course,
-                'uni_formset': uni_formset,
-            })
+
+        return render(request, self.template_name, {
+            'course': course,
+            'uni_formset': uni_formset,
+        })
 
 
 @method_decorator(xframe_options_exempt, name='dispatch')
