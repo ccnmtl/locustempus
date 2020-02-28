@@ -1,6 +1,10 @@
 {% extends 'base.html' %}
 {% load is_course_faculty %}
 
+{% block title %}
+{{ object.title }}: Invite Users
+{% endblock %}
+
 {% block content %}
 <div class="row">
     <div class="col-12">
