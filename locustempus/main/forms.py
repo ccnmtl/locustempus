@@ -10,7 +10,7 @@ class CourseRosterInviteUNIForm(forms.Form):
         validators=[
             RegexValidator(
                 regex=r'^[a-z]{1,3}\d+$',
-                message='This is not a valid UNI'
+                message='This is not a valid UNI.'
             )
         ]
     )
@@ -31,5 +31,6 @@ class CourseRosterInviteEmailForm(forms.Form):
                 raise forms.ValidationError(msg)
 
 
-InviteUNIFormset = formset_factory(CourseRosterInviteUNIForm, extra=1)
+InviteUNIFormset = formset_factory(
+    CourseRosterInviteUNIForm, min_num=1, validate_min=True, extra=0)
 InviteEmailFormset = formset_factory(CourseRosterInviteEmailForm, extra=1)

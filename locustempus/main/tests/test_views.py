@@ -702,7 +702,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         )
         self.assertEqual(response.status_code, 200)
         self.assertInHTML(
-            'This is not a valid UNI', response.content.decode('utf-8'))
+            'This is not a valid UNI.', response.content.decode('utf-8'))
 
     def test_post_no_uni(self):
         self.assertTrue(
@@ -712,7 +712,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         self.assertEqual(2, len(self.course.members))
-        self.client.post(
+        response = self.client.post(
             "/course/{}/roster/invite/".format(self.course.pk),
             {
                 'uni-TOTAL_FORMS': '1',
@@ -720,4 +720,6 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
                 'uni-0-invitee': ''
             }
         )
+        self.assertInHTML(
+            'This field is required.', response.content.decode('utf-8'))
         self.assertEqual(2, len(self.course.members))

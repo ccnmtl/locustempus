@@ -10,12 +10,18 @@ describe('Course Roster Invite', () => {
         cy.url().should('match', /course\/1\/roster\/$/);
         cy.get('[data-cy=class-roster-table]').contains('abc123');
     });
-    it('Submits an invalid UNI', () => {
+    it('Submits an invalid UNI and fails validation', () => {
         cy.visit('/course/1/roster/invite/');
         cy.get('[name=uni-0-invitee]').type('spacelizard');
         cy.get('[data-cy=add-users]').click();
         cy.url().should('match', /course\/1\/roster\/invite\/$/);
         cy.get('[data-cy=uni-invite-form]').contains('This is not a valid UNI');
+    });
+    it('Submits an empty UNI and fails validation', () => {
+        cy.visit('/course/1/roster/invite/');
+        cy.get('[data-cy=add-users]').click();
+        cy.url().should('match', /course\/1\/roster\/invite\/$/);
+        cy.get('[data-cy=uni-invite-form]').contains('This field is required.');
     });
     it('Adds a second UNI field', () => {
         cy.visit('/course/1/roster/invite/');
