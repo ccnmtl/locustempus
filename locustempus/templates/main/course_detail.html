@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}
+Course Detail {{ object.title }}
+{% endblock %}
+
 {% block content %}
 <h1>Course Detail {{ object.title }}</h1>
 {{ object.group }}

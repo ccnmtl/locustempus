@@ -628,3 +628,98 @@ class LTICourseCreateTest(TestCase):
             LTICourseContext.objects.get(
                 lms_course_context='1234',
                 group=c.group, faculty_group=c.faculty_group)
+
+
+class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
+    def setUp(self):
+        self.setup_course()
+
+    def test_get_course_invite_page(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.get(
+            "/course/{}/roster/invite/".format(self.course.pk))
+        self.assertEqual(response.status_code, 200)
+
+    def test_get_course_invite_page_student(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.get(
+            "/course/{}/roster/invite/".format(self.course.pk))
+        self.assertEqual(response.status_code, 403)
+
+    def test_get_course_invite_page_anon(self):
+        response = self.client.get(
+            "/course/{}/roster/invite/".format(self.course.pk))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            "/accounts/login/?next=/course/{}/roster/invite/".format(
+                self.course.pk))
+
+    def test_post_valid_uni(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/invite/".format(self.course.pk),
+            {
+                'uni-TOTAL_FORMS': '1',
+                'uni-INITIAL_FORMS': '0',
+                'uni-0-invitee': 'abc123'
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            "/course/{}/roster/".format(self.course.pk))
+
+    def test_post_invalid_uni(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/invite/".format(self.course.pk),
+            {
+                'uni-TOTAL_FORMS': '1',
+                'uni-INITIAL_FORMS': '0',
+                'uni-0-invitee': 'foobar'
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertInHTML(
+            'This is not a valid UNI.', response.content.decode('utf-8'))
+
+    def test_post_no_uni(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        self.assertEqual(2, len(self.course.members))
+        response = self.client.post(
+            "/course/{}/roster/invite/".format(self.course.pk),
+            {
+                'uni-TOTAL_FORMS': '1',
+                'uni-INITIAL_FORMS': '0',
+                'uni-0-invitee': ''
+            }
+        )
+        self.assertInHTML(
+            'This field is required.', response.content.decode('utf-8'))
+        self.assertEqual(2, len(self.course.members))

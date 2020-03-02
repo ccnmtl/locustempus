@@ -22,6 +22,7 @@ INSTALLED_APPS += [  # noqa
     'courseaffils',
     'lti_provider',
     'locustempus.main',
+    'widget_tweaks',
 ]
 
 
@@ -66,7 +67,9 @@ if 'integrationserver' in sys.argv:
             'ATOMIC_REQUESTS': True,
         }
     }
-
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    SESSION_COOKIE_SECURE = False
+    CSRF_COOKIE_SECURE = False
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )

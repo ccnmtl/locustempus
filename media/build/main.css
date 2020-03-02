@@ -7823,3 +7823,9 @@ a.text-dark:hover, a.text-dark:focus {
 .course-roster__table form {
   display: inline-block; }
 
+.uni-invite-form-group, .invite-add-row {
+  margin-bottom: 1em; }
+
+.uni-invite-input-group {
+  margin-bottom: 1em; }
+
