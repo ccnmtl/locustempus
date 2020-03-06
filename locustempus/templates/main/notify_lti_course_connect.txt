@@ -5,5 +5,3 @@ Username: {{user.username}}
 Email: {{user.email}}
 
 Course Title: {{course.title}} {{course.info.term}} {{course.info.year}}
-
-Canvas Domain: {{domain}}

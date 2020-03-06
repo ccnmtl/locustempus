@@ -29,6 +29,7 @@ from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin, LoggedInSuperuserMixin
 )
 from locustempus.utils import user_display_name
+from typing import Tuple
 
 
 class IndexView(LoginRequiredMixin, TemplateView):
@@ -50,8 +51,7 @@ class CourseCreateView(LoggedInSuperuserMixin, CreateView):
 
         messages.add_message(
             self.request, messages.SUCCESS,
-            '<strong>{}</strong> cohort created.'.format(title),
-            extra_tags='safe'
+            '<strong>{}</strong> cohort created.'.format(title)
         )
 
         return result
@@ -230,10 +230,9 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
 @method_decorator(xframe_options_exempt, name='dispatch')
 class LTICourseCreate(LoginRequiredMixin, View):
 
-    def notify_staff(self, course):
+    def notify_staff(self, course: Course) -> None:
         data = {
             'course': course,
-            'domain': self.request.POST.get('domain'),
             'user': self.request.user
         }
         send_template_email(
@@ -241,80 +240,99 @@ class LTICourseCreate(LoginRequiredMixin, View):
             'main/notify_lti_course_connect.txt',
             data, settings.SERVER_EMAIL)
 
-    def thank_faculty(self, course):
+    def thank_faculty(self, course: Course) -> None:
+        user = self.request.user
         send_template_email(
             'Locus Tempus Course Connected',
             'main/lti_course_connect.txt',
-            {'course': course}, self.request.user.email)
+            {'course': course},
+            user.email if user.email else user.username + '@columbia.edu')
 
-    def groups_from_context(self, course_context):
+    def groups_from_context(self, course_context) -> Tuple[Group, Group]:
         group, created = Group.objects.get_or_create(name=course_context)
         faculty_group, created = Group.objects.get_or_create(
             name='{}_faculty'.format(course_context))
         return (group, faculty_group)
 
-    def groups_from_sis_course_id(self, attrs):
+    def groups_from_sis_course_id(self, attrs) -> Tuple[Group, Group]:
+        user = self.request.user
         st_affil = WindTemplate.to_string(attrs)
         group, created = Group.objects.get_or_create(name=st_affil)
-        self.request.user.groups.add(group)
+        user.groups.add(group)
 
         attrs['member'] = 'fc'
         fc_affil = WindTemplate.to_string(attrs)
         faculty_group, created = Group.objects.get_or_create(name=fc_affil)
-        self.request.user.groups.add(faculty_group)
+        user.groups.add(faculty_group)
         return (group, faculty_group)
 
-    def get_year_and_term_from_sis_course_id(self, sis_course_id):
-        m = re.match(
+    def add_yt_to_course(self, sis_course_id: str, course: Course) -> None:
+        """
+        Sets the year and term attributes on a course if
+        they can be deteremend from a sis_course_id
+        """
+
+        # CanvasTemplate matches a CU course string
+        cu_course = CanvasTemplate.to_dict(sis_course_id)
+        # TC courses use a different format
+        tc_course = re.match(
             (r'(?P<year>\d{4})(?P<term>\d{2})'), sis_course_id)
-        if m:
-            return m.groupdict()
+
+        if cu_course:
+            course.info.term = cu_course['term']
+            course.info.year = cu_course['year']
+            course.info.save()
+        elif tc_course:
+            course.info.term = tc_course['term']
+            course.info.year = tc_course['year']
+            course.info.save()
 
     def post(self, *args, **kwargs):
+        user = self.request.user
         course_context = self.request.POST.get('lms_course')
         title = self.request.POST.get('lms_course_title')
+        sis_course_id = self.request.POST['sis_course_id'] \
+            if self.request.POST['sis_course_id'] != 'None' else None
 
-        sis_course_id = self.request.POST.get('sis_course_id', '')
-        d = CanvasTemplate.to_dict(sis_course_id)
+        # This view needs to take four steps to create a course
+        # 1. Create groups for students and faculty, named after the course
+        # 2. Create the course
+        # 3. Set the year and term, if applicable
+        # 4. Create the course context
 
-        if d:
-            (group, faculty_group) = self.groups_from_sis_course_id(d)
+        # 1. Create groups
+        cu_course = CanvasTemplate.to_dict(sis_course_id)
+        if cu_course:
+            (group, faculty_group) = self.groups_from_sis_course_id(cu_course)
         else:
             (group, faculty_group) = self.groups_from_context(course_context)
-            yt = self.get_year_and_term_from_sis_course_id(sis_course_id)
 
-        self.request.user.groups.add(group)
-        self.request.user.groups.add(faculty_group)
+        user.groups.add(group)
+        user.groups.add(faculty_group)
 
+        # 2. Create the course
         course, created = Course.objects.get_or_create(
             group=group, faculty_group=faculty_group,
             defaults={'title': title})
 
-        if d:
-            # Add CourseInfo from the fields
-            course.info.term = d['term']
-            course.info.year = d['year']
-            course.info.save()
-        elif yt:
-            course.info.term = yt['term']
-            course.info.year = yt['year']
-            course.info.save()
+        # 3. Set the term and year of the course
+        if sis_course_id:
+            self.add_yt_to_course(sis_course_id, course)
 
-        # hook up the context
+        # 4. Create the course context
         (ctx, created) = LTICourseContext.objects.get_or_create(
             group=group, faculty_group=faculty_group,
             lms_course_context=course_context)
 
         messages.add_message(
             self.request, messages.INFO,
-            u'<strong>Success!</strong> ' +
-            u'{} is connected to Locus Tempus.'.format(title))
+            '<strong>Success!</strong> ' +
+            '{} is connected to Locus Tempus.'.format(title))
 
         self.notify_staff(course)
         self.thank_faculty(course)
 
-        url = reverse('lti-landing-page')
-        return HttpResponseRedirect(url)
+        return HttpResponseRedirect(reverse('lti-landing-page'))
 
 
 class LTICourseSelector(LoginRequiredMixin, View):
