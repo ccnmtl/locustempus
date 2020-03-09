@@ -269,7 +269,7 @@ class LTICourseCreate(LoginRequiredMixin, View):
     def add_yt_to_course(self, sis_course_id: str, course: Course) -> None:
         """
         Sets the year and term attributes on a course if
-        they can be deteremend from a sis_course_id
+        they can be determined from a sis_course_id
         """
 
         # CanvasTemplate matches a CU course string
