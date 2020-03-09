@@ -137,27 +137,27 @@
                     {% for message in messages %}
                         {% if message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}
                             <div class="alert alert-secondary">
-                                {{ message }}
+                                {{ message|safe }}
                             </div>
                         {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
                             <div class="alert alert-primary">
-                                {{ message }}
+                                {{ message|safe }}
                             </div>
                         {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
                             <div class="alert alert-success">
-                                {{ message }}
+                                {{ message|safe }}
                             </div>
                         {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
                             <div class="alert alert-warning">
-                                {{ message }}
+                                {{ message|safe }}
                             </div>
                         {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
                             <div class="alert alert-danger">
-                                {{ message }}
+                                {{ message|safe }}
                             </div>
                         {% else %} {# for any other message type passed in #}
                             <div class="alert alert-dark">
-                                {{ message }}
+                                {{ message|safe }}
                             </div>
                         {% endif %}
                     {% endfor %}
@@ -171,6 +171,7 @@
 
 </main>
 
+{% block footer %}
 <footer class="bg-light text-dark pt-2 pb-5">
     <ul class="nav d-flex justify-content-center">
         <li class="nav-item">
@@ -187,6 +188,7 @@
     <span itemscope itemtype="http://schema.org/EducationalOrganization"><a href="http://ctl.columbia.edu" target="_blank" itemprop="url"><img src="{{STATIC_URL}}img/logo-ctl-color.png" class="mx-auto d-block img-fluid mt-3" alt="" itemprop="logo" width="290" /><span class="sr-only" itemprop="name">Center for Teaching and Learning at Columbia University</span></a></span>
 
 </footer>
+{% endblock %}
 
 <script src="{{STATIC_URL}}build/bundle.js"></script>
 
