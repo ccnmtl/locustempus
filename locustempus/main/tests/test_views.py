@@ -723,3 +723,51 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         self.assertInHTML(
             'This field is required.', response.content.decode('utf-8'))
         self.assertEqual(2, len(self.course.members))
+
+
+class DashboardTest(CourseTestMixin, TestCase):
+    def setUp(self):
+        self.setup_course()
+
+    def test_no_course(self):
+        student = UserFactory.create(
+            first_name='Student',
+            last_name='Two',
+            username='student-two',
+            email='studenttwo@example.com'
+        )
+        self.assertTrue(
+            self.client.login(
+                username=student.username,
+                password='test'
+            )
+        )
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertIsNone(response.context['courses'])
+
+    def test_one_course(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            "/course/{}/".format(self.course.pk))
+
+    def test_multiple_courses(self):
+        course = CourseFactory.create()
+        course.group.user_set.add(self.student)
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.get("/")
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(len(response.context['courses']), 2)
