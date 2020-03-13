@@ -2,6 +2,7 @@ import re
 
 from courseaffils.columbia import WindTemplate, CanvasTemplate
 from courseaffils.models import Course
+from courseaffils.views import get_courses_for_user
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import (
@@ -13,7 +14,7 @@ from django.shortcuts import get_object_or_404, render
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
-from django.views.generic.base import TemplateView, View
+from django.views.generic.base import View
 from django.views.generic.detail import DetailView
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView
@@ -32,8 +33,34 @@ from locustempus.utils import user_display_name
 from typing import Tuple
 
 
-class IndexView(LoginRequiredMixin, TemplateView):
+class IndexView(LoginRequiredMixin, View):
     template_name = 'main/index.html'
+    http_method_names = ['get']
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        # If user has only one course, redirect to course, else render a list
+        # of courses
+        courses = get_courses_for_user(self.request.user)
+        n = courses.count()
+
+        if n == 0:
+            # Render a view with no courses
+            ctx = {
+                'user': request.user,
+                'courses': None
+            }
+            return render(request, self.template_name, ctx)
+        elif n == 1:
+            # Redirect to the course
+            course = courses.first()
+            return HttpResponseRedirect(
+                reverse('course-detail-view', kwargs={'pk': course.pk}))
+        else:
+            # Render a list of courses
+            return render(request, self.template_name, {
+                'user': request.user,
+                'courses': courses,
+            })
 
 
 class CourseCreateView(LoggedInSuperuserMixin, CreateView):

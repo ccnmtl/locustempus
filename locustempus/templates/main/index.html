@@ -1,6 +1,56 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Course Listing Page</h1>
-<p>List out all the courses.</p>
+<div class="row">
+    <div class="col-12">
+        <h1>Dashboard</h1>
+    </div>
+</div>
+{% if courses %}
+<div class="row">
+    <div class="col-12">
+        <table class="table table-hover tablesorter">
+            <thead>
+                <tr>
+                    <th scope="col">Course</th>
+                    <th scope="col">Term</th>
+                    <th scope="col">Instructors</th>
+                    <th scope="col">Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in courses %}
+                <tr>
+                    <td>
+                        <a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a>
+                    </td>
+                    <td>
+                        {% if course.info.termyear %}{{ course.info.termyear }}{% else %}N/A{% endif %}
+                    </td>
+                    <td>
+                        {% for faculty in course.faculty %}
+                        {% if faculty.first_name %}
+                            {{ faculty.first_name }} {{ faculty.last_name }}
+                        {% else %}
+                            {{ faculty.username }}
+                        {% endif %}
+                        {% if not forloop.last%}, {% endif %}
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if user in course.faculty %}
+                        Faculty
+                        {% else %}
+                        Student
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+You are currently not a member of a Locus Tempus course.
+{% endif %}
 {% endblock %}
