@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Project Detail {{ project.title }}
+{% endblock %}
+
+{% block content %}
+<h1>Project Detail {{ project.title }}</h1>
+<h2>Description</h2>
+{{ project.description }}
+<h2>Base Map</h2>
+<p>
+{{ project.base_map}}
+</p>
+<a class="btn btn-primary" href="{% url 'course-project-edit' course.pk project.pk %}">Edit</a>
+<a class="btn btn-danger" href="{% url 'course-project-delete' course.pk project.pk %}">Delete</a>
+{% endblock %}

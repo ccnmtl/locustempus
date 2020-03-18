@@ -52,8 +52,22 @@ urlpatterns = [
         name='course-roster-remove-view'),
     url(r'^course/(?P<pk>\d+)/roster/invite/$',
         views.CourseRosterInviteUser.as_view(),
-        name='course-roster-invite-user')
-
+        name='course-roster-invite-user'),
+    url(r'^course/(?P<pk>\d+)/project/$',
+        views.ProjectListView.as_view(),
+        name='course-project-list'),
+    url(r'^course/(?P<pk>\d+)/project/create/$',
+        views.ProjectCreateView.as_view(),
+        name='course-project-create'),
+    url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/$',
+        views.ProjectView.as_view(),
+        name='course-project-detail'),
+    url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/edit/$',
+        views.ProjectUpdateView.as_view(),
+        name='course-project-edit'),
+    url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/delete/$',
+        views.ProjectDeleteView.as_view(),
+        name='course-project-delete'),
 ]
 
 
