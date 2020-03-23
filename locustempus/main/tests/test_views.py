@@ -9,8 +9,10 @@ from lti_provider.models import LTICourseContext
 from lti_provider.tests.factories import LTICourseContextFactory
 
 
+from locustempus.main.models import Project
 from locustempus.main.tests.factories import (
-    CourseFactory, CourseTestMixin, UserFactory)
+    CourseFactory, CourseTestMixin, ProjectFactory, UserFactory
+)
 
 
 class BasicTest(TestCase):
@@ -771,3 +773,188 @@ class DashboardTest(CourseTestMixin, TestCase):
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(len(response.context['courses']), 2)
+
+
+class ProjectTest(CourseTestMixin, TestCase):
+    def setUp(self):
+        self.setup_course()
+
+    def test_create_project_faculty(self):
+        """Test that faculty can create projects"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/project/create/".format(self.course.pk),
+            {
+                'title': 'A Test Project',
+                'description': 'A fine description',
+                'base_map': 'dark-v10'
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            "/course/{}/project/".format(self.course.pk))
+
+    def test_create_project_student(self):
+        """Test that students can't create projects"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.get(
+            "/course/{}/project/create/".format(self.course.pk)
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_update_project_faculty(self):
+        """Test that faculty can update projects"""
+        project = ProjectFactory.create(course=self.course)
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/project/{}/edit/".format(self.course.pk, project.pk),
+            {
+                'title': 'A Test Project',
+                'description': 'A fine description',
+                'base_map': 'dark-v10'
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            "/course/{}/project/{}/".format(self.course.pk, project.pk))
+
+    def test_update_project_students(self):
+        """Test that students can not update projects"""
+        project = ProjectFactory.create(course=self.course)
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/project/{}/edit/".format(self.course.pk, project.pk),
+            {
+                'title': 'A Test Project',
+                'description': 'A fine description',
+                'base_map': 'dark-v10'
+            }
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_delete_project_faculty(self):
+        """Test that faculty can delete projects"""
+        project = ProjectFactory.create(course=self.course)
+        project_pk = project.pk
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/project/{}/delete/".format(self.course.pk, project.pk)
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            "/course/{}/project/".format(self.course.pk))
+        r2 = self.client.get(
+            "/course/{}/project/{}/".format(self.course.pk, project_pk))
+        self.assertEqual(r2.status_code, 404)
+
+    def test_delete_project_students(self):
+        """Test that students can not delete projects"""
+        project = ProjectFactory.create(course=self.course)
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/project/{}/delete/".format(self.course.pk, project.pk)
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_list_project_faculty(self):
+        """Test that students and faculty can list projects"""
+        p1 = ProjectFactory.create(course=self.course)
+        p2 = ProjectFactory.create(course=self.course)
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.get(
+            "/course/{}/project/".format(self.course.pk))
+        self.assertIn(p1, response.context['projects'])
+        self.assertIn(p2, response.context['projects'])
+        self.assertContains(response, 'Create New Project')
+
+    def test_list_project_students(self):
+        """Test that students and faculty can list projects"""
+        p1 = ProjectFactory(course=self.course)
+        p2 = ProjectFactory(course=self.course)
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.get(
+            "/course/{}/project/".format(self.course.pk))
+        self.assertIn(p1, response.context['projects'])
+        self.assertIn(p2, response.context['projects'])
+        self.assertNotContains(response, 'Create New Project')
+
+    def test_detail_project_faculty(self):
+        """Test that faculty can view a project"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/project/create/".format(self.course.pk),
+            {
+                'title': 'A Test Project',
+                'description': 'A fine description',
+                'base_map': 'dark-v10'
+            }
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            "/course/{}/project/".format(self.course.pk))
+        project = Project.objects.first()
+        r2 = self.client.get(
+            "/course/{}/project/{}/".format(self.course.pk, project.pk))
+        self.assertEqual(r2.status_code, 200)
+
+    def test_detail_project_students(self):
+        """Test that students can view a project"""
+        project = ProjectFactory.create(course=self.course)
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.get(
+            "/course/{}/project/{}/".format(self.course.pk, project.pk))
+        self.assertEqual(response.status_code, 200)

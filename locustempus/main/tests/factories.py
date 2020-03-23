@@ -2,6 +2,8 @@ from courseaffils.models import Course
 from django.contrib.auth.models import User, Group
 import factory
 
+from locustempus.main.models import Project
+
 
 class UserFactory(factory.DjangoModelFactory):
     class Meta:
@@ -47,3 +49,12 @@ class CourseTestMixin(object):
         )
         self.course.group.user_set.add(self.faculty)
         self.course.faculty_group.user_set.add(self.faculty)
+
+
+class ProjectFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Project
+    title = factory.Sequence('Project {}'.format)
+    description = factory.Sequence('A test description {}'.format)
+    course = factory.SubFactory(CourseFactory)
+    base_map = 'dark-v10'

@@ -25,12 +25,15 @@ from lti_provider.models import LTICourseContext
 from locustempus.main.forms import (
     InviteUNIFormset
 )
+from locustempus.main.models import Project
 from locustempus.main.utils import send_template_email
 from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin, LoggedInSuperuserMixin
 )
 from locustempus.utils import user_display_name
-from typing import Tuple
+from typing import (
+    Any, Tuple
+)
 
 
 class IndexView(LoginRequiredMixin, View):
@@ -377,3 +380,89 @@ class LTICourseSelector(LoginRequiredMixin, View):
             url = '/'
 
         return HttpResponseRedirect(url)
+
+
+class ProjectListView(LoggedInCourseMixin, View):
+    http_method_names = ['get']
+    template_name = 'main/course_project_list.html'
+
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        course = get_object_or_404(Course, pk=kwargs.get('pk', None))
+        projects = Project.objects.filter(course=course.pk)
+        ctx = {
+            'course': course,
+            'projects': projects,
+            'is_faculty': course.is_faculty(request.user)
+        }
+        return render(request, self.template_name, ctx)
+
+
+class ProjectView(LoggedInCourseMixin, View):
+    http_method_names = ['get']
+    template_name = 'main/course_project.html'
+
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        course = get_object_or_404(Course, pk=kwargs.get('pk', None))
+        project: Any = get_object_or_404(
+            Project.objects.filter(course=course.pk),
+            pk=kwargs.get('project_pk', None))
+        ctx = {
+            'course': course,
+            'project': project
+        }
+        return render(request, self.template_name, ctx)
+
+
+class ProjectCreateView(LoggedInFacultyMixin, CreateView):
+    model = Project
+    fields = ['title', 'description', 'base_map']
+    template_name = 'main/course_project_create.html'
+
+    def get_success_url(self):
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            '<strong>{}</strong> has been created.'.format(self.object.title)
+        )
+        return reverse(
+            'course-project-list',
+            kwargs={'pk': self.kwargs.get('pk')})
+
+    def form_valid(self, form):
+        course = get_object_or_404(
+            Course, pk=self.kwargs.get('pk'))
+        form.instance.course = course
+        return super().form_valid(form)
+
+
+class ProjectUpdateView(LoggedInFacultyMixin, UpdateView):
+    model = Project
+    fields = ['title', 'description', 'base_map']
+    template_name = 'main/course_project_update.html'
+    pk_url_kwarg = 'project_pk'
+
+    def get_success_url(self):
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            '<strong>{}</strong> has been updated.'.format(self.object.title)
+        )
+        return reverse(
+            'course-project-detail',
+            kwargs={
+                'pk': self.kwargs.get('pk'),
+                'project_pk': self.kwargs.get('project_pk'),
+            })
+
+
+class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
+    model = Project
+    template_name = 'main/course_project_delete.html'
+    pk_url_kwarg = 'project_pk'
+
+    def get_success_url(self):
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            '<strong>{}</strong> has been deleted.'.format(self.object.title)
+        )
+        return reverse(
+            'course-project-list',
+            kwargs={'pk': self.kwargs.get('pk')})
