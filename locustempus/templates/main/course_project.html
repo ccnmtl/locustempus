@@ -15,3 +15,7 @@ Project Detail {{ project.title }}
 <a class="btn btn-primary" href="{% url 'course-project-edit' course.pk project.pk %}">Edit</a>
 <a class="btn btn-danger" href="{% url 'course-project-delete' course.pk project.pk %}">Delete</a>
 {% endblock %}
+
+{% block js %}
+<script src="{{STATIC_URL}}build/project.js"></script>
+{% endblock %}
