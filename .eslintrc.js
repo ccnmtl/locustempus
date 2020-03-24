@@ -5,15 +5,13 @@ module.exports = {
         "jquery": true,
         "cypress/globals": true
     },
-    "parserOptions": {
-        "ecmaVersion": 6,
-        "sourceType": "module"
-    },
+    "parser": "@typescript-eslint/parser",
     "plugins": [
         "security",
         "scanjs-rules",
         "no-unsafe-innerhtml",
-        "cypress"
+        "cypress",
+        "@typescript-eslint"
     ],
     "extends": [
         "eslint:recommended",

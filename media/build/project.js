@@ -81,19 +81,20 @@
 /******/
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = "./media/src/project.js");
+/******/ 	return __webpack_require__(__webpack_require__.s = "./media/src/project.ts");
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ "./media/src/project.js":
+/***/ "./media/src/project.ts":
 /*!******************************!*\
-  !*** ./media/src/project.js ***!
+  !*** ./media/src/project.ts ***!
   \******************************/
 /*! no static exports found */
-/***/ (function(module, exports) {
+/***/ (function(module, exports, __webpack_require__) {
 
-eval("console.log('Hello from project.js');//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9tZWRpYS9zcmMvcHJvamVjdC5qcy5qcyIsInNvdXJjZXMiOlsid2VicGFjazovLy8uL21lZGlhL3NyYy9wcm9qZWN0LmpzPzFiZGMiXSwic291cmNlc0NvbnRlbnQiOlsiY29uc29sZS5sb2coJ0hlbGxvIGZyb20gcHJvamVjdC5qcycpO1xuIl0sIm1hcHBpbmdzIjoiQUFBQSIsInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./media/src/project.js\n");
+"use strict";
+eval("\n\nconsole.log('Hello from project.js');//# sourceURL=[module]\n//# sourceMappingURL=data:application/json;charset=utf-8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoiLi9tZWRpYS9zcmMvcHJvamVjdC50cy5qcyIsInNvdXJjZXMiOlsid2VicGFjazovLy8uL21lZGlhL3NyYy9wcm9qZWN0LnRzP2Q2MDYiXSwic291cmNlc0NvbnRlbnQiOlsiXCJ1c2Ugc3RyaWN0XCI7XG5jb25zb2xlLmxvZygnSGVsbG8gZnJvbSBwcm9qZWN0LmpzJyk7XG4iXSwibWFwcGluZ3MiOiJBQUFBO0FBQ0E7QUFBQSIsInNvdXJjZVJvb3QiOiIifQ==\n//# sourceURL=webpack-internal:///./media/src/project.ts\n");
 
 /***/ })
 
