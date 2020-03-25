@@ -6,6 +6,7 @@
   "scripts": {
     "dev": "webpack -d --watch",
     "build": "webpack",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
     "cypress:test": "start-server-and-test 'make integrationserver' http-get://localhost:8000 cypress:run",
@@ -39,12 +40,26 @@
     "webpack-cli": "^3.3.11"
   },
   "dependencies": {
+    "@danmarshall/deckgl-typings": "^3.4.7",
+    "@types/jest": "^25.1.4",
+    "@types/node": "^13.9.3",
+    "@types/react": "^16.9.25",
+    "@types/react-dom": "^16.9.5",
+    "@types/react-map-gl": "^5.2.1",
+    "@typescript-eslint/eslint-plugin": "^2.25.0",
+    "@typescript-eslint/parser": "^2.25.0",
     "bootstrap": "^4.4.1",
+    "deck.gl": "^8.1.0",
+    "install": "^0.13.0",
     "jquery": "^3.4.1",
+    "npm": "^6.14.3",
     "popper.js": "^1.16.1",
     "precss": "^4.0.0",
     "react": "~16.13.1",
     "react-dom": "~16.13.1",
-    "tablesorter": "^2.31.3"
+    "react-map-gl": "^5.2.3",
+    "tablesorter": "^2.31.3",
+    "ts-loader": "^6.2.2",
+    "typescript": "^3.8.3"
   }
 }

@@ -1,7 +1,7 @@
 APP=locustempus
 JS_FILES=media/src media/tests
 
-all: jenkins mypy cypress-test
+all: jenkins mypy js-typecheck cypress-test
 
 include *.mk
 
@@ -20,6 +20,9 @@ integrationserver: check
 webpack: $(JS_SENTINAL)
 	npm run dev
 
+js-typecheck: $(JS_SENTINAL)
+	npm run typecheck
+
 cypress-run: $(JS_SENTINAL)
 	npm run cypress:run
 
@@ -35,4 +38,4 @@ cypress-watch: $(JS_SENTINAL)
 dev:
 	trap 'kill 0' EXIT; make integrationserver & make webpack & make cypress-open
 
-.PHONY: mypy integrationserver webpack cypress-run cypress-open cypress-test cypress-watch dev
+.PHONY: mypy integrationserver webpack cypress-run cypress-open cypress-test cypress-watch dev js-typecheck
