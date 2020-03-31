@@ -13,7 +13,7 @@ At the highest level of abstraction, you need to know that the JavaScript in Loc
 At the next level, the JavaScript in this project uses a framework called React. We're using React for its ability to manage data within the front-end application, and cause changes to the page when that data is updated. React is used only on the pages where there's a large degree of user interaction required. Otherwise, plain JavaScript suffices.
 
 Moving to more detailed level, Locus Tempus uses of several libraries to achieve a richly interactive experience for users. In particular:
-* Mapbox GL: This libraries implements the underlying mapping for Locus Tempus
+* Mapbox GL: This library implements the underlying mapping for Locus Tempus
 * Deck GL: This is a data visualization library. It layers information on top of the map provided by Mapbox. It utilizes the WebGL API to efficiently render annotations and visualizations over the map.
 
 Webpack is a utility that glues all these parts together. It reads in the TypeScript source files and passes it through the TypeScript compiler, which emits vanilla js for browsers. Webpack also manages the compilation of SCSS files to CSS, first by loading them into the JavaScript build, and then by stripping the styles out of the compiled JS an writing them to separate files.
@@ -40,7 +40,7 @@ To that end, you can run each of these in separate shells: `make runserver`, `ma
 For a kitchen sink approach, use `make cypress`. This will bring up `make integrationserver`, `make webpack`, and `make cypress-open` in a single shell. CTR-C will exit all three processes.
 
 ### Port Already Bound Errors
-It's possible that `make dev` and `make cypress` don't clean up its constituent processes on exit. In particular, if you try to start Django's server and you get an error that the port is already bound, use `ps aux | grep runserver` to get the process and kill it manually.
+It's possible that `make dev` and `make cypress` don't clean up their constituent processes on exit. In particular, if you try to start Django's server and you get an error that the port is already bound, use `ps aux | grep runserver` to get the process and kill it manually.
 
 ### Make Target Explanations
 Selected explanations of various make targets
