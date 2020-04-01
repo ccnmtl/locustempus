@@ -33,7 +33,7 @@
                     {{ form.invitee|add_class:"form-control is-invalid" }}
                     <div class="input-group-append">
                         <button class="btn btn-danger uni-invite-form-group__button--delete rounded-right" data-cy="remove-uni">
-                            Delete
+                            Clear 
                         </button>
                     </div>
                     <div class="invalid-feedback">
@@ -45,7 +45,7 @@
                     {{ form.invitee|add_class:"form-control" }}
                     <div class="input-group-append">
                         <button class="btn btn-danger uni-invite-form-group__button--delete rounded-right" data-cy="remove-uni">
-                            Delete
+                            Clear 
                         </button>
                     </div>
                     {% endif %}
@@ -56,17 +56,60 @@
                 <button id="uni-invite-form-add-field" class="btn btn-primary" data-cy="add-uni">Add Another UNI</button>
             </div>
 
+            {# Block for adding users by Email address #}
+            <div id="email-invite-form-group" class="form-group" data-cy="email-invite-form">
+                <h2>Add Users by email</h2>
+                {{ email_formset.management_form }}
+                {% for form in email_formset %}
+                <div class="input-group email-invite-input-group">
+                    {% if form.invitee.errors %}
+                    {{ form.invitee|add_class:"form-control is-invalid" }}
+                    <div class="input-group-append">
+                        <button class="btn btn-danger email-invite-form-group__button--delete rounded-right" data-cy="remove-email">
+                            Clear 
+                        </button>
+                    </div>
+                    <div class="invalid-feedback">
+                        {% for error in form.invitee.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                    {% else %}
+                    {{ form.invitee|add_class:"form-control" }}
+                    <div class="input-group-append">
+                        <button class="btn btn-danger email-invite-form-group__button--delete rounded-right" data-cy="remove-email">
+                            Clear 
+                        </button>
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            <div class="form-row invite-add-row">
+                <button id="email-invite-form-add-field" class="btn btn-primary" data-cy="add-email">Add Another Email</button>
+            </div>
+
             <div class="form-row">
                 <button type="submit" class="btn btn-primary" data-cy="add-users">Add Users To Course</button>
             </div>
         </form>
 
-        {# Skeleton markup for adding empty fields to the formset #}
+        {# Skeleton markup for adding empty fields to the UNI formset #}
         <div style="display:none">
             <div id="uni-invite-form-template" class="input-group uni-invite-input-group">
                 {{ uni_formset.empty_form.invitee|add_class:"form-control" }}
                 <div class="input-group-append">
-                    <button class="btn btn-danger uni-invite-form-group__button--delete rounded-right" data-cy="remove-uni">Delete</button>
+                    <button class="btn btn-danger uni-invite-form-group__button--delete rounded-right" data-cy="remove-uni">Clear</button>
+                </div>
+            </div>
+        </div>
+
+        {# Skeleton markup for adding empty fields to the email formset #}
+        <div style="display:none">
+            <div id="email-invite-form-template" class="input-group email-invite-input-group">
+                {{ email_formset.empty_form.invitee|add_class:"form-control" }}
+                <div class="input-group-append">
+                    <button class="btn btn-danger email-invite-form-group__button--delete rounded-right" data-cy="remove-email">Clear</button>
                 </div>
             </div>
         </div>

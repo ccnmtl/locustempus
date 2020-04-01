@@ -7829,3 +7829,9 @@ a.text-dark:hover, a.text-dark:focus {
 .uni-invite-input-group {
   margin-bottom: 1em; }
 
+.email-invite-form-group, .invite-add-row {
+  margin-bottom: 1em; }
+
+.email-invite-input-group {
+  margin-bottom: 1em; }
+

@@ -23,7 +23,7 @@ from django.views.generic.list import ListView
 from lti_provider.models import LTICourseContext
 
 from locustempus.main.forms import (
-    InviteUNIFormset
+    InviteUNIFormset, InviteEmailFormset
 )
 from locustempus.main.models import Project
 from locustempus.main.utils import send_template_email
@@ -199,6 +199,7 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
     template_name = 'main/course_roster_invite.html'
     email_template = 'main/email/new_user.txt'
     uni_formset = InviteUNIFormset
+    email_formset = InviteEmailFormset
 
     @staticmethod
     def get_or_create_user(uni: str) -> User:
@@ -215,15 +216,20 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
         return render(request, self.template_name, {
             'course': course,
             'uni_formset': self.uni_formset(prefix='uni'),
+            'email_formset': self.email_formset(prefix='email')
         })
 
     def post(self, request, *args, **kwargs) -> HttpResponse:
         course = get_object_or_404(Course, pk=kwargs.get('pk'))
         uni_formset = self.uni_formset(
             request.POST, request.FILES, prefix='uni')
+        email_formset = self.email_formset(
+            request.POST, request.FILES, prefix='email')
 
-        if uni_formset.is_valid():
+        if uni_formset.is_valid() and email_formset.is_valid():
             unis = [el['invitee'] for el in uni_formset.cleaned_data if el]
+            email_addrs = [el['invitee'] for el
+                           in email_formset.cleaned_data if el]
 
             for uni in unis:
                 user = self.get_or_create_user(uni)
@@ -248,12 +254,16 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
 
                     messages.add_message(request, messages.SUCCESS, msg)
 
+            for addr in email_addrs:
+                print(addr)
+
             return HttpResponseRedirect(
                 reverse('course-roster-view', args=[course.pk]))
 
         return render(request, self.template_name, {
             'course': course,
             'uni_formset': uni_formset,
+            'email_formset': email_formset
         })
 
 
