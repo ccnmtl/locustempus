@@ -23,6 +23,7 @@ INSTALLED_APPS += [  # noqa
     'lti_provider',
     'locustempus.main',
     'widget_tweaks',
+    'django_registration',
 ]
 
 
