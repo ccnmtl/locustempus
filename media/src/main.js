@@ -3,6 +3,7 @@ require('tablesorter');
 
 import './scss/main.scss';
 import './js/course-roster-invite.js';
+import './js/registration-form.js';
 
 // Table sorter
 $('.course-roster__table').tablesorter({

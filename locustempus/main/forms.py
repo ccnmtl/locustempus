@@ -35,4 +35,5 @@ class CourseRosterInviteEmailForm(forms.Form):
 
 InviteUNIFormset = formset_factory(
     CourseRosterInviteUNIForm, extra=1)
-InviteEmailFormset = formset_factory(CourseRosterInviteEmailForm, extra=1)
+InviteEmailFormset = formset_factory(
+    CourseRosterInviteEmailForm, extra=1)

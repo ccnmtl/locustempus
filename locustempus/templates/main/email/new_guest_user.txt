@@ -1,0 +1,9 @@
+Hello,
+
+An instructor has invited you to join the Locus Tempus course: {{course_title}}.
+
+Please create a Locus Tempus account at https://locustempus.ctl.columbia.edu/accounts/register/?signupEmail={{guest_email}}
+
+Thanks,
+The Locus Tempus Team
+

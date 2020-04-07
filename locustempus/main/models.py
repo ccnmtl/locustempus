@@ -5,7 +5,9 @@ from django.contrib.contenttypes.fields import (
     GenericForeignKey, GenericRelation
 )
 from django.contrib.contenttypes.models import ContentType
+from django.dispatch import receiver
 from django.db import models
+from django_registration.signals import user_activated
 
 
 class Layer(models.Model):
@@ -54,3 +56,25 @@ class Response(models.Model):
         related_name='+'
     )
     layers = GenericRelation(Layer, related_query_name='layer')
+
+
+class GuestUserAffil(models.Model):
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    guest_email = models.EmailField()
+    invited_by = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='invited_by')
+    invited_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    accepted_at = models.DateTimeField(null=True)
+    accepted_user = models.ForeignKey(
+        User, on_delete=models.CASCADE, null=True)
+
+
+@receiver(user_activated)
+def add_user_to_course(sender, **kwargs):
+    user = kwargs.get('user')
+    try:
+        affil = GuestUserAffil.objects.get(guest_email=user.email)
+        affil.course.group.user_set.add(user)
+    except GuestUserAffil.DoesNotExist:
+        pass
