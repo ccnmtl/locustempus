@@ -119,7 +119,7 @@ django-contact-us==0.4.3
 
 entrypoints==0.3
 
-django-courseaffils==2.2.3
+django-courseaffils==2.2.4
 
 mypy==0.740
 typing-extensions==3.7.4.2
