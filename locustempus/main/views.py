@@ -38,33 +38,17 @@ from typing import (
 
 
 class IndexView(LoginRequiredMixin, View):
-    template_name = 'main/index.html'
+    template_name = 'main/course_list.html'
     http_method_names = ['get']
 
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        # If user has only one course, redirect to course, else render a list
-        # of courses
+    def get(self, request, *args, **kwargs) -> HttpResponse:
         courses = get_courses_for_user(self.request.user)
-        n = courses.count()
-
-        if n == 0:
-            # Render a view with no courses
-            ctx = {
-                'user': request.user,
-                'courses': None
-            }
-            return render(request, self.template_name, ctx)
-        elif n == 1:
-            # Redirect to the course
-            course = courses.first()
-            return HttpResponseRedirect(
-                reverse('course-detail-view', kwargs={'pk': course.pk}))
-        else:
-            # Render a list of courses
-            return render(request, self.template_name, {
-                'user': request.user,
-                'courses': courses,
-            })
+        ctx = {
+            'user': request.user,
+            'registrar_courses': courses.filter(info__term__isnull=False),
+            'sandbox_courses': courses.filter(info__term__isnull=True)
+        }
+        return render(request, self.template_name, ctx)
 
 
 class CourseCreateView(LoggedInSuperuserMixin, CreateView):
@@ -86,11 +70,6 @@ class CourseCreateView(LoggedInSuperuserMixin, CreateView):
         )
 
         return result
-
-
-class CourseListView(LoginRequiredMixin, ListView):
-    model = Course
-    template_name = 'main/course_list.html'
 
 
 class CourseDetailView(LoggedInCourseMixin, DetailView):
