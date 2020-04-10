@@ -20,7 +20,6 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView
 )
-from django.views.generic.list import ListView
 from lti_provider.models import LTICourseContext
 
 from locustempus.main.forms import (
@@ -29,7 +28,7 @@ from locustempus.main.forms import (
 from locustempus.main.models import Project, GuestUserAffil
 from locustempus.main.utils import send_template_email
 from locustempus.mixins import (
-    LoggedInCourseMixin, LoggedInFacultyMixin, LoggedInSuperuserMixin
+    LoggedInCourseMixin, LoggedInFacultyMixin
 )
 from locustempus.utils import user_display_name
 from typing import (
@@ -51,10 +50,29 @@ class IndexView(LoginRequiredMixin, View):
         return render(request, self.template_name, ctx)
 
 
-class CourseCreateView(LoggedInSuperuserMixin, CreateView):
+class CourseCreateView(LoginRequiredMixin, CreateView):
     model = Course
     template_name = 'main/course_create.html'
     fields = ['title']
+
+    @staticmethod
+    def get_group_names(course_title: str) -> Tuple[str, str]:
+        grp_counter = 0
+        canditate_group = '{}-group-{}'.format(course_title, grp_counter)
+        while Group.objects.filter(name=canditate_group).exists():
+            grp_counter += 1
+            canditate_group = '{}-group-{}'.format(
+                course_title, grp_counter)
+
+        fac_grp_counter = 0
+        fac_canditate_group = '{}-faculty-group-{}'.format(
+            course_title, fac_grp_counter)
+        while Group.objects.filter(name=fac_canditate_group).exists():
+            fac_grp_counter += 1
+            fac_canditate_group = '{}-faculty-group-{}'.format(
+                course_title, fac_grp_counter)
+
+        return canditate_group, fac_canditate_group
 
     def get_success_url(self) -> str:
         return reverse('course-list-view')
@@ -62,11 +80,12 @@ class CourseCreateView(LoggedInSuperuserMixin, CreateView):
     def form_valid(self, form) -> HttpResponse:
         title = form.cleaned_data['title']
 
-        student_grp = Group(name=title + '-group')
+        student_grp_name, fac_grp_name = self.get_group_names(title)
+        student_grp = Group(name=student_grp_name)
         student_grp.save()
         student_grp.user_set.add(self.request.user)
 
-        fac_grp = Group(name=title + '-faculty-group')
+        fac_grp = Group(name=fac_grp_name)
         fac_grp.save()
         fac_grp.user_set.add(self.request.user)
 

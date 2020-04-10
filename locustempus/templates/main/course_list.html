@@ -18,7 +18,7 @@ List Courses
 {% if registrar_courses %}
 <div class="row">
     <div class="col-12">
-        <table class="table table-hover course-roster__table tablesorter" data-cy="course-table">
+        <table class="table table-hover course-roster__table tablesorter" data-cy="registrar-course-table">
             <thead>
                 <tr>
                     <th scope="col">Course Title</th>
@@ -59,7 +59,7 @@ List Courses
         <div class="d-flex">
             <h2>Sandbox Courses</h2>
             <div class="ml-auto">
-                <a href="{% url 'course-create-view' %}" class="btn btn-sm btn-primary">Create New Course</a>
+                <a href="{% url 'course-create-view' %}" class="btn btn-sm btn-primary" data-cy="course-create-button">Create New Course</a>
             </div>
         </div>
     </div>
@@ -68,7 +68,7 @@ List Courses
 {% if sandbox_courses %}
 <div class="row">
     <div class="col-12">
-        <table class="table table-hover course-roster__table tablesorter" data-cy="course-table">
+        <table class="table table-hover course-roster__table tablesorter" data-cy="sandbox-course-table">
             <thead>
                 <tr>
                     <th scope="col">Course Title</th>

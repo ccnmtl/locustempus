@@ -16,7 +16,7 @@ from django.core.management import call_command
 from django.core.management.base import BaseCommand
 from django.db import connection
 from locustempus.main.tests.factories import (
-    UserFactory, CourseFactory
+    UserFactory, SandboxCourseFactory, RegistrarCourseFactory
 )
 
 
@@ -56,22 +56,41 @@ class Command(BaseCommand):
             email='superuser@example.com',
             is_superuser=True
         )
-        course: Course = CourseFactory.create()
-        student: User = UserFactory.create(
-            username='student',
+        # Sandbox Course
+        c1: Course = SandboxCourseFactory.create()
+        s1: User = UserFactory.create(
+            username='student-one',
             first_name='Student',
             last_name='One',
             email='studentone@example.com'
         )
-        course.group.user_set.add(student)
-        faculty: User = UserFactory.create(
-            username='faculty',
+        c1.group.user_set.add(s1)
+        f1: User = UserFactory.create(
+            username='faculty-one',
             first_name='Faculty',
             last_name='One',
             email='facultyone@example.com'
         )
-        course.group.user_set.add(faculty)
-        course.faculty_group.user_set.add(faculty)
+        c1.group.user_set.add(f1)
+        c1.faculty_group.user_set.add(f1)
+
+        # Registrar Course
+        c2: Course = RegistrarCourseFactory.create()
+        s2: User = UserFactory.create(
+            username='student-two',
+            first_name='Student',
+            last_name='Two',
+            email='studenttwo@example.com'
+        )
+        c2.group.user_set.add(s2)
+        f2: User = UserFactory.create(
+            username='faculty-two',
+            first_name='Faculty',
+            last_name='Two',
+            email='facultytwo@example.com'
+        )
+        c2.group.user_set.add(f2)
+        c2.faculty_group.user_set.add(f2)
 
         shutdown_message = (
             '\nServer stopped.\nNote that the test database, %r, has not been '
