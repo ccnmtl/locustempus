@@ -31,11 +31,9 @@
                 <div class="input-group uni-invite-input-group">
                     {% if form.invitee.errors %}
                     {{ form.invitee|add_class:"form-control is-invalid" }}
-                    <div class="input-group-append">
-                        <button class="btn btn-danger uni-invite-form-group__button--delete rounded-right" data-cy="remove-uni">
-                            Clear 
-                        </button>
-                    </div>
+                    <button class="btn btn-danger" data-cy="remove-uni">
+                        Clear 
+                    </button>
                     <div class="invalid-feedback">
                         {% for error in form.invitee.errors %}
                             {{ error }}
@@ -43,11 +41,9 @@
                     </div>
                     {% else %}
                     {{ form.invitee|add_class:"form-control" }}
-                    <div class="input-group-append">
-                        <button class="btn btn-danger uni-invite-form-group__button--delete rounded-right" data-cy="remove-uni">
-                            Clear 
-                        </button>
-                    </div>
+                    <button class="btn btn-danger" data-cy="remove-uni">
+                        Clear 
+                    </button>
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -64,11 +60,9 @@
                 <div class="input-group email-invite-input-group">
                     {% if form.invitee.errors %}
                     {{ form.invitee|add_class:"form-control is-invalid" }}
-                    <div class="input-group-append">
-                        <button class="btn btn-danger email-invite-form-group__button--delete rounded-right" data-cy="remove-email">
-                            Clear 
-                        </button>
-                    </div>
+                    <button class="btn btn-danger" data-cy="remove-email">
+                        Clear 
+                    </button>
                     <div class="invalid-feedback">
                         {% for error in form.invitee.errors %}
                             {{ error }}
@@ -76,11 +70,9 @@
                     </div>
                     {% else %}
                     {{ form.invitee|add_class:"form-control" }}
-                    <div class="input-group-append">
-                        <button class="btn btn-danger email-invite-form-group__button--delete rounded-right" data-cy="remove-email">
-                            Clear 
-                        </button>
-                    </div>
+                    <button class="btn btn-danger" data-cy="remove-email">
+                        Clear 
+                    </button>
                     {% endif %}
                 </div>
                 {% endfor %}
@@ -98,9 +90,7 @@
         <div style="display:none">
             <div id="uni-invite-form-template" class="input-group uni-invite-input-group">
                 {{ uni_formset.empty_form.invitee|add_class:"form-control" }}
-                <div class="input-group-append">
-                    <button class="btn btn-danger uni-invite-form-group__button--delete rounded-right" data-cy="remove-uni">Clear</button>
-                </div>
+                <button class="btn btn-danger" data-cy="remove-uni">Clear</button>
             </div>
         </div>
 
@@ -108,9 +98,7 @@
         <div style="display:none">
             <div id="email-invite-form-template" class="input-group email-invite-input-group">
                 {{ email_formset.empty_form.invitee|add_class:"form-control" }}
-                <div class="input-group-append">
-                    <button class="btn btn-danger email-invite-form-group__button--delete rounded-right" data-cy="remove-email">Clear</button>
-                </div>
+                <button class="btn btn-danger" data-cy="remove-email">Clear</button>
             </div>
         </div>
 

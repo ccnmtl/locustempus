@@ -7351,10 +7351,18 @@ a.text-dark:hover, a.text-dark:focus {
 
 .uni-invite-input-group {
   margin-bottom: 1em; }
+  .uni-invite-input-group input {
+    border-radius: 0.25rem !important; }
+  .uni-invite-input-group button {
+    margin-left: 0.5rem; }
 
 .email-invite-form-group, .invite-add-row {
   margin-bottom: 1em; }
 
 .email-invite-input-group {
   margin-bottom: 1em; }
+  .email-invite-input-group input {
+    border-radius: 0.25rem !important; }
+  .email-invite-input-group button {
+    margin-left: 0.5rem; }
 
