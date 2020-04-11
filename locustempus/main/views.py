@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin
 )
 from django.contrib.auth.models import User, Group
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls.base import reverse
@@ -32,7 +33,7 @@ from locustempus.mixins import (
 )
 from locustempus.utils import user_display_name
 from typing import (
-    Any, Tuple
+    Any, Tuple, List
 )
 
 
@@ -209,6 +210,7 @@ class CourseRosterResendEmailInviteView(LoggedInFacultyMixin, View):
     guest_email_template = 'main/email/new_guest_user.txt'
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        site = get_current_site(request)
         addr = request.POST.get('user_email', None)
         course = get_object_or_404(Course, id=kwargs.get('pk', None))
         affil = get_object_or_404(
@@ -222,7 +224,9 @@ class CourseRosterResendEmailInviteView(LoggedInFacultyMixin, View):
         send_template_email(
             subj,
             self.guest_email_template,
-            {'course_title': course.title, 'guest_email': affil.guest_email},
+            {'course_title': course.title,
+             'guest_email': affil.guest_email,
+             'site': site},
             affil.guest_email
         )
 
@@ -270,6 +274,91 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
             user.save()
         return user
 
+    def handle_unis(self, course: Course, unis: List[str]) -> None:
+        """
+        Add a list of UNI users to a course
+        """
+        site = get_current_site(self.request)
+        for uni in unis:
+            user = self.get_or_create_user(uni)
+            display_name = user_display_name(user)
+            if course.is_true_member(user):
+                msg = '{} ({}) is already a course member'.format(
+                    display_name, uni)
+                messages.add_message(self.request, messages.WARNING, msg)
+            else:
+                email = '{}@columbia.edu'.format(uni)
+                course.group.user_set.add(user)
+                subj = 'Locus Tempus Invite: {}'.format(course.title)
+                send_template_email(
+                    subj,
+                    self.email_template,
+                    {'course_title': course.title, 'site': site},
+                    email
+                )
+                msg = (
+                    '{} is now a course member. An email was sent to '
+                    '{} notifying the user.').format(display_name, email)
+
+                messages.add_message(self.request, messages.SUCCESS, msg)
+
+    def handle_emails(self, course: Course, email_addrs: List[str]) -> None:
+        """
+        Add a list of guest users to a course from a list of email addresses.
+        """
+        site = get_current_site(self.request)
+        for addr in email_addrs:
+            try:
+                user = User.objects.get(email=addr)
+                if course.is_true_member(user):
+                    msg = '{} is already a course member'.format(
+                        user.username)
+                    messages.add_message(self.request, messages.WARNING, msg)
+                else:
+                    course.group.user_set.add(user)
+                    subj = 'Locus Tempus Invite: {}'.format(course.title)
+                    send_template_email(
+                        subj,
+                        self.email_template,
+                        {'course_title': course.title, 'site': site},
+                        addr
+                    )
+                    msg = (
+                        '{} is now a course member. An email was sent to '
+                        '{} notifying the user.').format(
+                            user.username, addr)
+
+                    messages.add_message(self.request, messages.SUCCESS, msg)
+            except User.DoesNotExist:
+                # Create an affiliation
+                # You need to check if an affiliation exist
+                if GuestUserAffil.objects.filter(
+                        course=course, guest_email=addr).exists():
+                    msg = ('{} has alrady been invited to join the course.'
+                           ' Please use the resend button below to '
+                           'resend the invitation'.format(addr))
+                    messages.add_message(self.request, messages.INFO, msg)
+                else:
+                    affil = GuestUserAffil(
+                        course=course,
+                        guest_email=addr,
+                        invited_by=self.request.user
+                    )
+                    affil.save()
+                    # Send email to invite user to sign up
+                    subj = 'Locus Tempus Invite: {}'.format(course.title)
+                    send_template_email(
+                        subj,
+                        self.guest_email_template,
+                        {'course_title': course.title,
+                         'guest_email': addr},
+                        addr
+                    )
+                    # Show message to faculty
+                    msg = ('{} has been sent an invitation '
+                           'to join the course.'.format(addr))
+                    messages.add_message(self.request, messages.SUCCESS, msg)
+
     def get(self, request, *args, **kwargs) -> HttpResponse:
         course = get_object_or_404(Course, pk=kwargs.get('pk'))
         return render(request, self.template_name, {
@@ -299,80 +388,8 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
                     'email_formset': self.email_formset(prefix='email')
                 })
 
-            for uni in unis:
-                user = self.get_or_create_user(uni)
-                display_name = user_display_name(user)
-                if course.is_true_member(user):
-                    msg = '{} ({}) is already a course member'.format(
-                        display_name, uni)
-                    messages.add_message(request, messages.WARNING, msg)
-                else:
-                    email = '{}@columbia.edu'.format(uni)
-                    course.group.user_set.add(user)
-                    subj = 'Locus Tempus Invite: {}'.format(course.title)
-                    send_template_email(
-                        subj,
-                        self.email_template,
-                        {'course_title': course.title},
-                        email
-                    )
-                    msg = (
-                        '{} is now a course member. An email was sent to '
-                        '{} notifying the user.').format(display_name, email)
-
-                    messages.add_message(request, messages.SUCCESS, msg)
-
-            for addr in email_addrs:
-                try:
-                    user = User.objects.get(email=addr)
-                    if course.is_true_member(user):
-                        msg = '{} ({}) is already a course member'.format(
-                            display_name, uni)
-                        messages.add_message(request, messages.WARNING, msg)
-                    else:
-                        course.group.user_set.add(user)
-                        subj = 'Locus Tempus Invite: {}'.format(course.title)
-                        send_template_email(
-                            subj,
-                            self.email_template,
-                            {'course_title': course.title},
-                            addr
-                        )
-                        msg = (
-                            '{} is now a course member. An email was sent to '
-                            '{} notifying the user.').format(
-                                display_name, email)
-
-                        messages.add_message(request, messages.SUCCESS, msg)
-                except User.DoesNotExist:
-                    # Create an affiliation
-                    # You need to check if an affiliation exist
-                    if GuestUserAffil.objects.filter(
-                            course=course, guest_email=addr).exists():
-                        msg = ('{} has alrady been invited to join the course.'
-                               ' Please use the resend button below to '
-                               'resend the invitation'.format(addr))
-                        messages.add_message(request, messages.INFO, msg)
-                    else:
-                        affil = GuestUserAffil(
-                            course=course,
-                            guest_email=addr,
-                            invited_by=request.user
-                        )
-                        affil.save()
-                        # Send email to invite user to sign up
-                        subj = 'Locus Tempus Invite: {}'.format(course.title)
-                        send_template_email(
-                            subj,
-                            self.guest_email_template,
-                            {'course_title': course.title,
-                             'guest_email': addr},
-                            addr
-                        )
-                        # Show message to faculty
-                        msg = ('{} has been sent an invitation '
-                               'to join the course.'.format(addr))
-                        messages.add_message(request, messages.SUCCESS, msg)
+            self.handle_unis(course, unis)
+            self.handle_emails(course, email_addrs)
 
             return HttpResponseRedirect(
                 reverse('course-roster-view', args=[course.pk]))

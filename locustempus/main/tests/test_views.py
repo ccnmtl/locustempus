@@ -540,6 +540,35 @@ class CourseRoster(CourseTestMixin, TestCase):
             GuestUserAffil.objects.filter(
                 course=self.course, guest_email=addr).exists())
 
+    def test_course_roster_uninvite_non_faculty(self):
+        """
+        Tests that non-course faculty can't uninvite a
+        user invited to another course.
+        """
+        # Set up course and an affil
+        course = CourseFactory.create()
+        addr = 'foo@bar.com'
+        affil = GuestUserAffil(
+            guest_email=addr,
+            course=self.course,
+            invited_by=self.faculty
+        )
+        affil.save()
+
+        # Log in a faculty for a different course and try
+        # to uninvite foo@bar.com
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/uninvite/".format(course.pk),
+            {'user_email': addr}
+        )
+        self.assertEqual(response.status_code, 403)
+
 
 class LTICourseSelectorTest(CourseTestMixin, TestCase):
 
@@ -853,6 +882,40 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         mock_sender = MagicMock()
         user_activated.send(sender=mock_sender, user=guest)
         self.assertTrue(self.course.is_true_member(guest))
+
+    def test_guest_user_exists(self):
+        """
+        Tests the case where a guest is invited to a course,
+        and the user already has a Locus Tempus account.
+        """
+        addr = 'gueststudent@example.com'
+        UserFactory.create(
+            first_name='Guest',
+            last_name='Student',
+            username='guest-student',
+            email=addr
+        )
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/invite/".format(self.course.pk),
+            {
+                'uni-TOTAL_FORMS': '1',
+                'uni-INITIAL_FORMS': '0',
+                'uni-0-invitee': '',
+                'email-TOTAL_FORMS': '1',
+                'email-INITIAL_FORMS': '0',
+                'email-0-invitee': addr,
+            },
+            follow=True
+        )
+        self.assertContains(
+            response,
+            'An email was sent to {} notifying the user.'.format(addr))
 
     def test_empty_form(self):
         self.assertTrue(
