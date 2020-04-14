@@ -87,6 +87,12 @@ class CourseDetailView(LoggedInCourseMixin, DetailView):
     model = Course
     template_name = 'main/course_detail.html'
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        course: Course = kwargs.get('object')
+        ctx['projects'] = Project.objects.filter(course=course)
+        ctx['is_faculty'] = course.is_true_faculty(self.request.user)
+        return ctx
 
 class CourseEditView(LoggedInFacultyMixin, UpdateView):
     model = Course
