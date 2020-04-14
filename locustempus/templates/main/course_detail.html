@@ -6,9 +6,8 @@ Course Detail {{ object.title }}
 
 {% block content %}
 <h1>Course Detail {{ object.title }}</h1>
-{{ object.group }}
-{{ object.faculty_group }}
-
-<a href="/course/{{ object.pk }}/">View Course</a>
-<a href="/course/{{ object.pk }}/edit/">Edit Course</a>
+<ul>
+    <li><a href="{% url 'course-edit-view' object.pk %}">Edit Course</a></li>
+    <li><a href="{% url 'course-roster-view' object.pk %}">Edit Course Roster</a></li>
+</ul>
 {% endblock %}

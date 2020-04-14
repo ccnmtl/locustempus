@@ -15,6 +15,8 @@ if hasattr(settings, 'CAS_BASE'):
     auth_urls = url(r'^accounts/', include('djangowind.urls'))
 
 urlpatterns = [
+    url(r'^accounts/',
+        include('django_registration.backends.activation.urls')),
     auth_urls,
     url(r'^$', views.IndexView.as_view(), name='course-list-view'),
     url(r'^admin/', admin.site.urls),
@@ -50,6 +52,12 @@ urlpatterns = [
     url(r'^course/(?P<pk>\d+)/roster/remove/$',
         views.CourseRosterRemoveView.as_view(),
         name='course-roster-remove-view'),
+    url(r'^course/(?P<pk>\d+)/roster/resend-invite/$',
+        views.CourseRosterResendEmailInviteView.as_view(),
+        name='course-roster-resend-invite-view'),
+    url(r'^course/(?P<pk>\d+)/roster/uninvite/$',
+        views.CourseRosterUninviteView.as_view(),
+        name='course-roster-uninvite-view'),
     url(r'^course/(?P<pk>\d+)/roster/invite/$',
         views.CourseRosterInviteUser.as_view(),
         name='course-roster-invite-user'),

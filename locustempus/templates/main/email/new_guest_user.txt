@@ -1,0 +1,9 @@
+Hello,
+
+An instructor has invited you to join the Locus Tempus course: {{course_title}}.
+
+Please create a Locus Tempus account at {{ site.domain }}/accounts/register/?signupEmail={{guest_email}}
+
+Thanks,
+The Locus Tempus Team
+

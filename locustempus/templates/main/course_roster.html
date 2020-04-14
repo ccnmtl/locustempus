@@ -13,15 +13,16 @@
 </div>
 
 <div class="row course-roster__subhead">
-    <div class="col-md-8">
-        <a href="{% url 'course-detail-view' object.pk %}">Back to View Course</a>
-    </div>
-    <div class="col-md-4">
-        <a href="{% url 'course-roster-invite-user' object.pk %}" class="btn btn-sm btn-primary">Invite Columbia Affiliate (UNI Required)</a>
+    <div class="col-12">
+        <div class="d-flex">
+            <a href="{% url 'course-detail-view' object.pk %}">Back to View Course</a>
+            <a href="{% url 'course-roster-invite-user' object.pk %}" class="btn btn-sm btn-primary ml-auto">Invite Users</a>
+        </div>
     </div>
 </div>
 
-<table class="table table-hover course-roster__table tablesorter" data-cy="class-roster-table">
+{% if object.members %}
+<table class="table table-hover course-roster__table tablesorter" data-cy="uni-roster-table">
     <thead>
         <tr>
             <th scope="col">First Name</th>
@@ -61,4 +62,43 @@
         {% endfor %}
     </tbody>
 </table>
+{% else %}
+There are no users in this course.
+{% endif %}
+
+{% if inactive_invitees %}
+<h2>Inactive Invitees</h2>
+<table class="table table-hover course-roster__table tablesorter" data-cy="guest-roster-table">
+    <thead>
+        <tr>
+            <th scope="col">Email Address</th>
+            <th scope="col" class="sorter-false">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for invitee in inactive_invitees %}
+        <tr>
+            <td>{{ invitee.guest_email }}</td>
+            <td>
+                <form action="{% url 'course-roster-resend-invite-view' object.pk %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_email" value="{{ invitee.guest_email }}">
+                    <button type="submit" class="btn btn-primary btn-sm">
+                        Resend
+                    </button>
+                </form>
+                <form action="{% url 'course-roster-uninvite-view' object.pk %}" method="post">
+                    {% csrf_token %}
+                    <input type="hidden" name="user_email" value="{{ invitee.guest_email }}">
+                    <button type="submit" class="btn btn-danger btn-sm">
+                        Uninvite 
+                    </button>
+                </form>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+
 {% endblock %}

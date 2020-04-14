@@ -17,3 +17,4 @@ uploads
 reports
 .mypy_cache
 cypress/videos
+cypress/screenshots/

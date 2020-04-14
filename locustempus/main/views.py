@@ -9,6 +9,7 @@ from django.contrib.auth.mixins import (
     LoginRequiredMixin
 )
 from django.contrib.auth.models import User, Group
+from django.contrib.sites.shortcuts import get_current_site
 from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, render
 from django.urls.base import reverse
@@ -23,16 +24,16 @@ from django.views.generic.list import ListView
 from lti_provider.models import LTICourseContext
 
 from locustempus.main.forms import (
-    InviteUNIFormset
+    InviteUNIFormset, InviteEmailFormset
 )
-from locustempus.main.models import Project
+from locustempus.main.models import Project, GuestUserAffil
 from locustempus.main.utils import send_template_email
 from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin, LoggedInSuperuserMixin
 )
 from locustempus.utils import user_display_name
 from typing import (
-    Any, Tuple
+    Any, Tuple, List
 )
 
 
@@ -118,6 +119,16 @@ class CourseRosterView(LoggedInFacultyMixin, DetailView):
     model = Course
     template_name = 'main/course_roster.html'
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        course = kwargs.get('object')
+        inactive_email_invites = GuestUserAffil.objects.filter(
+            course=course,
+            accepted_at=None
+        )
+        ctx['inactive_invitees'] = inactive_email_invites
+        return ctx
+
 
 class CourseRosterPromoteView(LoggedInFacultyMixin, View):
     """Promotes a student to course faculty"""
@@ -193,12 +204,65 @@ class CourseRosterRemoveView(LoggedInFacultyMixin, View):
             reverse('course-roster-view', args=[course.pk]))
 
 
+class CourseRosterResendEmailInviteView(LoggedInFacultyMixin, View):
+    """Resends an email invitation to a guest user"""
+    http_method_names = ['post']
+    guest_email_template = 'main/email/new_guest_user.txt'
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        site = get_current_site(request)
+        addr = request.POST.get('user_email', None)
+        course = get_object_or_404(Course, id=kwargs.get('pk', None))
+        affil = get_object_or_404(
+            GuestUserAffil, guest_email=addr, course=course, accepted_at=None)
+
+        # Set the modified_at time
+        affil.save()
+
+        # Resend email to invited user
+        subj = 'Locus Tempus Invite: {}'.format(course.title)
+        send_template_email(
+            subj,
+            self.guest_email_template,
+            {'course_title': course.title,
+             'guest_email': affil.guest_email,
+             'site': site},
+            affil.guest_email
+        )
+
+        msg = ('{} has been resent an invitation '
+               'to join the course.'.format(addr))
+        messages.add_message(request, messages.INFO, msg)
+        return HttpResponseRedirect(
+            reverse('course-roster-view', args=[course.pk]))
+
+
+class CourseRosterUninviteView(LoggedInFacultyMixin, View):
+    """Uninvites a guest user"""
+    http_method_names = ['post']
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        addr = request.POST.get('user_email', None)
+        course = get_object_or_404(Course, id=kwargs.get('pk', None))
+        affil = get_object_or_404(
+            GuestUserAffil, guest_email=addr, course=course, accepted_at=None)
+
+        affil.delete()
+
+        msg = ('The invitation for {} has been deleted.'.format(addr))
+        messages.add_message(request, messages.WARNING, msg)
+        return HttpResponseRedirect(
+            reverse('course-roster-view', args=[course.pk]))
+
+
 class CourseRosterInviteUser(LoggedInFacultyMixin, View):
     """Invites a new user to the course by UNI"""
     http_method_names = ['get', 'post']
     template_name = 'main/course_roster_invite.html'
     email_template = 'main/email/new_user.txt'
+    guest_email_template = 'main/email/new_guest_user.txt'
     uni_formset = InviteUNIFormset
+    email_formset = InviteEmailFormset
 
     @staticmethod
     def get_or_create_user(uni: str) -> User:
@@ -210,43 +274,125 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
             user.save()
         return user
 
+    def handle_unis(self, course: Course, unis: List[str]) -> None:
+        """
+        Add a list of UNI users to a course
+        """
+        site = get_current_site(self.request)
+        for uni in unis:
+            user = self.get_or_create_user(uni)
+            display_name = user_display_name(user)
+            if course.is_true_member(user):
+                msg = '{} ({}) is already a course member'.format(
+                    display_name, uni)
+                messages.add_message(self.request, messages.WARNING, msg)
+            else:
+                email = '{}@columbia.edu'.format(uni)
+                course.group.user_set.add(user)
+                subj = 'Locus Tempus Invite: {}'.format(course.title)
+                send_template_email(
+                    subj,
+                    self.email_template,
+                    {'course_title': course.title, 'site': site},
+                    email
+                )
+                msg = (
+                    '{} is now a course member. An email was sent to '
+                    '{} notifying the user.').format(display_name, email)
+
+                messages.add_message(self.request, messages.SUCCESS, msg)
+
+    def handle_emails(self, course: Course, email_addrs: List[str]) -> None:
+        """
+        Add a list of guest users to a course from a list of email addresses.
+        """
+        site = get_current_site(self.request)
+        for addr in email_addrs:
+            try:
+                user = User.objects.get(email=addr)
+                if course.is_true_member(user):
+                    msg = '{} is already a course member'.format(
+                        user.username)
+                    messages.add_message(self.request, messages.WARNING, msg)
+                else:
+                    course.group.user_set.add(user)
+                    subj = 'Locus Tempus Invite: {}'.format(course.title)
+                    send_template_email(
+                        subj,
+                        self.email_template,
+                        {'course_title': course.title, 'site': site},
+                        addr
+                    )
+                    msg = (
+                        '{} is now a course member. An email was sent to '
+                        '{} notifying the user.').format(
+                            user.username, addr)
+
+                    messages.add_message(self.request, messages.SUCCESS, msg)
+            except User.DoesNotExist:
+                # Create an affiliation
+                # You need to check if an affiliation exist
+                if GuestUserAffil.objects.filter(
+                        course=course, guest_email=addr).exists():
+                    msg = ('{} has alrady been invited to join the course.'
+                           ' Please use the resend button below to '
+                           'resend the invitation'.format(addr))
+                    messages.add_message(self.request, messages.INFO, msg)
+                else:
+                    affil = GuestUserAffil(
+                        course=course,
+                        guest_email=addr,
+                        invited_by=self.request.user
+                    )
+                    affil.save()
+                    # Send email to invite user to sign up
+                    subj = 'Locus Tempus Invite: {}'.format(course.title)
+                    send_template_email(
+                        subj,
+                        self.guest_email_template,
+                        {
+                            'course_title': course.title,
+                            'guest_email': addr,
+                            'site': site
+                        },
+                        addr
+                    )
+                    # Show message to faculty
+                    msg = ('{} has been sent an invitation '
+                           'to join the course.'.format(addr))
+                    messages.add_message(self.request, messages.SUCCESS, msg)
+
     def get(self, request, *args, **kwargs) -> HttpResponse:
         course = get_object_or_404(Course, pk=kwargs.get('pk'))
         return render(request, self.template_name, {
             'course': course,
             'uni_formset': self.uni_formset(prefix='uni'),
+            'email_formset': self.email_formset(prefix='email')
         })
 
     def post(self, request, *args, **kwargs) -> HttpResponse:
         course = get_object_or_404(Course, pk=kwargs.get('pk'))
         uni_formset = self.uni_formset(
             request.POST, request.FILES, prefix='uni')
+        email_formset = self.email_formset(
+            request.POST, request.FILES, prefix='email')
 
-        if uni_formset.is_valid():
+        if uni_formset.is_valid() and email_formset.is_valid():
             unis = [el['invitee'] for el in uni_formset.cleaned_data if el]
+            email_addrs = [el['invitee'] for el
+                           in email_formset.cleaned_data if el]
 
-            for uni in unis:
-                user = self.get_or_create_user(uni)
-                display_name = user_display_name(user)
-                if course.is_true_member(user):
-                    msg = '{} ({}) is already a course member'.format(
-                        display_name, uni)
-                    messages.add_message(request, messages.WARNING, msg)
-                else:
-                    email = '{}@columbia.edu'.format(uni)
-                    course.group.user_set.add(user)
-                    subj = 'Locus Tempus Invite: {}'.format(course.title)
-                    send_template_email(
-                        subj,
-                        self.email_template,
-                        {'course_title': course.title},
-                        email
-                    )
-                    msg = (
-                        '{} is now a course member. An email was sent to '
-                        '{} notifying the user.').format(display_name, email)
+            if (len(unis) == 0 and len(email_addrs) == 0):
+                msg = 'A value must be entered in either field.'
+                messages.add_message(request, messages.ERROR, msg)
+                return render(request, self.template_name, {
+                    'course': course,
+                    'uni_formset': self.uni_formset(prefix='uni'),
+                    'email_formset': self.email_formset(prefix='email')
+                })
 
-                    messages.add_message(request, messages.SUCCESS, msg)
+            self.handle_unis(course, unis)
+            self.handle_emails(course, email_addrs)
 
             return HttpResponseRedirect(
                 reverse('course-roster-view', args=[course.pk]))
@@ -254,6 +400,7 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
         return render(request, self.template_name, {
             'course': course,
             'uni_formset': uni_formset,
+            'email_formset': email_formset
         })
 
 

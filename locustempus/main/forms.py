@@ -30,7 +30,10 @@ class CourseRosterInviteEmailForm(forms.Form):
                 msg = msg.format(email)
                 raise forms.ValidationError(msg)
 
+        return email
+
 
 InviteUNIFormset = formset_factory(
-    CourseRosterInviteUNIForm, min_num=1, validate_min=True, extra=0)
-InviteEmailFormset = formset_factory(CourseRosterInviteEmailForm, extra=1)
+    CourseRosterInviteUNIForm, extra=1)
+InviteEmailFormset = formset_factory(
+    CourseRosterInviteEmailForm, extra=1)

@@ -5,6 +5,8 @@ from django.contrib.auth.models import Group
 from django.core import mail
 from django.test import TestCase
 from django.urls.base import reverse
+from django_registration.signals import user_activated
+from locustempus.main.models import GuestUserAffil
 from lti_provider.models import LTICourseContext
 from lti_provider.tests.factories import LTICourseContextFactory
 
@@ -13,6 +15,7 @@ from locustempus.main.models import Project
 from locustempus.main.tests.factories import (
     CourseFactory, CourseTestMixin, ProjectFactory, UserFactory
 )
+from unittest.mock import MagicMock
 
 
 class BasicTest(TestCase):
@@ -315,6 +318,11 @@ class CourseTest(CourseTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/course/list/")
 
+
+class CourseRoster(CourseTestMixin, TestCase):
+    def setUp(self):
+        self.setup_course()
+
     def test_course_roster_faculty(self):
         self.assertTrue(
             self.client.login(
@@ -468,6 +476,96 @@ class CourseTest(CourseTestMixin, TestCase):
         response = self.client.post(
             "/course/{}/roster/demote/".format(self.course.pk),
             {'user_id': self.faculty.pk}
+        )
+        self.assertEqual(response.status_code, 403)
+
+    def test_course_roster_resend_invite(self):
+        """Test that faculty can resend invite"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        addr = 'foo@bar.com'
+        affil = GuestUserAffil(
+            guest_email=addr,
+            course=self.course,
+            invited_by=self.faculty
+        )
+        affil.save()
+        response = self.client.post(
+            "/course/{}/roster/resend-invite/".format(self.course.pk),
+            {'user_email': addr}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+                         "/course/{}/roster/".format(self.course.pk))
+
+        self.assertEqual(len(mail.outbox), 1)
+
+        self.assertEqual(
+            mail.outbox[0].subject,
+            'Locus Tempus Invite: {}'.format(self.course.title))
+
+    def test_course_roster_uninvite(self):
+        """Test that faculty can uninvite a guest user"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        addr = 'foo@bar.com'
+        affil = GuestUserAffil(
+            guest_email=addr,
+            course=self.course,
+            invited_by=self.faculty
+        )
+        affil.save()
+
+        self.assertTrue(
+            GuestUserAffil.objects.filter(
+                course=self.course, guest_email=addr).exists())
+
+        response = self.client.post(
+            "/course/{}/roster/uninvite/".format(self.course.pk),
+            {'user_email': addr}
+        )
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(response.url,
+                         "/course/{}/roster/".format(self.course.pk))
+
+        self.assertFalse(
+            GuestUserAffil.objects.filter(
+                course=self.course, guest_email=addr).exists())
+
+    def test_course_roster_uninvite_non_faculty(self):
+        """
+        Tests that non-course faculty can't uninvite a
+        user invited to another course.
+        """
+        # Set up course and an affil
+        course = CourseFactory.create()
+        addr = 'foo@bar.com'
+        affil = GuestUserAffil(
+            guest_email=addr,
+            course=self.course,
+            invited_by=self.faculty
+        )
+        affil.save()
+
+        # Log in a faculty for a different course and try
+        # to uninvite foo@bar.com
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/uninvite/".format(course.pk),
+            {'user_email': addr}
         )
         self.assertEqual(response.status_code, 403)
 
@@ -679,7 +777,9 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
-                'uni-0-invitee': 'abc123'
+                'uni-0-invitee': 'abc123',
+                'email-TOTAL_FORMS': '1',
+                'email-INITIAL_FORMS': '0'
             }
         )
         self.assertEqual(response.status_code, 302)
@@ -699,32 +799,145 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
-                'uni-0-invitee': 'foobar'
+                'uni-0-invitee': 'foobar',
+                'email-TOTAL_FORMS': '1',
+                'email-INITIAL_FORMS': '0'
             }
         )
         self.assertEqual(response.status_code, 200)
         self.assertInHTML(
             'This is not a valid UNI.', response.content.decode('utf-8'))
 
-    def test_post_no_uni(self):
+    def test_post_email(self):
+        """Tests that a guest user can be added"""
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
                 password='test'
             )
         )
-        self.assertEqual(2, len(self.course.members))
+        addr = 'foo@bar.com'
         response = self.client.post(
             "/course/{}/roster/invite/".format(self.course.pk),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
-                'uni-0-invitee': ''
+                'uni-0-invitee': '',
+                'email-TOTAL_FORMS': '1',
+                'email-INITIAL_FORMS': '0',
+                'email-0-invitee': addr,
             }
         )
-        self.assertInHTML(
-            'This field is required.', response.content.decode('utf-8'))
-        self.assertEqual(2, len(self.course.members))
+        self.assertEqual(response.status_code, 302)
+        self.assertEqual(
+            response.url,
+            "/course/{}/roster/".format(self.course.pk))
+        self.assertTrue(
+            GuestUserAffil.objects.filter(
+                course=self.course, guest_email=addr).exists())
+
+    def test_post_cu_email(self):
+        """Tests that a CU email address can not be added as a guest user"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        addr = 'roary@columbia.edu'
+        response = self.client.post(
+            "/course/{}/roster/invite/".format(self.course.pk),
+            {
+                'uni-TOTAL_FORMS': '1',
+                'uni-INITIAL_FORMS': '0',
+                'uni-0-invitee': '',
+                'email-TOTAL_FORMS': '1',
+                'email-INITIAL_FORMS': '0',
+                'email-0-invitee': addr,
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response,
+            addr + ' is a Columbia University email address.')
+
+    def test_guest_user_course_affil(self):
+        """
+        Tests that a guest user is added to the
+        course upon registering for an account
+        """
+        affil = GuestUserAffil(
+            guest_email='foo@bar.com',
+            course=self.course,
+            invited_by=self.faculty
+        )
+        affil.save()
+        guest = UserFactory.create(
+            first_name='Guest',
+            last_name='User',
+            username='guest-user',
+            email='foo@bar.com'
+        )
+
+        mock_sender = MagicMock()
+        user_activated.send(sender=mock_sender, user=guest)
+        self.assertTrue(self.course.is_true_member(guest))
+
+    def test_guest_user_exists(self):
+        """
+        Tests the case where a guest is invited to a course,
+        and the user already has a Locus Tempus account.
+        """
+        addr = 'gueststudent@example.com'
+        UserFactory.create(
+            first_name='Guest',
+            last_name='Student',
+            username='guest-student',
+            email=addr
+        )
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/invite/".format(self.course.pk),
+            {
+                'uni-TOTAL_FORMS': '1',
+                'uni-INITIAL_FORMS': '0',
+                'uni-0-invitee': '',
+                'email-TOTAL_FORMS': '1',
+                'email-INITIAL_FORMS': '0',
+                'email-0-invitee': addr,
+            },
+            follow=True
+        )
+        self.assertContains(
+            response,
+            'An email was sent to {} notifying the user.'.format(addr))
+
+    def test_empty_form(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            "/course/{}/roster/invite/".format(self.course.pk),
+            {
+                'uni-TOTAL_FORMS': '1',
+                'uni-INITIAL_FORMS': '0',
+                'uni-0-invitee': '',
+                'email-TOTAL_FORMS': '1',
+                'email-INITIAL_FORMS': '0',
+                'email-0-invitee': '',
+            }
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(
+            response, 'A value must be entered in either field.')
 
 
 class DashboardTest(CourseTestMixin, TestCase):

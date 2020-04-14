@@ -23,6 +23,7 @@ INSTALLED_APPS += [  # noqa
     'lti_provider',
     'locustempus.main',
     'widget_tweaks',
+    'django_registration',
 ]
 
 
@@ -53,6 +54,8 @@ LTI_TOOL_CONFIGURATION = {
 }
 
 COURSEAFFILS_COURSESTRING_MAPPER = CourseStringMapper
+
+BLOCKED_EMAIL_DOMAINS = ['columbia.edu']
 
 # Needed to get Cypress to run
 if 'integrationserver' in sys.argv:
