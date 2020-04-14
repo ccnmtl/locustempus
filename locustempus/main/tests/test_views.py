@@ -485,23 +485,23 @@ class CourseRoster(CourseTestMixin, TestCase):
         addr = 'foo@bar.com'
         affil = GuestUserAffil(
             guest_email=addr,
-            course=self.course,
+            course=self.sandbox_course,
             invited_by=self.faculty
         )
         affil.save()
         response = self.client.post(
-            "/course/{}/roster/resend-invite/".format(self.course.pk),
+            "/course/{}/roster/resend-invite/".format(self.sandbox_course.pk),
             {'user_email': addr}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url,
-                         "/course/{}/roster/".format(self.course.pk))
+                         "/course/{}/roster/".format(self.sandbox_course.pk))
 
         self.assertEqual(len(mail.outbox), 1)
 
         self.assertEqual(
             mail.outbox[0].subject,
-            'Locus Tempus Invite: {}'.format(self.course.title))
+            'Locus Tempus Invite: {}'.format(self.sandbox_course.title))
 
     def test_course_roster_uninvite(self):
         """Test that faculty can uninvite a guest user"""
@@ -514,26 +514,26 @@ class CourseRoster(CourseTestMixin, TestCase):
         addr = 'foo@bar.com'
         affil = GuestUserAffil(
             guest_email=addr,
-            course=self.course,
+            course=self.sandbox_course,
             invited_by=self.faculty
         )
         affil.save()
 
         self.assertTrue(
             GuestUserAffil.objects.filter(
-                course=self.course, guest_email=addr).exists())
+                course=self.sandbox_course, guest_email=addr).exists())
 
         response = self.client.post(
-            "/course/{}/roster/uninvite/".format(self.course.pk),
+            "/course/{}/roster/uninvite/".format(self.sandbox_course.pk),
             {'user_email': addr}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url,
-                         "/course/{}/roster/".format(self.course.pk))
+                         "/course/{}/roster/".format(self.sandbox_course.pk))
 
         self.assertFalse(
             GuestUserAffil.objects.filter(
-                course=self.course, guest_email=addr).exists())
+                course=self.sandbox_course, guest_email=addr).exists())
 
     def test_course_roster_uninvite_non_faculty(self):
         """
@@ -541,11 +541,11 @@ class CourseRoster(CourseTestMixin, TestCase):
         user invited to another course.
         """
         # Set up course and an affil
-        course = CourseFactory.create()
+        course = SandboxCourseFactory.create()
         addr = 'foo@bar.com'
         affil = GuestUserAffil(
             guest_email=addr,
-            course=self.course,
+            course=self.sandbox_course,
             invited_by=self.faculty
         )
         affil.save()
@@ -826,10 +826,10 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/course/{}/roster/".format(self.course.pk))
+            "/course/{}/roster/".format(self.sandbox_course.pk))
         self.assertTrue(
             GuestUserAffil.objects.filter(
-                course=self.course, guest_email=addr).exists())
+                course=self.sandbox_course, guest_email=addr).exists())
         self.assertEqual(2, len(self.sandbox_course.members))
 
     def test_post_cu_email(self):
@@ -842,7 +842,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         )
         addr = 'roary@columbia.edu'
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.course.pk),
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -864,7 +864,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         """
         affil = GuestUserAffil(
             guest_email='foo@bar.com',
-            course=self.course,
+            course=self.sandbox_course,
             invited_by=self.faculty
         )
         affil.save()
@@ -877,7 +877,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
 
         mock_sender = MagicMock()
         user_activated.send(sender=mock_sender, user=guest)
-        self.assertTrue(self.course.is_true_member(guest))
+        self.assertTrue(self.sandbox_course.is_true_member(guest))
 
     def test_guest_user_exists(self):
         """
@@ -898,7 +898,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.course.pk),
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -921,7 +921,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.course.pk),
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
