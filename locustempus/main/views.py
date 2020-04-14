@@ -350,8 +350,11 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
                     send_template_email(
                         subj,
                         self.guest_email_template,
-                        {'course_title': course.title,
-                         'guest_email': addr},
+                        {
+                            'course_title': course.title,
+                            'guest_email': addr,
+                            'site': site
+                        },
                         addr
                     )
                     # Show message to faculty

@@ -2,7 +2,7 @@ Hello,
 
 An instructor has added you to the Locus Tempus course: {{course_title}}.
 
-You can login to Locus Tempus at {{ site.domain }} with your Columbia University Network ID (UNI).
+You can login to Locus Tempus at https://{{ site.domain }} with your Columbia University Network ID (UNI).
 
 Thanks,
 The Locus Tempus Team
