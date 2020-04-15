@@ -12,7 +12,6 @@ from lti_provider.tests.factories import LTICourseContextFactory
 
 
 from locustempus.main.models import Project
-from locustempus.main.views import CourseCreateView
 from locustempus.main.tests.factories import (
     SandboxCourseFactory, CourseTestMixin, ProjectFactory, UserFactory,
 )
