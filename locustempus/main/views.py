@@ -20,7 +20,6 @@ from django.views.generic.detail import DetailView
 from django.views.generic.edit import (
     CreateView, UpdateView, DeleteView
 )
-from django.views.generic.list import ListView
 from lti_provider.models import LTICourseContext
 
 from locustempus.main.forms import (
@@ -29,48 +28,33 @@ from locustempus.main.forms import (
 from locustempus.main.models import Project, GuestUserAffil
 from locustempus.main.utils import send_template_email
 from locustempus.mixins import (
-    LoggedInCourseMixin, LoggedInFacultyMixin, LoggedInSuperuserMixin
+    LoggedInCourseMixin, LoggedInFacultyMixin
 )
 from locustempus.utils import user_display_name
 from typing import (
     Any, Tuple, List
 )
+from uuid import uuid4
 
 
 class IndexView(LoginRequiredMixin, View):
-    template_name = 'main/index.html'
+    template_name = 'main/course_list.html'
     http_method_names = ['get']
 
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        # If user has only one course, redirect to course, else render a list
-        # of courses
+    def get(self, request, *args, **kwargs) -> HttpResponse:
         courses = get_courses_for_user(self.request.user)
-        n = courses.count()
-
-        if n == 0:
-            # Render a view with no courses
-            ctx = {
-                'user': request.user,
-                'courses': None
-            }
-            return render(request, self.template_name, ctx)
-        elif n == 1:
-            # Redirect to the course
-            course = courses.first()
-            return HttpResponseRedirect(
-                reverse('course-detail-view', kwargs={'pk': course.pk}))
-        else:
-            # Render a list of courses
-            return render(request, self.template_name, {
-                'user': request.user,
-                'courses': courses,
-            })
+        ctx = {
+            'user': request.user,
+            'registrar_courses': courses.filter(info__term__isnull=False),
+            'sandbox_courses': courses.filter(info__term__isnull=True)
+        }
+        return render(request, self.template_name, ctx)
 
 
-class CourseCreateView(LoggedInSuperuserMixin, CreateView):
+class CourseCreateView(LoginRequiredMixin, CreateView):
     model = Course
     template_name = 'main/course_create.html'
-    fields = ['title', 'group', 'faculty_group']
+    fields = ['title']
 
     def get_success_url(self) -> str:
         return reverse('course-list-view')
@@ -78,19 +62,25 @@ class CourseCreateView(LoggedInSuperuserMixin, CreateView):
     def form_valid(self, form) -> HttpResponse:
         title = form.cleaned_data['title']
 
-        result = CreateView.form_valid(self, form)
+        student_grp_name = '{}-group-{}'.format(title, uuid4())
+        fac_grp_name = '{}-faculty-group-{}'.format(title, uuid4())
+        student_grp = Group(name=student_grp_name)
+        student_grp.save()
+        student_grp.user_set.add(self.request.user)
 
+        fac_grp = Group(name=fac_grp_name)
+        fac_grp.save()
+        fac_grp.user_set.add(self.request.user)
+
+        form.instance.group = student_grp
+        form.instance.faculty_group = fac_grp
+
+        result = CreateView.form_valid(self, form)
         messages.add_message(
             self.request, messages.SUCCESS,
-            '<strong>{}</strong> cohort created.'.format(title)
+            '<strong>{}</strong> sandbox course created.'.format(title)
         )
-
         return result
-
-
-class CourseListView(LoginRequiredMixin, ListView):
-    model = Course
-    template_name = 'main/course_list.html'
 
 
 class CourseDetailView(LoggedInCourseMixin, DetailView):

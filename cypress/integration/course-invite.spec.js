@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 describe('Course Roster Invite', () => {
     beforeEach(() => {
-        cy.login('faculty', 'test');
+        cy.login('faculty-one', 'test');
     });
     it('Adds a UNI user to a course', () => {
         cy.visit('/course/1/roster/invite/');

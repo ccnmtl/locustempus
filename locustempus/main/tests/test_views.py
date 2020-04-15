@@ -13,7 +13,7 @@ from lti_provider.tests.factories import LTICourseContextFactory
 
 from locustempus.main.models import Project
 from locustempus.main.tests.factories import (
-    CourseFactory, CourseTestMixin, ProjectFactory, UserFactory
+    SandboxCourseFactory, CourseTestMixin, ProjectFactory, UserFactory,
 )
 from unittest.mock import MagicMock
 
@@ -42,7 +42,7 @@ class CourseTest(CourseTestMixin, TestCase):
         self.assertEqual(
             response.url, "/accounts/login/?next=/course/create/")
 
-    def test_create_student(self):
+    def test_create_logged_in(self):
         self.assertTrue(
             self.client.login(
                 username=self.student.username,
@@ -50,76 +50,31 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get("/course/create/")
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 200)
 
-    def test_create_faculty(self):
+    def test_create_course(self):
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
                 password='test'
             )
         )
-        response = self.client.get("/course/create/")
-        self.assertEqual(response.status_code, 403)
-
-    def test_create_superuser(self):
-        self.assertTrue(
-            self.client.login(
-                username=self.superuser.username,
-                password='test'
-            )
+        response = self.client.post(
+            "/course/create/",
+            {'title': 'A test course'}
         )
-        response = self.client.get("/course/create/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_create_superuser_post(self):
-        # TODO
-        pass
-
-    # For CourseListView
-    def test_list_anon(self):
-        response = self.client.get("/course/list/")
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url, "/accounts/login/?next=/course/list/")
-
-    def test_list_student(self):
-        self.assertTrue(
-            self.client.login(
-                username=self.student.username,
-                password='test'
-            )
-        )
-        response = self.client.get("/course/list/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_list_faculty(self):
-        self.assertTrue(
-            self.client.login(
-                username=self.faculty.username,
-                password='test'
-            )
-        )
-        response = self.client.get("/course/list/")
-        self.assertEqual(response.status_code, 200)
-
-    def test_list_superuser(self):
-        self.assertTrue(
-            self.client.login(
-                username=self.superuser.username,
-                password='test'
-            )
-        )
-        response = self.client.get("/course/list/")
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.url, "/")
 
     # For CourseDetailView
     def test_detail_anon(self):
-        response = self.client.get("/course/{}/".format(self.course.pk))
+        response = self.client.get("/course/{}/".format(
+            self.sandbox_course.pk))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/accounts/login/?next=/course/{}/".format(self.course.pk))
+            "/accounts/login/?next=/course/{}/".format(
+                self.sandbox_course.pk))
 
     def test_detail_student_in_course(self):
         self.assertTrue(
@@ -128,11 +83,12 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/".format(self.course.pk))
+        response = self.client.get("/course/{}/".format(
+            self.sandbox_course.pk))
         self.assertEqual(response.status_code, 200)
 
     def test_detail_student_not_in_course(self):
-        alternate_course = CourseFactory.create()
+        alternate_course = SandboxCourseFactory.create()
         self.assertTrue(
             self.client.login(
                 username=self.student.username,
@@ -149,11 +105,12 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/".format(self.course.pk))
+        response = self.client.get("/course/{}/".format(
+            self.sandbox_course.pk))
         self.assertEqual(response.status_code, 200)
 
     def test_detail_faculty_not_in_course(self):
-        alternate_course = CourseFactory.create()
+        alternate_course = SandboxCourseFactory.create()
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
@@ -170,16 +127,19 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/".format(self.course.pk))
+        response = self.client.get("/course/{}/".format(
+            self.sandbox_course.pk))
         self.assertEqual(response.status_code, 200)
 
     # For CourseEditView
     def test_edit_anon(self):
-        response = self.client.get("/course/{}/edit/".format(self.course.pk))
+        response = self.client.get("/course/{}/edit/".format(
+            self.sandbox_course.pk))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/accounts/login/?next=/course/{}/edit/".format(self.course.pk))
+            "/accounts/login/?next=/course/{}/edit/".format(
+                self.sandbox_course.pk))
 
     def test_edit_student(self):
         self.assertTrue(
@@ -188,7 +148,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/edit/".format(self.course.pk))
+        response = self.client.get("/course/{}/edit/".format(
+            self.sandbox_course.pk))
         self.assertEqual(response.status_code, 403)
 
     def test_edit_faculty_in_course(self):
@@ -198,7 +159,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/edit/".format(self.course.pk))
+        response = self.client.get("/course/{}/edit/".format(
+            self.sandbox_course.pk))
         self.assertEqual(response.status_code, 200)
 
     def test_edit_faculty_post(self):
@@ -209,16 +171,16 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/edit/".format(self.course.pk),
+            "/course/{}/edit/".format(self.sandbox_course.pk),
             {'title': 'An edited course'}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/course/{}/".format(self.course.pk))
+            "/course/{}/".format(self.sandbox_course.pk))
 
     def test_edit_faculty_not_in_course(self):
-        alternate_course = CourseFactory.create()
+        alternate_course = SandboxCourseFactory.create()
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
@@ -236,7 +198,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/edit/".format(self.course.pk))
+        response = self.client.get("/course/{}/edit/".format(
+            self.sandbox_course.pk))
         self.assertEqual(response.status_code, 200)
 
     def test_edit_superuser_post(self):
@@ -247,20 +210,22 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/edit/".format(self.course.pk),
+            "/course/{}/edit/".format(self.sandbox_course.pk),
             {'title': 'An edited course'}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/course/{}/".format(self.course.pk))
+            "/course/{}/".format(self.sandbox_course.pk))
 
     def test_delete_anon(self):
-        response = self.client.get("/course/{}/delete/".format(self.course.pk))
+        response = self.client.get("/course/{}/delete/".format(
+            self.sandbox_course.pk))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/accounts/login/?next=/course/{}/delete/".format(self.course.pk))
+            "/accounts/login/?next=/course/{}/delete/".format(
+                self.sandbox_course.pk))
 
     def test_delete_faculty(self):
         self.assertTrue(
@@ -269,7 +234,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/delete/".format(self.course.pk))
+        response = self.client.get("/course/{}/delete/".format(
+            self.sandbox_course.pk))
         self.assertEqual(response.status_code, 200)
 
     def test_delete_faculty_post(self):
@@ -280,12 +246,12 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/delete/".format(self.course.pk))
+            "/course/{}/delete/".format(self.sandbox_course.pk))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/course/list/')
+        self.assertEqual(response.url, '/')
 
     def test_delete_faculty_not_in_course(self):
-        alternate_course = CourseFactory.create()
+        alternate_course = SandboxCourseFactory.create()
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
@@ -303,7 +269,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/delete/".format(self.course.pk))
+        response = self.client.get("/course/{}/delete/".format(
+            self.sandbox_course.pk))
         self.assertEqual(response.status_code, 200)
 
     def test_delete_superuser_post(self):
@@ -314,9 +281,9 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/delete/".format(self.course.pk))
+            "/course/{}/delete/".format(self.sandbox_course.pk))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/course/list/")
+        self.assertEqual(response.url, "/")
 
 
 class CourseRoster(CourseTestMixin, TestCase):
@@ -331,11 +298,11 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/roster/".format(self.course.pk))
+            "/course/{}/roster/".format(self.sandbox_course.pk))
         self.assertEqual(response.status_code, 200)
 
     def test_course_roster_faculty_not_in_course(self):
-        alternate_course = CourseFactory.create()
+        alternate_course = SandboxCourseFactory.create()
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
@@ -354,7 +321,7 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/roster/".format(self.course.pk))
+            "/course/{}/roster/".format(self.sandbox_course.pk))
         self.assertEqual(response.status_code, 200)
 
     def test_course_roster_student(self):
@@ -365,7 +332,7 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/roster/".format(self.course.pk))
+            "/course/{}/roster/".format(self.sandbox_course.pk))
         self.assertEqual(response.status_code, 403)
 
     def test_course_roster_promote(self):
@@ -377,13 +344,13 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/promote/".format(self.course.pk),
+            "/course/{}/roster/promote/".format(self.sandbox_course.pk),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url,
-                         "/course/{}/roster/".format(self.course.pk))
-        self.assertTrue(self.course.is_true_faculty(self.student))
+                         "/course/{}/roster/".format(self.sandbox_course.pk))
+        self.assertTrue(self.sandbox_course.is_true_faculty(self.student))
 
     def test_course_roster_demote(self):
         """Test that a faculty can demote a user"""
@@ -394,15 +361,15 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/demote/".format(self.course.pk),
+            "/course/{}/roster/demote/".format(self.sandbox_course.pk),
             {'user_id': self.faculty.pk}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url,
-                         "/course/{}/roster/".format(self.course.pk))
+                         "/course/{}/roster/".format(self.sandbox_course.pk))
         # Check that the demoted user is still a member of the course
-        self.assertTrue(self.course.is_member(self.faculty))
-        self.assertFalse(self.course.is_true_faculty(self.faculty))
+        self.assertTrue(self.sandbox_course.is_member(self.faculty))
+        self.assertFalse(self.sandbox_course.is_true_faculty(self.faculty))
 
     def test_course_roster_non_members(self):
         """Test that users who are not faculty can not
@@ -414,12 +381,12 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/promote/".format(self.course.pk),
+            "/course/{}/roster/promote/".format(self.sandbox_course.pk),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 403)
         response = self.client.post(
-            "/course/{}/roster/demote/".format(self.course.pk),
+            "/course/{}/roster/demote/".format(self.sandbox_course.pk),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 403)
@@ -433,13 +400,13 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/remove/".format(self.course.pk),
+            "/course/{}/roster/remove/".format(self.sandbox_course.pk),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url,
-                         "/course/{}/roster/".format(self.course.pk))
-        self.assertFalse(self.course.is_true_member(self.student))
+                         "/course/{}/roster/".format(self.sandbox_course.pk))
+        self.assertFalse(self.sandbox_course.is_true_member(self.student))
 
     def test_course_roster_remove_faculty(self):
         """Test that a faculty can demote a user"""
@@ -449,15 +416,15 @@ class CourseRoster(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        self.course.faculty_group.user_set.add(self.student)
+        self.sandbox_course.faculty_group.user_set.add(self.student)
         response = self.client.post(
-            "/course/{}/roster/remove/".format(self.course.pk),
+            "/course/{}/roster/remove/".format(self.sandbox_course.pk),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url,
-                         "/course/{}/roster/".format(self.course.pk))
-        self.assertFalse(self.course.is_true_member(self.student))
+                         "/course/{}/roster/".format(self.sandbox_course.pk))
+        self.assertFalse(self.sandbox_course.is_true_member(self.student))
 
     def test_course_roster_remove_non_members(self):
         """Test that users who are not faculty can not
@@ -469,12 +436,12 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/remove/".format(self.course.pk),
+            "/course/{}/roster/remove/".format(self.sandbox_course.pk),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 403)
         response = self.client.post(
-            "/course/{}/roster/demote/".format(self.course.pk),
+            "/course/{}/roster/demote/".format(self.sandbox_course.pk),
             {'user_id': self.faculty.pk}
         )
         self.assertEqual(response.status_code, 403)
@@ -490,23 +457,23 @@ class CourseRoster(CourseTestMixin, TestCase):
         addr = 'foo@bar.com'
         affil = GuestUserAffil(
             guest_email=addr,
-            course=self.course,
+            course=self.sandbox_course,
             invited_by=self.faculty
         )
         affil.save()
         response = self.client.post(
-            "/course/{}/roster/resend-invite/".format(self.course.pk),
+            "/course/{}/roster/resend-invite/".format(self.sandbox_course.pk),
             {'user_email': addr}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url,
-                         "/course/{}/roster/".format(self.course.pk))
+                         "/course/{}/roster/".format(self.sandbox_course.pk))
 
         self.assertEqual(len(mail.outbox), 1)
 
         self.assertEqual(
             mail.outbox[0].subject,
-            'Locus Tempus Invite: {}'.format(self.course.title))
+            'Locus Tempus Invite: {}'.format(self.sandbox_course.title))
 
     def test_course_roster_uninvite(self):
         """Test that faculty can uninvite a guest user"""
@@ -519,26 +486,26 @@ class CourseRoster(CourseTestMixin, TestCase):
         addr = 'foo@bar.com'
         affil = GuestUserAffil(
             guest_email=addr,
-            course=self.course,
+            course=self.sandbox_course,
             invited_by=self.faculty
         )
         affil.save()
 
         self.assertTrue(
             GuestUserAffil.objects.filter(
-                course=self.course, guest_email=addr).exists())
+                course=self.sandbox_course, guest_email=addr).exists())
 
         response = self.client.post(
-            "/course/{}/roster/uninvite/".format(self.course.pk),
+            "/course/{}/roster/uninvite/".format(self.sandbox_course.pk),
             {'user_email': addr}
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url,
-                         "/course/{}/roster/".format(self.course.pk))
+                         "/course/{}/roster/".format(self.sandbox_course.pk))
 
         self.assertFalse(
             GuestUserAffil.objects.filter(
-                course=self.course, guest_email=addr).exists())
+                course=self.sandbox_course, guest_email=addr).exists())
 
     def test_course_roster_uninvite_non_faculty(self):
         """
@@ -546,11 +513,11 @@ class CourseRoster(CourseTestMixin, TestCase):
         user invited to another course.
         """
         # Set up course and an affil
-        course = CourseFactory.create()
+        course = SandboxCourseFactory.create()
         addr = 'foo@bar.com'
         affil = GuestUserAffil(
             guest_email=addr,
-            course=self.course,
+            course=self.sandbox_course,
             invited_by=self.faculty
         )
         affil.save()
@@ -577,15 +544,15 @@ class LTICourseSelectorTest(CourseTestMixin, TestCase):
 
     def test_get(self):
         ctx = LTICourseContextFactory(
-            group=self.course.group,
-            faculty_group=self.course.faculty_group)
+            group=self.sandbox_course.group,
+            faculty_group=self.sandbox_course.faculty_group)
 
         url = reverse('lti-course-select', args=[ctx.lms_course_context])
 
         self.client.login(username=self.faculty.username, password='test')
         response = self.client.get(url, follow=True)
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.context['course'], self.course)
+        self.assertEqual(response.context['course'], self.sandbox_course)
 
 
 class LTICourseCreateTest(TestCase):
@@ -742,7 +709,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/roster/invite/".format(self.course.pk))
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk))
         self.assertEqual(response.status_code, 200)
 
     def test_get_course_invite_page_student(self):
@@ -753,17 +720,17 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/roster/invite/".format(self.course.pk))
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk))
         self.assertEqual(response.status_code, 403)
 
     def test_get_course_invite_page_anon(self):
         response = self.client.get(
-            "/course/{}/roster/invite/".format(self.course.pk))
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
             "/accounts/login/?next=/course/{}/roster/invite/".format(
-                self.course.pk))
+                self.sandbox_course.pk))
 
     def test_post_valid_uni(self):
         self.assertTrue(
@@ -773,7 +740,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.course.pk),
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -785,7 +752,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/course/{}/roster/".format(self.course.pk))
+            "/course/{}/roster/".format(self.sandbox_course.pk))
 
     def test_post_invalid_uni(self):
         self.assertTrue(
@@ -795,7 +762,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.course.pk),
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -818,7 +785,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         )
         addr = 'foo@bar.com'
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.course.pk),
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -831,10 +798,11 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/course/{}/roster/".format(self.course.pk))
+            "/course/{}/roster/".format(self.sandbox_course.pk))
         self.assertTrue(
             GuestUserAffil.objects.filter(
-                course=self.course, guest_email=addr).exists())
+                course=self.sandbox_course, guest_email=addr).exists())
+        self.assertEqual(2, len(self.sandbox_course.members))
 
     def test_post_cu_email(self):
         """Tests that a CU email address can not be added as a guest user"""
@@ -846,7 +814,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         )
         addr = 'roary@columbia.edu'
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.course.pk),
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -868,7 +836,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         """
         affil = GuestUserAffil(
             guest_email='foo@bar.com',
-            course=self.course,
+            course=self.sandbox_course,
             invited_by=self.faculty
         )
         affil.save()
@@ -881,7 +849,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
 
         mock_sender = MagicMock()
         user_activated.send(sender=mock_sender, user=guest)
-        self.assertTrue(self.course.is_true_member(guest))
+        self.assertTrue(self.sandbox_course.is_true_member(guest))
 
     def test_guest_user_exists(self):
         """
@@ -902,7 +870,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.course.pk),
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -925,7 +893,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.course.pk),
+            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -945,6 +913,10 @@ class DashboardTest(CourseTestMixin, TestCase):
         self.setup_course()
 
     def test_no_course(self):
+        """
+        Tests that the courses created in the setup method
+        do not appear for a new user not in those courses.
+        """
         student = UserFactory.create(
             first_name='Student',
             last_name='Two',
@@ -959,24 +931,16 @@ class DashboardTest(CourseTestMixin, TestCase):
         )
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        self.assertIsNone(response.context['courses'])
-
-    def test_one_course(self):
-        self.assertTrue(
-            self.client.login(
-                username=self.student.username,
-                password='test'
-            )
-        )
-        response = self.client.get("/")
-        self.assertEqual(response.status_code, 302)
         self.assertEqual(
-            response.url,
-            "/course/{}/".format(self.course.pk))
+            response.context['registrar_courses'].count(), 0)
+        self.assertEqual(
+            response.context['sandbox_courses'].count(), 0)
 
-    def test_multiple_courses(self):
-        course = CourseFactory.create()
-        course.group.user_set.add(self.student)
+    def test_courses_present(self):
+        """
+        Tests that the courses created in the setup
+        method appear for users in those courses.
+        """
         self.assertTrue(
             self.client.login(
                 username=self.student.username,
@@ -985,7 +949,10 @@ class DashboardTest(CourseTestMixin, TestCase):
         )
         response = self.client.get("/")
         self.assertEqual(response.status_code, 200)
-        self.assertEqual(len(response.context['courses']), 2)
+        self.assertEqual(
+            response.context['registrar_courses'].count(), 1)
+        self.assertEqual(
+            response.context['sandbox_courses'].count(), 1)
 
 
 class ProjectTest(CourseTestMixin, TestCase):
@@ -1001,7 +968,7 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/create/".format(self.course.pk),
+            "/course/{}/project/create/".format(self.sandbox_course.pk),
             {
                 'title': 'A Test Project',
                 'description': 'A fine description',
@@ -1011,7 +978,7 @@ class ProjectTest(CourseTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/course/{}/project/".format(self.course.pk))
+            "/course/{}/project/".format(self.sandbox_course.pk))
 
     def test_create_project_student(self):
         """Test that students can't create projects"""
@@ -1022,13 +989,13 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/project/create/".format(self.course.pk)
+            "/course/{}/project/create/".format(self.sandbox_course.pk)
         )
         self.assertEqual(response.status_code, 403)
 
     def test_update_project_faculty(self):
         """Test that faculty can update projects"""
-        project = ProjectFactory.create(course=self.course)
+        project = ProjectFactory.create(course=self.sandbox_course)
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
@@ -1036,7 +1003,8 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/{}/edit/".format(self.course.pk, project.pk),
+            "/course/{}/project/{}/edit/".format(
+                self.sandbox_course.pk, project.pk),
             {
                 'title': 'A Test Project',
                 'description': 'A fine description',
@@ -1046,11 +1014,12 @@ class ProjectTest(CourseTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/course/{}/project/{}/".format(self.course.pk, project.pk))
+            "/course/{}/project/{}/".format(
+                self.sandbox_course.pk, project.pk))
 
     def test_update_project_students(self):
         """Test that students can not update projects"""
-        project = ProjectFactory.create(course=self.course)
+        project = ProjectFactory.create(course=self.sandbox_course)
         self.assertTrue(
             self.client.login(
                 username=self.student.username,
@@ -1058,7 +1027,8 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/{}/edit/".format(self.course.pk, project.pk),
+            "/course/{}/project/{}/edit/".format(
+                self.sandbox_course.pk, project.pk),
             {
                 'title': 'A Test Project',
                 'description': 'A fine description',
@@ -1069,7 +1039,7 @@ class ProjectTest(CourseTestMixin, TestCase):
 
     def test_delete_project_faculty(self):
         """Test that faculty can delete projects"""
-        project = ProjectFactory.create(course=self.course)
+        project = ProjectFactory.create(course=self.sandbox_course)
         project_pk = project.pk
         self.assertTrue(
             self.client.login(
@@ -1078,19 +1048,21 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/{}/delete/".format(self.course.pk, project.pk)
+            "/course/{}/project/{}/delete/".format(
+                self.sandbox_course.pk, project.pk)
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/course/{}/project/".format(self.course.pk))
+            "/course/{}/project/".format(self.sandbox_course.pk))
         r2 = self.client.get(
-            "/course/{}/project/{}/".format(self.course.pk, project_pk))
+            "/course/{}/project/{}/".format(
+                self.sandbox_course.pk, project_pk))
         self.assertEqual(r2.status_code, 404)
 
     def test_delete_project_students(self):
         """Test that students can not delete projects"""
-        project = ProjectFactory.create(course=self.course)
+        project = ProjectFactory.create(course=self.sandbox_course)
         self.assertTrue(
             self.client.login(
                 username=self.student.username,
@@ -1098,14 +1070,15 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/{}/delete/".format(self.course.pk, project.pk)
+            "/course/{}/project/{}/delete/".format(
+                self.sandbox_course.pk, project.pk)
         )
         self.assertEqual(response.status_code, 403)
 
     def test_list_project_faculty(self):
         """Test that students and faculty can list projects"""
-        p1 = ProjectFactory.create(course=self.course)
-        p2 = ProjectFactory.create(course=self.course)
+        p1 = ProjectFactory.create(course=self.sandbox_course)
+        p2 = ProjectFactory.create(course=self.sandbox_course)
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
@@ -1113,15 +1086,15 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/project/".format(self.course.pk))
+            "/course/{}/project/".format(self.sandbox_course.pk))
         self.assertIn(p1, response.context['projects'])
         self.assertIn(p2, response.context['projects'])
         self.assertContains(response, 'Create New Project')
 
     def test_list_project_students(self):
         """Test that students and faculty can list projects"""
-        p1 = ProjectFactory(course=self.course)
-        p2 = ProjectFactory(course=self.course)
+        p1 = ProjectFactory(course=self.sandbox_course)
+        p2 = ProjectFactory(course=self.sandbox_course)
         self.assertTrue(
             self.client.login(
                 username=self.student.username,
@@ -1129,7 +1102,7 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/project/".format(self.course.pk))
+            "/course/{}/project/".format(self.sandbox_course.pk))
         self.assertIn(p1, response.context['projects'])
         self.assertIn(p2, response.context['projects'])
         self.assertNotContains(response, 'Create New Project')
@@ -1143,7 +1116,7 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/create/".format(self.course.pk),
+            "/course/{}/project/create/".format(self.sandbox_course.pk),
             {
                 'title': 'A Test Project',
                 'description': 'A fine description',
@@ -1153,15 +1126,16 @@ class ProjectTest(CourseTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
-            "/course/{}/project/".format(self.course.pk))
+            "/course/{}/project/".format(self.sandbox_course.pk))
         project = Project.objects.first()
         r2 = self.client.get(
-            "/course/{}/project/{}/".format(self.course.pk, project.pk))
+            "/course/{}/project/{}/".format(
+                self.sandbox_course.pk, project.pk))
         self.assertEqual(r2.status_code, 200)
 
     def test_detail_project_students(self):
         """Test that students can view a project"""
-        project = ProjectFactory.create(course=self.course)
+        project = ProjectFactory.create(course=self.sandbox_course)
         self.assertTrue(
             self.client.login(
                 username=self.student.username,
@@ -1169,5 +1143,6 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/project/{}/".format(self.course.pk, project.pk))
+            "/course/{}/project/{}/".format(
+                self.sandbox_course.pk, project.pk))
         self.assertEqual(response.status_code, 200)

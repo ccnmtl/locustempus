@@ -33,8 +33,6 @@ urlpatterns = [
         serve, {'document_root': settings.MEDIA_ROOT}),
     url(r'^course/create/$', views.CourseCreateView.as_view(),
         name='course-create-view'),
-    url(r'^course/list/$', views.CourseListView.as_view(),
-        name='course-list-view'),
     url(r'^course/(?P<pk>\d+)/$', views.CourseDetailView.as_view(),
         name='course-detail-view'),
     url(r'^course/(?P<pk>\d+)/edit/$', views.CourseEditView.as_view(),

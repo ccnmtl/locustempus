@@ -11,15 +11,15 @@ class IsCourseFacultyTest(CourseTestMixin, TestCase):
         self.setup_course()
 
     def test_is_course_faculty(self):
-        context = Context({'course': self.course})
+        context = Context({'course': self.sandbox_course})
         self.assertTrue(is_course_faculty(context, self.faculty))
 
     def test_is_course_faculty_student(self):
-        context = Context({'course': self.course})
+        context = Context({'course': self.sandbox_course})
         self.assertFalse(is_course_faculty(context, self.student))
 
     def test_is_course_faculty_not_in_course(self):
-        context = Context({'course': self.course})
+        context = Context({'course': self.sandbox_course})
         some_user = UserFactory(
             first_name='Random',
             last_name='User',

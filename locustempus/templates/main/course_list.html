@@ -5,12 +5,94 @@ List Courses
 {% endblock %}
 
 {% block content %}
-<h1>List Courses</h1>
-<a href="{% url 'course-create-view' %}">Create New Course</a>
-{% for course in object_list %}
-{{ course.title }}
-<a href="{% url 'course-detail-view' course.pk %}">View Course</a>
-<a href="{% url 'course-edit-view' course.pk %}">Edit Course</a>
-<a href="{% url 'course-delete-view' course.pk %}">Delete Course</a>
-{% endfor %}
+<div class="row">
+    <div class="col-12">
+        <h1>List Courses</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <h2>Registrar Courses</h2>
+    </div>
+</div>
+{% if registrar_courses %}
+<div class="row">
+    <div class="col-12">
+        <table class="table table-hover course-roster__table tablesorter" data-cy="registrar-course-table">
+            <thead>
+                <tr>
+                    <th scope="col">Course Title</th>
+                    <th scope="col">Term</th>
+                    <th scope="col">Instructor</th>
+                    <th scope="col">Role</th>
+                    <th scope="col" class="sorter-false">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in registrar_courses %}
+                <tr>
+                    <td><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></td>
+                    <td>{{ course.info.termyear }}</td>
+                    <td>{% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</td>
+                    <td>
+                        {% if user in course.faculty %}Faculty{% else %}Student{% endif %}
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endif %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="d-flex">
+            <h2>Sandbox Courses</h2>
+            <div class="ml-auto">
+                <a href="{% url 'course-create-view' %}" class="btn btn-sm btn-primary" data-cy="course-create-button">Create New Course</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if sandbox_courses %}
+<div class="row">
+    <div class="col-12">
+        <table class="table table-hover course-roster__table tablesorter" data-cy="sandbox-course-table">
+            <thead>
+                <tr>
+                    <th scope="col">Course Title</th>
+                    <th scope="col">Instructor</th>
+                    <th scope="col">Role</th>
+                    <th scope="col" class="sorter-false">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for course in sandbox_courses %}
+                <tr>
+                    <td><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></td>
+                    <td>{% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</td>
+                    <td>
+                        {% if user in course.faculty %}Faculty{% else %}Student{% endif %}
+                    </td>
+                    <td>
+
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% else %}
+<div class="row">
+    <div class="col-12">
+        You are not a member of any sandbox courses.
+    </div>
+</div>
+{% endif %}
 {% endblock %}

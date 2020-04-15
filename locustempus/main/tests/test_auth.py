@@ -2,7 +2,7 @@ from django.test import TestCase, override_settings
 from django.contrib.auth.models import AnonymousUser
 from courseaffils.columbia import CourseStringMapper
 
-from locustempus.main.tests.factories import UserFactory, CourseFactory
+from locustempus.main.tests.factories import UserFactory, SandboxCourseFactory
 from locustempus.main.auth import CourseGroupMapper
 
 
@@ -10,7 +10,7 @@ from locustempus.main.auth import CourseGroupMapper
 class TestCourseGroupMapper(TestCase):
     def setUp(self):
         self.user = UserFactory.create()
-        self.course = CourseFactory.create()
+        self.course = SandboxCourseFactory.create()
 
     def test_map_user_uniremoved(self):
         affils = [self.user.username]

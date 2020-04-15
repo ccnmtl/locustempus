@@ -1,15 +1,37 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block title %}
 Course Create Form
 {% endblock %}
 
 {% block content %}
-<h1>Course Create Form</h1>
-<p>Create all the courses.</p>
-<form action="." method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
-</form>
+<div class="row">
+    <div class="col-12">
+        <h1>Create A Sandbox Course</h1>
+        <p>Create a sandbox course and create a new project to get started.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <form action="." method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">Title:</label>
+                {% if form.title.errors %}
+                    {{ form.title|add_class:"form-control is-invalid"|attr:"data-cy:course-title" }}
+                    <div class="invalid-feedback">
+                        {% for error in form.title.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.title|add_class:"form-control"|attr:"data-cy:field-course-title" }}
+                {% endif %}
+            </div>
+            <input type="submit" class="btn btn-primary" value="Submit" data-cy="submit">
+        </form>
+    </div>
+</div>
 {% endblock %}
