@@ -67,33 +67,6 @@ class CourseTest(CourseTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/")
 
-    def test_course_get_group_names(self):
-        """
-        Tests that get_group_names returns an incrmented
-        title if one already exists.
-        """
-        # First Course
-        title = 'A Sample Course'
-        g1, fg1 = CourseCreateView.get_group_names(title)
-        Group.objects.create(name=g1)
-        Group.objects.create(name=fg1)
-        self.assertEqual(g1, title + '-group-0')
-        self.assertEqual(fg1, title + '-faculty-group-0')
-
-        # Second Course
-        g2, fg2 = CourseCreateView.get_group_names(title)
-        Group.objects.create(name=g2)
-        Group.objects.create(name=fg2)
-        self.assertEqual(g2, title + '-group-1')
-        self.assertEqual(fg2, title + '-faculty-group-1')
-
-        # Third Course
-        g3, fg3 = CourseCreateView.get_group_names(title)
-        Group.objects.create(name=g3)
-        Group.objects.create(name=fg3)
-        self.assertEqual(g3, title + '-group-2')
-        self.assertEqual(fg3, title + '-faculty-group-2')
-
     # For CourseDetailView
     def test_detail_anon(self):
         response = self.client.get("/course/{}/".format(
