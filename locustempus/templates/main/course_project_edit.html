@@ -2,14 +2,13 @@
 {% load widget_tweaks %}
 
 {% block title %}
-Create Project
+Update Project: {{ project.title }}
 {% endblock %}
 
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h1>Create A New Project</h1>
-        <p>Create a new project for this course.</p>
+        <h1>Edit Project: {{ project.title }}</h1>
     </div>
 </div>
 <div class="row">
@@ -56,7 +55,8 @@ Create Project
                     {{ form.base_map|add_class:"form-control"|attr:"data-cy:field-project-base_map" }}
                 {% endif %}
             </div>
-            <input type="submit" class="btn btn-primary" value="Create">
+            <input type="submit" class="btn btn-primary" value="Save">
+            <a href="{% url 'course-project-delete' object.course.pk object.pk %}" class="btn btn-danger">Delete Course</a>
         </form>
     </div>
 </div>

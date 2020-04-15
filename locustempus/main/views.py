@@ -525,21 +525,6 @@ class LTICourseSelector(LoginRequiredMixin, View):
         return HttpResponseRedirect(url)
 
 
-class ProjectListView(LoggedInCourseMixin, View):
-    http_method_names = ['get']
-    template_name = 'main/course_project_list.html'
-
-    def get(self, request, *args, **kwargs) -> HttpResponse:
-        course = get_object_or_404(Course, pk=kwargs.get('pk', None))
-        projects = Project.objects.filter(course=course.pk)
-        ctx = {
-            'course': course,
-            'projects': projects,
-            'is_faculty': course.is_faculty(request.user)
-        }
-        return render(request, self.template_name, ctx)
-
-
 class ProjectView(LoggedInCourseMixin, View):
     http_method_names = ['get']
     template_name = 'main/course_project.html'
@@ -567,8 +552,11 @@ class ProjectCreateView(LoggedInFacultyMixin, CreateView):
             '<strong>{}</strong> has been created.'.format(self.object.title)
         )
         return reverse(
-            'course-project-list',
-            kwargs={'pk': self.kwargs.get('pk')})
+            'course-project-detail',
+            kwargs={
+                'pk': self.kwargs.get('pk'),
+                'project_pk': self.object.pk
+            })
 
     def form_valid(self, form):
         course = get_object_or_404(
@@ -580,7 +568,7 @@ class ProjectCreateView(LoggedInFacultyMixin, CreateView):
 class ProjectUpdateView(LoggedInFacultyMixin, UpdateView):
     model = Project
     fields = ['title', 'description', 'base_map']
-    template_name = 'main/course_project_update.html'
+    template_name = 'main/course_project_edit.html'
     pk_url_kwarg = 'project_pk'
 
     def get_success_url(self):
@@ -607,5 +595,5 @@ class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
             '<strong>{}</strong> has been deleted.'.format(self.object.title)
         )
         return reverse(
-            'course-project-list',
+            'course-detail-view',
             kwargs={'pk': self.kwargs.get('pk')})
