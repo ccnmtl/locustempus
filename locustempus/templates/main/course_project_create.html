@@ -44,7 +44,7 @@ Create Project
                 {% endif %}
             </div>
             <div class="form-group">
-                <label for="{{ form.base_map.id_for_label }}">Description:</label>
+                <label for="{{ form.base_map.id_for_label }}">Base Map:</label>
                 {% if form.base_map.errors %}
                     {{ form.base_map|add_class:"form-control is-invalid"|attr:"data-cy:project-base_map" }}
                     <div class="invalid-feedback">

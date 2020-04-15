@@ -94,6 +94,7 @@ class CourseDetailView(LoggedInCourseMixin, DetailView):
         ctx['is_faculty'] = course.is_true_faculty(self.request.user)
         return ctx
 
+
 class CourseEditView(LoggedInFacultyMixin, UpdateView):
     model = Course
     template_name = 'main/course_edit.html'
@@ -536,7 +537,9 @@ class ProjectView(LoggedInCourseMixin, View):
             pk=kwargs.get('project_pk', None))
         ctx = {
             'course': course,
-            'project': project
+            'project': project,
+            'token': settings.MAPBOX_TOKEN,
+            'is_faculty': course.is_true_faculty(request.user)
         }
         return render(request, self.template_name, ctx)
 

@@ -43,7 +43,7 @@ Update Project: {{ project.title }}
                 {% endif %}
             </div>
             <div class="form-group">
-                <label for="{{ form.base_map.id_for_label }}">Description:</label>
+                <label for="{{ form.base_map.id_for_label }}">Base Map:</label>
                 {% if form.base_map.errors %}
                     {{ form.base_map|add_class:"form-control is-invalid"|attr:"data-cy:project-base_map" }}
                     <div class="invalid-feedback">
@@ -56,7 +56,7 @@ Update Project: {{ project.title }}
                 {% endif %}
             </div>
             <input type="submit" class="btn btn-primary" value="Save">
-            <a href="{% url 'course-project-delete' object.course.pk object.pk %}" class="btn btn-danger">Delete Course</a>
+            <a href="{% url 'course-project-delete' object.course.pk object.pk %}" class="btn btn-danger">Delete Project</a>
         </form>
     </div>
 </div>

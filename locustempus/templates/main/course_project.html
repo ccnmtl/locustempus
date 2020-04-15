@@ -1,21 +1,21 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Project Detail {{ project.title }}
+{{ project.title }}
 {% endblock %}
 
-{% block content %}
-<h1>Project Detail {{ project.title }}</h1>
-<h2>Description</h2>
-{{ project.description }}
-<h2>Base Map</h2>
-<p>
-{{ project.base_map}}
-</p>
-<a class="btn btn-primary" href="{% url 'course-project-edit' course.pk project.pk %}">Edit</a>
-<a class="btn btn-danger" href="{% url 'course-project-delete' course.pk project.pk %}">Delete</a>
+{% block fluid_content %}
+<div id="project-map-container" data-basemap="{{ project.base_map }}" data-maptoken="{{ token }}"></div>
 {% endblock %}
 
 {% block js %}
 <script src="{{STATIC_URL}}build/project.js"></script>
 {% endblock %}
+
+{% block css %}
+<link href="{{STATIC_URL}}build/project.css" rel="stylesheet">
+{% endblock %}
+
+{# Clear the conent and footer blocks #}
+{% block content %}{% endblock %}
+{% block footer%}{% endblock %}

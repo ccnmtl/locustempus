@@ -976,9 +976,6 @@ class ProjectTest(CourseTestMixin, TestCase):
             }
         )
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            "/course/{}/project/".format(self.sandbox_course.pk))
 
     def test_create_project_student(self):
         """Test that students can't create projects"""
@@ -1052,9 +1049,6 @@ class ProjectTest(CourseTestMixin, TestCase):
                 self.sandbox_course.pk, project.pk)
         )
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            "/course/{}/project/".format(self.sandbox_course.pk))
         r2 = self.client.get(
             "/course/{}/project/{}/".format(
                 self.sandbox_course.pk, project_pk))
@@ -1086,7 +1080,7 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/project/".format(self.sandbox_course.pk))
+            "/course/{}/".format(self.sandbox_course.pk))
         self.assertIn(p1, response.context['projects'])
         self.assertIn(p2, response.context['projects'])
         self.assertContains(response, 'Create New Project')
@@ -1102,7 +1096,7 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/project/".format(self.sandbox_course.pk))
+            "/course/{}/".format(self.sandbox_course.pk))
         self.assertIn(p1, response.context['projects'])
         self.assertIn(p2, response.context['projects'])
         self.assertNotContains(response, 'Create New Project')
@@ -1124,9 +1118,6 @@ class ProjectTest(CourseTestMixin, TestCase):
             }
         )
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            "/course/{}/project/".format(self.sandbox_course.pk))
         project = Project.objects.first()
         r2 = self.client.get(
             "/course/{}/project/{}/".format(

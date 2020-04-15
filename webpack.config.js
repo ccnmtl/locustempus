@@ -6,7 +6,7 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 module.exports = {
     entry: {
         main: './media/src/main.js',
-        project: './media/src/project.ts',
+        project: './media/src/project.tsx',
     },
     mode: process.env.WEBPACK_SERVE ? 'development' : 'production',
     output: {

@@ -1,22 +1,26 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Course Detail {{ object.title }}
+{{ object.title }}
 {% endblock %}
 
 {% block content %}
-<h1>Course Detail {{ object.title }}</h1>
+<h1>{{ object.title }}</h1>
+{% if is_faculty %}
 <ul>
     <li><a href="{% url 'course-edit-view' object.pk %}">Edit Course</a></li>
     <li><a href="{% url 'course-roster-view' object.pk %}">Edit Course Roster</a></li>
 </ul>
+{% endif %}
 
 <div class="row">
     <div class="col-12">
         <div class="d-flex">
             <h2>Course Projects</h2>
             <div class="ml-auto">
+                {% if is_faculty %}
                 <a href="{% url 'course-project-create' object.pk %}" class="btn btn-sm btn-primary" data-cy="project-create-button">Create New Project</a>
+                {% endif %}
             </div>
         </div>
     </div>
