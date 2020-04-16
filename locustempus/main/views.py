@@ -538,7 +538,7 @@ class ProjectView(LoggedInCourseMixin, View):
         ctx = {
             'course': course,
             'project': project,
-            'token': settings.MAPBOX_TOKEN,
+            'token': getattr(settings, 'MAPBOX_TOKEN', '123abc'),
             'is_faculty': course.is_true_faculty(request.user)
         }
         return render(request, self.template_name, ctx)
