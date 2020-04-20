@@ -37,7 +37,7 @@ class CourseTest(CourseTestMixin, TestCase):
 
     # For CourseCreateView
     def test_create_anon(self):
-        response = self.client.get("/course/create/")
+        response = self.client.get(reverse('course-create-view'))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url, "/accounts/login/?next=/course/create/")
@@ -49,7 +49,7 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/create/")
+        response = self.client.get(reverse('course-create-view'))
         self.assertEqual(response.status_code, 200)
 
     def test_create_course(self):
@@ -60,7 +60,7 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/create/",
+            reverse('course-create-view'),
             {'title': 'A test course'}
         )
         self.assertEqual(response.status_code, 302)
@@ -68,8 +68,8 @@ class CourseTest(CourseTestMixin, TestCase):
 
     # For CourseDetailView
     def test_detail_anon(self):
-        response = self.client.get("/course/{}/".format(
-            self.sandbox_course.pk))
+        response = self.client.get(
+            reverse('course-detail-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
@@ -83,8 +83,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/".format(
-            self.sandbox_course.pk))
+        response = self.client.get(
+            reverse('course-detail-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 200)
 
     def test_detail_student_not_in_course(self):
@@ -95,7 +95,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/".format(alternate_course.pk))
+        response = self.client.get(
+            reverse('course-detail-view', args=[alternate_course.pk]))
         self.assertEqual(response.status_code, 403)
 
     def test_detail_faculty_in_course(self):
@@ -105,8 +106,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/".format(
-            self.sandbox_course.pk))
+        response = self.client.get(
+            reverse('course-detail-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 200)
 
     def test_detail_faculty_not_in_course(self):
@@ -117,7 +118,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/".format(alternate_course.pk))
+        response = self.client.get(
+            reverse('course-detail-view', args=[alternate_course.pk]))
         self.assertEqual(response.status_code, 403)
 
     def test_detail_superuser(self):
@@ -127,14 +129,14 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/".format(
-            self.sandbox_course.pk))
+        response = self.client.get(
+            reverse('course-detail-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 200)
 
     # For CourseEditView
     def test_edit_anon(self):
-        response = self.client.get("/course/{}/edit/".format(
-            self.sandbox_course.pk))
+        response = self.client.get(
+            reverse('course-edit-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
@@ -148,8 +150,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/edit/".format(
-            self.sandbox_course.pk))
+        response = self.client.get(
+            reverse('course-edit-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 403)
 
     def test_edit_faculty_in_course(self):
@@ -159,8 +161,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/edit/".format(
-            self.sandbox_course.pk))
+        response = self.client.get(
+            reverse('course-edit-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 200)
 
     def test_edit_faculty_post(self):
@@ -171,7 +173,7 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/edit/".format(self.sandbox_course.pk),
+            reverse('course-edit-view', args=[self.sandbox_course.pk]),
             {'title': 'An edited course'}
         )
         self.assertEqual(response.status_code, 302)
@@ -188,7 +190,7 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/edit/".format(alternate_course.pk))
+            reverse('course-edit-view', args=[alternate_course.pk]))
         self.assertEqual(response.status_code, 403)
 
     def test_edit_superuser(self):
@@ -198,8 +200,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/edit/".format(
-            self.sandbox_course.pk))
+        response = self.client.get(
+            reverse('course-edit-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 200)
 
     def test_edit_superuser_post(self):
@@ -210,7 +212,7 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/edit/".format(self.sandbox_course.pk),
+            reverse('course-edit-view', args=[self.sandbox_course.pk]),
             {'title': 'An edited course'}
         )
         self.assertEqual(response.status_code, 302)
@@ -219,13 +221,10 @@ class CourseTest(CourseTestMixin, TestCase):
             "/course/{}/".format(self.sandbox_course.pk))
 
     def test_delete_anon(self):
-        response = self.client.get("/course/{}/delete/".format(
-            self.sandbox_course.pk))
+        url = reverse('course-delete-view', args=[self.sandbox_course.pk])
+        response = self.client.get(url)
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            "/accounts/login/?next=/course/{}/delete/".format(
-                self.sandbox_course.pk))
+        self.assertEqual(response.url, "/accounts/login/?next=" + url)
 
     def test_delete_faculty(self):
         self.assertTrue(
@@ -234,8 +233,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/delete/".format(
-            self.sandbox_course.pk))
+        response = self.client.get(
+            reverse('course-delete-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 200)
 
     def test_delete_faculty_post(self):
@@ -246,7 +245,7 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/delete/".format(self.sandbox_course.pk))
+            reverse('course-delete-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, '/')
 
@@ -259,7 +258,7 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/delete/".format(alternate_course.pk))
+            reverse('course-delete-view', args=[alternate_course.pk]))
         self.assertEqual(response.status_code, 403)
 
     def test_delete_superuser(self):
@@ -269,8 +268,8 @@ class CourseTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/course/{}/delete/".format(
-            self.sandbox_course.pk))
+        response = self.client.get(
+            reverse('course-delete-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 200)
 
     def test_delete_superuser_post(self):
@@ -281,7 +280,7 @@ class CourseTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/delete/".format(self.sandbox_course.pk))
+            reverse('course-delete-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/")
 
@@ -298,7 +297,7 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/roster/".format(self.sandbox_course.pk))
+            reverse('course-roster-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 200)
 
     def test_course_roster_faculty_not_in_course(self):
@@ -310,7 +309,7 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/roster/".format(alternate_course.pk))
+            reverse('course-roster-view', args=[alternate_course.pk]))
         self.assertEqual(response.status_code, 403)
 
     def test_course_roster_superuser(self):
@@ -321,7 +320,7 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/roster/".format(self.sandbox_course.pk))
+            reverse('course-roster-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 200)
 
     def test_course_roster_student(self):
@@ -332,7 +331,7 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/roster/".format(self.sandbox_course.pk))
+            reverse('course-roster-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 403)
 
     def test_course_roster_promote(self):
@@ -344,7 +343,8 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/promote/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-promote-view', args=[self.sandbox_course.pk]),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 302)
@@ -361,7 +361,8 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/demote/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-demote-view', args=[self.sandbox_course.pk]),
             {'user_id': self.faculty.pk}
         )
         self.assertEqual(response.status_code, 302)
@@ -381,12 +382,14 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/promote/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-promote-view', args=[self.sandbox_course.pk]),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 403)
         response = self.client.post(
-            "/course/{}/roster/demote/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-demote-view', args=[self.sandbox_course.pk]),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 403)
@@ -400,7 +403,8 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/remove/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-remove-view', args=[self.sandbox_course.pk]),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 302)
@@ -418,7 +422,8 @@ class CourseRoster(CourseTestMixin, TestCase):
         )
         self.sandbox_course.faculty_group.user_set.add(self.student)
         response = self.client.post(
-            "/course/{}/roster/remove/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-remove-view', args=[self.sandbox_course.pk]),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 302)
@@ -436,12 +441,14 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/remove/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-remove-view', args=[self.sandbox_course.pk]),
             {'user_id': self.student.pk}
         )
         self.assertEqual(response.status_code, 403)
         response = self.client.post(
-            "/course/{}/roster/demote/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-demote-view', args=[self.sandbox_course.pk]),
             {'user_id': self.faculty.pk}
         )
         self.assertEqual(response.status_code, 403)
@@ -462,7 +469,9 @@ class CourseRoster(CourseTestMixin, TestCase):
         )
         affil.save()
         response = self.client.post(
-            "/course/{}/roster/resend-invite/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-resend-invite-view',
+                args=[self.sandbox_course.pk]),
             {'user_email': addr}
         )
         self.assertEqual(response.status_code, 302)
@@ -496,7 +505,8 @@ class CourseRoster(CourseTestMixin, TestCase):
                 course=self.sandbox_course, guest_email=addr).exists())
 
         response = self.client.post(
-            "/course/{}/roster/uninvite/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-uninvite-view', args=[self.sandbox_course.pk]),
             {'user_email': addr}
         )
         self.assertEqual(response.status_code, 302)
@@ -531,7 +541,8 @@ class CourseRoster(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/uninvite/".format(course.pk),
+            reverse(
+                'course-roster-uninvite-view', args=[course.pk]),
             {'user_email': addr}
         )
         self.assertEqual(response.status_code, 403)
@@ -709,7 +720,8 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/roster/invite/".format(self.sandbox_course.pk))
+            reverse('course-roster-invite-user',
+                    args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 200)
 
     def test_get_course_invite_page_student(self):
@@ -720,12 +732,14 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/roster/invite/".format(self.sandbox_course.pk))
+            reverse('course-roster-invite-user',
+                    args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 403)
 
     def test_get_course_invite_page_anon(self):
         response = self.client.get(
-            "/course/{}/roster/invite/".format(self.sandbox_course.pk))
+            reverse('course-roster-invite-user',
+                    args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
@@ -740,7 +754,8 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-invite-user', args=[self.sandbox_course.pk]),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -762,7 +777,8 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-invite-user', args=[self.sandbox_course.pk]),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -785,7 +801,8 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         )
         addr = 'foo@bar.com'
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-invite-user', args=[self.sandbox_course.pk]),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -814,7 +831,8 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         )
         addr = 'roary@columbia.edu'
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-invite-user', args=[self.sandbox_course.pk]),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -870,7 +888,8 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-invite-user', args=[self.sandbox_course.pk]),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -893,7 +912,8 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/roster/invite/".format(self.sandbox_course.pk),
+            reverse(
+                'course-roster-invite-user', args=[self.sandbox_course.pk]),
             {
                 'uni-TOTAL_FORMS': '1',
                 'uni-INITIAL_FORMS': '0',
@@ -968,7 +988,8 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/create/".format(self.sandbox_course.pk),
+            reverse(
+                'course-project-create', args=[self.sandbox_course.pk]),
             {
                 'title': 'A Test Project',
                 'description': 'A fine description',
@@ -986,8 +1007,7 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/project/create/".format(self.sandbox_course.pk)
-        )
+            reverse('course-project-create', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 403)
 
     def test_update_project_faculty(self):
@@ -1000,8 +1020,9 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/{}/edit/".format(
-                self.sandbox_course.pk, project.pk),
+            reverse(
+                'course-project-edit',
+                args=[self.sandbox_course.pk, project.pk]),
             {
                 'title': 'A Test Project',
                 'description': 'A fine description',
@@ -1024,8 +1045,9 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/{}/edit/".format(
-                self.sandbox_course.pk, project.pk),
+            reverse(
+                'course-project-edit',
+                args=[self.sandbox_course.pk, project.pk]),
             {
                 'title': 'A Test Project',
                 'description': 'A fine description',
@@ -1045,13 +1067,14 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/{}/delete/".format(
-                self.sandbox_course.pk, project.pk)
+            reverse(
+                'course-project-delete',
+                args=[self.sandbox_course.pk, project.pk]),
         )
         self.assertEqual(response.status_code, 302)
         r2 = self.client.get(
-            "/course/{}/project/{}/".format(
-                self.sandbox_course.pk, project_pk))
+            reverse('course-project-detail',
+                    args=[self.sandbox_course.pk, project_pk]))
         self.assertEqual(r2.status_code, 404)
 
     def test_delete_project_students(self):
@@ -1064,8 +1087,9 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/{}/delete/".format(
-                self.sandbox_course.pk, project.pk)
+            reverse(
+                'course-project-delete',
+                args=[self.sandbox_course.pk, project.pk]),
         )
         self.assertEqual(response.status_code, 403)
 
@@ -1080,7 +1104,7 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/".format(self.sandbox_course.pk))
+            reverse('course-detail-view', args=[self.sandbox_course.pk]))
         self.assertIn(p1, response.context['projects'])
         self.assertIn(p2, response.context['projects'])
         self.assertContains(response, 'Create New Project')
@@ -1096,7 +1120,7 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/".format(self.sandbox_course.pk))
+            reverse('course-detail-view', args=[self.sandbox_course.pk]))
         self.assertIn(p1, response.context['projects'])
         self.assertIn(p2, response.context['projects'])
         self.assertNotContains(response, 'Create New Project')
@@ -1110,7 +1134,9 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.post(
-            "/course/{}/project/create/".format(self.sandbox_course.pk),
+            reverse(
+                'course-project-create',
+                args=[self.sandbox_course.pk]),
             {
                 'title': 'A Test Project',
                 'description': 'A fine description',
@@ -1120,8 +1146,8 @@ class ProjectTest(CourseTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         project = Project.objects.first()
         r2 = self.client.get(
-            "/course/{}/project/{}/".format(
-                self.sandbox_course.pk, project.pk))
+            reverse('course-project-detail',
+                    args=[self.sandbox_course.pk, project.pk]))
         self.assertEqual(r2.status_code, 200)
 
     def test_detail_project_students(self):
@@ -1134,6 +1160,6 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            "/course/{}/project/{}/".format(
-                self.sandbox_course.pk, project.pk))
+            reverse('course-project-detail',
+                    args=[self.sandbox_course.pk, project.pk]))
         self.assertEqual(response.status_code, 200)
