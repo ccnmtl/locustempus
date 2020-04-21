@@ -74,7 +74,7 @@
 <header>
 {% block topnavbar %}
 <nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-    <a class="navbar-brand" href="#">ProjectName</a>
+    <a class="navbar-brand" href="{% url 'course-list-view' %}">Locus Tempus</a>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
@@ -82,10 +82,7 @@
     <div class="collapse navbar-collapse" id="topNavbar">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item">
-                <a class="nav-link" href="#">Home</a>
-            </li>
-            <li class="nav-item">
-                <a class="nav-link" href="#">Link</a>
+                <a class="nav-link" href="{% url 'course-list-view' %}">Home</a>
             </li>
         </ul>
     </div>
@@ -120,13 +117,6 @@
 
 
 <main role="main" class="pb-4">
-
-    <section class="jumbotron text-center">
-        <div class="container">
-            <h1 class="jumbotron-heading">Banner placeholder</h1>
-        </div>
-    </section>
-
     <section id="content">
         <div class="container">
         {% block pagetitle %}{% endblock %}
@@ -167,6 +157,8 @@
         {% endblock %}
         {% block content %}{% endblock %}
         </div>
+        {# Creates space for a fluid container to be implemented by a map view #}
+        {% block fluid_content %}{% endblock %}
     </section>
 
 </main>

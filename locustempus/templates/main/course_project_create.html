@@ -1,13 +1,63 @@
 {% extends 'base.html' %}
+{% load widget_tweaks %}
 
 {% block title %}
 Create Project
 {% endblock %}
 
 {% block content %}
-<h1>Create Project</h1>
-<form method="post">{% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Create">
-</form>
+<div class="row">
+    <div class="col-12">
+        <h1>Create A New Project</h1>
+        <p>Create a new project for this course.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                <label for="{{ form.title.id_for_label }}">Title:</label>
+                {% if form.title.errors %}
+                    {{ form.title|add_class:"form-control is-invalid"|attr:"data-cy:project-title" }}
+                    <div class="invalid-feedback">
+                        {% for error in form.title.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.title|add_class:"form-control"|attr:"data-cy:field-project-title" }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.description.id_for_label }}">Description:</label>
+                {% if form.description.errors %}
+                    {{ form.description|add_class:"form-control is-invalid"|attr:"data-cy:project-description" }}
+                    <div class="invalid-feedback">
+                        {% for error in form.description.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.description|add_class:"form-control"|attr:"data-cy:field-project-description" }}
+                {% endif %}
+            </div>
+            <div class="form-group">
+                <label for="{{ form.base_map.id_for_label }}">Base Map:</label>
+                {% if form.base_map.errors %}
+                    {{ form.base_map|add_class:"form-control is-invalid"|attr:"data-cy:project-base_map" }}
+                    <div class="invalid-feedback">
+                        {% for error in form.base_map.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.base_map|add_class:"form-control"|attr:"data-cy:field-project-base_map" }}
+                {% endif %}
+            </div>
+            <input type="submit" class="btn btn-primary" value="Create">
+        </form>
+    </div>
+</div>
 {% endblock %}
