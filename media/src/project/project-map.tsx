@@ -1,17 +1,22 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import ReactMapGL, { _MapContext as MapContext, StaticMap,NavigationControl} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
 import DeckGL from '@deck.gl/react';
 
+interface ProjectInfo {
+    title: string;
+    description: string;
+    base_map: string;
+}
 
 export const ProjectMap = () => {
     const mapContainer: any = document.querySelector('#project-map-container');
     const BASEMAP_STYLE = mapContainer.dataset.basemap;
     const TOKEN = mapContainer.dataset.maptoken;
-    const projectTitle = 'A stub for project titles';
-    const projectDescription = 'A very fine project description indeed.';
+    const projectPk = window.location.pathname.split('/').pop();
+    const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>();
 
 
     let layers: any[] = [];
@@ -26,7 +31,23 @@ export const ProjectMap = () => {
         }
     };
 
-    const [staticMapViewport, setStaticMapViewport] = React.useState(viewportState);
+    useEffect(() => {
+        fetch('/api/projects/' + projectPk)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Project info not loaded');
+                }
+                return response.json();
+            })
+            .then((data) => {
+                setProjectInfo(data[0]);
+            });
+    }, []);
+
+    const [
+        staticMapViewport,
+        setStaticMapViewport
+    ] = React.useState(viewportState);
 
     if (layers.length > 0) {
         return (
@@ -44,10 +65,12 @@ export const ProjectMap = () => {
                     preventStyleDiffing={true}
                     mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
                     mapboxApiAccessToken={TOKEN} />
-                <div id='project-map-sidebar'>
-                    <h2>{projectTitle}</h2>
-                    <p>{projectDescription}</p>
-                </div>
+                {projectInfo && (
+                    <div id='project-map-sidebar'>
+                        <h2>{projectInfo.title}</h2>
+                        <p>{projectInfo.description}</p>
+                    </div>
+                )}
                 <div id='map-navigation-control'>
                     <NavigationControl />
                 </div>
@@ -62,10 +85,12 @@ export const ProjectMap = () => {
                 height={'100%'}
                 mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
                 mapboxApiAccessToken={TOKEN}>
-                <div id='project-map-sidebar'>
-                    <h2>{projectTitle}</h2>
-                    <p>{projectDescription}</p>
-                </div>
+                {projectInfo && (
+                    <div id='project-map-sidebar'>
+                        <h2>{projectInfo.title}</h2>
+                        <p>{projectInfo.description}</p>
+                    </div>
+                )}
                 <div id='map-navigation-control'>
                     <NavigationControl />
                 </div>
