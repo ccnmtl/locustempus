@@ -3,8 +3,8 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views.static import serve
-
 from locustempus.main import views
+from rest_framework import routers
 
 
 admin.autodiscover()
@@ -14,7 +14,11 @@ auth_urls = url(r'^accounts/', include('django.contrib.auth.urls'))
 if hasattr(settings, 'CAS_BASE'):
     auth_urls = url(r'^accounts/', include('djangowind.urls'))
 
+router = routers.DefaultRouter()
+router.register(r'projects', views.ProjectViewSet)
+
 urlpatterns = [
+    url(r'^api/', include(router.urls)),
     url(r'^accounts/',
         include('django_registration.backends.activation.urls')),
     auth_urls,
