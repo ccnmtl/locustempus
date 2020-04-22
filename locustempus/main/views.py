@@ -30,7 +30,9 @@ from locustempus.main.utils import send_template_email
 from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin
 )
+from locustempus.main.serializers import ProjectSerializer
 from locustempus.utils import user_display_name
+from rest_framework import viewsets
 from typing import (
     Any, Tuple, List
 )
@@ -542,6 +544,11 @@ class ProjectView(LoggedInCourseMixin, View):
             'is_faculty': course.is_true_faculty(request.user)
         }
         return render(request, self.template_name, ctx)
+
+
+class ProjectViewSet(viewsets.ModelViewSet):
+    serializer_class = ProjectSerializer
+    queryset = Project.objects.all()
 
 
 class ProjectCreateView(LoggedInFacultyMixin, CreateView):
