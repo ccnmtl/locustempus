@@ -3,7 +3,7 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views.static import serve
-from locustempus.main import views
+from locustempus.main import views, viewsets
 from rest_framework import routers
 
 
@@ -15,7 +15,7 @@ if hasattr(settings, 'CAS_BASE'):
     auth_urls = url(r'^accounts/', include('djangowind.urls'))
 
 router = routers.DefaultRouter()
-router.register(r'projects', views.ProjectViewSet)
+router.register(r'projects', viewsets.ProjectApiView, basename='api-project')
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),

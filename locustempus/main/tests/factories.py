@@ -28,6 +28,10 @@ class SandboxCourseFactory(factory.DjangoModelFactory):
     group = factory.SubFactory(GroupFactory)
     faculty_group = factory.SubFactory(GroupFactory)
 
+    @factory.post_generation
+    def generate_project(obj, create, extracted, **kwargs):
+        ProjectFactory(course=obj)
+
 
 class RegistrarCourseFactory(factory.DjangoModelFactory):
     class Meta:
@@ -42,6 +46,10 @@ class RegistrarCourseFactory(factory.DjangoModelFactory):
         current_year = datetime.datetime.now().year
         obj.info.year = randrange(current_year, current_year + 5)
         obj.info.save()
+
+    @factory.post_generation
+    def generate_project(obj, create, extracted, **kwargs):
+        ProjectFactory(course=obj)
 
 
 class CourseTestMixin(object):
