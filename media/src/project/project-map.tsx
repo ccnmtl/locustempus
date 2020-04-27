@@ -33,7 +33,7 @@ export const ProjectMap = () => {
     };
 
     useEffect(() => {
-        fetch('/api/projects/' + projectPk)
+        fetch(`/api/project/${projectPk}/`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Project info not loaded');

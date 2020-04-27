@@ -15,7 +15,7 @@ if hasattr(settings, 'CAS_BASE'):
     auth_urls = url(r'^accounts/', include('djangowind.urls'))
 
 router = routers.DefaultRouter()
-router.register(r'projects', viewsets.ProjectApiView, basename='api-project')
+router.register(r'project', viewsets.ProjectApiView, basename='api-project')
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
