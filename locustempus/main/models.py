@@ -20,7 +20,8 @@ class Layer(models.Model):
 class Project(models.Model):
     title = models.CharField(max_length=256)
     description = models.CharField(max_length=256)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ForeignKey(
+        Course, on_delete=models.CASCADE, related_name='projects')
     BASE_MAPS = [
         ('streets-v11', 'Street'),
         ('outdoors-v11', 'Outdoors'),

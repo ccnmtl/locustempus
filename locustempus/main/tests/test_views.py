@@ -11,7 +11,6 @@ from lti_provider.models import LTICourseContext
 from lti_provider.tests.factories import LTICourseContextFactory
 
 
-from locustempus.main.models import Project
 from locustempus.main.tests.factories import (
     SandboxCourseFactory, CourseTestMixin, ProjectFactory, UserFactory,
 )
@@ -1133,22 +1132,11 @@ class ProjectTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.post(
-            reverse(
-                'course-project-create',
-                args=[self.sandbox_course.pk]),
-            {
-                'title': 'A Test Project',
-                'description': 'A fine description',
-                'base_map': 'dark-v10'
-            }
-        )
-        self.assertEqual(response.status_code, 302)
-        project = Project.objects.first()
-        r2 = self.client.get(
+        project = self.sandbox_course.projects.first()
+        response = self.client.get(
             reverse('course-project-detail',
                     args=[self.sandbox_course.pk, project.pk]))
-        self.assertEqual(r2.status_code, 200)
+        self.assertEqual(response.status_code, 200)
 
     def test_detail_project_students(self):
         """Test that students can view a project"""

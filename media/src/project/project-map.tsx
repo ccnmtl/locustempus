@@ -15,7 +15,8 @@ export const ProjectMap = () => {
     const mapContainer: any = document.querySelector('#project-map-container');
     const BASEMAP_STYLE = mapContainer.dataset.basemap;
     const TOKEN = mapContainer.dataset.maptoken;
-    const projectPk = window.location.pathname.split('/').pop();
+    const pathList = window.location.pathname.split('/');
+    const projectPk = pathList[pathList.length - 2];
     const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>();
 
 
@@ -32,7 +33,7 @@ export const ProjectMap = () => {
     };
 
     useEffect(() => {
-        fetch('/api/projects/' + projectPk)
+        fetch(`/api/project/${projectPk}/`)
             .then((response) => {
                 if (!response.ok) {
                     throw new Error('Project info not loaded');
@@ -40,7 +41,7 @@ export const ProjectMap = () => {
                 return response.json();
             })
             .then((data) => {
-                setProjectInfo(data[0]);
+                setProjectInfo(data);
             });
     }, []);
 
