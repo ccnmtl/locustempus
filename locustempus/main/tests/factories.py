@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 import factory
 from random import randrange
 
-from locustempus.main.models import Project
+from locustempus.main.models import Project, Assignment, Response
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -92,3 +92,17 @@ class ProjectFactory(factory.DjangoModelFactory):
     description = factory.Sequence('A test description {}'.format)
     course = factory.SubFactory(SandboxCourseFactory)
     base_map = 'dark-v10'
+
+
+class AssignmentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Assignment
+    project = factory.SubFactory(ProjectFactory)
+    instructions = factory.Faker('paragraph')
+
+
+class ResponseFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Response
+    assignment = factory.SubFactory(AssignmentFactory)
+    user = factory.SubFactory(UserFactory)
