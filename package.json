@@ -59,7 +59,7 @@
     "react-dom": "~16.13.1",
     "react-map-gl": "^5.2.5",
     "tablesorter": "^2.31.3",
-    "ts-loader": "^7.0.2",
+    "ts-loader": "^7.0.4",
     "typescript": "^3.8.3"
   }
 }
