@@ -49,7 +49,7 @@
     "@typescript-eslint/eslint-plugin": "^2.33.0",
     "@typescript-eslint/parser": "^2.33.0",
     "bootstrap": "^4.5.0",
-    "deck.gl": "^8.1.5",
+    "deck.gl": "^8.1.7",
     "install": "^0.13.0",
     "jquery": "^3.5.1",
     "npm": "^6.14.5",
