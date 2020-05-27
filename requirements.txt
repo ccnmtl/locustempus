@@ -50,7 +50,7 @@ astroid==2.3.2
 wrapt==1.12.1
 lazy-object-proxy==1.4.3
 pylint==2.4.3
-six==1.14.0
+six==1.15.0
 ipaddress==1.0.23  # faker
 faker==3.0.1  # factory_boy
 factory_boy==2.12.0
