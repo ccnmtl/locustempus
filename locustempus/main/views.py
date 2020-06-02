@@ -10,7 +10,10 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.shortcuts import get_current_site
-from django.http import HttpRequest, HttpResponse, HttpResponseRedirect
+from django.core.exceptions import PermissionDenied
+from django.http import (
+    HttpRequest, HttpResponse, HttpResponseRedirect, Http404
+)
 from django.shortcuts import get_object_or_404, render
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
@@ -23,9 +26,9 @@ from django.views.generic.edit import (
 from lti_provider.models import LTICourseContext
 
 from locustempus.main.forms import (
-    InviteUNIFormset, InviteEmailFormset
+    InviteUNIFormset, InviteEmailFormset, AssignmentProjectForm
 )
-from locustempus.main.models import Project, GuestUserAffil
+from locustempus.main.models import Assignment, GuestUserAffil, Project
 from locustempus.main.utils import send_template_email
 from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin
@@ -600,3 +603,84 @@ class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
         return reverse(
             'course-detail-view',
             kwargs={'pk': self.kwargs.get('pk')})
+
+
+class AssignmentCreateView(LoggedInFacultyMixin, View):
+    form_class = AssignmentProjectForm
+    template_name = 'main/assignment_create.html'
+
+    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        form = self.form_class()
+        return render(request, self.template_name, {'form': form})
+
+    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
+        form = self.form_class(request.POST)
+        project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
+        if form.is_valid():
+            assignment = Assignment(
+                project=project,
+                instructions=form.cleaned_data['instructions']
+            )
+            assignment.save()
+            return HttpResponseRedirect(
+                reverse('course-detail-view', args=[kwargs.get('pk')]))
+
+        return render(request, self.template_name, {'form': form})
+
+
+class AssignmentDetailView(LoggedInCourseMixin, View):
+    template_name = 'main/assignment_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        project = get_object_or_404(Project, pk=kwargs.get('project_pk'))
+        try:
+            ctx = {
+                'assignment': project.assignment,
+                'project': project,
+                'is_faculty': project.course.is_true_faculty(request.user)
+            }
+            return render(
+                request, self.template_name, ctx)
+        except Assignment.DoesNotExist:
+            raise Http404("This project does not have an assignment")
+
+
+class AssignmentUpdateView(LoggedInFacultyMixin, UpdateView):
+    project = Assignment
+    fields = ['instructions']
+    template_name = 'main/assignment_update.html'
+
+    def get_object(self, queryset=None):
+        project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
+        return project.assignment
+
+    def get_success_url(self):
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            '<strong>{}</strong> has been updated.'.format(self.object.title)
+        )
+        return reverse(
+            'assignment-detail',
+            kwargs={
+                'pk': self.kwargs.get('pk'),
+                'project_pk': self.kwargs.get('project_pk'),
+            })
+
+
+class AssignmentDeleteView(LoggedInFacultyMixin, DeleteView):
+    model = Assignment
+    template_name = 'main/assignment_delete.html'
+
+    def get_object(self, queryset=None):
+        project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
+        if project.assignment.responses.count():
+            raise PermissionDenied
+
+        return project.assignment
+
+    def get_success_url(self):
+        messages.add_message(
+            self.request, messages.SUCCESS,
+            '<strong>{}</strong> has been deleted.'.format(self.object.title)
+        )
+        return reverse('course-detail-view', args=[self.kwargs.get('pk')])

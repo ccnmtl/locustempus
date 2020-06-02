@@ -41,7 +41,19 @@
                 <tr>
                     <td><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></td>
                     <td>
-                        {% if user in object.faculty %}<a href="{% url 'course-project-edit' course.pk project.pk %}">Edit</a> {% endif %}<a href="{% url 'course-project-detail' course.pk project.pk %}">View</a>
+                        {% if user in object.faculty %}
+                        <a class="btn btn-sm btn-primary" href="{% url 'course-project-edit' course.pk project.pk %}">Edit</a>
+                            {% if project.assignment %}
+                            <a class="btn btn-sm btn-primary" data-cy="manage-assignment-button" href="{% url 'assignment-detail' course.pk project.pk %}">Manage Assignment</a>
+                            {% else %}
+                            <a class="btn btn-sm btn-primary" data-cy="create-assignment-button" href="{% url 'assignment-create' course.pk project.pk %}">Create Assignment</a>
+                            {% endif %}
+                        {% else %}
+                            {% if project.assignment %}
+                            <a class="btn btn-sm btn-primary" data-cy="view-assignment-button" href="{% url 'assignment-detail' course.pk project.pk %}">View Assignment</a>
+                            {% endif %}
+                        {% endif %}
+                        <a class="btn btn-sm btn-primary" href="{% url 'course-project-detail' course.pk project.pk %}">View</a>
                     </td>
                 </tr>
                 {% endfor %}

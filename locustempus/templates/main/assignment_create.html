@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Create Project
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>Create A New Assignment</h1>
+        <p>Create a new assignment for this course.</p>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                <label for="{{ form.instructions.id_for_label }}">Instructions:</label>
+                {% if form.instructions.errors %}
+                    {{ form.instructions|add_class:"form-control is-invalid"|attr:"data-cy:field-assignment-instructions" }}
+                    <div class="invalid-feedback">
+                        {% for error in form.instructions.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.instructions|add_class:"form-control"|attr:"data-cy:field-assignment-instructions" }}
+                {% endif %}
+            </div>
+            <input type="submit" class="btn btn-primary" data-cy="assignment-form-create-button" value="Create">
+        </form>
+    </div>
+</div>
+{% endblock %}
