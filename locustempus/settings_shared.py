@@ -25,6 +25,7 @@ INSTALLED_APPS += [  # noqa
     'widget_tweaks',
     'django_registration',
     'rest_framework',
+    'generic_relations',
 ]
 
 MIDDLEWARE += [ # noqa
