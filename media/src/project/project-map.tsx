@@ -5,6 +5,22 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
 import DeckGL from '@deck.gl/react';
 
+interface ProjectMapSidebarProps {
+    title: string;
+    description: string;
+}
+
+export const ProjectMapSidebar = (
+    {title, description}: ProjectMapSidebarProps) => {
+    return (
+        <div id='project-map-sidebar'>
+            <h2>{title}</h2>
+            <p>{description}</p>
+        </div>
+    )
+
+}
+
 interface ProjectInfo {
     title: string;
     description: string;
@@ -67,10 +83,9 @@ export const ProjectMap = () => {
                     mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
                     mapboxApiAccessToken={TOKEN} />
                 {projectInfo && (
-                    <div id='project-map-sidebar'>
-                        <h2>{projectInfo.title}</h2>
-                        <p>{projectInfo.description}</p>
-                    </div>
+                    <ProjectMapSidebar
+                        title={projectInfo.title}
+                        description={projectInfo.description} />
                 )}
                 <div id='map-navigation-control'>
                     <NavigationControl />
@@ -87,10 +102,9 @@ export const ProjectMap = () => {
                 mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
                 mapboxApiAccessToken={TOKEN}>
                 {projectInfo && (
-                    <div id='project-map-sidebar'>
-                        <h2>{projectInfo.title}</h2>
-                        <p>{projectInfo.description}</p>
-                    </div>
+                    <ProjectMapSidebar
+                        title={projectInfo.title}
+                        description={projectInfo.description} />
                 )}
                 <div id='map-navigation-control'>
                     <NavigationControl />
