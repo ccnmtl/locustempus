@@ -27,6 +27,10 @@ INSTALLED_APPS += [  # noqa
     'rest_framework',
 ]
 
+MIDDLEWARE += [ # noqa
+    'locustempus.main.middleware.WhoDidItMiddleware',
+]
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',

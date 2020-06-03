@@ -8,8 +8,19 @@ Delete Project
 <h1>Delete Project "{{ object }}"</h1>
 <form method="post">{% csrf_token %}
     <p>
-    Are you sure that you want to delete the project: "{{ object }}"
+    Are you sure that you want to delete the project: "{{ object }}"?
     </p>
+    {% if object.assignment %}
+        {% if object.assignment.responses %}
+        <p>
+            This project has an assignment with {{ object.assignment.responses.count }} response(s).
+        </p>
+        {% else %}
+        <p>
+            This project has an assignment but does not have responses.
+        </p>
+        {% endif %}
+    {% endif %}
     <a class="btn btn-primary" href="{% url 'course-project-detail' object.course.pk object.pk %}">Cancel</a>
     <input class="btn btn-danger" type="submit" value="Delete">
 </form>

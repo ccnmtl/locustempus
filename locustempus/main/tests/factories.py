@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 import factory
 from random import randrange
 
-from locustempus.main.models import Project
+from locustempus.main.models import Project, Assignment, Response
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -52,6 +52,37 @@ class RegistrarCourseFactory(factory.DjangoModelFactory):
         ProjectFactory(course=obj)
 
 
+class ProjectFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Project
+    title = factory.Sequence('Project {}'.format)
+    description = factory.Sequence('A test description {}'.format)
+    course = factory.SubFactory(SandboxCourseFactory)
+    base_map = 'dark-v10'
+
+
+class AssignmentFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Assignment
+    project = factory.SubFactory(ProjectFactory)
+    instructions = factory.Faker('paragraph')
+
+
+class ResponseFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Response
+    assignment = factory.SubFactory(AssignmentFactory)
+
+    @factory.post_generation
+    def owners(self, create, extracted, **kwargs):
+        if not create:
+            return
+        if extracted:
+            for user in extracted:
+                self.owners.add(
+                    user, through_defaults={'assignment': self.assignment})
+
+
 class CourseTestMixin(object):
     def setup_course(self) -> None:
         # Users
@@ -77,18 +108,19 @@ class CourseTestMixin(object):
         self.registrar_course.group.user_set.add(self.student)
         self.registrar_course.group.user_set.add(self.faculty)
         self.registrar_course.faculty_group.user_set.add(self.faculty)
+        self.registrar_course_project = ProjectFactory.create(
+            course=self.registrar_course)
+        self.registrar_course_assignment = AssignmentFactory.create(
+            project=self.registrar_course_project)
+        ResponseFactory.create(
+            assignment=self.registrar_course_assignment, owners=[self.student])
+        ProjectFactory.create(course=self.registrar_course)
 
         # Sandbox Course
         self.sandbox_course: Course = SandboxCourseFactory.create()
         self.sandbox_course.group.user_set.add(self.student)
         self.sandbox_course.group.user_set.add(self.faculty)
         self.sandbox_course.faculty_group.user_set.add(self.faculty)
-
-
-class ProjectFactory(factory.DjangoModelFactory):
-    class Meta:
-        model = Project
-    title = factory.Sequence('Project {}'.format)
-    description = factory.Sequence('A test description {}'.format)
-    course = factory.SubFactory(SandboxCourseFactory)
-    base_map = 'dark-v10'
+        p2 = ProjectFactory.create(course=self.sandbox_course)
+        a2 = AssignmentFactory.create(project=p2)
+        ResponseFactory.create(assignment=a2, owners=[self.student])

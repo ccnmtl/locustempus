@@ -75,6 +75,18 @@ urlpatterns = [
     url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/delete/$',
         views.ProjectDeleteView.as_view(),
         name='course-project-delete'),
+    url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/assignment/create/$',
+        views.AssignmentCreateView.as_view(),
+        name='assignment-create'),
+    url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/assignment/$',
+        views.AssignmentDetailView.as_view(),
+        name='assignment-detail'),
+    url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/assignment/update/$',
+        views.AssignmentUpdateView.as_view(),
+        name='assignment-update'),
+    url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/assignment/delete/$',
+        views.AssignmentDeleteView.as_view(),
+        name='assignment-delete'),
 ]
 
 

@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Create Project
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <h1>Update Assignment: {{ object.title }}</h1>
+    </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <form method="post">
+            {% csrf_token %}
+            {{ form.non_field_errors }}
+            <div class="form-group">
+                <label for="{{ form.instructions.id_for_label }}">Instructions:</label>
+                {% if form.instructions.errors %}
+                    {{ form.instructions|add_class:"form-control is-invalid"|attr:"data-cy:field-assignment-instructions" }}
+                    <div class="invalid-feedback">
+                        {% for error in form.instructions.errors %}
+                            {{ error }}
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    {{ form.instructions|add_class:"form-control"|attr:"data-cy:field-assignment-instructions" }}
+                {% endif %}
+            </div>
+            <a class="btn btn-primary" href="{% url 'assignment-detail' object.project.course.pk object.project.pk %}">Cancel</a>
+            <input type="submit" class="btn btn-primary" data-cy="assignment-form-update-button" value="Save">
+        </form>
+    </div>
+</div>
+{% endblock %}
