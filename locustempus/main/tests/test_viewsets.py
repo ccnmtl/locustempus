@@ -156,3 +156,100 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         response = self.client.get(
             reverse('api-project-detail', args=[project.pk]))
         self.assertEqual(response.status_code, 403)
+
+
+class LayerAPITest(CourseTestMixin, TestCase):
+    def setUp(self):
+        self.setup_course()
+
+    def test_layer_create(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        project = self.sandbox_course.projects.first()
+        response = self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'A Title',
+                'content_object': reverse(
+                    'api-project-detail', args=[project.pk])
+            }
+        )
+        self.assertEqual(response.status_code, 201)
+
+    def test_layer_read(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        project = self.sandbox_course.projects.first()
+        self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'A Title',
+                'content_object': reverse(
+                    'api-project-detail', args=[project.pk])
+            }
+        )
+
+        layer = project.layers.first()
+        response = self.client.get(
+            reverse('api-layer-detail', args=[layer.pk])
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_layer_update(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        project = self.sandbox_course.projects.first()
+        r1 = self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'A Title',
+                'content_object': reverse(
+                    'api-project-detail', args=[project.pk])
+            }
+        )
+        self.assertEqual(r1.status_code, 201)
+
+        r2 = self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'A Different Title',
+                'content_object': reverse(
+                    'api-project-detail', args=[project.pk])
+            }
+        )
+        self.assertEqual(r2.status_code, 201)
+
+    def test_layer_delete(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        project = self.sandbox_course.projects.first()
+        self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'A Title',
+                'content_object': reverse(
+                    'api-project-detail', args=[project.pk])
+            }
+        )
+
+        layer = project.layers.first()
+        response = self.client.delete(
+            reverse('api-layer-detail', args=[layer.pk])
+        )
+        self.assertEqual(response.status_code, 204)

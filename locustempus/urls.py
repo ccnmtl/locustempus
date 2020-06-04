@@ -16,6 +16,7 @@ if hasattr(settings, 'CAS_BASE'):
 
 router = routers.DefaultRouter()
 router.register(r'project', viewsets.ProjectApiView, basename='api-project')
+router.register(r'layer', viewsets.LayerApiView, basename='api-layer')
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
