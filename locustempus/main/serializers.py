@@ -4,8 +4,11 @@ from rest_framework import serializers
 
 
 class ProjectSerializer(serializers.HyperlinkedModelSerializer):
-    layers = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Layer.objects.all())
+    layers = serializers.HyperlinkedRelatedField(
+        read_only=True,
+        many=True,
+        view_name='api-layer-detail'
+    )
 
     class Meta:
         model = Project

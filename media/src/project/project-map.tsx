@@ -25,6 +25,12 @@ interface ProjectInfo {
     title: string;
     description: string;
     base_map: string;
+    layers: Array<string>;
+}
+
+interface LayerInfo {
+    title: string;
+    content_object: string; // The API URL to the parent project/response
 }
 
 export const ProjectMap = () => {
@@ -34,6 +40,7 @@ export const ProjectMap = () => {
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
     const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>();
+    const [layerData, setLayerData] = useState<LayerInfo[] | null>();
 
 
     let layers: any[] = [];
@@ -49,16 +56,26 @@ export const ProjectMap = () => {
     };
 
     useEffect(() => {
-        fetch(`/api/project/${projectPk}/`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Project info not loaded');
-                }
-                return response.json();
-            })
-            .then((data) => {
-                setProjectInfo(data);
-            });
+        let getData = async() => {
+            let projectResponse = await fetch(`/api/project/${projectPk}/`);
+            if (!projectResponse.ok) {
+                throw new Error('Project data not loaded');
+            }
+            let projectData = await projectResponse.json();
+            setProjectInfo(projectData);
+
+            let layersRsps = await Promise.all(
+                projectData.layers.map((layer: string) => {
+                    return fetch(layer);
+                })
+            );
+            let layers = await Promise.all(
+                layersRsps.map((response: any) => { return response.json(); })
+            );
+            setLayerData(layers);
+        };
+
+        getData();
     }, []);
 
     const [
