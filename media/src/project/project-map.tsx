@@ -8,24 +8,7 @@ import DeckGL from '@deck.gl/react';
 interface ProjectMapSidebarProps {
     title: string;
     description: string;
-}
-
-export const ProjectMapSidebar = (
-    {title, description}: ProjectMapSidebarProps) => {
-    return (
-        <div id='project-map-sidebar'>
-            <h2>{title}</h2>
-            <p>{description}</p>
-        </div>
-    )
-
-}
-
-interface ProjectInfo {
-    title: string;
-    description: string;
-    base_map: string;
-    layers: Array<string>;
+    layers: LayerInfo[];
 }
 
 interface LayerInfo {
@@ -33,14 +16,33 @@ interface LayerInfo {
     content_object: string; // The API URL to the parent project/response
 }
 
+interface ProjectInfo {
+    title: string;
+    description: string;
+    base_map: string;
+    layers: LayerInfo[];
+}
+
+export const ProjectMapSidebar = (
+    {title, description, layers}: ProjectMapSidebarProps) => {
+    return (
+        <div id='project-map-sidebar'>
+            <h2>{title}</h2>
+            <p>{description}</p>
+            {layers && layers.map(
+                (layer) => { return (<div>{layer.title}</div>);})}
+        </div>
+    );
+};
+
 export const ProjectMap = () => {
     const mapContainer: any = document.querySelector('#project-map-container');
     const BASEMAP_STYLE = mapContainer.dataset.basemap;
     const TOKEN = mapContainer.dataset.maptoken;
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
-    const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>();
-    const [layerData, setLayerData] = useState<LayerInfo[] | null>();
+    const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
+    const [layerData, setLayerData] = useState<LayerInfo[]>([]);
 
 
     let layers: any[] = [];
@@ -76,6 +78,8 @@ export const ProjectMap = () => {
         };
 
         getData();
+
+
     }, []);
 
     const [
@@ -102,7 +106,8 @@ export const ProjectMap = () => {
                 {projectInfo && (
                     <ProjectMapSidebar
                         title={projectInfo.title}
-                        description={projectInfo.description} />
+                        description={projectInfo.description}
+                        layers={[]}/>
                 )}
                 <div id='map-navigation-control'>
                     <NavigationControl />
@@ -121,7 +126,8 @@ export const ProjectMap = () => {
                 {projectInfo && (
                     <ProjectMapSidebar
                         title={projectInfo.title}
-                        description={projectInfo.description} />
+                        description={projectInfo.description}
+                        layers={layerData}/>
                 )}
                 <div id='map-navigation-control'>
                     <NavigationControl />
