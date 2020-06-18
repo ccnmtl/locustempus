@@ -8,10 +8,10 @@ import DeckGL from '@deck.gl/react';
 interface ProjectMapSidebarProps {
     title: string;
     description: string;
-    layers: LayerInfo[];
+    layers: LayerProps[];
 }
 
-interface LayerInfo {
+interface LayerProps {
     title: string;
     content_object: string; // The API URL to the parent project/response
 }
@@ -20,8 +20,17 @@ interface ProjectInfo {
     title: string;
     description: string;
     base_map: string;
-    layers: LayerInfo[];
+    layers: LayerProps[];
 }
+
+export const Layer = (layerData: LayerProps)=> {
+    return (
+        <div>
+            <h3>{layerData.title}</h3>
+            <p>{layerData.content_object}</p>
+        </div>
+    );
+};
 
 export const ProjectMapSidebar = (
     {title, description, layers}: ProjectMapSidebarProps) => {
@@ -30,7 +39,7 @@ export const ProjectMapSidebar = (
             <h2>{title}</h2>
             <p>{description}</p>
             {layers && layers.map(
-                (layer) => { return (<div>{layer.title}</div>);})}
+                (layer) => {return (<Layer {...layer} />);})}
         </div>
     );
 };
@@ -42,7 +51,7 @@ export const ProjectMap = () => {
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
     const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
-    const [layerData, setLayerData] = useState<LayerInfo[]>([]);
+    const [layerData, setLayerData] = useState<LayerProps[]>([]);
 
 
     let layers: any[] = [];
@@ -78,8 +87,6 @@ export const ProjectMap = () => {
         };
 
         getData();
-
-
     }, []);
 
     const [
