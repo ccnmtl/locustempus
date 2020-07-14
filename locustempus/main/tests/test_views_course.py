@@ -9,9 +9,7 @@ from locustempus.main.tests.factories import (
 class BasicTest(TestCase):
     def test_root(self):
         response = self.client.get("/")
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url, "/accounts/login/?next=/")
+        self.assertEqual(response.status_code, 200)
 
     def test_smoketest(self):
         response = self.client.get("/smoketest/")
@@ -52,7 +50,7 @@ class CourseTest(CourseTestMixin, TestCase):
             {'title': 'A test course'}
         )
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/")
+        self.assertEqual(response.url, "/dashboard/")
 
     # For CourseDetailView
     def test_detail_anon(self):
@@ -235,7 +233,7 @@ class CourseTest(CourseTestMixin, TestCase):
         response = self.client.post(
             reverse('course-delete-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, '/')
+        self.assertEqual(response.url, '/dashboard/')
 
     def test_delete_faculty_not_in_course(self):
         alternate_course = SandboxCourseFactory.create()
@@ -270,7 +268,7 @@ class CourseTest(CourseTestMixin, TestCase):
         response = self.client.post(
             reverse('course-delete-view', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 302)
-        self.assertEqual(response.url, "/")
+        self.assertEqual(response.url, "/dashboard/")
 
 
 class DashboardTest(CourseTestMixin, TestCase):
@@ -294,7 +292,7 @@ class DashboardTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/")
+        response = self.client.get("/dashboard/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.context['registrar_courses'].count(), 0)
@@ -312,7 +310,7 @@ class DashboardTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
-        response = self.client.get("/")
+        response = self.client.get("/dashboard/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
             response.context['registrar_courses'].count(), 1)

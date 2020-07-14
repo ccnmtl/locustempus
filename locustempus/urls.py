@@ -36,6 +36,8 @@ urlpatterns = [
     url(r'infranil/', include('infranil.urls')),
     url(r'^uploads/(?P<path>.*)$$',
         serve, {'document_root': settings.MEDIA_ROOT}),
+    url(r'^dashboard/$', views.DashboardView.as_view(),
+        name='course-list-view'),
     url(r'^course/create/$', views.CourseCreateView.as_view(),
         name='course-create-view'),
     url(r'^course/(?P<pk>\d+)/$', views.CourseDetailView.as_view(),

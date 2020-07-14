@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', (username, password) => {
-    cy.visit('http://localhost:8000');
+    cy.visit('http://localhost:8000/dashboard/');
     cy.get('#guest-login').click();
     cy.get('#login-local-form__field-wrapper').should('be.visible');
     cy.get('#id_username').type(username).blur();

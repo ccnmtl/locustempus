@@ -52,4 +52,4 @@ describe('Course Assignment', function() {
         cy.get('[data-cy=manage-assignment-button').should('have.length', 1);
         cy.get('[data-cy=create-assignment-button').should('have.length', 1);
     });
-})
+});
