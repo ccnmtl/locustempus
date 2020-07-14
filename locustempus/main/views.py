@@ -40,7 +40,18 @@ from typing import (
 from uuid import uuid4
 
 
-class IndexView(LoginRequiredMixin, View):
+class IndexView(View):
+    template_name = 'main/index.html'
+    http_method_names = ['get']
+
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        ctx = {
+            'user': request.user,
+        }
+        return render(request, self.template_name, ctx)
+
+
+class DashboardView(LoginRequiredMixin, View):
     template_name = 'main/course_list.html'
     http_method_names = ['get']
 

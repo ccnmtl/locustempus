@@ -10,13 +10,12 @@ describe('Course Navigation', function() {
 describe('Course Creation', function() {
     it('Logs in and creates a course', function() {
         cy.login('faculty-one', 'test');
-        cy.url().should('match', /\/$/);
+        cy.url().should('match', /\/dashboard\/$/);
         cy.get('[data-cy=course-create-button]').click();
         cy.url().should('match', /\/course\/create\/$/);
         cy.get('[data-cy=field-course-title]').type('A New Sandbox Course');
         cy.get('[data-cy=submit]').click();
-        cy.url().should('match', /\/$/);
+        cy.url().should('match', /dashboard\/$/);
         cy.get('[data-cy=sandbox-course-table]').contains('A New Sandbox Course');
     });
 });
-

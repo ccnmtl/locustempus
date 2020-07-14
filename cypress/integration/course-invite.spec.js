@@ -94,5 +94,3 @@ describe('Course Roster Invite', () => {
         cy.get('body').contains('A value must be entered in either field.');
     });
 });
-
-
