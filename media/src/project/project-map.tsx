@@ -5,17 +5,6 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
 import DeckGL from '@deck.gl/react';
 
-interface ProjectMapSidebarProps {
-    title: string;
-    description: string;
-    layers: LayerProps[];
-}
-
-interface LayerProps {
-    title: string;
-    content_object: string; // The API URL to the parent project/response
-}
-
 interface ProjectInfo {
     title: string;
     description: string;
@@ -23,39 +12,7 @@ interface ProjectInfo {
     layers: LayerProps[];
 }
 
-export const Layer = (layerData: LayerProps)=> {
-    return (
-        <div>
-            <h3>{layerData.title}</h3>
-            <p>{layerData.content_object}</p>
-        </div>
-    );
-};
-
-export const ProjectMapSidebar = (
-    {title, description, layers}: ProjectMapSidebarProps) => {
-    return (
-        <div id='project-map-sidebar'>
-            <h2>{title}</h2>
-            <p>{description}</p>
-            {layers && layers.map(
-                (layer) => {return (<Layer {...layer} />);})}
-        </div>
-    );
-};
-
 export const ProjectMap = () => {
-    const mapContainer: any = document.querySelector('#project-map-container');
-    const BASEMAP_STYLE = mapContainer.dataset.basemap;
-    const TOKEN = mapContainer.dataset.maptoken;
-    const pathList = window.location.pathname.split('/');
-    const projectPk = pathList[pathList.length - 2];
-    const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
-    const [layerData, setLayerData] = useState<LayerProps[]>([]);
-
-
-    let layers: any[] = [];
-
     const viewportState = {
         viewport: {
             latitude: 40.8075395,
@@ -65,6 +22,21 @@ export const ProjectMap = () => {
             pitch: 40.5
         }
     };
+
+    const mapContainer: any = document.querySelector('#project-map-container');
+    const BASEMAP_STYLE = mapContainer.dataset.basemap;
+    const TOKEN = mapContainer.dataset.maptoken;
+    const pathList = window.location.pathname.split('/');
+    const projectPk = pathList[pathList.length - 2];
+    const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
+    const [layerData, setLayerData] = useState<LayerProps[]>([]);
+    const [
+        staticMapViewport,
+        setStaticMapViewport
+    ] = React.useState(viewportState);
+
+    let mapboxLayers: any[] = [];
+
 
     useEffect(() => {
         let getData = async() => {
@@ -89,15 +61,11 @@ export const ProjectMap = () => {
         getData();
     }, []);
 
-    const [
-        staticMapViewport,
-        setStaticMapViewport
-    ] = React.useState(viewportState);
 
-    if (layers.length > 0) {
+    if (mapboxLayers.length > 0) {
         return (
             <DeckGL
-                layers={layers}
+                layers={mapboxLayers}
                 initialViewState={viewportState.viewport}
                 width={'100%'}
                 height={'100%'}
@@ -142,4 +110,37 @@ export const ProjectMap = () => {
             </ReactMapGL>
         );
     }
+};
+
+interface ProjectMapSidebarProps {
+    title: string;
+    description: string;
+    layers: LayerProps[];
+}
+
+export const ProjectMapSidebar = (
+    {title, description, layers}: ProjectMapSidebarProps) => {
+    return (
+        <div id='project-map-sidebar'>
+            <h2>{title}</h2>
+            <p>{description}</p>
+            <h3>Layers</h3>
+            {layers && layers.map(
+                (layer, idx) => {return (<Layer {...layer} key={idx} />);})}
+        </div>
+    );
+};
+
+interface LayerProps {
+    title: string;
+    content_object: string; // The API URL to the parent project/response
+}
+
+export const Layer = (layerData: LayerProps)=> {
+    return (
+        <div className="project-map-sidebar-layer">
+            <span className="font-weight-bold">{layerData.title}</span>
+            <p>{layerData.content_object}</p>
+        </div>
+    );
 };
