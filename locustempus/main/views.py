@@ -47,6 +47,7 @@ class IndexView(View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         ctx = {
             'user': request.user,
+            'page_type': 'homepage'
         }
         return render(request, self.template_name, ctx)
 
@@ -60,7 +61,8 @@ class DashboardView(LoginRequiredMixin, View):
         ctx = {
             'user': request.user,
             'registrar_courses': courses.filter(info__term__isnull=False),
-            'sandbox_courses': courses.filter(info__term__isnull=True)
+            'sandbox_courses': courses.filter(info__term__isnull=True),
+            'page_type': 'dashboard'
         }
         return render(request, self.template_name, ctx)
 
@@ -69,6 +71,11 @@ class CourseCreateView(LoginRequiredMixin, CreateView):
     model = Course
     template_name = 'main/course_create.html'
     fields = ['title']
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'course'
+        return ctx
 
     def get_success_url(self) -> str:
         return reverse('course-list-view')
@@ -106,6 +113,7 @@ class CourseDetailView(LoggedInCourseMixin, DetailView):
         course: Course = kwargs.get('object')
         ctx['projects'] = Project.objects.filter(course=course)
         ctx['is_faculty'] = course.is_true_faculty(self.request.user)
+        ctx['page_type'] = 'course'
         return ctx
 
 
@@ -114,6 +122,11 @@ class CourseEditView(LoggedInFacultyMixin, UpdateView):
     template_name = 'main/course_edit.html'
     fields = ['title']
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'course'
+        return ctx
+
     def get_success_url(self):
         return reverse('course-detail-view', kwargs={'pk': self.object.pk})
 
@@ -121,6 +134,11 @@ class CourseEditView(LoggedInFacultyMixin, UpdateView):
 class CourseDeleteView(LoggedInFacultyMixin, DeleteView):
     model = Course
     template_name = 'main/course_delete.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'course'
+        return ctx
 
     def get_success_url(self) -> str:
         return reverse('course-list-view')
@@ -553,7 +571,8 @@ class ProjectView(LoggedInCourseMixin, View):
             'course': course,
             'project': project,
             'token': getattr(settings, 'MAPBOX_TOKEN', '123abc'),
-            'is_faculty': course.is_true_faculty(request.user)
+            'is_faculty': course.is_true_faculty(request.user),
+            'page_type': 'project'
         }
         return render(request, self.template_name, ctx)
 
@@ -562,6 +581,11 @@ class ProjectCreateView(LoggedInFacultyMixin, CreateView):
     model = Project
     fields = ['title', 'description', 'base_map']
     template_name = 'main/course_project_create.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'project'
+        return ctx
 
     def get_success_url(self):
         messages.add_message(
@@ -588,6 +612,11 @@ class ProjectUpdateView(LoggedInFacultyMixin, UpdateView):
     template_name = 'main/course_project_edit.html'
     pk_url_kwarg = 'project_pk'
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'project'
+        return ctx
+
     def get_success_url(self):
         messages.add_message(
             self.request, messages.SUCCESS,
@@ -606,6 +635,11 @@ class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
     template_name = 'main/course_project_delete.html'
     pk_url_kwarg = 'project_pk'
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'project'
+        return ctx
+
     def get_success_url(self):
         messages.add_message(
             self.request, messages.SUCCESS,
@@ -622,7 +656,11 @@ class ActivityCreateView(LoggedInFacultyMixin, View):
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+        ctx = {
+            'form': form,
+            'page_type': 'activity'
+        }
+        return render(request, self.template_name, ctx)
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         form = self.form_class(request.POST)
@@ -648,7 +686,8 @@ class ActivityDetailView(LoggedInCourseMixin, View):
             ctx = {
                 'activity': project.activity,
                 'project': project,
-                'is_faculty': project.course.is_true_faculty(request.user)
+                'is_faculty': project.course.is_true_faculty(request.user),
+                'page_type': 'activity',
             }
             return render(
                 request, self.template_name, ctx)
@@ -660,6 +699,11 @@ class ActivityUpdateView(LoggedInFacultyMixin, UpdateView):
     project = Activity
     fields = ['instructions']
     template_name = 'main/activity_update.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'activity'
+        return ctx
 
     def get_object(self, queryset=None):
         project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
@@ -681,6 +725,11 @@ class ActivityUpdateView(LoggedInFacultyMixin, UpdateView):
 class ActivityDeleteView(LoggedInFacultyMixin, DeleteView):
     model = Activity
     template_name = 'main/activity_delete.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'activity'
+        return ctx
 
     def get_object(self, queryset=None):
         project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
