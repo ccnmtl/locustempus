@@ -1,10 +1,20 @@
 language: python
 dist: bionic 
-sudo: false
+sudo: true
 addons:
+  postgresql: "10"
   apt:
     packages:
       - libgconf-2-4
+      - postgresql-10
+      - postgresql-client-10
+services:
+  - postgresql
+before_install:
+  - sudo apt-get install --yes postgresql-10-postgis-2.4
+before_script:
+  - psql -c 'create database test_locustempus;' -U postgres
+  - psql -U postgres -c 'CREATE EXTENSION postgis;' -d test_locustempus
 cache:
   npm: true
   directories:
@@ -13,4 +23,4 @@ python:
   - "3.7"
   - "3.8"
 script:
-  - make all
+  - make travis

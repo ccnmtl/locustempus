@@ -11,6 +11,11 @@ else
 	MYPY ?= $(VE)/bin/mypy
 endif
 
+test-travis:
+	$(MANAGE) test --settings=$(APP).settings_travis
+
+travis: check flake8 test-travis eslint bandit mypy js-typecheck cypress-test
+
 mypy: $(PY_SENTINAL)
 	$(MYPY)
 
