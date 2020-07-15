@@ -1,21 +1,21 @@
-"""Tests for Assignment views"""
+"""Tests for Activity views"""
 from django.test import TestCase
 from django.urls.base import reverse
 
 
 from locustempus.main.tests.factories import (
-    CourseTestMixin, ProjectFactory, AssignmentFactory
+    CourseTestMixin, ProjectFactory, ActivityFactory
 )
 
 
-class AssignmentTest(CourseTestMixin, TestCase):
+class ActivityTest(CourseTestMixin, TestCase):
     def setUp(self):
         self.setup_course()
 
-    def test_assignment_create_faculty(self):
+    def test_activity_create_faculty(self):
         """
         Test that faculty can GET and POST to the
-        assignment creation view
+        activity creation view
         """
         self.assertTrue(
             self.client.login(
@@ -26,21 +26,21 @@ class AssignmentTest(CourseTestMixin, TestCase):
         c = self.registrar_course
         p = ProjectFactory.create(course=c)
         r1 = self.client.get(
-            reverse('assignment-create', args=[c.pk, p.pk])
+            reverse('activity-create', args=[c.pk, p.pk])
         )
         self.assertEqual(r1.status_code, 200)
 
         r2 = self.client.post(
-            reverse('assignment-create', args=[c.pk, p.pk]),
+            reverse('activity-create', args=[c.pk, p.pk]),
             {
                 'instructions': 'Some instructions',
             }
         )
         self.assertEqual(r2.status_code, 302)
 
-    def test_assignment_create_student(self):
+    def test_activity_create_student(self):
         """
-        Test that students can not create an assignment
+        Test that students can not create an activity
         """
         self.assertTrue(
             self.client.login(
@@ -51,24 +51,24 @@ class AssignmentTest(CourseTestMixin, TestCase):
         c = self.registrar_course
         p = ProjectFactory.create(course=c)
         r1 = self.client.get(
-            reverse('assignment-create', args=[c.pk, p.pk])
+            reverse('activity-create', args=[c.pk, p.pk])
         )
         self.assertEqual(r1.status_code, 403)
 
-    def test_assignment_create_anon(self):
+    def test_activity_create_anon(self):
         """
-        Test that anon users can not create an assignment
+        Test that anon users can not create an activity
         """
         c = self.registrar_course
         p = ProjectFactory.create(course=c)
         r1 = self.client.get(
-            reverse('assignment-create', args=[c.pk, p.pk])
+            reverse('activity-create', args=[c.pk, p.pk])
         )
         self.assertEqual(r1.status_code, 302)
 
-    def test_assignment_404(self):
+    def test_activity_404(self):
         """
-        Test that a request for an assignment detail page that
+        Test that a request for an activity detail page that
         does not exist returns 404
         """
         self.assertTrue(
@@ -80,13 +80,13 @@ class AssignmentTest(CourseTestMixin, TestCase):
         c = self.registrar_course
         p = ProjectFactory.create(course=c)
         r1 = self.client.get(
-            reverse('assignment-detail', args=[c.pk, p.pk])
+            reverse('activity-detail', args=[c.pk, p.pk])
         )
         self.assertEqual(r1.status_code, 404)
 
-    def test_assignment_update_faculty(self):
+    def test_activity_update_faculty(self):
         """
-        Test that faculty can edit an assignment view
+        Test that faculty can edit an activity view
         """
         self.assertTrue(
             self.client.login(
@@ -97,16 +97,16 @@ class AssignmentTest(CourseTestMixin, TestCase):
         c = self.registrar_course
         p = self.registrar_course_project
         response = self.client.post(
-            reverse('assignment-update', args=[c.pk, p.pk]),
+            reverse('activity-update', args=[c.pk, p.pk]),
             {
                 'instructions': 'Some new instructions',
             }
         )
         self.assertEqual(response.status_code, 302)
 
-    def test_assignment_update_student(self):
+    def test_activity_update_student(self):
         """
-        Test that students can not edit an assignment
+        Test that students can not edit an activity
         """
         self.assertTrue(
             self.client.login(
@@ -117,16 +117,16 @@ class AssignmentTest(CourseTestMixin, TestCase):
         c = self.registrar_course
         p = self.registrar_course_project
         response = self.client.post(
-            reverse('assignment-update', args=[c.pk, p.pk]),
+            reverse('activity-update', args=[c.pk, p.pk]),
             {
                 'instructions': 'Some new instructions',
             }
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_assignment_delete_faculty(self):
+    def test_activity_delete_faculty(self):
         """
-        Test that faculty can delete an assignment if
+        Test that faculty can delete an activity if
         there are no related responses
         """
         self.assertTrue(
@@ -137,9 +137,9 @@ class AssignmentTest(CourseTestMixin, TestCase):
         )
         c = self.registrar_course
         p = ProjectFactory.create(course=c)
-        AssignmentFactory.create(project=p)
+        ActivityFactory.create(project=p)
         response = self.client.post(
-            reverse('assignment-delete', args=[c.pk, p.pk])
+            reverse('activity-delete', args=[c.pk, p.pk])
         )
         self.assertEqual(response.status_code, 302)
 
@@ -154,13 +154,13 @@ class AssignmentTest(CourseTestMixin, TestCase):
         c = self.registrar_course
         p = self.registrar_course_project
         response = self.client.post(
-            reverse('assignment-delete', args=[c.pk, p.pk])
+            reverse('activity-delete', args=[c.pk, p.pk])
         )
         self.assertEqual(response.status_code, 403)
 
-    def test_assignment_delete_student(self):
+    def test_activity_delete_student(self):
         """
-        Test that students can not delete an assignment
+        Test that students can not delete an activity
         """
         self.assertTrue(
             self.client.login(
@@ -171,6 +171,6 @@ class AssignmentTest(CourseTestMixin, TestCase):
         c = self.registrar_course
         p = self.registrar_course_project
         response = self.client.post(
-            reverse('assignment-delete', args=[c.pk, p.pk])
+            reverse('activity-delete', args=[c.pk, p.pk])
         )
         self.assertEqual(response.status_code, 403)

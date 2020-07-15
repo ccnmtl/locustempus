@@ -26,9 +26,9 @@ from django.views.generic.edit import (
 from lti_provider.models import LTICourseContext
 
 from locustempus.main.forms import (
-    InviteUNIFormset, InviteEmailFormset, AssignmentProjectForm
+    InviteUNIFormset, InviteEmailFormset, ActivityProjectForm
 )
-from locustempus.main.models import Assignment, GuestUserAffil, Project
+from locustempus.main.models import Activity, GuestUserAffil, Project
 from locustempus.main.utils import send_template_email
 from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin
@@ -616,9 +616,9 @@ class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
             kwargs={'pk': self.kwargs.get('pk')})
 
 
-class AssignmentCreateView(LoggedInFacultyMixin, View):
-    form_class = AssignmentProjectForm
-    template_name = 'main/assignment_create.html'
+class ActivityCreateView(LoggedInFacultyMixin, View):
+    form_class = ActivityProjectForm
+    template_name = 'main/activity_create.html'
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         form = self.form_class()
@@ -628,42 +628,42 @@ class AssignmentCreateView(LoggedInFacultyMixin, View):
         form = self.form_class(request.POST)
         project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
         if form.is_valid():
-            assignment = Assignment(
+            activity = Activity(
                 project=project,
                 instructions=form.cleaned_data['instructions']
             )
-            assignment.save()
+            activity.save()
             return HttpResponseRedirect(
                 reverse('course-detail-view', args=[kwargs.get('pk')]))
 
         return render(request, self.template_name, {'form': form})
 
 
-class AssignmentDetailView(LoggedInCourseMixin, View):
-    template_name = 'main/assignment_detail.html'
+class ActivityDetailView(LoggedInCourseMixin, View):
+    template_name = 'main/activity_detail.html'
 
     def get(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_pk'))
         try:
             ctx = {
-                'assignment': project.assignment,
+                'activity': project.activity,
                 'project': project,
                 'is_faculty': project.course.is_true_faculty(request.user)
             }
             return render(
                 request, self.template_name, ctx)
-        except Assignment.DoesNotExist:
-            raise Http404("This project does not have an assignment")
+        except Activity.DoesNotExist:
+            raise Http404("This project does not have an activity")
 
 
-class AssignmentUpdateView(LoggedInFacultyMixin, UpdateView):
-    project = Assignment
+class ActivityUpdateView(LoggedInFacultyMixin, UpdateView):
+    project = Activity
     fields = ['instructions']
-    template_name = 'main/assignment_update.html'
+    template_name = 'main/activity_update.html'
 
     def get_object(self, queryset=None):
         project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
-        return project.assignment
+        return project.activity
 
     def get_success_url(self):
         messages.add_message(
@@ -671,23 +671,23 @@ class AssignmentUpdateView(LoggedInFacultyMixin, UpdateView):
             '<strong>{}</strong> has been updated.'.format(self.object.title)
         )
         return reverse(
-            'assignment-detail',
+            'activity-detail',
             kwargs={
                 'pk': self.kwargs.get('pk'),
                 'project_pk': self.kwargs.get('project_pk'),
             })
 
 
-class AssignmentDeleteView(LoggedInFacultyMixin, DeleteView):
-    model = Assignment
-    template_name = 'main/assignment_delete.html'
+class ActivityDeleteView(LoggedInFacultyMixin, DeleteView):
+    model = Activity
+    template_name = 'main/activity_delete.html'
 
     def get_object(self, queryset=None):
         project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
-        if project.assignment.responses.count():
+        if project.activity.responses.count():
             raise PermissionDenied
 
-        return project.assignment
+        return project.activity
 
     def get_success_url(self):
         messages.add_message(

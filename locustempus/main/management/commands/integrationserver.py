@@ -17,7 +17,7 @@ from django.core.management.base import BaseCommand
 from django.db import connection
 from locustempus.main.tests.factories import (
     UserFactory, SandboxCourseFactory, RegistrarCourseFactory,
-    ProjectFactory, AssignmentFactory, ResponseFactory
+    ProjectFactory, ActivityFactory, ResponseFactory
 )
 
 
@@ -76,9 +76,9 @@ class Command(BaseCommand):
         c1.faculty_group.user_set.add(f1)
 
         project = ProjectFactory.create(course=c1)
-        assignment = AssignmentFactory.create(project=project)
+        activity = ActivityFactory.create(project=project)
         ResponseFactory.create(
-            assignment=assignment,
+            activity=activity,
             owners=[s1]
         )
 

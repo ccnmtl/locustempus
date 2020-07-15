@@ -8,7 +8,8 @@ Create Project
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h1>Update Assignment: {{ object.title }}</h1>
+        <h1>Create A New Activity</h1>
+        <p>Create a new activity for this course.</p>
     </div>
 </div>
 <div class="row">
@@ -19,18 +20,17 @@ Create Project
             <div class="form-group">
                 <label for="{{ form.instructions.id_for_label }}">Instructions:</label>
                 {% if form.instructions.errors %}
-                    {{ form.instructions|add_class:"form-control is-invalid"|attr:"data-cy:field-assignment-instructions" }}
+                    {{ form.instructions|add_class:"form-control is-invalid"|attr:"data-cy:field-activity-instructions" }}
                     <div class="invalid-feedback">
                         {% for error in form.instructions.errors %}
                             {{ error }}
                         {% endfor %}
                     </div>
                 {% else %}
-                    {{ form.instructions|add_class:"form-control"|attr:"data-cy:field-assignment-instructions" }}
+                    {{ form.instructions|add_class:"form-control"|attr:"data-cy:field-activity-instructions" }}
                 {% endif %}
             </div>
-            <a class="btn btn-primary" href="{% url 'assignment-detail' object.project.course.pk object.project.pk %}">Cancel</a>
-            <input type="submit" class="btn btn-primary" data-cy="assignment-form-update-button" value="Save">
+            <input type="submit" class="btn btn-primary" data-cy="activity-form-create-button" value="Create">
         </form>
     </div>
 </div>

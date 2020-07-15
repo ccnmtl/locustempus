@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 import factory
 from random import randrange
 
-from locustempus.main.models import Project, Assignment, Response
+from locustempus.main.models import Project, Activity, Response
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -61,9 +61,9 @@ class ProjectFactory(factory.DjangoModelFactory):
     base_map = 'dark-v10'
 
 
-class AssignmentFactory(factory.DjangoModelFactory):
+class ActivityFactory(factory.DjangoModelFactory):
     class Meta:
-        model = Assignment
+        model = Activity
     project = factory.SubFactory(ProjectFactory)
     instructions = factory.Faker('paragraph')
 
@@ -71,7 +71,7 @@ class AssignmentFactory(factory.DjangoModelFactory):
 class ResponseFactory(factory.DjangoModelFactory):
     class Meta:
         model = Response
-    assignment = factory.SubFactory(AssignmentFactory)
+    activity = factory.SubFactory(ActivityFactory)
 
     @factory.post_generation
     def owners(self, create, extracted, **kwargs):
@@ -80,7 +80,7 @@ class ResponseFactory(factory.DjangoModelFactory):
         if extracted:
             for user in extracted:
                 self.owners.add(
-                    user, through_defaults={'assignment': self.assignment})
+                    user, through_defaults={'activity': self.activity})
 
 
 class CourseTestMixin(object):
@@ -110,10 +110,10 @@ class CourseTestMixin(object):
         self.registrar_course.faculty_group.user_set.add(self.faculty)
         self.registrar_course_project = ProjectFactory.create(
             course=self.registrar_course)
-        self.registrar_course_assignment = AssignmentFactory.create(
+        self.registrar_course_activity = ActivityFactory.create(
             project=self.registrar_course_project)
         ResponseFactory.create(
-            assignment=self.registrar_course_assignment, owners=[self.student])
+            activity=self.registrar_course_activity, owners=[self.student])
         ProjectFactory.create(course=self.registrar_course)
 
         # Sandbox Course
@@ -122,5 +122,5 @@ class CourseTestMixin(object):
         self.sandbox_course.group.user_set.add(self.faculty)
         self.sandbox_course.faculty_group.user_set.add(self.faculty)
         p2 = ProjectFactory.create(course=self.sandbox_course)
-        a2 = AssignmentFactory.create(project=p2)
-        ResponseFactory.create(assignment=a2, owners=[self.student])
+        a2 = ActivityFactory.create(project=p2)
+        ResponseFactory.create(activity=a2, owners=[self.student])

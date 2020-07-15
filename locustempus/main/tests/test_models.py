@@ -2,7 +2,7 @@ from django.contrib.auth.models import User
 from django.db.utils import IntegrityError
 from django.test import TestCase
 from locustempus.main.tests.factories import (
-    RegistrarCourseFactory, ProjectFactory, AssignmentFactory,
+    RegistrarCourseFactory, ProjectFactory, ActivityFactory,
     ResponseFactory, UserFactory
 )
 
@@ -23,19 +23,19 @@ class ResponseModelTest(TestCase):
         )
         course = RegistrarCourseFactory.create()
         project = ProjectFactory.create(course=course)
-        assignment = AssignmentFactory.create(project=project)
+        activity = ActivityFactory.create(project=project)
         response = ResponseFactory.create(
-            assignment=assignment, owners=[student])
+            activity=activity, owners=[student])
         self.assertEqual(response.owners.count(), 1)
         response.owners.add(student)
         self.assertEqual(response.owners.count(), 1)
 
-    def test_unique_owner_per_assignment(self):
+    def test_unique_owner_per_activity(self):
         """
         Test that a user can not be added as an owner to multiple responses
-        for a single assignment.
+        for a single activity.
         """
-        # Add a new assignment response to an existing assignment
+        # Add a new activity response to an existing activity
         student: User = UserFactory.create(
             first_name='Student',
             last_name='One',
@@ -43,11 +43,11 @@ class ResponseModelTest(TestCase):
         )
         course = RegistrarCourseFactory.create()
         project = ProjectFactory.create(course=course)
-        assignment = AssignmentFactory.create(project=project)
+        activity = ActivityFactory.create(project=project)
         ResponseFactory.create(
-            assignment=assignment, owners=[student])
+            activity=activity, owners=[student])
 
         # Try adding self.student to this new response
         with self.assertRaises(IntegrityError):
             ResponseFactory.create(
-                assignment=assignment, owners=[student])
+                activity=activity, owners=[student])

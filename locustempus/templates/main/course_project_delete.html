@@ -10,14 +10,14 @@ Delete Project
     <p>
     Are you sure that you want to delete the project: "{{ object }}"?
     </p>
-    {% if object.assignment %}
-        {% if object.assignment.responses %}
+    {% if object.activity %}
+        {% if object.activity.responses %}
         <p>
-            This project has an assignment with {{ object.assignment.responses.count }} response(s).
+            This project has an activity with {{ object.activity.responses.count }} response(s).
         </p>
         {% else %}
         <p>
-            This project has an assignment but does not have responses.
+            This project has an activity but does not have responses.
         </p>
         {% endif %}
     {% endif %}

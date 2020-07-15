@@ -8,25 +8,25 @@ Create Project
 {% block content %}
 <div class="row">
     <div class="col-12">
-        <h1>Delete Assignment: {{ object.title }}</h1>
+        <h1>Delete Activity: {{ object.title }}</h1>
     </div>
 </div>
 {% if object.responses.all.exists %}
 <div class="row">
     <div class="col-12">
-        <p>Responses already exist for this assignment. Please contact an administrator for help deleting this assignment.</p>
+        <p>Responses already exist for this activity. Please contact an administrator for help deleting this activity.</p>
     </div>
 </div>
 {% else %}
 <div class="row">
     <div class="col-12">
-        <p>Are you sure that you want to delete this assignment?</p>
+        <p>Are you sure that you want to delete this activity?</p>
     </div>
     <div class="col-12">
         <form method="post">
             {% csrf_token %}
-            <a class="btn btn-primary" href="{% url 'assignment-detail' object.project.course.pk object.project.pk %}">Cancel</a>
-            <input type="submit" data-cy="delete-assignment-button" class="btn btn-danger" value="Delete">
+            <a class="btn btn-primary" href="{% url 'activity-detail' object.project.course.pk object.project.pk %}">Cancel</a>
+            <input type="submit" data-cy="delete-activity-button" class="btn btn-danger" value="Delete">
         </form>
     </div>
 </div>
