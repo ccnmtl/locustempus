@@ -6,8 +6,6 @@ addons:
   apt:
     packages:
       - libgconf-2-4
-      - postgresql-10
-      - postgresql-client-10
 services:
   - postgresql
 before_install:
