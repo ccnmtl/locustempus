@@ -10,6 +10,7 @@
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
     "cypress:test": "start-server-and-test 'make integrationserver' http-get://localhost:8000 cypress:run",
+    "cypress:test-travis": "start-server-and-test 'make integrationserver-travis' http-get://localhost:8000 cypress:run",
     "integrationserver:webpack": "start-server-and-test 'make integrationserver' http-get://localhost:8000 dev",
     "cypress:watch": "start-server-and-test integrationserver:webpack http-get://localhost:8000 cypress:open"
   },

@@ -14,13 +14,16 @@ endif
 test-travis:
 	$(MANAGE) test --settings=$(APP).settings_travis
 
-travis: check flake8 test-travis eslint bandit mypy js-typecheck cypress-test
+travis: check flake8 test-travis eslint bandit mypy js-typecheck cypress-test-travis
 
 mypy: $(PY_SENTINAL)
 	$(MYPY)
 
 integrationserver: check
 	$(MANAGE) integrationserver --addrport $(INTERFACE):$(RUNSERVER_PORT) --noinput
+
+integrationserver-travis: check
+	$(MANAGE) integrationserver --addrport $(INTERFACE):$(RUNSERVER_PORT) --noinput --settings=$(APP).settings_travis
 
 webpack: $(JS_SENTINAL)
 	npm run dev
@@ -36,6 +39,9 @@ cypress-open: $(JS_SENTINAL)
 
 cypress-test: $(JS_SENTINAL)
 	npm run cypress:test
+
+cypress-test-travis: $(JS_SENTINAL)
+	npm run cypress:test-travis
 
 cypress-watch: $(JS_SENTINAL)
 	npm run cypress:watch 
