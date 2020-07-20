@@ -111,7 +111,8 @@ class CourseDetailView(LoggedInCourseMixin, DetailView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         course: Course = kwargs.get('object')
-        ctx['projects'] = Project.objects.filter(course=course)
+        ctx['projects'] = Project.objects.filter(course=course)\
+            .order_by('title')
         ctx['is_faculty'] = course.is_true_faculty(self.request.user)
         ctx['page_type'] = 'course'
         return ctx
