@@ -21,7 +21,7 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Response
         fields = (
-            'assignment', 'layer'
+            'activity', 'layer'
         )
 
 

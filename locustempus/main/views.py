@@ -26,9 +26,9 @@ from django.views.generic.edit import (
 from lti_provider.models import LTICourseContext
 
 from locustempus.main.forms import (
-    InviteUNIFormset, InviteEmailFormset, AssignmentProjectForm
+    InviteUNIFormset, InviteEmailFormset, ActivityProjectForm
 )
-from locustempus.main.models import Assignment, GuestUserAffil, Project
+from locustempus.main.models import Activity, GuestUserAffil, Project
 from locustempus.main.utils import send_template_email
 from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin
@@ -47,6 +47,7 @@ class IndexView(View):
     def get(self, request, *args, **kwargs) -> HttpResponse:
         ctx = {
             'user': request.user,
+            'page_type': 'homepage'
         }
         return render(request, self.template_name, ctx)
 
@@ -60,7 +61,8 @@ class DashboardView(LoginRequiredMixin, View):
         ctx = {
             'user': request.user,
             'registrar_courses': courses.filter(info__term__isnull=False),
-            'sandbox_courses': courses.filter(info__term__isnull=True)
+            'sandbox_courses': courses.filter(info__term__isnull=True),
+            'page_type': 'dashboard'
         }
         return render(request, self.template_name, ctx)
 
@@ -69,6 +71,11 @@ class CourseCreateView(LoginRequiredMixin, CreateView):
     model = Course
     template_name = 'main/course_create.html'
     fields = ['title']
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'course'
+        return ctx
 
     def get_success_url(self) -> str:
         return reverse('course-list-view')
@@ -104,8 +111,10 @@ class CourseDetailView(LoggedInCourseMixin, DetailView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         course: Course = kwargs.get('object')
-        ctx['projects'] = Project.objects.filter(course=course)
+        ctx['projects'] = Project.objects.filter(course=course)\
+            .order_by('title')
         ctx['is_faculty'] = course.is_true_faculty(self.request.user)
+        ctx['page_type'] = 'course'
         return ctx
 
 
@@ -114,6 +123,11 @@ class CourseEditView(LoggedInFacultyMixin, UpdateView):
     template_name = 'main/course_edit.html'
     fields = ['title']
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'course'
+        return ctx
+
     def get_success_url(self):
         return reverse('course-detail-view', kwargs={'pk': self.object.pk})
 
@@ -121,6 +135,11 @@ class CourseEditView(LoggedInFacultyMixin, UpdateView):
 class CourseDeleteView(LoggedInFacultyMixin, DeleteView):
     model = Course
     template_name = 'main/course_delete.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'course'
+        return ctx
 
     def get_success_url(self) -> str:
         return reverse('course-list-view')
@@ -553,7 +572,8 @@ class ProjectView(LoggedInCourseMixin, View):
             'course': course,
             'project': project,
             'token': getattr(settings, 'MAPBOX_TOKEN', '123abc'),
-            'is_faculty': course.is_true_faculty(request.user)
+            'is_faculty': course.is_true_faculty(request.user),
+            'page_type': 'project'
         }
         return render(request, self.template_name, ctx)
 
@@ -562,6 +582,11 @@ class ProjectCreateView(LoggedInFacultyMixin, CreateView):
     model = Project
     fields = ['title', 'description', 'base_map']
     template_name = 'main/course_project_create.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'project'
+        return ctx
 
     def get_success_url(self):
         messages.add_message(
@@ -588,6 +613,11 @@ class ProjectUpdateView(LoggedInFacultyMixin, UpdateView):
     template_name = 'main/course_project_edit.html'
     pk_url_kwarg = 'project_pk'
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'project'
+        return ctx
+
     def get_success_url(self):
         messages.add_message(
             self.request, messages.SUCCESS,
@@ -606,6 +636,11 @@ class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
     template_name = 'main/course_project_delete.html'
     pk_url_kwarg = 'project_pk'
 
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'project'
+        return ctx
+
     def get_success_url(self):
         messages.add_message(
             self.request, messages.SUCCESS,
@@ -616,54 +651,64 @@ class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
             kwargs={'pk': self.kwargs.get('pk')})
 
 
-class AssignmentCreateView(LoggedInFacultyMixin, View):
-    form_class = AssignmentProjectForm
-    template_name = 'main/assignment_create.html'
+class ActivityCreateView(LoggedInFacultyMixin, View):
+    form_class = ActivityProjectForm
+    template_name = 'main/activity_create.html'
 
     def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         form = self.form_class()
-        return render(request, self.template_name, {'form': form})
+        ctx = {
+            'form': form,
+            'page_type': 'activity'
+        }
+        return render(request, self.template_name, ctx)
 
     def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
         form = self.form_class(request.POST)
         project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
         if form.is_valid():
-            assignment = Assignment(
+            activity = Activity(
                 project=project,
                 instructions=form.cleaned_data['instructions']
             )
-            assignment.save()
+            activity.save()
             return HttpResponseRedirect(
                 reverse('course-detail-view', args=[kwargs.get('pk')]))
 
         return render(request, self.template_name, {'form': form})
 
 
-class AssignmentDetailView(LoggedInCourseMixin, View):
-    template_name = 'main/assignment_detail.html'
+class ActivityDetailView(LoggedInCourseMixin, View):
+    template_name = 'main/activity_detail.html'
 
     def get(self, request, *args, **kwargs):
         project = get_object_or_404(Project, pk=kwargs.get('project_pk'))
         try:
             ctx = {
-                'assignment': project.assignment,
+                'activity': project.activity,
                 'project': project,
-                'is_faculty': project.course.is_true_faculty(request.user)
+                'is_faculty': project.course.is_true_faculty(request.user),
+                'page_type': 'activity',
             }
             return render(
                 request, self.template_name, ctx)
-        except Assignment.DoesNotExist:
-            raise Http404("This project does not have an assignment")
+        except Activity.DoesNotExist:
+            raise Http404("This project does not have an activity")
 
 
-class AssignmentUpdateView(LoggedInFacultyMixin, UpdateView):
-    project = Assignment
+class ActivityUpdateView(LoggedInFacultyMixin, UpdateView):
+    project = Activity
     fields = ['instructions']
-    template_name = 'main/assignment_update.html'
+    template_name = 'main/activity_update.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'activity'
+        return ctx
 
     def get_object(self, queryset=None):
         project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
-        return project.assignment
+        return project.activity
 
     def get_success_url(self):
         messages.add_message(
@@ -671,23 +716,28 @@ class AssignmentUpdateView(LoggedInFacultyMixin, UpdateView):
             '<strong>{}</strong> has been updated.'.format(self.object.title)
         )
         return reverse(
-            'assignment-detail',
+            'activity-detail',
             kwargs={
                 'pk': self.kwargs.get('pk'),
                 'project_pk': self.kwargs.get('project_pk'),
             })
 
 
-class AssignmentDeleteView(LoggedInFacultyMixin, DeleteView):
-    model = Assignment
-    template_name = 'main/assignment_delete.html'
+class ActivityDeleteView(LoggedInFacultyMixin, DeleteView):
+    model = Activity
+    template_name = 'main/activity_delete.html'
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['page_type'] = 'activity'
+        return ctx
 
     def get_object(self, queryset=None):
         project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
-        if project.assignment.responses.count():
+        if project.activity.responses.count():
             raise PermissionDenied
 
-        return project.assignment
+        return project.activity
 
     def get_success_url(self):
         messages.add_message(

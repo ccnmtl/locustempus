@@ -75,9 +75,9 @@ class Project(models.Model):
         return self.title
 
 
-class Assignment(models.Model):
+class Activity(models.Model):
     project = models.OneToOneField(
-        Project, on_delete=models.CASCADE, related_name='assignment')
+        Project, on_delete=models.CASCADE, related_name='activity')
     instructions = models.CharField(max_length=256)
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
@@ -104,8 +104,8 @@ class Assignment(models.Model):
 
 
 class Response(models.Model):
-    assignment = models.ForeignKey(
-        Assignment,
+    activity = models.ForeignKey(
+        Activity,
         on_delete=models.CASCADE,
         related_name='responses'
     )
@@ -136,20 +136,20 @@ class ResponseOwner(models.Model):
     Through table for response owners
 
     We need a custom through model with unique constraints on
-    owner, response, and assignment to address two possibilities:
+    owner, response, and activity to address two possibilities:
     - Prevent a user from being added as an owner to a response multiple times
     - Prevent a user from being added as an owner to multiple responses
     """
     owner = models.ForeignKey(User, on_delete=models.CASCADE)
     response = models.ForeignKey(Response, on_delete=models.CASCADE)
-    assignment = models.ForeignKey(
-        Assignment,
+    activity = models.ForeignKey(
+        Activity,
         on_delete=models.CASCADE,
         related_name='+'
     )
 
     class Meta:
-        unique_together = ('owner', 'assignment')
+        unique_together = ('owner', 'activity')
 
 
 class GuestUserAffil(models.Model):

@@ -33,7 +33,7 @@ class CourseRosterInviteEmailForm(forms.Form):
         return email
 
 
-class AssignmentProjectForm(forms.Form):
+class ActivityProjectForm(forms.Form):
     instructions = forms.CharField(max_length=256)
 
 
