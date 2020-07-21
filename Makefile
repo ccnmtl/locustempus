@@ -23,6 +23,7 @@ mypy: $(PY_SENTINAL)
 	$(MYPY)
 .PHONY: mypy
 
+integrationserver: export LOCUS_TEMPUS_TEST = True
 integrationserver: check
 	$(MANAGE) integrationserver --addrport $(INTERFACE):$(RUNSERVER_PORT) --noinput
 .PHONY: integrationserver 

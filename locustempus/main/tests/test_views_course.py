@@ -17,6 +17,12 @@ class BasicTest(TestCase):
         self.assertContains(response, 'PASS')
 
 
+class ResetTest(BasicTest):
+    def test_reset(self):
+        response = self.client.get("/reset/")
+        self.assertEqual(response.status_code, 404)
+
+
 class CourseTest(CourseTestMixin, TestCase):
     def setUp(self):
         self.setup_course()

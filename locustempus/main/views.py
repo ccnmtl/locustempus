@@ -11,10 +11,11 @@ from django.contrib.auth.mixins import (
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
+from django.db import connections
 from django.http import (
     HttpRequest, HttpResponse, HttpResponseRedirect, Http404
 )
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls.base import reverse
 from django.utils.decorators import method_decorator
 from django.views.decorators.clickjacking import xframe_options_exempt
@@ -29,6 +30,9 @@ from locustempus.main.forms import (
     InviteUNIFormset, InviteEmailFormset, ActivityProjectForm
 )
 from locustempus.main.models import Activity, GuestUserAffil, Project
+from locustempus.main.management.commands.integrationserver import (
+    reset_test_models
+)
 from locustempus.main.utils import send_template_email
 from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin
@@ -38,6 +42,7 @@ from typing import (
     Any, Tuple, List
 )
 from uuid import uuid4
+import os
 
 
 class IndexView(View):
@@ -745,3 +750,24 @@ class ActivityDeleteView(LoggedInFacultyMixin, DeleteView):
             '<strong>{}</strong> has been deleted.'.format(self.object.title)
         )
         return reverse('course-detail-view', args=[self.kwargs.get('pk')])
+
+
+class ResetView(View):
+    @staticmethod
+    def can_reset_database():
+        if not os.environ.get('LOCUS_TEMPUS_TEST') == 'True':
+            return False
+
+        if not connections.databases['default']['NAME'] == 'test_locustempus':
+            return False
+
+        return True
+
+    def get(self, request, *argss, **kwargs):
+        if not ResetView.can_reset_database():
+            raise Http404()
+
+        # Generate new models
+        reset_test_models()
+
+        return redirect('course-list-view')
