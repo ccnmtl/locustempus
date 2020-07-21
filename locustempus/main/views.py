@@ -770,4 +770,4 @@ class ResetView(View):
         # Generate new models
         reset_test_models()
 
-        return redirect('course-list-view')
+        return redirect('index-view')

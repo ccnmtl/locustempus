@@ -24,7 +24,7 @@ urlpatterns = [
         include('django_registration.backends.activation.urls')),
     auth_urls,
     url(r'^reset/$', views.ResetView.as_view(), name='reset'),
-    url(r'^$', views.IndexView.as_view(), name='course-list-view'),
+    url(r'^$', views.IndexView.as_view(), name='index-view'),
     url(r'^admin/', admin.site.urls),
     url(r'^lti/', include('lti_provider.urls')),
     url(r'^course/lti/create/$',
