@@ -14,7 +14,7 @@ if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
     DATABASES = {
         'default': {
             'ENGINE': 'django.contrib.gis.db.backends.postgis',
-            'NAME': 'test_locustempus',
+            'NAME': 'locustempus',
             'HOST': '',
             'PORT': '',
             'USER': 'postgres',

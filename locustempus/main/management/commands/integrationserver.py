@@ -21,6 +21,60 @@ from locustempus.main.tests.factories import (
 )
 
 
+def reset_test_models():
+    call_command('flush', verbosity=0, interactive=False)
+    # Create some models
+    UserFactory.create(
+        username='superuser',
+        first_name='Super',
+        last_name='User',
+        email='superuser@example.com',
+        is_superuser=True
+    )
+    # Sandbox Course
+    c1: Course = SandboxCourseFactory.create()
+    s1: User = UserFactory.create(
+        username='student-one',
+        first_name='Student',
+        last_name='One',
+        email='studentone@example.com'
+    )
+    c1.group.user_set.add(s1)
+    f1: User = UserFactory.create(
+        username='faculty-one',
+        first_name='Faculty',
+        last_name='One',
+        email='facultyone@example.com'
+    )
+    c1.group.user_set.add(f1)
+    c1.faculty_group.user_set.add(f1)
+
+    project = ProjectFactory.create(course=c1)
+    activity = ActivityFactory.create(project=project)
+    ResponseFactory.create(
+        activity=activity,
+        owners=[s1]
+    )
+
+    # Registrar Course
+    c2: Course = RegistrarCourseFactory.create()
+    s2: User = UserFactory.create(
+        username='student-two',
+        first_name='Student',
+        last_name='Two',
+        email='studenttwo@example.com'
+    )
+    c2.group.user_set.add(s2)
+    f2: User = UserFactory.create(
+        username='faculty-two',
+        first_name='Faculty',
+        last_name='Two',
+        email='facultytwo@example.com'
+    )
+    c2.group.user_set.add(f2)
+    c2.faculty_group.user_set.add(f2)
+
+
 class Command(BaseCommand):
     help = 'Runs a development server with data created by factories.'
 
@@ -49,56 +103,7 @@ class Command(BaseCommand):
         db_name = connection.creation.create_test_db(
             verbosity=verbosity, autoclobber=not interactive, serialize=False)
 
-        # Create some models
-        UserFactory.create(
-            username='superuser',
-            first_name='Super',
-            last_name='User',
-            email='superuser@example.com',
-            is_superuser=True
-        )
-        # Sandbox Course
-        c1: Course = SandboxCourseFactory.create()
-        s1: User = UserFactory.create(
-            username='student-one',
-            first_name='Student',
-            last_name='One',
-            email='studentone@example.com'
-        )
-        c1.group.user_set.add(s1)
-        f1: User = UserFactory.create(
-            username='faculty-one',
-            first_name='Faculty',
-            last_name='One',
-            email='facultyone@example.com'
-        )
-        c1.group.user_set.add(f1)
-        c1.faculty_group.user_set.add(f1)
-
-        project = ProjectFactory.create(course=c1)
-        activity = ActivityFactory.create(project=project)
-        ResponseFactory.create(
-            activity=activity,
-            owners=[s1]
-        )
-
-        # Registrar Course
-        c2: Course = RegistrarCourseFactory.create()
-        s2: User = UserFactory.create(
-            username='student-two',
-            first_name='Student',
-            last_name='Two',
-            email='studenttwo@example.com'
-        )
-        c2.group.user_set.add(s2)
-        f2: User = UserFactory.create(
-            username='faculty-two',
-            first_name='Faculty',
-            last_name='Two',
-            email='facultytwo@example.com'
-        )
-        c2.group.user_set.add(f2)
-        c2.faculty_group.user_set.add(f2)
+        reset_test_models()
 
         shutdown_message = (
             '\nServer stopped.\nNote that the test database, %r, has not been '

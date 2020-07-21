@@ -18,3 +18,8 @@ import './commands'
 
 // Alternatively you can use CommonJS syntax:
 // require('./commands')
+
+// Reset the database before each test case
+beforeEach(() => {
+    cy.reset_database();
+});

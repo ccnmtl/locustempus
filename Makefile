@@ -13,7 +13,7 @@ else
 endif
 
 test-travis:
-	$(MANAGE) test --settings=$(APP).settings_travis
+	$(MANAGE) test --settings=$(APP).settings_travis --noinput
 .PHONY: test-travis 
 
 travis: check flake8 test-travis eslint bandit mypy js-typecheck cypress-test-travis
@@ -23,10 +23,12 @@ mypy: $(PY_SENTINAL)
 	$(MYPY)
 .PHONY: mypy
 
+integrationserver: export LOCUS_TEMPUS_TEST = True
 integrationserver: check
 	$(MANAGE) integrationserver --addrport $(INTERFACE):$(RUNSERVER_PORT) --noinput
 .PHONY: integrationserver 
 
+integrationserver-travis: export LOCUS_TEMPUS_TEST = True
 integrationserver-travis: check
 	$(MANAGE) integrationserver --addrport $(INTERFACE):$(RUNSERVER_PORT) --noinput --settings=$(APP).settings_travis
 .PHONY: integrationserver-travis

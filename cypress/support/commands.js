@@ -32,3 +32,7 @@ Cypress.Commands.add('login', (username, password) => {
     cy.get('#id_password').type(password).blur();
     cy.get('#login-local-form__submit').click();
 });
+
+Cypress.Commands.add('reset_database', () => {
+    cy.visit('http://localhost:8000/reset/');
+});
