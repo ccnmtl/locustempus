@@ -1,6 +1,9 @@
 @import "~bootstrap/scss/bootstrap";
 
 // Custom styles
+@import './ltdc-base/';
+@import './ltdc-typography/';
 @import "./pages/course_roster_page";
 @import "./pages/course_roster_invite_page";
 @import "./pages/course_project";
+@import './ltdc-kitchensink/';

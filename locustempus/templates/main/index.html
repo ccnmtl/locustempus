@@ -1,10 +1,50 @@
 {% extends 'base.html' %}
 
+{% block bodyclass %}{% endblock %}
+{% block headerclass %}homepage{% endblock %}
+{% block mainclass %}homepage{% endblock %}
+
 {% block content %}
-<div class="row">
-    <div class="col-12">
+
+<section class="feature hero">
+    <div class="hero-text">
+    <h1>A mapping application for spatial and chronological thinking</h1>
+    <p>Visualize. Analyze. Collaborate.</p>
+    <button class="btn btn-secondary" type="submit">
+    <span class="d-none d-xl-inline">Extra large</span>
+    <span class="d-none d-lg-inline d-xl-none">Large</span>
+    <span class="d-none d-md-inline d-lg-none">Medium</span>
+    <span class="d-none d-sm-inline d-md-none">Small</span>
+    <span class="d-inline d-sm-none">Extra small</span>
+    </button>
+    </div>
+</section>
+
+<section class="section--pitch">
+{% lorem 1 p %}
+</section>
+
+<div class="furniture">
+Furniture:
+<div class="furniture__cabinet">
+Cabinet
+    <p class="drawer">
+    Drawer
+    </p>
+</div>
+</div>
+
+
+<div class="furniture">
+Furniture:
+<div class="closet">
+Closet
+    <p class="drawer">
+    Drawer
+    </p>
+</div>
+</div>
+
         <h1>Homepage</h1>
         <p>For the time being: <a href="/accounts/login/?next=/">Login page</a></p>
-    </div>
-</div>
 {% endblock %}

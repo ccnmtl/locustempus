@@ -1,167 +1,103 @@
 {% load compress %}
+
 <!DOCTYPE html>
+
 <html lang="en">
-<head>
-	<title>Locus Tempus: {% block title %}{% endblock %}</title>
+    <head>
+	    <title>Locus Tempus: {% block title %}{% endblock %}{{ flatpage.title }}</title>
 
-    <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    <!-- The above 2 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- The above 2 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
-    <!-- Bootstrap CSS -->
-    <!--<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">-->
+        <!-- Local CSS -->
+        {% compress css %}
+        <link href="{{STATIC_URL}}build/main.css" rel="stylesheet">
+        {% endcompress %}
+        {% block css %}{% endblock %}
 
-    <!-- Local CSS -->
-    {% compress css %}
-    <link href="{{STATIC_URL}}build/main.css" rel="stylesheet">
-    {% endcompress %}
-    {% block css %}{% endblock %}
+        <!-- Standard Meta Data, TBD -->
 
-    <!-- Standard Meta Data -->
-    <meta name="description" content="Project Name" />
-    <meta name="keywords" content="" />
-    <meta name="author" content="Columbia University CTL" />
-    <meta name="copyright" content="">
+        <!-- Dublin Core Metadata, TBD -->
 
-    <!-- Dublin Core Metadata -->
-    <meta name="DC.Title" content="Project Name" />
-    <meta name="DC.Description" content="" />
+        <!-- Open Graph, TBD -->
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="Project Name" />
-    <meta property="og:type" content="" />
-    <meta property="og:image" content="" />
-    <meta property="og:description" content="" />
-    <meta property="og:url" content="" />
-    <meta property="og:site_name" content="Project Name" />
+        <!-- Twitter, TBD -->
+        <meta name="twitter:image" content="{{STATIC_URL}}img/favicon.png" />
 
-    <!-- Twitter -->
-    <meta name="twitter:card" content="summary" />
-    <meta name="twitter:site" content="@ccnmtl" />
-    <meta name="twitter:title" content="Project Name" />
-    <meta name="twitter:description" content="" />
-    <meta name="twitter:image" content="{{STATIC_URL}}img/favicon.png" />
+        <!-- JSON Structured data, TBD -->
 
-    <!-- JSON Structured data -->
-    <script type="application/ld+json">
-    {
-        "@context": "http://schema.org",
-        "@type": "WebSite",
-        "url": "",
-        "name": "",
-        "about": "",
-        "keywords": ""
-    }
-    </script>
+        <!-- Favicons, TBD -->
+        <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico">
 
-    <!-- Favicons -->
-    <link rel="apple-touch-icon" href="{{STATIC_URL}}img/apple-touch-icon.png">
-    <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico">
-    <link rel="icon" href="{{STATIC_URL}}img/favicon.ico">
-    <link rel="icon" type="image/png" href="{{STATIC_URL}}img/favicon.png">
+    </head>
+    <body class="{% block bodyclass %}{% endblock %}" id="{% block bodyid %}{% endblock %}">
 
-	{% block feeds %}{% endblock %}
-</head>
-<body>
-
-<a id="skippy" class="sr-only sr-only-focusable" href="#content">
-    <div class="container">
-        <span class="skiplink-text">Skip to main content</span>
-    </div>
-</a>
-
-<header>
-{% block topnavbar %}
-<nav class="navbar navbar-expand-sm navbar-dark bg-dark">
-    <a class="navbar-brand" href="{% url 'course-list-view' %}">Locus Tempus</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#topNavbar" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
-    </button>
-
-    <div class="collapse navbar-collapse" id="topNavbar">
-        <ul class="navbar-nav mr-auto">
-            <li class="nav-item">
-                <a class="nav-link" href="{% url 'course-list-view' %}">Home</a>
-            </li>
-        </ul>
-    </div>
-
-    {% block usernav %}
-    <ul class="navbar-nav flex-row ml-md-auto d-md-flex">
-        <li class="nav-item"><span class="nav-link">
-            {% if request.user.is_anonymous %}
-            You're not logged in
-            {% else %}
-            Logged in as
-                {% if request.user.last_name %}
-                {{request.user.first_name}} {{request.user.last_name}}
+    {% block topnavbar %}
+    <header class="header--{% block headerclass %}{% endblock %}">
+        <a class="skip-header" href="#content">
+            <span class="skip-header__text">Skip to main content</span>
+        </a>
+        <div class="header__shadow"></div>
+        <nav class="navbar">
+            <a href="/" class="navbar-brand"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo.png" alt="Locus Tempus logo"></a>
+            {% block usernav %}
+                {% if request.user.is_anonymous %}
+                <a href="http://localhost:8000/accounts/login/?next=/" class="user-auth--login">Log in</a>
                 {% else %}
-                {{ request.user.username }}
+                <a href="/dashboard/">Dashboard</a>
+                <a href="/accounts/logout/?next=/" class="user-auth--logout">Log out</a>
                 {% endif %}
-            (<a href="/accounts/logout/?next=/">logout</a>)
-            {% endif %}
-            </span>
-        </li>
-        {% if request.user.is_superuser %}
-        <li class="nav-item">
-            <a href="{% url 'impersonate-list' %}" class="nav-link">impersonate</a>
-        </li>
-        {% endif %}
-    </ul>
-    {% endblock %}
-</nav>
+            {% endblock %}
+        </nav>
+    </header>
 {% endblock %}
-</header>
 
-
-
-<main role="main" class="pb-4">
-    <section id="content">
-        <div class="container">
-        {% block pagetitle %}{% endblock %}
-        {% block messages %}
-            {% if messages %}
-            <div class="row">
-                <div class="col-12">
-                    {% for message in messages %}
-                        {% if message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}
-                            <div class="alert alert-secondary">
-                                {{ message|safe }}
-                            </div>
-                        {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
-                            <div class="alert alert-primary">
-                                {{ message|safe }}
-                            </div>
-                        {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                            <div class="alert alert-success">
-                                {{ message|safe }}
-                            </div>
-                        {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-                            <div class="alert alert-warning">
-                                {{ message|safe }}
-                            </div>
-                        {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                            <div class="alert alert-danger">
-                                {{ message|safe }}
-                            </div>
-                        {% else %} {# for any other message type passed in #}
-                            <div class="alert alert-dark">
-                                {{ message|safe }}
-                            </div>
-                        {% endif %}
-                    {% endfor %}
+    <main class="main--{% block mainclass %}{% endblock %}" id="content">
+            <div>
+            {% block pagetitle %}{% endblock %}
+            {% block messages %}
+                {% if messages %}
+                <div class="row">
+                    <div class="col-12">
+                        {% for message in messages %}
+                            {% if message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}
+                                <div class="alert alert-secondary">
+                                    {{ message|safe }}
+                                </div>
+                            {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                                <div class="alert alert-primary">
+                                    {{ message|safe }}
+                                </div>
+                            {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                                <div class="alert alert-success">
+                                    {{ message|safe }}
+                                </div>
+                            {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                                <div class="alert alert-warning">
+                                    {{ message|safe }}
+                                </div>
+                            {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                                <div class="alert alert-danger">
+                                    {{ message|safe }}
+                                </div>
+                            {% else %} {# for any other message type passed in #}
+                                <div class="alert alert-dark">
+                                    {{ message|safe }}
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+                    </div>
                 </div>
+                {% endif %}
+            {% endblock %}
+            {% block content %}{% endblock %}
             </div>
-            {% endif %}
-        {% endblock %}
-        {% block content %}{% endblock %}
-        </div>
-        {# Creates space for a fluid container to be implemented by a map view #}
-        {% block fluid_content %}{% endblock %}
-    </section>
+            {# Creates space for a fluid container to be implemented by a map view #}
+            {% block fluid_content %}{% endblock %}
 
-</main>
+    </main>
 
 {% block footer %}
 <footer class="bg-light text-dark pt-2 pb-5">
