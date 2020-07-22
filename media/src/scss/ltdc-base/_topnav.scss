@@ -1,0 +1,44 @@
+header {
+    @extend .fixed-top;
+    background-color: $primary-ltds;
+    height: 4.125rem;
+}
+
+.header {
+    &--homepage { /* .header--homepage */
+        background-color: transparent;
+        transition: all 0.4s ease-in-out;
+        -webkit-transition: all 0.4s ease-in-out;
+        -moz-transition: all 0.4s ease-in-out;
+        height: 6.5rem;
+        z-index: 999;
+    }
+    &__shadow { /* .header__shadow */
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: $primary-ltds;
+        opacity: 0.6;
+    }
+    &__logo { /* .header__logo */
+        height: 4.75rem;
+        transition: all 0.4s ease-in-out;
+        -webkit-transition: all 0.4s ease-in-out;
+        -moz-transition: all 0.4s ease-in-out;
+    }
+}
+
+.header--homepage.shrink {
+    height: 4.125rem;
+    background-color: $primary-ltds;
+}
+
+.header--homepage.shrink .header__logo {
+    height: 2.5rem;
+}
+
+.header--course .header__logo {
+    height: 2.5rem;
+}

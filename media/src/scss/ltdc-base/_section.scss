@@ -1,0 +1,12 @@
+.main--homepage {
+    section {
+        padding: 4rem 1rem;
+    }
+}
+
+.section {
+        border: 1px solid #ccc;
+    &--pitch {
+    @extend .container;
+    }
+}
