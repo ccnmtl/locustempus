@@ -1,12 +1,32 @@
-.main--homepage {
-    section {
-        padding: 4rem 1rem;
+%section--homepage {
+    padding: 4rem 1rem;
+    @extend .container;
+}
+
+.section--pitch,
+.section--invitation {
+    @extend %section--homepage;
+    h2 {
+        text-align: center;
+    }
+    p {
+        text-align: center;
     }
 }
 
-.section {
-        border: 1px solid #ccc;
-    &--pitch {
-    @extend .container;
+.section--feature {
+    @extend %section--homepage;
+    @extend .row;
+    margin: auto;
+    h2 {
+        text-align: left;
+    }
+    p {
+        text-align: left;
+    }
+    .image-placeholder {
+        height: 20rem;
+        border: 1px solid #ddd;
+        background-color: #eee;
     }
 }

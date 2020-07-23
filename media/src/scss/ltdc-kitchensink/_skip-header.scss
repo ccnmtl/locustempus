@@ -1,0 +1,17 @@
+.skip-header {
+    @include sr-only;
+    @include sr-only-focusable;
+    display: block;
+    padding: 0.75em;
+    color: #fff;
+    text-align: center;
+    background-color: #666;
+    outline: 0;
+        &:hover {
+            color: #fff;
+        }
+        &__text {
+            padding: .5em;
+            outline: 1px dotted;
+        }
+}

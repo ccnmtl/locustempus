@@ -1,0 +1,143 @@
+html, body {
+    background-color: $background-ltds;
+    position: relative;
+    height: 100%;
+    width: 100%;
+    margin: 0;
+    font-family: $Notosans;
+}
+
+.user-auth {
+    &--login {
+        @extend .btn;
+        @extend .btn-success;
+    }
+    &--logout {
+        @extend .btn;
+        @extend .btn-secondary;
+    }
+}
+
+$background-bg: red;
+
+.furniture {
+  $background-bg: green;
+  color: $background-bg;
+}
+
+.drawer {
+  color: $background-bg;
+}
+
+/* --- Section: Hero --- */
+.feature.hero {
+    background-image: linear-gradient(rgba(65, 81, 108, 0.2), rgba(65, 81, 108, 0.2)), url("/media/img/lt-hero2.png");
+    height: 25rem;
+    padding: 0;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    color: #333;
+}
+
+.hero-text {
+        top: 50%;
+        left: 10%;
+        transform: translate(-5%, -40%);
+    text-align: center;
+    position: absolute;
+}
+
+.hero-text h1 {
+    font-weight: 600;
+    font-size: 2rem;
+}
+
+.hero-text p {
+    font-weight: 400;
+    font-size: 1.2rem;
+}
+
+
+.mytest {
+    border: 1px solid red;
+    padding: 1rem;
+    .mytest--text {
+        border: 1px solid green;
+        background-color: pink;
+    }
+}
+
+
+
+
+
+/* 
+Extra small devices (portrait phones, less than 576px)
+No media query for `xs` since this is the default in Bootstrap
+ */
+
+/* Small devices (landscape phones, 576px and up) */
+@media (min-width: 576px) {
+    .feature.hero {
+        height: 35rem;
+    }
+    .hero-text {
+        width: 30rem;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -55%);
+    }
+    .hero-text h1 {
+        font-weight: 600;
+        font-size: 2.5rem;
+    }
+    .hero-text p {
+        font-size: 1.625rem;
+    }
+}
+
+/* Medium devices (tablets, 768px and up) */
+@media (min-width: 768px) {
+    .feature {
+        display: block;
+        padding: 4rem 0;
+    }
+    .feature p {
+        font-size: 1.2rem;
+    }
+    .feature.hero {
+        height: 42rem;
+    }
+    .hero-text {
+        width: auto;
+        top: 55%;
+        left: 40%;
+        transform: translate(-33%, -55%);
+    }
+    .hero-text h1 {
+        font-size: 3.25rem;
+    }
+    .hero-text p {
+        font-weight: 400;
+        font-size: 1.625rem;
+    }
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    .hero-text {
+        width: 50rem;
+        top: 55%;
+        left: 50%;
+        transform: translate(-50%, -55%);
+    }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+}
+
+
+
