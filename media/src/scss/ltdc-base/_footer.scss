@@ -1,0 +1,12 @@
+footer {
+    background-color: $primary-ltds-dark;
+    padding-top: 2rem;
+    padding-bottom: 4rem;
+    .footer__logo {
+        display: block;
+        width: 25rem;
+        margin: 3rem auto;
+        @extend .img-fluid;
+    }
+}
+

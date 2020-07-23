@@ -1,9 +1,5 @@
 {% extends 'base.html' %}
 
-{% block bodyclass %}{% endblock %}
-{% block headerclass %}homepage{% endblock %}
-{% block mainclass %}homepage{% endblock %}
-
 {% block content %}
 
 <section class="feature hero">
@@ -21,30 +17,60 @@
 </section>
 
 <section class="section--pitch">
-{% lorem 1 p %}
+    <h2>
+        Teaching and learning with time and space
+    </h2>
+    <p>
+        Locus Tempus is a powerful application designed to facilitate map-based learning activities across disciplines. Locus Tempus features tools for authoring maps, inviting collaborators, and analyzing data spatially and chronologically.
+    </p>
 </section>
 
-<div class="furniture">
-Furniture:
-<div class="furniture__cabinet">
-Cabinet
-    <p class="drawer">
-    Drawer
+<section class="section--feature">
+    <div class="col-md">
+        <h2>Visualize geospatial data</h2>
+        <p>
+        Cultivate spatial reasoning by using map layers to visualize geospatial events from different sources. Layers allow you to explore interdisciplinary concepts and procedures by charting data in ways that are meaningful to your inquiry.
+        </p>
+    </div>
+    <div class="col-md">
+        <div class="image-placeholder"></div>
+    </div>
+</section>
+
+<section class="section--feature">
+    <div class="col-md order-md-2">
+        <h2>Analyze patterns and trends</h2>
+        <p>
+        Tag, connect, and categorize events and layers to compare, contrast and examine patterns, trends and relationships in your data. Locus Tempus allows you to further explore your questions, make decisions and represent your data in compelling ways.
+        </p>
+    </div>
+    <div class="col-md order-md-1">
+        <div class="image-placeholder"></div>
+    </div>
+</section>
+
+<section class="section--feature">
+    <div class="col-md">
+        <h2>Foster collaborative learning</h2>
+        <p>
+        Share your map and allow others to contribute to your visualization and analysis. For higher education, Locus Tempus may be integrated into any content management system providing faculty a streamlined process for authoring maps and inviting student contributors.
+        </p>
+    </div>
+    <div class="col-md">
+        <div class="image-placeholder"></div>
+    </div>
+</section>
+
+<section class="section--invitation">
+    <h2>Partner with us
+</h2>
+    <p>
+        If you’re interested in implementing this tool in your teaching practice, or to learn more about Locus Tempus, please reach out to the CTL project team that is developing Locus Tempus.
     </p>
-</div>
-</div>
-
-
-<div class="furniture">
-Furniture:
-<div class="closet">
-Closet
-    <p class="drawer">
-    Drawer
+    <p class="text-center">
+        <button type="button" class="btn btn-secondary">Contact us</button>
     </p>
-</div>
-</div>
+</section>
 
-        <h1>Homepage</h1>
-        <p>For the time being: <a href="/accounts/login/?next=/">Login page</a></p>
+
 {% endblock %}
