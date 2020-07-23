@@ -55,7 +55,51 @@
     {% endblock %}
 
     <main class="main--{{ page_type }}" id="content">
+
+<!-- ### Temporary placement of messages.
+     ### Needs to be here for the time being so the tests will pass.
+     ### Error messages needs to be close to actions, expecially when layout 
+     ### has changed.
+-->
+        {% block messages %}
+            {% if messages %}
+            <div class="row">
+                <div class="col-12">
+                    {% for message in messages %}
+                        {% if message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}
+                            <div class="alert alert-secondary">
+                                {{ message|safe }}
+                            </div>
+                        {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
+                            <div class="alert alert-primary">
+                                {{ message|safe }}
+                            </div>
+                        {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
+                            <div class="alert alert-success">
+                                {{ message|safe }}
+                            </div>
+                        {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
+                            <div class="alert alert-warning">
+                                {{ message|safe }}
+                            </div>
+                        {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
+                            <div class="alert alert-danger">
+                                {{ message|safe }}
+                            </div>
+                        {% else %} {# for any other message type passed in #}
+                            <div class="alert alert-dark">
+                                {{ message|safe }}
+                            </div>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        {% endblock %}
+<!-- End temporary message placement -->
+
         {% block content %}{% endblock %}
+
     </main>
 
 {% block footer %}
