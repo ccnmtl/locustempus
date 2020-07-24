@@ -4,7 +4,7 @@
 
 <html lang="en">
     <head>
-	    <title>Locus Tempus: {% block title %}{% endblock %}{{ flatpage.title }}</title>
+	    <title>{% block title %}{% endblock %}{{ flatpage.title }} – Locus Tempus</title>
 
         <!-- Required meta tags -->
         <meta charset="utf-8" />
@@ -41,7 +41,7 @@
         </a>
         <div class="header__shadow"></div>
         <nav class="navbar">
-            <a href="/" class="navbar-brand"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo.png" alt="Locus Tempus logo"></a>
+            <a href="/" class="navbar-brand"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo.svg" alt="Locus Tempus logo"></a>
             {% block usernav %}
                 {% if request.user.is_anonymous %}
                 <a href="http://localhost:8000/accounts/login/?next=/" class="user-auth--login">Log in</a>

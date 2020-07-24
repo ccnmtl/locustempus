@@ -2,6 +2,9 @@ header {
     @extend .fixed-top;
     background-color: $primary-ltds;
     height: 4.125rem;
+    .header__logo {
+        height: 2.5rem;
+    }
 }
 
 .header {
@@ -22,7 +25,7 @@ header {
         background-color: $primary-ltds;
         opacity: 0.6;
     }
-    &__logo { /* .header__logo */
+    &--homepage &__logo { /* .header__logo */
         height: 4.75rem;
         transition: all 0.4s ease-in-out;
         -webkit-transition: all 0.4s ease-in-out;
