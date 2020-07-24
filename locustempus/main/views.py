@@ -42,7 +42,6 @@ from typing import (
     Any, Tuple, List
 )
 from uuid import uuid4
-import os
 
 
 class IndexView(View):
@@ -755,9 +754,6 @@ class ActivityDeleteView(LoggedInFacultyMixin, DeleteView):
 class ResetView(View):
     @staticmethod
     def can_reset_database():
-        if not os.environ.get('LOCUS_TEMPUS_TEST') == 'True':
-            return False
-
         db_name = connections.databases['default']['NAME']
         if not (db_name == 'test_locustempus' or
                 db_name == 'file:memorydb_default?mode=memory&cache=shared'):
