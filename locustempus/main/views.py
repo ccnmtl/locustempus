@@ -758,7 +758,9 @@ class ResetView(View):
         if not os.environ.get('LOCUS_TEMPUS_TEST') == 'True':
             return False
 
-        if not connections.databases['default']['NAME'] == 'test_locustempus':
+        db_name = connections.databases['default']['NAME']
+        if not (db_name == 'test_locustempus' or
+                db_name == 'file:memorydb_default?mode=memory&cache=shared'):
             return False
 
         return True
