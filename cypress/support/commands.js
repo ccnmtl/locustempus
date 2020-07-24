@@ -34,5 +34,5 @@ Cypress.Commands.add('login', (username, password) => {
 });
 
 Cypress.Commands.add('reset_database', () => {
-    cy.visit('http://localhost:8000/reset/');
+    cy.visit('http://localhost:8000/2b2c5419-b77c-47b5-b8ca-5dfe9f3d43a7/');
 });
