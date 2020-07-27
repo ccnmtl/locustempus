@@ -7405,8 +7405,6 @@ a.text-dark:hover, a.text-dark:focus {
 header {
   background-color: #424242;
   height: 4.125rem; }
-  header .header__logo {
-    height: 2.5rem; }
 
 .header--homepage {
   /* .header--homepage */
@@ -7427,7 +7425,7 @@ header {
   background-color: #424242;
   opacity: 0.6; }
 
-.header--homepage .header__logo {
+.header__logo {
   /* .header__logo */
   height: 4.75rem;
   transition: all 0.4s ease-in-out;
@@ -7441,7 +7439,10 @@ header {
 .header--homepage.shrink .header__logo {
   height: 2.5rem; }
 
-.header--course .header__logo {
+.header--dashboard .header__logo {
+  height: 2.5rem; }
+
+.header--default .header__logo {
   height: 2.5rem; }
 
 .header--homepage .user-auth--login, .header--homepage .user-auth--logout, .header--homepage.shrink .user-auth--login, .user-auth--login, .header--homepage.shrink .user-auth--logout, .user-auth--logout {
@@ -7768,19 +7769,19 @@ html, body {
     margin: 0;
     padding: 2rem;
     border-radius: 0.5rem;
-    border: 0.25rem solid #79adff; }
+    border: 0; }
   .loginbox__header {
     margin: 0;
     padding: 0;
     border: 0; }
   .loginbox__title {
-    margin-top: 6.5rem;
+    margin-top: 4rem;
     margin-bottom: 3rem;
     text-align: center; }
   .loginbox__avatar {
-    width: 6rem;
+    width: 4rem;
     display: block;
-    margin: -6.5rem auto; }
+    margin: -4rem auto; }
 
 /* 
 Extra small devices (portrait phones, less than 576px)

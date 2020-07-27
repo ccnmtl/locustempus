@@ -35,7 +35,7 @@
     <body class="{{ page_type }}" id="{% block bodyid %}{% endblock %}">
 
     {% block topnavbar %}
-    <header class="header--{{ page_type }}">
+    <header class="header--{% if page_type %}{{ page_type }}{% else %}default{% endif %}">
         <a class="skip-header" href="#content">
             <span class="skip-header__text">Skip to main content</span>
         </a>

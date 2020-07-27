@@ -22,7 +22,7 @@ html, body {
         margin: 0;
         padding: 2rem;
         border-radius: 0.5rem;
-        border: 0.25rem solid #79adff;
+        border: 0;
     }
     &__header {
         margin: 0;
@@ -30,14 +30,14 @@ html, body {
         border: 0;
     }
     &__title {
-        margin-top: 6.5rem;
+        margin-top: 4rem;
         margin-bottom: 3rem;
         text-align: center;
     }
     &__avatar {
-        width: 6rem;
+        width: 4rem;
         display: block;
-        margin: -6.5rem auto;
+        margin: -4rem auto;
     }
 }
 
