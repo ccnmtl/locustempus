@@ -3,11 +3,13 @@
 {% block title %}Log in{% endblock %}
 
 {% block content %}
-<div class="row justify-content-md-center">
-    <div class="col-md-auto text-center my-5">
-        <h2>
-            Login
-        </h2>
+<div class="loginbox">
+    <div class="loginbox__content">
+        <div class="loginbox__header">
+            <img class="loginbox__avatar" src="{{STATIC_URL}}img/logo-login-page.svg" alt="" />
+            <h1 class="loginbox__title">Log in</h1>
+        </div>
+        <div class="loginbox__body--cuid">
         {% if CAS_BASE %}
             <p>If you have a Columbia University Network ID (UNI)</p>
             <form class="text-center" method="get" action="{{CAS_BASE}}cas/login">
@@ -17,7 +19,8 @@
             </form>
             <hr class="seperator" />
         {% endif %}
-
+        </div>
+        <div class="loginbox__body--local">
         {% if form.errors %}
             <div class="alert alert-danger" role="alert">
                 <div><b>Invalid username or password</b></div>
@@ -45,6 +48,10 @@
             <input type="hidden" name="next" value="{{ next|urlencode }}" />
             <p class="small pt-2"><a href="/accounts/password_reset/">Forgot Password?</a></p>
         </form>
+        </div>
     </div>
 </div>
+
+
+    
 {% endblock %}

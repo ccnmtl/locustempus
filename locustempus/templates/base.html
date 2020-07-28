@@ -4,7 +4,7 @@
 
 <html lang="en">
     <head>
-	    <title>Locus Tempus: {% block title %}{% endblock %}{{ flatpage.title }}</title>
+	    <title>{% block title %}{% endblock %}{{ flatpage.title }} – Locus Tempus</title>
 
         <!-- Required meta tags -->
         <meta charset="utf-8" />
@@ -30,18 +30,20 @@
 
         <!-- Favicons, TBD -->
         <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico">
+        <link rel="icon" href="{{STATIC_URL}}img/favicon.ico">
+        <link rel="icon" type="image/png" href="{{STATIC_URL}}img/favicon.png">
 
     </head>
     <body class="{{ page_type }}" id="{% block bodyid %}{% endblock %}">
 
     {% block topnavbar %}
-    <header class="header--{{ page_type }}">
+    <header class="header--{% if page_type %}{{ page_type }}{% else %}default{% endif %}">
         <a class="skip-header" href="#content">
             <span class="skip-header__text">Skip to main content</span>
         </a>
         <div class="header__shadow"></div>
         <nav class="navbar">
-            <a href="/" class="navbar-brand"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo.png" alt="Locus Tempus logo"></a>
+            <a href="/" class="navbar-brand"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo.svg" alt="Locus Tempus logo"></a>
             {% block usernav %}
                 {% if request.user.is_anonymous %}
                 <a href="http://localhost:8000/accounts/login/?next=/" class="user-auth--login">Log in</a>

@@ -3,14 +3,64 @@
     @extend .container;
 }
 
+
+/* --- Section: Hero --- */
+.section--hero {
+    background-image: linear-gradient(rgba(65, 81, 108, 0.2), rgba(65, 81, 108, 0.2)), url("/media/img/lt-hero.jpg");
+    height: 25rem;
+    padding: 0;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    position: relative;
+    color: #333;
+}
+
+.hero-text {
+    top: 50%;
+    left: 10%;
+    transform: translate(-5%, -40%);
+    text-align: center;
+    position: absolute;
+    @include media-breakpoint-up(sm) {
+        width: 30rem;
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -55%);
+    }
+    @include media-breakpoint-up(md) {
+        width: auto;
+        top: 55%;
+        left: 40%;
+        transform: translate(-33%, -55%);
+    }
+    @include media-breakpoint-up(lg) {
+        width: 50rem;
+        top: 55%;
+        left: 50%;
+        transform: translate(-50%, -55%);
+    }
+    h1 {
+        font-weight: 700;
+        font-size: 2rem;
+    }
+    p {
+        font-weight: 400;
+        font-size: 1.2rem;
+    }
+}
+
 .section--pitch,
 .section--invitation {
     @extend %section--homepage;
     h2 {
         text-align: center;
+        font-size: 2.125rem;
+        margin-bottom: 1rem;
     }
     p {
         text-align: center;
+        font-size: 1.125rem;
     }
 }
 
@@ -19,10 +69,19 @@
     @extend .row;
     margin: auto;
     h2 {
-        text-align: left;
+        text-align: center;
+        font-size: 2.125rem;
+        margin-bottom: 1rem;
+        @include media-breakpoint-up(md) {
+            text-align: left;
+        }
     }
     p {
-        text-align: left;
+        text-align: center;
+        font-size: 1.125rem;
+        @include media-breakpoint-up(md) {
+            text-align: left;
+        }
     }
     .image-placeholder {
         height: 20rem;
