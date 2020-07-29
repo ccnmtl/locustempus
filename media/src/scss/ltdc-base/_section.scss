@@ -14,40 +14,90 @@
     background-size: cover;
     position: relative;
     color: #333;
+    @include media-breakpoint-up(sm) {
+        height: 35rem;
+    }
+    @include media-breakpoint-up(md) {
+        height: 42rem;
+    }
 }
 
 .hero-text {
     top: 50%;
     left: 10%;
-    transform: translate(-5%, -40%);
+    // transform: translate(-5%, -40%);
     text-align: center;
     position: absolute;
     @include media-breakpoint-up(sm) {
-        width: 30rem;
-        top: 60%;
-        left: 50%;
-        transform: translate(-50%, -55%);
+        width: auto;
+        top: 16.25rem;
+        left: 0;
+        //transform: translate(-50%, -55%);
     }
     @include media-breakpoint-up(md) {
         width: auto;
-        top: 55%;
-        left: 40%;
-        transform: translate(-33%, -55%);
+        top: 16.25rem;
+        left: 0;
+        //transform: translate(-33%, -55%);
     }
     @include media-breakpoint-up(lg) {
+        width: 40rem;
+        top: 16.25rem;
+        left: 0;
+        //transform: translate(-50%, -55%);
+    }
+    @include media-breakpoint-up(xl) {
         width: 50rem;
-        top: 55%;
-        left: 50%;
-        transform: translate(-50%, -55%);
+        top: 15.25rem;
+        left: 0;
+        //transform: translate(-50%, -55%);
     }
     h1 {
-        font-weight: 700;
+        font-weight: 600;
         font-size: 2rem;
+        @include media-breakpoint-up(sm) {
+            font-size: 2.5rem;
+        }
+        @include media-breakpoint-up(md) {
+            font-size: 3rem;
+        }
+        @include media-breakpoint-up(lg) {
+            font-size: 3rem;
+        }
+        @include media-breakpoint-up(xl) {
+            font-size: 3.25rem;
+        }
     }
     p {
         font-weight: 400;
         font-size: 1.2rem;
+        @include media-breakpoint-up(sm) {
+            font-size: 1.625rem;
+        }
+        @include media-breakpoint-up(md) {
+            font-size: 1.625rem;
+        }
+        @include media-breakpoint-up(lg) {
+            font-size: 1.875rem;
+        }
     }
+}
+
+.hero-shadow {
+    position: absolute;
+    width: 100%;
+    height: 16rem;
+    top: 15rem;
+    left: 0;
+    background-color: $white;
+    opacity: 0.3;
+}
+
+
+.temp-marker {
+    position: absolute;
+    bottom: 0;
+    left: 0;
 }
 
 .section--pitch,

@@ -47,20 +47,6 @@ Extra small devices (portrait phones, less than 576px)
 No media query for `xs` since this is the default in Bootstrap
  */
 
-/* Small devices (landscape phones, 576px and up) */
-@media (min-width: 576px) {
-    .section--hero {
-        height: 35rem;
-    }
-    .hero-text h1 {
-        font-weight: 600;
-        font-size: 2.5rem;
-    }
-    .hero-text p {
-        font-size: 1.625rem;
-    }
-}
-
 /* Medium devices (tablets, 768px and up) */
 @media (min-width: 768px) {
     .feature {
@@ -69,16 +55,6 @@ No media query for `xs` since this is the default in Bootstrap
     }
     .feature p {
         font-size: 1.2rem;
-    }
-    .section--hero {
-        height: 42rem;
-    }
-    .hero-text h1 {
-        font-size: 3.25rem;
-    }
-    .hero-text p {
-        font-weight: 400;
-        font-size: 1.625rem;
     }
 }
 
