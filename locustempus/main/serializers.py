@@ -43,5 +43,5 @@ class LayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Layer
         fields = (
-            'title', 'content_object'
+            'title', 'pk', 'content_object'
         )

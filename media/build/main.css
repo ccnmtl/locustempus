@@ -7801,7 +7801,7 @@ h1, h2, h3, h4, h5, h6 {
   top: 30px;
   left: 30px;
   width: 400px;
-  height: 400px;
+  height: calc(100vh - 100px);
   background-color: #FFFFFF;
   z-index: 10000;
   padding: 1rem;
