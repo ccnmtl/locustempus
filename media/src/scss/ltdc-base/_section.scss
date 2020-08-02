@@ -1,6 +1,10 @@
 %section--homepage {
-    padding: 4rem 1rem;
+    padding: 4rem 0;
+    border-top: 1px solid $gray-ltds-300;
     @extend .container;
+    @include media-breakpoint-up(lg) {
+        border-top: none;
+    }
 }
 
 
@@ -110,7 +114,7 @@
     }
     p {
         text-align: center;
-        font-size: 1.125rem;
+        font-size: 1.25rem;
     }
 }
 
@@ -128,14 +132,27 @@
     }
     p {
         text-align: center;
-        font-size: 1.125rem;
+        font-size: 1.25rem;
         @include media-breakpoint-up(md) {
             text-align: left;
         }
     }
+    img {
+        width: 100%;
+        border: 1px solid #ddd;
+    }
     .image-placeholder {
-        height: 20rem;
+        height: 30rem;
         border: 1px solid #ddd;
         background-color: #eee;
+        @include media-breakpoint-up(sm) {
+            height: 30rem;
+        }
+        @include media-breakpoint-up(md) {
+            height: 30rem;
+        }
+        @include media-breakpoint-up(lg) {
+            height: 20rem;
+        }
     }
 }
