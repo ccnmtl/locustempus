@@ -46,7 +46,7 @@
             <a href="/" class="navbar-brand"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo.svg" alt="Locus Tempus logo"></a>
             {% block usernav %}
                 {% if request.user.is_anonymous %}
-                <a href="http://localhost:8000/accounts/login/?next=/" class="user-auth--login">Log in</a>
+                <a href="/accounts/login/?next=/" class="user-auth--login">Log in</a>
                 {% else %}
                 <a href="/dashboard/">Dashboard</a>
                 <a href="/accounts/logout/?next=/" class="user-auth--logout">Log out</a>

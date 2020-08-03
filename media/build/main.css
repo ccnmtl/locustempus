@@ -7470,7 +7470,12 @@ main.main--homepage {
 
 .section--pitch,
 .section--invitation, .section--feature {
-  padding: 4rem 1rem; }
+  padding: 4rem 0;
+  border-top: 1px solid #e0e0e0; }
+  @media (min-width: 992px) {
+    .section--pitch,
+    .section--invitation, .section--feature {
+      border-top: none; } }
 
 /* --- Section: Hero --- */
 .section--hero {
@@ -7565,7 +7570,7 @@ main.main--homepage {
 .section--pitch p,
 .section--invitation p {
   text-align: center;
-  font-size: 1.125rem; }
+  font-size: 1.25rem; }
 
 .section--feature {
   margin: auto; }
@@ -7578,14 +7583,26 @@ main.main--homepage {
         text-align: left; } }
   .section--feature p {
     text-align: center;
-    font-size: 1.125rem; }
+    font-size: 1.25rem; }
     @media (min-width: 768px) {
       .section--feature p {
         text-align: left; } }
+  .section--feature img {
+    width: 100%;
+    border: 1px solid #ddd; }
   .section--feature .image-placeholder {
-    height: 20rem;
+    height: 30rem;
     border: 1px solid #ddd;
     background-color: #eee; }
+    @media (min-width: 576px) {
+      .section--feature .image-placeholder {
+        height: 30rem; } }
+    @media (min-width: 768px) {
+      .section--feature .image-placeholder {
+        height: 30rem; } }
+    @media (min-width: 992px) {
+      .section--feature .image-placeholder {
+        height: 20rem; } }
 
 .navlist--footer {
   justify-content: center; }
