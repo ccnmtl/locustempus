@@ -95,7 +95,7 @@ export const ProjectMap = () => {
         authedFetch(`/api/layer/${pk}/`, 'DELETE', JSON.stringify({pk: pk}))
             .then((response) => {
                 if (response.status !== 204) {
-                    throw 'Layer creation failed.';
+                    throw 'Layer deletion failed.';
                 } else {
                     setLayerData(layerData.filter((el) => {
                         return el.pk !== pk;
@@ -111,7 +111,7 @@ export const ProjectMap = () => {
                 if (response.status === 200) {
                     return response.json();
                 } else {
-                    throw 'Layer creation failed.';
+                    throw 'Layer update failed.';
                 }
             })
             .then((data) => {
