@@ -3,7 +3,8 @@ module.exports = {
         "browser": true,
         "amd": true,
         "jquery": true,
-        "cypress/globals": true
+        "cypress/globals": true,
+        "es6": true
     },
     "parser": "@typescript-eslint/parser",
     "plugins": [

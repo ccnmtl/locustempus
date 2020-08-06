@@ -4,7 +4,7 @@
 {{ project.title }}
 {% endblock %}
 
-{% block fluid_content %}
+{% block content %}
 <div id="project-map-container" data-basemap="{{ project.base_map }}" data-maptoken="{{ token }}"></div>
 {% endblock %}
 
@@ -16,6 +16,5 @@
 <link href="{{STATIC_URL}}build/project.css" rel="stylesheet">
 {% endblock %}
 
-{# Clear the conent and footer blocks #}
-{% block content %}{% endblock %}
+{# Clear the footer blocks #}
 {% block footer%}{% endblock %}
