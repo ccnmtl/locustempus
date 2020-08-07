@@ -125,20 +125,25 @@ export const ProjectMap = () => {
 
     if (mapboxLayers.length > 0) {
         return (
-            <DeckGL
-                layers={mapboxLayers}
-                initialViewState={viewportState.viewport}
-                width={'100%'}
-                height={'100%'}
-                controller={true}
-                ContextProvider={MapContext.Provider}>
-                <StaticMap
-                    reuseMaps
+            <>
+                <DeckGL
+                    layers={mapboxLayers}
+                    initialViewState={viewportState.viewport}
                     width={'100%'}
                     height={'100%'}
-                    preventStyleDiffing={true}
-                    mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
-                    mapboxApiAccessToken={TOKEN} />
+                    controller={true}
+                    ContextProvider={MapContext.Provider}>
+                    <StaticMap
+                        reuseMaps
+                        width={'100%'}
+                        height={'100%'}
+                        preventStyleDiffing={true}
+                        mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
+                        mapboxApiAccessToken={TOKEN} />
+                    <div id='map-navigation-control'>
+                        <NavigationControl />
+                    </div>
+                </DeckGL>
                 {projectInfo && (
                     <ProjectMapSidebar
                         title={projectInfo.title}
@@ -148,20 +153,23 @@ export const ProjectMap = () => {
                         deleteLayer={deleteLayer}
                         updateLayer={updateLayer}/>
                 )}
-                <div id='map-navigation-control'>
-                    <NavigationControl />
-                </div>
-            </DeckGL>
+            </>
         );
     } else {
         return (
-            <ReactMapGL
-                {...staticMapViewport.viewport}
-                onViewportChange={viewport => setStaticMapViewport({viewport})}
-                width={'100%'}
-                height={'100%'}
-                mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
-                mapboxApiAccessToken={TOKEN}>
+            <>
+                <ReactMapGL
+                    {...staticMapViewport.viewport}
+                    onViewportChange={
+                        viewport => setStaticMapViewport({viewport})}
+                    width={'100%'}
+                    height={'100%'}
+                    mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
+                    mapboxApiAccessToken={TOKEN}>
+                    <div id='map-navigation-control'>
+                        <NavigationControl />
+                    </div>
+                </ReactMapGL>
                 {projectInfo && (
                     <ProjectMapSidebar
                         title={projectInfo.title}
@@ -171,10 +179,7 @@ export const ProjectMap = () => {
                         deleteLayer={deleteLayer}
                         updateLayer={updateLayer}/>
                 )}
-                <div id='map-navigation-control'>
-                    <NavigationControl />
-                </div>
-            </ReactMapGL>
+            </>
         );
     }
 };
