@@ -3,6 +3,8 @@ import React, { useState } from 'react';
 export interface LayerProps {
     title: string;
     pk: number;
+    activeLayer: number | null;
+    setActiveLayer(pk: number): any;
     content_object: string; // The API URL to the parent project/response
     deleteLayer(pk: number): any;
     updateLayer(pk: number, title: string): any;
@@ -23,8 +25,17 @@ export const Layer = (layerData: LayerProps)=> {
         e.preventDefault();
         layerData.deleteLayer(layerData.pk);
     };
+
+    const handleSetActiveLayer = (e: React.MouseEvent) => {
+        e.preventDefault();
+        layerData.setActiveLayer(layerData.pk);
+    };
+
+    let isActiveLayer = layerData.pk == layerData.activeLayer;
+
     return (
-        <div className="project-map-sidebar-layer">
+        <div className={isActiveLayer ? 'project-map-sidebar-layer project-map-sidebar-layer--active' : 'project-map-sidebar-layer'}
+            onClick={handleSetActiveLayer}>
             <span className="font-weight-bold">{layerData.title}</span>
             <p>{layerData.content_object}</p>
             <form onSubmit={handleUpdateLayer}>

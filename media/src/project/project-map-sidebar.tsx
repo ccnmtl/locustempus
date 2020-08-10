@@ -4,14 +4,16 @@ import { Layer, LayerProps } from './layer';
 export interface ProjectMapSidebarProps {
     title: string;
     description: string;
-    layers: LayerProps[]
+    layers: LayerProps[];
+    activeLayer: number | null;
+    setActiveLayer(pk: number): any;
     addLayer(layerTitle: string): any;
     deleteLayer(pk: number): any;
     updateLayer(pk: number, title: string): any;
 }
 
 export const ProjectMapSidebar = (
-    {title, description, layers, addLayer, deleteLayer, updateLayer}: ProjectMapSidebarProps) => {
+    {title, description, layers, activeLayer, setActiveLayer, addLayer, deleteLayer, updateLayer}: ProjectMapSidebarProps) => {
 
     const [newLayerTitle, setNewLayerTitle] = useState<string>('');
 
@@ -44,7 +46,7 @@ export const ProjectMapSidebar = (
                     className='btn btn-primary' value={'Add Layer'}/>
             </form>
             {layers && layers.map(
-                (layer, idx) => {return (<Layer {...layer} deleteLayer={deleteLayer} updateLayer={updateLayer} key={idx} />);})}
+                (layer, idx) => {return (<Layer {...layer} deleteLayer={deleteLayer} updateLayer={updateLayer} key={idx} activeLayer={activeLayer} setActiveLayer={setActiveLayer} />);})}
         </div>
     );
 };

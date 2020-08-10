@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import ReactMapGL, { _MapContext as MapContext, StaticMap,NavigationControl} from 'react-map-gl';
+import ReactMapGL, { _MapContext as MapContext, StaticMap, InteractiveMap, NavigationControl} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
-import DeckGL from '@deck.gl/react';
+import DeckGL, { MapController }  from 'deck.gl';
+import { IconLayer } from '@deck.gl/layers';
 
 import { ProjectMapSidebar, ProjectMapSidebarProps } from './project-map-sidebar';
 import { LayerProps } from './layer';
@@ -52,8 +53,9 @@ export const ProjectMap = () => {
         staticMapViewport,
         setStaticMapViewport
     ] = React.useState(viewportState);
-
-    let mapboxLayers: any[] = [];
+    const [activeLayer, setActiveLayer] = useState<number | null>(null);
+    const [eventsMapData, setEventsMapData,] = useState<any[]>([]);
+    const [mapboxLayers, setMapboxLayers,] = useState<any[]>([]);
 
 
     useEffect(() => {
@@ -125,64 +127,88 @@ export const ProjectMap = () => {
             });
     };
 
-
-    if (mapboxLayers.length > 0) {
-        return (
-            <>
-                <DeckGL
-                    layers={mapboxLayers}
-                    initialViewState={viewportState.viewport}
-                    width={'100%'}
-                    height={'100%'}
-                    controller={true}
-                    ContextProvider={MapContext.Provider}>
-                    <StaticMap
-                        reuseMaps
-                        width={'100%'}
-                        height={'100%'}
-                        preventStyleDiffing={true}
-                        mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
-                        mapboxApiAccessToken={TOKEN} />
-                    <div id='map-navigation-control'>
-                        <NavigationControl />
-                    </div>
-                </DeckGL>
-                {projectInfo && (
-                    <ProjectMapSidebar
-                        title={projectInfo.title}
-                        description={projectInfo.description}
-                        layers={[]}
-                        addLayer={addLayer}
-                        deleteLayer={deleteLayer}
-                        updateLayer={updateLayer}/>
-                )}
-            </>
-        );
-    } else {
-        return (
-            <>
-                <ReactMapGL
-                    {...staticMapViewport.viewport}
-                    onViewportChange={
-                        viewport => setStaticMapViewport({viewport})}
-                    width={'100%'}
-                    height={'100%'}
-                    mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
-                    mapboxApiAccessToken={TOKEN}>
-                    <div id='map-navigation-control'>
-                        <NavigationControl />
-                    </div>
-                </ReactMapGL>
-                {projectInfo && (
-                    <ProjectMapSidebar
-                        title={projectInfo.title}
-                        description={projectInfo.description}
-                        layers={layerData}
-                        addLayer={addLayer}
-                        deleteLayer={deleteLayer}
-                        updateLayer={updateLayer}/>
-                )}
-            </>
-        );
+    const ICON_ATLAS = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png';
+    const ICON_MAPPING = {
+        marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
     }
+
+    const handleDeckGlClick = (info: any, event: any) => {
+        if (event.tapCount === 2) {
+            console.log(info);
+            console.log(event);
+            // Add event
+            // Update the mapboxLayers prop
+            // For now this means updating an event data list,
+            // create a new IconLayer, and update mapboxLayers with
+            // this new Iconlayer
+            console
+            let updatedLayers = [...eventsMapData, {lngLat: info.lngLat}];
+            let icons = new IconLayer({
+                id: 'icon-layer',
+                data: updatedLayers,
+                pickable: true,
+                iconAtlas: ICON_ATLAS,
+                iconMapping: ICON_MAPPING,
+                getIcon: d => 'marker',
+                sizeScale: 1,
+                getPosition: d => d.lngLat,
+                getSize: d => 3,
+                getColor: '#FF0000' as any,
+            });
+            console.log(updatedLayers);
+            setEventsMapData(updatedLayers);
+            //setMapboxLayers([...mapboxLayers, icons]);
+        }
+    };
+
+    return (
+        <>
+            {console.log('map rendered')}
+            <DeckGL
+                /*layers={mapboxLayers}*/
+                layers={[
+                    new IconLayer({
+                        id: 'icon-layer',
+                        data: eventsMapData,
+                        pickable: true,
+                        iconAtlas: ICON_ATLAS,
+                        iconMapping: ICON_MAPPING,
+                        getIcon: d => 'marker',
+                        sizeScale: 15,
+                        getPosition: d => d.lngLat,
+                        getSize: d => 5,
+                        getColor: '#FF0000' as any,
+                    }),
+                ]}
+                initialViewState={viewportState.viewport}
+                width={'100%'}
+                height={'100%'}
+                controller={{
+                    type: MapController, doubleClickZoom: false} as any}
+                onClick={handleDeckGlClick}
+                ContextProvider={MapContext.Provider}>
+                <StaticMap
+                    reuseMaps
+                    width={'100%'}
+                    height={'100%'}
+                    preventStyleDiffing={true}
+                    mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
+                    mapboxApiAccessToken={TOKEN} />
+                <div id='map-navigation-control'>
+                    <NavigationControl />
+                </div>
+            </DeckGL>
+            {projectInfo && (
+                <ProjectMapSidebar
+                    title={projectInfo.title}
+                    description={projectInfo.description}
+                    layers={[]}
+                    activeLayer={activeLayer}
+                    setActiveLayer={setActiveLayer}
+                    addLayer={addLayer}
+                    deleteLayer={deleteLayer}
+                    updateLayer={updateLayer}/>
+            )}
+        </>
+    );
 };
