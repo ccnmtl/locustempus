@@ -5,8 +5,10 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
 import DeckGL, { MapController }  from 'deck.gl';
 import { IconLayer } from '@deck.gl/layers';
+import { Position } from '@deck.gl/core/utils/positions';
 
-import { ProjectMapSidebar, ProjectMapSidebarProps } from './project-map-sidebar';
+import {
+    ProjectMapSidebar, ProjectMapSidebarProps } from './project-map-sidebar';
 import { LayerProps } from './layer';
 
 const authedFetch = (url: string, method: string, data: any) => {
@@ -32,11 +34,11 @@ interface ProjectInfo {
 }
 
 interface LayerEventDatum {
-    lngLat: number[];
+    lngLat: Position;
 }
 
 interface LayerEventData {
-    [index: number]: LayerEventDatum[]
+    [index: string]: LayerEventDatum[]
 }
 
 export const ProjectMap = () => {
@@ -58,9 +60,11 @@ export const ProjectMap = () => {
     const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
+
     // Data structure to hold event data, keyed by event PK
     // { int: [{lngLat: []},... ], ...}
-    const [layerEventMapData, setLayerEventMapData] = useState<any>(new Object());
+    const [layerEventMapData, setLayerEventMapData] =
+        useState<LayerEventData | null>(null);
     const [mapboxLayers, setMapboxLayers] = useState<any[]>([]);
 
 
@@ -146,36 +150,32 @@ export const ProjectMap = () => {
             // create a new IconLayer, and update mapboxLayers with
             // this new Iconlayer
             if (activeLayer) {
-                let updatedLayerEvents = layerEventMapData;
-                if (updatedLayerEvents[activeLayer]) {
-                    updatedLayerEvents[activeLayer] = [
-                        ...updatedLayerEvents[activeLayer],
-                        {lngLat: info.lngLat}
-                    ];
-                } else {
-                    updatedLayerEvents[activeLayer] = [
-                        {lngLat: info.lngLat}
-                    ];
-                }
-                console.log(updatedLayerEvents);
-                let layers = Object.keys(updatedLayerEvents).reduce((acc: any[], val: any) => {
-                    console.log(acc);
-                    console.log(val);
-                    let layer = new IconLayer({
-                        id: 'icon-layer',
-                        data: updatedLayerEvents[val],
-                        pickable: true,
-                        iconAtlas: ICON_ATLAS,
-                        iconMapping: ICON_MAPPING,
-                        getIcon: d => 'marker',
-                        sizeScale: 15,
-                        getPosition: d => d.lngLat,
-                        getSize: d => 5,
-                        getColor: '#FF0000' as any,
-                    });
-                    return [...acc, layer];
-                }, []);
-                console.log(layers);
+                let updatedLayerEvents =
+                    layerEventMapData ? layerEventMapData : {activeLayer: []};
+
+                updatedLayerEvents[activeLayer] = [
+                    ...updatedLayerEvents[activeLayer],
+                    {lngLat: info.lngLat}
+                ];
+
+                let layers = Object.keys(updatedLayerEvents).reduce(
+                    (acc: any[], val: string) => {
+                        let layer = new IconLayer({
+                            id: 'icon-layer-' + val,
+                            data: updatedLayerEvents[val],
+                            pickable: true,
+                            iconAtlas: ICON_ATLAS,
+                            iconMapping: ICON_MAPPING,
+                            getIcon: d => 'marker',
+                            sizeScale: 15,
+                            getPosition: (d: LayerEventDatum) => d.lngLat ,
+                            getSize: 5,
+                            getColor: [255, 0, 0],
+                        });
+                        return [...acc, layer];
+                    },
+                    []);
+
                 setLayerEventMapData(updatedLayerEvents);
                 setMapboxLayers(layers);
             }
@@ -184,7 +184,6 @@ export const ProjectMap = () => {
 
     return (
         <>
-            {console.log('map rendered')}
             <DeckGL
                 layers={mapboxLayers}
                 initialViewState={viewportState.viewport}
