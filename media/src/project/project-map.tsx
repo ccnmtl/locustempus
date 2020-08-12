@@ -64,7 +64,7 @@ export const ProjectMap = () => {
     // Data structure to hold event data, keyed by event PK
     // { int: [{lngLat: []},... ], ...}
     const [layerEventMapData, setLayerEventMapData] =
-        useState<LayerEventData | null>(null);
+        useState<Map<number, LayerEventDatum[]>>(new Map());
     const [mapboxLayers, setMapboxLayers] = useState<any[]>([]);
 
 
@@ -144,25 +144,18 @@ export const ProjectMap = () => {
 
     const handleDeckGlClick = (info: any, event: any) => {
         if (event.tapCount === 2) {
-            // Add event
-            // Update the mapboxLayers prop
-            // For now this means updating an event data list,
-            // create a new IconLayer, and update mapboxLayers with
-            // this new Iconlayer
             if (activeLayer) {
-                let updatedLayerEvents =
-                    layerEventMapData ? layerEventMapData : {activeLayer: []};
+                let updatedLayerEvents = new Map(layerEventMapData);
+                let layerEvents = updatedLayerEvents.get(activeLayer) || [];
 
-                updatedLayerEvents[activeLayer] = [
-                    ...updatedLayerEvents[activeLayer],
-                    {lngLat: info.lngLat}
-                ];
+                updatedLayerEvents.set(
+                    activeLayer, layerEvents.concat({lngLat: info.lngLat}));
 
-                let layers = Object.keys(updatedLayerEvents).reduce(
-                    (acc: any[], val: string) => {
+                let layers = [...updatedLayerEvents.keys()].reduce(
+                    (acc: any[], val: number) => {
                         let layer = new IconLayer({
                             id: 'icon-layer-' + val,
-                            data: updatedLayerEvents[val],
+                            data: updatedLayerEvents.get(val),
                             pickable: true,
                             iconAtlas: ICON_ATLAS,
                             iconMapping: ICON_MAPPING,
