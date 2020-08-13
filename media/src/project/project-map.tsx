@@ -37,10 +37,6 @@ interface LayerEventDatum {
     lngLat: Position;
 }
 
-interface LayerEventData {
-    [index: string]: LayerEventDatum[]
-}
-
 export const ProjectMap = () => {
     const viewportState = {
         viewport: {
@@ -59,6 +55,7 @@ export const ProjectMap = () => {
     const projectPk = pathList[pathList.length - 2];
     const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
+    const [layerCount, setLayerCount] = useState<number>(1);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
 
     // Data structure to hold event data, keyed by event PK
@@ -85,7 +82,13 @@ export const ProjectMap = () => {
             let layers = await Promise.all(
                 layersRsps.map((response: any) => { return response.json(); })
             );
-            setLayerData(layers);
+
+            if (layers.length === 0) {
+                addLayer('Layer 1');
+            } else {
+                setLayerData(layers);
+                setActiveLayer(layers[0].pk);
+            }
         };
 
         getData();
@@ -103,6 +106,7 @@ export const ProjectMap = () => {
             })
             .then((data) => {
                 setLayerData([...layerData, data]);
+                setActiveLayer(data.pk);
             });
     };
 
@@ -137,6 +141,30 @@ export const ProjectMap = () => {
             });
     };
 
+    const addEvent = (label: string, lat: number, lng: number) => {
+        let data = {
+            label: label,
+            layer: activeLayer,
+            description: '',
+            datetime: null,
+            location: {
+                point: {lat: lat, lng: lng},
+                polygon: null
+            }
+        }
+        authedFetch('/api/event/', 'POST', JSON.stringify(data))
+            .then((response) => {
+                if (response.status === 201) {
+                    return response.json();
+                } else {
+                    throw 'Event creation failed.';
+                }
+            })
+            .then((data) => {
+                console.log(data);
+            });
+    };
+
     const ICON_ATLAS = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png';
     const ICON_MAPPING = {
         marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
@@ -152,7 +180,7 @@ export const ProjectMap = () => {
                     activeLayer, layerEvents.concat({lngLat: info.lngLat}));
 
                 let layers = [...updatedLayerEvents.keys()].reduce(
-                    (acc: any[], val: number) => {
+                    (acc: IconLayer<LayerEventDatum>[], val: number) => {
                         let layer = new IconLayer({
                             id: 'icon-layer-' + val,
                             data: updatedLayerEvents.get(val),
@@ -161,7 +189,7 @@ export const ProjectMap = () => {
                             iconMapping: ICON_MAPPING,
                             getIcon: d => 'marker',
                             sizeScale: 15,
-                            getPosition: (d: LayerEventDatum) => d.lngLat ,
+                            getPosition: (d) => d.lngLat ,
                             getSize: 5,
                             getColor: [255, 0, 0],
                         });
@@ -171,6 +199,7 @@ export const ProjectMap = () => {
 
                 setLayerEventMapData(updatedLayerEvents);
                 setMapboxLayers(layers);
+                addEvent('Lorem Ipsum', info.lngLat[1], info.lngLat[0]);
             }
         }
     };
