@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { LayerEventDatum } from './project-map';
 
 export interface LayerProps {
     title: string;
     pk: number;
     activeLayer: number | null;
+    layerEvents: LayerEventDatum[];
     setActiveLayer(pk: number): any;
     content_object: string; // The API URL to the parent project/response
     deleteLayer(pk: number): any;
@@ -27,7 +29,6 @@ export const Layer = (layerData: LayerProps)=> {
     };
 
     const handleSetActiveLayer = (e: React.MouseEvent) => {
-        e.preventDefault();
         layerData.setActiveLayer(layerData.pk);
     };
 
@@ -52,6 +53,11 @@ export const Layer = (layerData: LayerProps)=> {
                 <input type='submit'
                     className='btn btn-danger' value={'Delete Layer'}/>
             </form>
+            <div>
+                {layerData.layerEvents.map((val, idx) => {
+                    return (<div key={idx}>{val.label}</div>);
+                })}
+            </div>
         </div>
     );
 };

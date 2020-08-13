@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { Layer, LayerProps } from './layer';
+import { LayerEventDatum } from './project-map';
 
 export interface ProjectMapSidebarProps {
     title: string;
     description: string;
     layers: LayerProps[];
+    events: Map<number, LayerEventDatum[]>;
     activeLayer: number | null;
     setActiveLayer(pk: number): any;
     addLayer(layerTitle: string): any;
@@ -13,7 +15,7 @@ export interface ProjectMapSidebarProps {
 }
 
 export const ProjectMapSidebar = (
-    {title, description, layers, activeLayer, setActiveLayer, addLayer, deleteLayer, updateLayer}: ProjectMapSidebarProps) => {
+    {title, description, layers, events, activeLayer, setActiveLayer, addLayer, deleteLayer, updateLayer}: ProjectMapSidebarProps) => {
 
     const [newLayerTitle, setNewLayerTitle] = useState<string>('');
 
@@ -46,7 +48,15 @@ export const ProjectMapSidebar = (
                     className='btn btn-primary' value={'Add Layer'}/>
             </form>
             {layers && layers.map(
-                (layer, idx) => {return (<Layer {...layer} deleteLayer={deleteLayer} updateLayer={updateLayer} key={idx} activeLayer={activeLayer} setActiveLayer={setActiveLayer} />);})}
+                (layer, idx) => {return (
+                    <Layer {...layer}
+                        deleteLayer={deleteLayer}
+                        updateLayer={updateLayer}
+                        key={idx}
+                        activeLayer={activeLayer}
+                        setActiveLayer={setActiveLayer}
+                        layerEvents={events.get(layer.pk) || []}/>
+                );})}
         </div>
     );
 };

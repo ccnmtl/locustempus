@@ -33,7 +33,7 @@ interface ProjectInfo {
     layers: LayerProps[];
 }
 
-interface LayerEventDatum {
+export interface LayerEventDatum {
     lngLat: Position;
     label: string;
     layer: number;
@@ -64,7 +64,7 @@ export const ProjectMap = () => {
     const projectPk = pathList[pathList.length - 2];
     const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
-    const [layerCount, setLayerCount] = useState<number>(1);
+    const [layerTitleCount, setLayerTitleCount] = useState<number>(0);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
 
     // Data structure to hold events, keyed by event PK
@@ -97,6 +97,7 @@ export const ProjectMap = () => {
             // unpack the event data
             if (layers.length === 0) {
                 addLayer('Layer 1');
+                setLayerTitleCount(layerTitleCount + 1);
             } else {
                 setLayerData(layers);
                 setActiveLayer(layers[0].pk);
@@ -134,9 +135,14 @@ export const ProjectMap = () => {
                 if (response.status !== 204) {
                     throw 'Layer deletion failed.';
                 } else {
-                    setLayerData(layerData.filter((el) => {
+                    let updatedLayerData = layerData.filter((el) => {
                         return el.pk !== pk;
-                    }));
+                    });
+                    setLayerData(updatedLayerData);
+                    if (updatedLayerData.length === 0) {
+                        addLayer(`Layer ${layerTitleCount}`);
+                        setLayerTitleCount(layerTitleCount + 1);
+                    }
                 }
             });
     };
@@ -252,6 +258,7 @@ export const ProjectMap = () => {
                     title={projectInfo.title}
                     description={projectInfo.description}
                     layers={layerData}
+                    events={eventData}
                     activeLayer={activeLayer}
                     setActiveLayer={setActiveLayer}
                     addLayer={addLayer}
