@@ -35,6 +35,15 @@ interface ProjectInfo {
 
 interface LayerEventDatum {
     lngLat: Position;
+    label: string;
+    layer: number;
+    description: string;
+    datetime: string;
+    location: {
+        point: string;
+        polygon: string;
+        lng_lat: Position;
+    }
 }
 
 export const ProjectMap = () => {
@@ -58,15 +67,15 @@ export const ProjectMap = () => {
     const [layerCount, setLayerCount] = useState<number>(1);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
 
-    // Data structure to hold event data, keyed by event PK
-    // { int: [{lngLat: []},... ], ...}
-    const [layerEventMapData, setLayerEventMapData] =
+    // Data structure to hold events, keyed by event PK
+    const [eventData, setEventData] =
         useState<Map<number, LayerEventDatum[]>>(new Map());
     const [mapboxLayers, setMapboxLayers] = useState<any[]>([]);
 
 
     useEffect(() => {
         let getData = async() => {
+            // Fetch the Project data
             let projectResponse = await fetch(`/api/project/${projectPk}/`);
             if (!projectResponse.ok) {
                 throw new Error('Project data not loaded');
@@ -74,6 +83,7 @@ export const ProjectMap = () => {
             let projectData = await projectResponse.json();
             setProjectInfo(projectData);
 
+            // Fetch the layers
             let layersRsps = await Promise.all(
                 projectData.layers.map((layer: string) => {
                     return fetch(layer);
@@ -83,11 +93,19 @@ export const ProjectMap = () => {
                 layersRsps.map((response: any) => { return response.json(); })
             );
 
+            // Create an empty layer if none exist, otherwise
+            // unpack the event data
             if (layers.length === 0) {
                 addLayer('Layer 1');
             } else {
                 setLayerData(layers);
                 setActiveLayer(layers[0].pk);
+
+                let events = layers.reduce((acc, val) => {
+                    acc.set(val.pk, val.event_set);
+                    return acc;
+                }, new Map());
+                updateMapLayers(events);
             }
         };
 
@@ -151,7 +169,7 @@ export const ProjectMap = () => {
                 point: {lat: lat, lng: lng},
                 polygon: null
             }
-        }
+        };
         authedFetch('/api/event/', 'POST', JSON.stringify(data))
             .then((response) => {
                 if (response.status === 201) {
@@ -161,8 +179,39 @@ export const ProjectMap = () => {
                 }
             })
             .then((data) => {
-                console.log(data);
+                if (activeLayer) {
+                    let updatedEvents = new Map(eventData);
+                    let layerEvents = updatedEvents.get(activeLayer) || [];
+
+                    updatedEvents.set(
+                        activeLayer, layerEvents.concat(data));
+
+                    updateMapLayers(updatedEvents);
+                }
             });
+    };
+
+    const updateMapLayers = (events: Map<number, LayerEventDatum[]>) => {
+        let mapLayers = [...events.keys()].reduce(
+            (acc: IconLayer<LayerEventDatum>[], val: number) => {
+                let layer = new IconLayer({
+                    id: 'icon-layer-' + val,
+                    data: events.get(val),
+                    pickable: true,
+                    iconAtlas: ICON_ATLAS,
+                    iconMapping: ICON_MAPPING,
+                    getIcon: d => 'marker',
+                    sizeScale: 15,
+                    getPosition: (d) => d.location.lng_lat,
+                    getSize: 5,
+                    getColor: [255, 0, 0],
+                });
+                return [...acc, layer];
+            },
+            []);
+
+        setEventData(events);
+        setMapboxLayers(mapLayers);
     };
 
     const ICON_ATLAS = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png';
@@ -172,35 +221,7 @@ export const ProjectMap = () => {
 
     const handleDeckGlClick = (info: any, event: any) => {
         if (event.tapCount === 2) {
-            if (activeLayer) {
-                let updatedLayerEvents = new Map(layerEventMapData);
-                let layerEvents = updatedLayerEvents.get(activeLayer) || [];
-
-                updatedLayerEvents.set(
-                    activeLayer, layerEvents.concat({lngLat: info.lngLat}));
-
-                let layers = [...updatedLayerEvents.keys()].reduce(
-                    (acc: IconLayer<LayerEventDatum>[], val: number) => {
-                        let layer = new IconLayer({
-                            id: 'icon-layer-' + val,
-                            data: updatedLayerEvents.get(val),
-                            pickable: true,
-                            iconAtlas: ICON_ATLAS,
-                            iconMapping: ICON_MAPPING,
-                            getIcon: d => 'marker',
-                            sizeScale: 15,
-                            getPosition: (d) => d.lngLat ,
-                            getSize: 5,
-                            getColor: [255, 0, 0],
-                        });
-                        return [...acc, layer];
-                    },
-                    []);
-
-                setLayerEventMapData(updatedLayerEvents);
-                setMapboxLayers(layers);
-                addEvent('Lorem Ipsum', info.lngLat[1], info.lngLat[0]);
-            }
+            addEvent('Lorem Ipsum', info.lngLat[1], info.lngLat[0]);
         }
     };
 

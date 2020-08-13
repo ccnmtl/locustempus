@@ -36,7 +36,7 @@ class LocationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Location
-        fields = ('point', 'polygon')
+        fields = ('point', 'polygon', 'lng_lat')
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -48,13 +48,23 @@ class EventSerializer(serializers.ModelSerializer):
         Location.objects.create(event=event, **location_data)
         return event
 
+    def update(self, instance, validated_data):
+        # For now, limits user to updating only these fields
+        instance.label = validated_data.get('label', instance.label)
+        instance.description = validated_data.\
+            get('description', instance.label)
+        instance.datetime = validated_data.get('datetime', instance.datetime)
+        instance.save()
+        return instance
+
     class Meta:
         model = Event
-        fields = ('label', 'layer', 'description', 'datetime', 'location')
+        fields = (
+            'pk', 'label', 'layer', 'description', 'datetime', 'location')
 
 
 class LayerSerializer(serializers.ModelSerializer):
-    event = EventSerializer(many=True, read_only=True)
+    event_set = EventSerializer(many=True, read_only=True)
     content_object = GenericRelatedField({
         Project: serializers.HyperlinkedRelatedField(
             queryset=Project.objects.all(),
@@ -69,5 +79,5 @@ class LayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Layer
         fields = (
-            'title', 'pk', 'content_object', 'event'
+            'title', 'pk', 'content_object', 'event_set'
         )

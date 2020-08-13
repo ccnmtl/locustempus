@@ -73,8 +73,17 @@ class Location(models.Model):
         Event,
         on_delete=models.CASCADE,
     )
+
+    # NOTE: Coorindates are stored as (lng, lat)
+    # This is done to match DeckGL's convention
     point = PointField(blank=True, null=True)
     polygon = PolygonField(blank=True, null=True)
+
+    @property
+    def lng_lat(self):
+        return [
+            self.point.coords[0], self.point.coords[1]
+        ] if self.point else None
 
     class Meta:
         constraints = [
