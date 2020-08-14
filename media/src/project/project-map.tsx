@@ -1,9 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import ReactDOM from 'react-dom';
-import ReactMapGL, { _MapContext as MapContext, StaticMap,NavigationControl} from 'react-map-gl';
+import ReactMapGL, { _MapContext as MapContext, StaticMap, InteractiveMap, NavigationControl} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
-import DeckGL from '@deck.gl/react';
+import DeckGL, { MapController }  from 'deck.gl';
+import { IconLayer } from '@deck.gl/layers';
+import { Position } from '@deck.gl/core/utils/positions';
+
+import {
+    ProjectMapSidebar, ProjectMapSidebarProps } from './project-map-sidebar';
+import { LayerProps } from './layer';
 
 const authedFetch = (url: string, method: string, data: any) => {
     let csrf = (document.getElementById('csrf-token') as any).getAttribute('content');
@@ -27,6 +33,14 @@ interface ProjectInfo {
     layers: LayerProps[];
 }
 
+interface LayerEventDatum {
+    lngLat: Position;
+}
+
+interface LayerEventData {
+    [index: string]: LayerEventDatum[]
+}
+
 export const ProjectMap = () => {
     const viewportState = {
         viewport: {
@@ -45,12 +59,13 @@ export const ProjectMap = () => {
     const projectPk = pathList[pathList.length - 2];
     const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
-    const [
-        staticMapViewport,
-        setStaticMapViewport
-    ] = React.useState(viewportState);
+    const [activeLayer, setActiveLayer] = useState<number | null>(null);
 
-    let mapboxLayers: any[] = [];
+    // Data structure to hold event data, keyed by event PK
+    // { int: [{lngLat: []},... ], ...}
+    const [layerEventMapData, setLayerEventMapData] =
+        useState<Map<number, LayerEventDatum[]>>(new Map());
+    const [mapboxLayers, setMapboxLayers] = useState<any[]>([]);
 
 
     useEffect(() => {
@@ -122,15 +137,54 @@ export const ProjectMap = () => {
             });
     };
 
+    const ICON_ATLAS = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png';
+    const ICON_MAPPING = {
+        marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
+    };
 
-    if (mapboxLayers.length > 0) {
-        return (
+    const handleDeckGlClick = (info: any, event: any) => {
+        if (event.tapCount === 2) {
+            if (activeLayer) {
+                let updatedLayerEvents = new Map(layerEventMapData);
+                let layerEvents = updatedLayerEvents.get(activeLayer) || [];
+
+                updatedLayerEvents.set(
+                    activeLayer, layerEvents.concat({lngLat: info.lngLat}));
+
+                let layers = [...updatedLayerEvents.keys()].reduce(
+                    (acc: any[], val: number) => {
+                        let layer = new IconLayer({
+                            id: 'icon-layer-' + val,
+                            data: updatedLayerEvents.get(val),
+                            pickable: true,
+                            iconAtlas: ICON_ATLAS,
+                            iconMapping: ICON_MAPPING,
+                            getIcon: d => 'marker',
+                            sizeScale: 15,
+                            getPosition: (d: LayerEventDatum) => d.lngLat ,
+                            getSize: 5,
+                            getColor: [255, 0, 0],
+                        });
+                        return [...acc, layer];
+                    },
+                    []);
+
+                setLayerEventMapData(updatedLayerEvents);
+                setMapboxLayers(layers);
+            }
+        }
+    };
+
+    return (
+        <>
             <DeckGL
                 layers={mapboxLayers}
                 initialViewState={viewportState.viewport}
                 width={'100%'}
                 height={'100%'}
-                controller={true}
+                controller={{
+                    type: MapController, doubleClickZoom: false} as any}
+                onClick={handleDeckGlClick}
                 ContextProvider={MapContext.Provider}>
                 <StaticMap
                     reuseMaps
@@ -139,135 +193,21 @@ export const ProjectMap = () => {
                     preventStyleDiffing={true}
                     mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
                     mapboxApiAccessToken={TOKEN} />
-                {projectInfo && (
-                    <ProjectMapSidebar
-                        title={projectInfo.title}
-                        description={projectInfo.description}
-                        layers={[]}
-                        addLayer={addLayer}
-                        deleteLayer={deleteLayer}
-                        updateLayer={updateLayer}/>
-                )}
                 <div id='map-navigation-control'>
                     <NavigationControl />
                 </div>
             </DeckGL>
-        );
-    } else {
-        return (
-            <ReactMapGL
-                {...staticMapViewport.viewport}
-                onViewportChange={viewport => setStaticMapViewport({viewport})}
-                width={'100%'}
-                height={'100%'}
-                mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
-                mapboxApiAccessToken={TOKEN}>
-                {projectInfo && (
-                    <ProjectMapSidebar
-                        title={projectInfo.title}
-                        description={projectInfo.description}
-                        layers={layerData}
-                        addLayer={addLayer}
-                        deleteLayer={deleteLayer}
-                        updateLayer={updateLayer}/>
-                )}
-                <div id='map-navigation-control'>
-                    <NavigationControl />
-                </div>
-            </ReactMapGL>
-        );
-    }
-};
-
-interface ProjectMapSidebarProps {
-    title: string;
-    description: string;
-    layers: LayerProps[]
-    addLayer(layerTitle: string): any;
-    deleteLayer(pk: number): any;
-    updateLayer(pk: number, title: string): any;
-}
-
-export const ProjectMapSidebar = (
-    {title, description, layers, addLayer, deleteLayer, updateLayer}: ProjectMapSidebarProps) => {
-
-    const [newLayerTitle, setNewLayerTitle] = useState<string>('');
-
-    const handleNewLayerTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setNewLayerTitle(e.target.value);
-    };
-
-    const handleCreateLayer = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        addLayer((e.currentTarget.elements[0] as HTMLInputElement).value);
-        setNewLayerTitle('');
-    };
-
-    return (
-        <div id='project-map-sidebar'>
-            <h2>{title}</h2>
-            <p>{description}</p>
-            <h3>Layers</h3>
-            <form onSubmit={handleCreateLayer}
-                className="needs-validation" noValidate >
-                <div className="form-group">
-                    <label>Layer Title:
-                        <input id="new-layer-title"
-                            value={newLayerTitle}
-                            onChange={handleNewLayerTitle}
-                            className="form-control" type="text"/>
-                    </label>
-                </div>
-                <input type='submit'
-                    className='btn btn-primary' value={'Add Layer'}/>
-            </form>
-            {layers && layers.map(
-                (layer, idx) => {return (<Layer {...layer} deleteLayer={deleteLayer} updateLayer={updateLayer} key={idx} />);})}
-        </div>
-    );
-};
-
-interface LayerProps {
-    title: string;
-    pk: number;
-    content_object: string; // The API URL to the parent project/response
-    deleteLayer(pk: number): any;
-    updateLayer(pk: number, title: string): any;
-}
-
-export const Layer = (layerData: LayerProps)=> {
-    const [updatedLayerTitle, setUpdatedLayerTitle] = useState<string>(layerData.title);
-
-    const handleUpdatedLayerTitle = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setUpdatedLayerTitle(e.target.value);
-    };
-    const handleUpdateLayer = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        layerData.updateLayer(layerData.pk, updatedLayerTitle);
-    };
-
-    const handleDeleteLayer = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        layerData.deleteLayer(layerData.pk);
-    };
-    return (
-        <div className="project-map-sidebar-layer">
-            <span className="font-weight-bold">{layerData.title}</span>
-            <p>{layerData.content_object}</p>
-            <form onSubmit={handleUpdateLayer}>
-                <label>Layer Title:
-                    <input id={`update-layer-title-${layerData.pk}`}
-                        value={updatedLayerTitle}
-                        onChange={handleUpdatedLayerTitle}
-                        className="form-control" type="text"/>
-                </label>
-                <input type='submit'
-                    className='btn btn-primary' value={'Edit Layer'}/>
-            </form>
-            <form onSubmit={handleDeleteLayer}>
-                <input type='submit'
-                    className='btn btn-danger' value={'Delete Layer'}/>
-            </form>
-        </div>
+            {projectInfo && (
+                <ProjectMapSidebar
+                    title={projectInfo.title}
+                    description={projectInfo.description}
+                    layers={layerData}
+                    activeLayer={activeLayer}
+                    setActiveLayer={setActiveLayer}
+                    addLayer={addLayer}
+                    deleteLayer={deleteLayer}
+                    updateLayer={updateLayer}/>
+            )}
+        </>
     );
 };
