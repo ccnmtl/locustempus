@@ -33,12 +33,17 @@ interface ProjectInfo {
     layers: LayerProps[];
 }
 
-interface LayerEventDatum {
+export interface LayerEventDatum {
     lngLat: Position;
-}
-
-interface LayerEventData {
-    [index: string]: LayerEventDatum[]
+    label: string;
+    layer: number;
+    description: string;
+    datetime: string;
+    location: {
+        point: string;
+        polygon: string;
+        lng_lat: Position;
+    }
 }
 
 export const ProjectMap = () => {
@@ -61,15 +66,17 @@ export const ProjectMap = () => {
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
 
-    // Data structure to hold event data, keyed by event PK
-    // { int: [{lngLat: []},... ], ...}
-    const [layerEventMapData, setLayerEventMapData] =
+    // Data structure to hold events, keyed by event PK
+    const [eventData, setEventData] =
         useState<Map<number, LayerEventDatum[]>>(new Map());
     const [mapboxLayers, setMapboxLayers] = useState<any[]>([]);
 
+    // Counter for new layer titles
+    const [layerTitleCount, setLayerTitleCount] = useState<number>(1);
 
     useEffect(() => {
         let getData = async() => {
+            // Fetch the Project data
             let projectResponse = await fetch(`/api/project/${projectPk}/`);
             if (!projectResponse.ok) {
                 throw new Error('Project data not loaded');
@@ -77,6 +84,7 @@ export const ProjectMap = () => {
             let projectData = await projectResponse.json();
             setProjectInfo(projectData);
 
+            // Fetch the layers
             let layersRsps = await Promise.all(
                 projectData.layers.map((layer: string) => {
                     return fetch(layer);
@@ -85,15 +93,30 @@ export const ProjectMap = () => {
             let layers = await Promise.all(
                 layersRsps.map((response: any) => { return response.json(); })
             );
-            setLayerData(layers);
+
+            // Create an empty layer if none exist, otherwise
+            // unpack the event data
+            if (layers.length === 0) {
+                addLayer();
+                setLayerTitleCount((prev) => {return prev + 1;});
+            } else {
+                setLayerData(layers);
+                setActiveLayer(layers[0].pk);
+
+                let events = layers.reduce((acc, val) => {
+                    acc.set(val.pk, val.event_set);
+                    return acc;
+                }, new Map());
+                updateEventData(events);
+            }
         };
 
         getData();
     }, []);
 
-    const addLayer = (title: string) => {
+    const addLayer = () => {
         authedFetch('/api/layer/', 'POST', JSON.stringify(
-            {title: title, content_object: `/api/project/${projectPk}/`}))
+            {title: `Layer ${layerTitleCount}`, content_object: `/api/project/${projectPk}/`}))
             .then((response) => {
                 if (response.status === 201) {
                     return response.json();
@@ -103,6 +126,8 @@ export const ProjectMap = () => {
             })
             .then((data) => {
                 setLayerData([...layerData, data]);
+                setActiveLayer(data.pk);
+                setLayerTitleCount((prev) => {return prev + 1;});
             });
     };
 
@@ -112,9 +137,36 @@ export const ProjectMap = () => {
                 if (response.status !== 204) {
                     throw 'Layer deletion failed.';
                 } else {
-                    setLayerData(layerData.filter((el) => {
+                    let updatedLayerData = layerData.filter((el) => {
                         return el.pk !== pk;
-                    }));
+                    });
+                    setLayerData(updatedLayerData);
+
+                    // remove from eventData and mapboxLayers
+                    let updatedEventData = new Map(eventData);
+                    updatedEventData.delete(pk);
+                    updateEventData(updatedEventData);
+
+                    if (updatedLayerData.length === 0) {
+                        // addLayer has a stale closure, so the fetch
+                        // is called here instead
+                        authedFetch('/api/layer/', 'POST', JSON.stringify(
+                            {title: `Layer ${layerTitleCount}`,
+                                content_object: `/api/project/${projectPk}/`}))
+                            .then((response) => {
+                                if (response.status === 201) {
+                                    return response.json();
+                                } else {
+                                    throw 'Layer creation failed.';
+                                }
+                            })
+                            .then((data) => {
+                                setLayerData([data]);
+                                setActiveLayer(data.pk);
+                                setLayerTitleCount(
+                                    (prev) => {return prev + 1;});
+                            });
+                    }
                 }
             });
     };
@@ -137,41 +189,69 @@ export const ProjectMap = () => {
             });
     };
 
+    const addEvent = (label: string, lat: number, lng: number) => {
+        let data = {
+            label: label,
+            layer: activeLayer,
+            description: '',
+            datetime: null,
+            location: {
+                point: {lat: lat, lng: lng},
+                polygon: null
+            }
+        };
+        authedFetch('/api/event/', 'POST', JSON.stringify(data))
+            .then((response) => {
+                if (response.status === 201) {
+                    return response.json();
+                } else {
+                    throw 'Event creation failed.';
+                }
+            })
+            .then((data) => {
+                if (activeLayer) {
+                    let updatedEvents = new Map(eventData);
+                    let layerEvents = updatedEvents.get(activeLayer) || [];
+
+                    updatedEvents.set(
+                        activeLayer, layerEvents.concat(data));
+
+                    updateEventData(updatedEvents);
+                }
+            });
+    };
+
+    const updateEventData = (events: Map<number, LayerEventDatum[]>) => {
+        let mapLayers = [...events.keys()].reduce(
+            (acc: IconLayer<LayerEventDatum>[], val: number) => {
+                let layer = new IconLayer({
+                    id: 'icon-layer-' + val,
+                    data: events.get(val),
+                    pickable: true,
+                    iconAtlas: ICON_ATLAS,
+                    iconMapping: ICON_MAPPING,
+                    getIcon: d => 'marker',
+                    sizeScale: 15,
+                    getPosition: (d) => d.location.lng_lat,
+                    getSize: 5,
+                    getColor: [255, 0, 0],
+                });
+                return [...acc, layer];
+            },
+            []);
+
+        setEventData(events);
+        setMapboxLayers(mapLayers);
+    };
+
     const ICON_ATLAS = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png';
     const ICON_MAPPING = {
         marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
     };
 
     const handleDeckGlClick = (info: any, event: any) => {
-        if (event.tapCount === 2) {
-            if (activeLayer) {
-                let updatedLayerEvents = new Map(layerEventMapData);
-                let layerEvents = updatedLayerEvents.get(activeLayer) || [];
-
-                updatedLayerEvents.set(
-                    activeLayer, layerEvents.concat({lngLat: info.lngLat}));
-
-                let layers = [...updatedLayerEvents.keys()].reduce(
-                    (acc: any[], val: number) => {
-                        let layer = new IconLayer({
-                            id: 'icon-layer-' + val,
-                            data: updatedLayerEvents.get(val),
-                            pickable: true,
-                            iconAtlas: ICON_ATLAS,
-                            iconMapping: ICON_MAPPING,
-                            getIcon: d => 'marker',
-                            sizeScale: 15,
-                            getPosition: (d: LayerEventDatum) => d.lngLat ,
-                            getSize: 5,
-                            getColor: [255, 0, 0],
-                        });
-                        return [...acc, layer];
-                    },
-                    []);
-
-                setLayerEventMapData(updatedLayerEvents);
-                setMapboxLayers(layers);
-            }
+        if (event.tapCount === 1) {
+            addEvent('Lorem Ipsum', info.lngLat[1], info.lngLat[0]);
         }
     };
 
@@ -202,6 +282,7 @@ export const ProjectMap = () => {
                     title={projectInfo.title}
                     description={projectInfo.description}
                     layers={layerData}
+                    events={eventData}
                     activeLayer={activeLayer}
                     setActiveLayer={setActiveLayer}
                     addLayer={addLayer}

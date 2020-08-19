@@ -5,6 +5,7 @@ from django.contrib.contenttypes.fields import (
     GenericForeignKey, GenericRelation
 )
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.gis.db.models.fields import PointField, PolygonField
 from django.dispatch import receiver
 from django.db import models
 from django_registration.signals import user_activated
@@ -45,6 +46,63 @@ class Layer(models.Model):
     )
 
 
+class Event(models.Model):
+    label = models.TextField()
+    layer = models.ForeignKey(Layer, on_delete=models.CASCADE)
+    description = models.TextField(blank=True)
+    datetime = models.DateTimeField(blank=True, null=True)
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        null=True
+    )
+    modified_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        null=True
+    )
+
+
+class Location(models.Model):
+    event = models.OneToOneField(
+        Event,
+        on_delete=models.CASCADE,
+    )
+
+    # NOTE: Coorindates are stored as (lng, lat)
+    # This is done to match DeckGL's convention
+    point = PointField(blank=True, null=True)
+    polygon = PolygonField(blank=True, null=True)
+
+    @property
+    def lng_lat(self):
+        return [
+            self.point.coords[0], self.point.coords[1]
+        ] if self.point else None
+
+    class Meta:
+        constraints = [
+            models.CheckConstraint(
+                name="value_either_point_or_polygon",
+                check=(
+                    models.Q(
+                        point__isnull=False,
+                        polygon__isnull=True
+                    )
+                    | models.Q(
+                        point__isnull=True,
+                        polygon__isnull=False
+                    )
+                )
+            )
+        ]
+
+
 class Project(models.Model):
     title = models.CharField(max_length=256)
     description = models.CharField(max_length=256)
@@ -53,7 +111,7 @@ class Project(models.Model):
     base_map = models.CharField(
         max_length=64,
         choices=BASE_MAPS,
-        default='dark-v10'
+        default='light-v10'
     )
     layers = GenericRelation(Layer, related_query_name='project')
     created_at = models.DateTimeField(auto_now_add=True)
