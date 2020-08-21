@@ -8,18 +8,18 @@
 
 #map-navigation-control {
     position: absolute;
-    top: 30px;
+    bottom: 30px;
     right: 30px;
 }
 
 #project-map-sidebar {
-    position: absolute;
-    top: 30px;
-    left: 30px;
-    width: 400px;
-    height: 400px;
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 32rem;
+    height: 100%;
     background-color: #FFFFFF;
     z-index: 10000;
     padding: 1rem;
-    border-radius: 5px;
+    overflow-y: scroll;
 }
