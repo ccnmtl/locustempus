@@ -46,6 +46,11 @@ export interface LayerEventDatum {
     }
 }
 
+export interface LayerEventData {
+    visibility: boolean;
+    events: LayerEventDatum[];
+}
+
 export const ProjectMap = () => {
     const viewportState = {
         viewport: {
@@ -68,7 +73,7 @@ export const ProjectMap = () => {
 
     // Data structure to hold events, keyed by event PK
     const [eventData, setEventData] =
-        useState<Map<number, LayerEventDatum[]>>(new Map());
+        useState<Map<number, LayerEventData>>(new Map());
     const [mapboxLayers, setMapboxLayers] = useState<any[]>([]);
 
     // Counter for new layer titles
@@ -104,7 +109,7 @@ export const ProjectMap = () => {
                 setActiveLayer(layers[0].pk);
 
                 let events = layers.reduce((acc, val) => {
-                    acc.set(val.pk, val.event_set);
+                    acc.set(val.pk, {visibility: true, events: val.event_set});
                     return acc;
                 }, new Map());
                 updateEventData(events);
@@ -189,6 +194,20 @@ export const ProjectMap = () => {
             });
     };
 
+    const setLayerVisibility = (pk: number) => {
+        let updatedEvents = new Map(eventData);
+        let layerEvents = updatedEvents.get(pk);
+
+        if (layerEvents) {
+            updatedEvents.set(pk, {
+                visibility: !layerEvents.visibility,
+                events: layerEvents.events
+            });
+
+            updateEventData(updatedEvents);
+        }
+    };
+
     const addEvent = (label: string, lat: number, lng: number) => {
         let data = {
             label: label,
@@ -211,32 +230,39 @@ export const ProjectMap = () => {
             .then((data) => {
                 if (activeLayer) {
                     let updatedEvents = new Map(eventData);
-                    let layerEvents = updatedEvents.get(activeLayer) || [];
+                    let layerEvents: LayerEventData = updatedEvents.get(activeLayer) || {visibility: true, events: []};
 
-                    updatedEvents.set(
-                        activeLayer, layerEvents.concat(data));
+                    updatedEvents.set(activeLayer, {
+                        visibility: layerEvents.visibility,
+                        events: layerEvents.events.concat(data)
+                    });
 
                     updateEventData(updatedEvents);
                 }
             });
     };
 
-    const updateEventData = (events: Map<number, LayerEventDatum[]>) => {
+    const updateEventData = (events: Map<number, LayerEventData>) => {
         let mapLayers = [...events.keys()].reduce(
             (acc: IconLayer<LayerEventDatum>[], val: number) => {
-                let layer = new IconLayer({
-                    id: 'icon-layer-' + val,
-                    data: events.get(val),
-                    pickable: true,
-                    iconAtlas: ICON_ATLAS,
-                    iconMapping: ICON_MAPPING,
-                    getIcon: d => 'marker',
-                    sizeScale: 15,
-                    getPosition: (d) => d.location.lng_lat,
-                    getSize: 5,
-                    getColor: [255, 0, 0],
-                });
-                return [...acc, layer];
+                let data = events.get(val)
+                if (data && data.visibility) {
+                    let layer = new IconLayer({
+                        id: 'icon-layer-' + val,
+                        data: data.events,
+                        pickable: true,
+                        iconAtlas: ICON_ATLAS,
+                        iconMapping: ICON_MAPPING,
+                        getIcon: d => 'marker',
+                        sizeScale: 15,
+                        getPosition: (d) => d.location.lng_lat,
+                        getSize: 5,
+                        getColor: [255, 0, 0],
+                    });
+                    return [...acc, layer];
+                } else {
+                    return acc;
+                }
             },
             []);
 
@@ -287,7 +313,8 @@ export const ProjectMap = () => {
                     setActiveLayer={setActiveLayer}
                     addLayer={addLayer}
                     deleteLayer={deleteLayer}
-                    updateLayer={updateLayer}/>
+                    updateLayer={updateLayer}
+                    setLayerVisibility={setLayerVisibility}/>
             )}
         </>
     );
