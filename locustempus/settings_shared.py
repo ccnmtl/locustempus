@@ -77,7 +77,7 @@ BLOCKED_EMAIL_DOMAINS = ['columbia.edu']
 if 'integrationserver' in sys.argv:
     DATABASES = {
         'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
+            'ENGINE': 'django.contrib.gis.db.backends.spatialite',
             'NAME': ':memory:',
             'HOST': '',
             'PORT': '',
