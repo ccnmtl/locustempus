@@ -1,4 +1,5 @@
 # Django settings for locustempus project.
+import distro
 import os.path
 import sys
 from ccnmtlsettings.shared import common
@@ -73,8 +74,42 @@ COURSEAFFILS_COURSESTRING_MAPPER = CourseStringMapper
 
 BLOCKED_EMAIL_DOMAINS = ['columbia.edu']
 
+if 'ubuntu' in distro.linux_distribution()[0].lower():
+    if distro.linux_distribution()[1] == '16.04':
+        # 15.04 and later need this set, but it breaks
+        # on trusty.
+        SPATIALITE_LIBRARY_PATH = 'mod_spatialite'
+    elif distro.linux_distribution()[1] == '18.04':
+        # On Debian testing/buster, I had to do the following:
+        # * Install the sqlite3 and libsqlite3-mod-spatialite packages.
+        # * Add the following to writlarge/local_settings.py:
+        # SPATIALITE_LIBRARY_PATH =
+        # '/usr/lib/x86_64-linux-gnu/mod_spatialite.so' I think the
+        # django docs might be slightly out of date here, or just not
+        # cover all the cases.
+        #
+        # I've found that Ubuntu 18.04 also works with this full path
+        # to the library file, but not 'mod_spatialite'. I'll raise
+        # this issue with Django.
+        SPATIALITE_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/mod_spatialite.so'
+elif 'debian' in distro.linux_distribution()[0].lower():
+    SPATIALITE_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/mod_spatialite.so'
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.contrib.gis.db.backends.postgis',
+        'NAME': 'footprints',
+        'HOST': '',
+        'PORT': 5432,
+        'USER': '',
+        'PASSWORD': '',
+        'ATOMIC_REQUESTS': True,
+    }
+}
+
 # Needed to get Cypress to run
-if 'integrationserver' in sys.argv:
+if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
+        or 'check' in sys.argv or 'integrationserver' in sys.argv):
     DATABASES = {
         'default': {
             'ENGINE': 'django.contrib.gis.db.backends.spatialite',
