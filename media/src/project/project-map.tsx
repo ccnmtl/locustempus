@@ -76,8 +76,10 @@ export const ProjectMap = () => {
         useState<Map<number, LayerEventData>>(new Map());
     const [mapboxLayers, setMapboxLayers] = useState<any[]>([]);
 
-    // Counter for new layer titles
     const [layerTitleCount, setLayerTitleCount] = useState<number>(1);
+
+    const [showAddEventForm, setShowAddEventForm] = useState<boolean>(false);
+    const [activePosition, setActivePosition] = useState<Position | null>(null);
 
     useEffect(() => {
         let getData = async() => {
@@ -245,7 +247,7 @@ export const ProjectMap = () => {
     const updateEventData = (events: Map<number, LayerEventData>) => {
         let mapLayers = [...events.keys()].reduce(
             (acc: IconLayer<LayerEventDatum>[], val: number) => {
-                let data = events.get(val)
+                let data = events.get(val);
                 if (data && data.visibility) {
                     let layer = new IconLayer({
                         id: 'icon-layer-' + val,
@@ -277,8 +279,33 @@ export const ProjectMap = () => {
 
     const handleDeckGlClick = (info: any, event: any) => {
         if (event.tapCount === 1) {
-            addEvent('Lorem Ipsum', info.lngLat[1], info.lngLat[0]);
+            setShowAddEventForm(true);
+            setActivePosition([info.lngLat[1], info.lngLat[0]]);
+            let updatedLayers = mapboxLayers.filter((el) => {
+                return el.id !== 'active-position';
+            });
+            updatedLayers = updatedLayers.concat(new IconLayer({
+                id: 'active-position',
+                data: [
+                    {position: [info.lngLat[0], info.lngLat[1]] as Position}],
+                pickable: true,
+                iconAtlas: ICON_ATLAS,
+                iconMapping: ICON_MAPPING,
+                getIcon: d => 'marker',
+                sizeScale: 15,
+                getPosition: d => d.position,
+                getSize: 5,
+                getColor: [0, 0, 255],
+            }));
+            setMapboxLayers(updatedLayers);
         }
+    };
+
+    const clearActivePosition = () => {
+        setActivePosition(null);
+        setMapboxLayers(mapboxLayers.filter((el) => {
+            return el.id !== 'active-position';
+        }));
     };
 
     return (
@@ -314,7 +341,12 @@ export const ProjectMap = () => {
                     addLayer={addLayer}
                     deleteLayer={deleteLayer}
                     updateLayer={updateLayer}
-                    setLayerVisibility={setLayerVisibility}/>
+                    setLayerVisibility={setLayerVisibility}
+                    showAddEventForm={showAddEventForm}
+                    setShowAddEventForm={setShowAddEventForm}
+                    activePosition={activePosition}
+                    clearActivePosition={clearActivePosition}
+                    addEvent={addEvent}/>
             )}
         </>
     );
