@@ -12,11 +12,12 @@ export interface AddEventPanelProps {
     activePosition: Position | null;
     addEvent(label: string, lat: number, lng: number): any;
     clearActivePosition(): any;
+    setActiveTab(val: number): any;
 }
 
 const AddEventPanel = ({
     showAddEventForm, setShowAddEventForm,
-    activePosition, addEvent, clearActivePosition}: AddEventPanelProps) => {
+    activePosition, addEvent, clearActivePosition, setActiveTab}: AddEventPanelProps) => {
 
     const [eventName, setEventName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
@@ -41,6 +42,7 @@ const AddEventPanel = ({
                 eventName === '' ? 'Untitled Marker' : eventName,
                 activePosition[0], activePosition[1]);
             setShowAddEventForm(false);
+            setActiveTab(1);
             clearActivePosition();
         }
     };
@@ -128,13 +130,15 @@ export interface ProjectMapSidebarProps {
     activePosition: Position | null;
     addEvent(label: string, lat: number, lng: number): any;
     clearActivePosition(): any;
+    activeEvent: number | null;
+    setActiveEvent(pk: number): any;
 }
 
 export const ProjectMapSidebar = (
-    {title, description, layers, events, activeLayer, setActiveLayer,
-        addLayer, deleteLayer, updateLayer, setLayerVisibility,
-        showAddEventForm, setShowAddEventForm,
-        activePosition, addEvent, clearActivePosition}: ProjectMapSidebarProps) => {
+    {title, description, layers, events, activeLayer, setActiveLayer, addLayer,
+        deleteLayer, updateLayer, setLayerVisibility, showAddEventForm,
+        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
+        activeEvent, setActiveEvent}: ProjectMapSidebarProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
 
@@ -158,7 +162,8 @@ export const ProjectMapSidebar = (
                         setShowAddEventForm={setShowAddEventForm}
                         activePosition={activePosition}
                         addEvent={addEvent}
-                        clearActivePosition={clearActivePosition}/>
+                        clearActivePosition={clearActivePosition}
+                        setActiveTab={setActiveTab}/>
                 )}
                 {!showAddEventForm && (
                     <ul className="nav nav-tabs">
@@ -209,7 +214,9 @@ export const ProjectMapSidebar = (
                                     setActiveLayer={setActiveLayer}
                                     layerEvents={layerEvents}
                                     layerVisibility={layerVisibility}
-                                    setLayerVisibility={setLayerVisibility}/>
+                                    setLayerVisibility={setLayerVisibility}
+                                    activeEvent={activeEvent}
+                                    setActiveEvent={setActiveEvent}/>
                             );
                         })}
                 </>

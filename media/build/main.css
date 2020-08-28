@@ -7817,6 +7817,16 @@ h1, h2, h3, h4, h5, h6 {
   background-color: #FFFFFF;
   width: 30rem; }
 
+.sidebar-layer-event {
+  margin-left: 3rem; }
+  .sidebar-layer-event svg {
+    margin-right: 1rem; }
+    .sidebar-layer-event svg > path {
+      fill: #F00; }
+
+.sidebar-layer-event--active {
+  color: #F00; }
+
 html, body {
   background-color: #f5f5f5;
   position: relative;

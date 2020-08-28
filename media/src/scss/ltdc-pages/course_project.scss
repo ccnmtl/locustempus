@@ -55,3 +55,17 @@
     background-color: #FFFFFF;
     width: 30rem; // TODO: maybe inherit this somehow
 }
+
+.sidebar-layer-event {
+    margin-left: 3rem;
+    svg {
+        margin-right: 1rem;
+        > path {
+            fill: #F00;
+        }
+    }
+}
+
+.sidebar-layer-event--active {
+    color: #F00;
+}

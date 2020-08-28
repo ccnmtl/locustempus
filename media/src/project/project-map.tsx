@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom';
 import ReactMapGL, { _MapContext as MapContext, StaticMap, InteractiveMap, NavigationControl} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
-import DeckGL, { MapController }  from 'deck.gl';
+import DeckGL, { MapController, FlyToInterpolator }  from 'deck.gl';
 import { IconLayer } from '@deck.gl/layers';
 import { Position } from '@deck.gl/core/utils/positions';
 
@@ -37,6 +37,7 @@ export interface LayerEventDatum {
     lngLat: Position;
     label: string;
     layer: number;
+    pk: number;
     description: string;
     datetime: string;
     location: {
@@ -51,16 +52,24 @@ export interface LayerEventData {
     events: LayerEventDatum[];
 }
 
+interface ViewportState {
+    latitude: number,
+    longitude: number,
+    zoom: number,
+    bearing: number,
+    pitch: number,
+    transitionDuration?: number,
+    transitionInterpolator?: FlyToInterpolator,
+}
+
 export const ProjectMap = () => {
-    const viewportState = {
-        viewport: {
-            latitude: 40.8075395,
-            longitude: -73.9647614,
-            zoom: 10,
-            bearing: 0,
-            pitch: 40.5
-        }
-    };
+    const [viewportState, setViewportState] = useState<ViewportState>({
+        latitude: 40.8075395,
+        longitude: -73.9647614,
+        zoom: 10,
+        bearing: 0,
+        pitch: 40.5
+    });
 
     const mapContainer: any = document.querySelector('#project-map-container');
     const BASEMAP_STYLE = mapContainer.dataset.basemap;
@@ -70,6 +79,7 @@ export const ProjectMap = () => {
     const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
+    const [activeEvent, setActiveEvent] = useState<number | null>(null);
 
     // Data structure to hold events, keyed by event PK
     const [eventData, setEventData] =
@@ -229,7 +239,7 @@ export const ProjectMap = () => {
                     throw 'Event creation failed.';
                 }
             })
-            .then((data) => {
+            .then((data: LayerEventDatum) => {
                 if (activeLayer) {
                     let updatedEvents = new Map(eventData);
                     let layerEvents: LayerEventData = updatedEvents.get(activeLayer) || {visibility: true, events: []};
@@ -240,6 +250,8 @@ export const ProjectMap = () => {
                     });
 
                     updateEventData(updatedEvents);
+                    setActiveEvent(data.pk);
+                    goToNewEvent();
                 }
             });
     };
@@ -308,17 +320,29 @@ export const ProjectMap = () => {
         }));
     };
 
+    const goToNewEvent = useCallback(() => {
+        if (activePosition) {
+            setViewportState({
+                latitude: activePosition[0],
+                longitude: activePosition[1],
+                zoom: 12,
+                bearing: 0,
+                pitch: 40.5,
+                transitionDuration: 1000,
+                transitionInterpolator: new FlyToInterpolator()
+            });
+        }
+    }, [activePosition]);
+
     return (
         <>
             <DeckGL
                 layers={mapboxLayers}
-                initialViewState={viewportState.viewport}
+                initialViewState={viewportState}
                 width={'100%'}
                 height={'100%'}
-                controller={{
-                    type: MapController, doubleClickZoom: false} as any}
-                onClick={handleDeckGlClick}
-                ContextProvider={MapContext.Provider}>
+                controller={{doubleClickZoom: false} as any}
+                onClick={handleDeckGlClick}>
                 <StaticMap
                     reuseMaps
                     width={'100%'}
@@ -327,7 +351,6 @@ export const ProjectMap = () => {
                     mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
                     mapboxApiAccessToken={TOKEN} />
                 <div id='map-navigation-control'>
-                    <NavigationControl />
                 </div>
             </DeckGL>
             {projectInfo && (
@@ -346,6 +369,8 @@ export const ProjectMap = () => {
                     setShowAddEventForm={setShowAddEventForm}
                     activePosition={activePosition}
                     clearActivePosition={clearActivePosition}
+                    activeEvent={activeEvent}
+                    setActiveEvent={setActiveEvent}
                     addEvent={addEvent}/>
             )}
         </>
