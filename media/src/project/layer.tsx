@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { LayerEventDatum } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEye, faEyeSlash, faAngleDown, faAngleUp, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { faEye, faEyeSlash, faAngleDown, faAngleUp, faEllipsisV, faMapMarker } from '@fortawesome/free-solid-svg-icons';
 
 export interface LayerProps {
     title: string;
@@ -14,10 +14,15 @@ export interface LayerProps {
     updateLayer(pk: number, title: string): any;
     layerVisibility: boolean;
     setLayerVisibility(pk: number): any;
+    activeEvent: number | null;
+    setActiveEvent(pk: number): any;
 }
 
-export const Layer = (layerData: LayerProps)=> {
-    const [updatedLayerTitle, setUpdatedLayerTitle] = useState<string>(layerData.title);
+export const Layer = (
+    {title, pk, activeLayer, layerEvents, setActiveLayer, content_object,
+        deleteLayer, updateLayer, layerVisibility, setLayerVisibility,
+        activeEvent, setActiveEvent}: LayerProps)=> {
+    const [updatedLayerTitle, setUpdatedLayerTitle] = useState<string>(title);
     const [openLayerMenu, setOpenLayerMenu] = useState<boolean>(false);
     const [isLayerCollapsed, setIsLayerCollapsed] = useState<boolean>(false);
 
@@ -26,43 +31,43 @@ export const Layer = (layerData: LayerProps)=> {
     };
     const handleUpdateLayer = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        layerData.updateLayer(layerData.pk, updatedLayerTitle);
+        updateLayer(pk, updatedLayerTitle);
     };
 
     const handleDeleteLayer = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        layerData.deleteLayer(layerData.pk);
+        deleteLayer(pk);
     };
 
     const handleSetActiveLayer = (e: React.MouseEvent) => {
-        layerData.setActiveLayer(layerData.pk);
+        setActiveLayer(pk);
     };
 
-    let isActiveLayer = layerData.pk == layerData.activeLayer;
+    let isActiveLayer = pk == activeLayer;
 
     const handleLayerMenu = (e: React.MouseEvent) => {
         setOpenLayerMenu((prev) => { return !prev;});
-    }
+    };
 
     const handleLayerCollapse = (e: React.MouseEvent) => {
         setIsLayerCollapsed((prev) => { return !prev;});
-    }
+    };
 
     const handleLayerVisibility = (e: React.MouseEvent) => {
-        layerData.setLayerVisibility(layerData.pk);
-    }
+        setLayerVisibility(pk);
+    };
 
     return (
         <div className={isActiveLayer ? 'sidebar-layer sidebar-layer--active' : 'sidebar-layer'}
             onClick={handleSetActiveLayer}>
             <div className={'sidebar-layer-infobar'}>
                 <button id={'sidebar-layer-infobar__visibility-btn'} onClick={handleLayerVisibility}>
-                    <FontAwesomeIcon icon={layerData.layerVisibility ? faEye : faEyeSlash}/>
+                    <FontAwesomeIcon icon={layerVisibility ? faEye : faEyeSlash}/>
                 </button>
                 <button id={'sidebar-layer-infobar__collapsed-btn'} onClick={handleLayerCollapse}>
                     <FontAwesomeIcon icon={isLayerCollapsed ? faAngleUp : faAngleDown}/>
                 </button>
-                <span id={'sidebar-layer-infobar__title'} className="font-weight-bold">{layerData.title}</span>
+                <span id={'sidebar-layer-infobar__title'} className="font-weight-bold">{title}</span>
                 <button id={'sidebar-layer-infobar__menu-btn'} onClick={handleLayerMenu}>
                     <FontAwesomeIcon icon={faEllipsisV}/>
                 </button>
@@ -71,7 +76,7 @@ export const Layer = (layerData: LayerProps)=> {
                 <div id={'sidebar-layer-infobar__menu'}>
                     <form onSubmit={handleUpdateLayer}>
                         <label>Layer Title:
-                            <input id={`update-layer-title-${layerData.pk}`}
+                            <input id={`update-layer-title-${pk}`}
                                 value={updatedLayerTitle}
                                 onChange={handleUpdatedLayerTitle}
                                 className="form-control" type="text"/>
@@ -87,8 +92,15 @@ export const Layer = (layerData: LayerProps)=> {
             ) }
             { !isLayerCollapsed && (
                 <div>
-                    {layerData.layerEvents.map((val, idx) => {
-                        return (<div key={idx}>{val.label}</div>);
+                    {layerEvents.map((val, idx) => {
+                        return (
+                            <div key={idx}
+                                className={'sidebar-layer-event' + (activeEvent === val.pk ? ' sidebar-layer-event--active' : '')}
+                                onClick={() => {setActiveEvent(val.pk);}}>
+                                <FontAwesomeIcon icon={faMapMarker}/>
+                                {val.label}
+                            </div>
+                        );
                     })}
                 </div>
             ) }
