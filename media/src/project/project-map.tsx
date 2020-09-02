@@ -1,11 +1,12 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import ReactDOM from 'react-dom';
-import ReactMapGL, { _MapContext as MapContext, StaticMap, InteractiveMap, NavigationControl} from 'react-map-gl';
+import ReactMapGL, { _MapContext as MapContext, StaticMap, NavigationControl, Popup} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
 import DeckGL, { MapController, FlyToInterpolator }  from 'deck.gl';
 import { IconLayer } from '@deck.gl/layers';
 import { Position } from '@deck.gl/core/utils/positions';
+import { PickInfo } from '@deck.gl/core/lib/deck';
 
 import {
     ProjectMapSidebar, ProjectMapSidebarProps } from './project-map-sidebar';
@@ -79,9 +80,11 @@ export const ProjectMap = () => {
     const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
-    const [activeEvent, setActiveEvent] = useState<number | null>(null);
+    const [activeEvent, setActiveEvent] = useState<LayerEventDatum | null>(null);
+    const [activeEventDetail, setActiveEventDetail] = useState<LayerEventDatum | null>(null);
+    const [activeEventEdit, setActiveEventEdit] = useState<LayerEventDatum | null>(null);
 
-    // Data structure to hold events, keyed by event PK
+    // Data structure to hold events, keyed by layer PK
     const [eventData, setEventData] =
         useState<Map<number, LayerEventData>>(new Map());
     const [mapboxLayers, setMapboxLayers] = useState<any[]>([]);
@@ -220,7 +223,7 @@ export const ProjectMap = () => {
         }
     };
 
-    const addEvent = (label: string, lat: number, lng: number) => {
+    const addEvent = (label: string, description: string, lat: number, lng: number) => {
         let data = {
             label: label,
             layer: activeLayer,
@@ -250,10 +253,46 @@ export const ProjectMap = () => {
                     });
 
                     updateEventData(updatedEvents);
-                    setActiveEvent(data.pk);
+                    setActiveEvent(data);
                     goToNewEvent();
                 }
             });
+    };
+
+    const updateEvent = () => {};
+
+    const deleteEvent = (pk: number, layerPk: number) => {
+        authedFetch(`/api/event/${pk}/`, 'DELETE', JSON.stringify({pk: pk}))
+            .then((response) => {
+                if (response.status !== 204) {
+                    throw 'Event deletion failed.';
+                } else {
+                    // Revomve the event from eventData and mapboxLayers
+                    let updatedEventData = new Map(eventData);
+                    let layerEventObj = updatedEventData.get(layerPk);
+                    if (layerEventObj && layerEventObj.events) {
+                        updatedEventData.set(layerPk, {
+                            visibility: layerEventObj.visibility,
+                            events: layerEventObj.events.filter((el) => {
+                                return el.pk !== pk; })
+                        });
+                    }
+                    setActiveEvent(null);
+                    updateEventData(updatedEventData);
+                }
+            });
+    };
+
+    const pickEventClickHandler = (info: PickInfo<LayerEventDatum>, evt: HammerInput) => {
+        // Clear the 'Add Event Form' and 'Add Event Pin'
+        setShowAddEventForm(false);
+        clearActivePosition();
+
+        // Set the active event
+        setActiveEvent(info.object as LayerEventDatum);
+
+        // Returning true prevents event from bubling to map canvas
+        return true;
     };
 
     const updateEventData = (events: Map<number, LayerEventData>) => {
@@ -270,6 +309,7 @@ export const ProjectMap = () => {
                         getIcon: d => 'marker',
                         sizeScale: 15,
                         getPosition: (d) => d.location.lng_lat,
+                        onClick: pickEventClickHandler,
                         getSize: 5,
                         getColor: [255, 0, 0],
                     });
@@ -290,7 +330,11 @@ export const ProjectMap = () => {
     };
 
     const handleDeckGlClick = (info: any, event: any) => {
+        // Create on single click, make sure that new event
+        // is not created when user intends to pick an existing event
         if (event.tapCount === 1) {
+            // Clear the active event
+            setActiveEvent(null);
             setShowAddEventForm(true);
             setActivePosition([info.lngLat[1], info.lngLat[0]]);
             let updatedLayers = mapboxLayers.filter((el) => {
@@ -315,9 +359,11 @@ export const ProjectMap = () => {
 
     const clearActivePosition = () => {
         setActivePosition(null);
-        setMapboxLayers(mapboxLayers.filter((el) => {
-            return el.id !== 'active-position';
-        }));
+        setMapboxLayers((prev) => {
+            return prev.filter((el) => {
+                return el.id !== 'active-position';
+            });
+        });
     };
 
     const goToNewEvent = useCallback(() => {
@@ -342,7 +388,9 @@ export const ProjectMap = () => {
                 width={'100%'}
                 height={'100%'}
                 controller={{doubleClickZoom: false} as any}
-                onClick={handleDeckGlClick}>
+                onClick={handleDeckGlClick}
+                pickingRadius={15}
+                ContextProvider={MapContext.Provider}>
                 <StaticMap
                     reuseMaps
                     width={'100%'}
@@ -350,7 +398,20 @@ export const ProjectMap = () => {
                     preventStyleDiffing={true}
                     mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
                     mapboxApiAccessToken={TOKEN} />
+                {activeEvent && (
+                    <Popup
+                        latitude={activeEvent.location.lng_lat[1]}
+                        longitude={activeEvent.location.lng_lat[0]}
+                        closeOnClick={false}
+                        onClose={() => setActiveEvent(null)}>
+                        <div>{activeEvent.label}</div>
+                        <button onClick={() => {setActiveEventDetail(activeEvent);}}>
+                            More
+                        </button>
+                    </Popup>
+                )}
                 <div id='map-navigation-control'>
+                    <NavigationControl />
                 </div>
             </DeckGL>
             {projectInfo && (
@@ -371,7 +432,12 @@ export const ProjectMap = () => {
                     clearActivePosition={clearActivePosition}
                     activeEvent={activeEvent}
                     setActiveEvent={setActiveEvent}
-                    addEvent={addEvent}/>
+                    activeEventDetail={activeEventDetail}
+                    setActiveEventDetail={setActiveEventDetail}
+                    activeEventEdit={activeEventEdit}
+                    setActiveEventEdit={setActiveEventEdit}
+                    addEvent={addEvent}
+                    deleteEvent={deleteEvent}/>
             )}
         </>
     );

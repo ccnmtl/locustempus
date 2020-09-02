@@ -14,14 +14,19 @@ export interface LayerProps {
     updateLayer(pk: number, title: string): any;
     layerVisibility: boolean;
     setLayerVisibility(pk: number): any;
-    activeEvent: number | null;
-    setActiveEvent(pk: number): any;
+    activeEvent: LayerEventDatum | null;
+    setActiveEvent(d: LayerEventDatum): any;
+    activeEventDetail: LayerEventDatum | null;
+    setActiveEventDetail(d: LayerEventDatum | null): any;
+    activeEventEdit: LayerEventDatum | null;
+    setActiveEventEdit(d: LayerEventDatum | null): any;
 }
 
 export const Layer = (
     {title, pk, activeLayer, layerEvents, setActiveLayer, content_object,
         deleteLayer, updateLayer, layerVisibility, setLayerVisibility,
-        activeEvent, setActiveEvent}: LayerProps)=> {
+        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
+        activeEventEdit, setActiveEventEdit}: LayerProps)=> {
     const [updatedLayerTitle, setUpdatedLayerTitle] = useState<string>(title);
     const [openLayerMenu, setOpenLayerMenu] = useState<boolean>(false);
     const [isLayerCollapsed, setIsLayerCollapsed] = useState<boolean>(false);
@@ -95,10 +100,15 @@ export const Layer = (
                     {layerEvents.map((val, idx) => {
                         return (
                             <div key={idx}
-                                className={'sidebar-layer-event' + (activeEvent === val.pk ? ' sidebar-layer-event--active' : '')}
-                                onClick={() => {setActiveEvent(val.pk);}}>
+                                className={'sidebar-layer-event' + (activeEvent && activeEvent.pk === val.pk ? ' sidebar-layer-event--active' : '')}
+                                onClick={() => {setActiveEvent(val);}}>
                                 <FontAwesomeIcon icon={faMapMarker}/>
                                 {val.label}
+                                {activeEvent && activeEvent.pk === val.pk && (
+                                    <button onClick={() => {setActiveEventDetail(val);}}>
+                                        More
+                                    </button>
+                                )}
                             </div>
                         );
                     })}
