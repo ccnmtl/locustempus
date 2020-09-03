@@ -259,7 +259,44 @@ export const ProjectMap = () => {
             });
     };
 
-    const updateEvent = () => {};
+    const updateEvent = (
+        label: string, description: string, lat: number, lng: number,
+        pk: number, layerPk: number) => {
+        let obj = {
+            label: label,
+            description: description,
+            layer: layerPk,
+            location: {
+                point: {lat: lat, lng: lng},
+                polygon: null
+            }
+        }
+        authedFetch(`/api/event/${pk}/`, 'PUT', JSON.stringify(obj))
+            .then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw 'Event update failed.';
+                }
+            })
+            .then((data: LayerEventDatum) => {
+                // Revomve the event from eventData and mapboxLayers
+                let updatedEventData = new Map(eventData);
+                let layerEventObj = updatedEventData.get(layerPk);
+                if (layerEventObj && layerEventObj.events) {
+                    updatedEventData.set(layerPk, {
+                        visibility: layerEventObj.visibility,
+                        events: layerEventObj.events.map((el) => {
+                            return el.pk !== data.pk ? el : data;
+                        })
+                    });
+                }
+                updateEventData(updatedEventData);
+                // Update the data for the active event
+                setActiveEventDetail(data);
+                setActiveEvent(data);
+            });
+    };
 
     const deleteEvent = (pk: number, layerPk: number) => {
         authedFetch(`/api/event/${pk}/`, 'DELETE', JSON.stringify({pk: pk}))
@@ -405,6 +442,7 @@ export const ProjectMap = () => {
                         closeOnClick={false}
                         onClose={() => setActiveEvent(null)}>
                         <div>{activeEvent.label}</div>
+                        <div><p>{activeEvent.description}</p></div>
                         <button onClick={() => {setActiveEventDetail(activeEvent);}}>
                             More
                         </button>
@@ -437,7 +475,8 @@ export const ProjectMap = () => {
                     activeEventEdit={activeEventEdit}
                     setActiveEventEdit={setActiveEventEdit}
                     addEvent={addEvent}
-                    deleteEvent={deleteEvent}/>
+                    deleteEvent={deleteEvent}
+                    updateEvent={updateEvent}/>
             )}
         </>
     );
