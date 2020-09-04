@@ -2,7 +2,9 @@ import React, { useState } from 'react';
 import { Layer, LayerProps } from './layer';
 import { LayerEventData, LayerEventDatum } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLayerGroup, faArrowLeft, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import {
+    faLayerGroup, faArrowLeft, faEllipsisV
+} from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 
 
@@ -267,6 +269,7 @@ export const EventDetailPanel = ({
                             () => {setActiveEventEdit(activeEventDetail);}}>
                             Edit marker</a>
                         </li>
+                        {/* TODO: Implement confirmation */}
                         <li><a onClick={handleDelete}>Delete marker</a></li>
                     </ul>
                 </div>
