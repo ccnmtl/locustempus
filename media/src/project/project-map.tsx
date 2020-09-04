@@ -304,7 +304,7 @@ export const ProjectMap = () => {
                 if (response.status !== 204) {
                     throw 'Event deletion failed.';
                 } else {
-                    // Revomve the event from eventData and mapboxLayers
+                    // Remove the event from eventData and mapboxLayers
                     let updatedEventData = new Map(eventData);
                     let layerEventObj = updatedEventData.get(layerPk);
                     if (layerEventObj && layerEventObj.events) {

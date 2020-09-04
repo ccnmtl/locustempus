@@ -6,14 +6,14 @@ import { faLayerGroup, faArrowLeft, faEllipsisV } from '@fortawesome/free-solid-
 import { Position } from '@deck.gl/core/utils/positions';
 
 
-export interface EditEventPanelProps {
+export interface EventEditPanelProps {
     activeLayer: number | null;
     activeEventEdit: LayerEventDatum;
     setActiveEventEdit(d: LayerEventDatum | null): void;
     updateEvent(label: string, description: string, lat: number, lng: number, pk: number, layerPk: number): void;
 }
 
-const EditEventPanel = ({activeLayer, activeEventEdit, setActiveEventEdit, updateEvent}: EditEventPanelProps) => {
+const EventEditPanel = ({activeLayer, activeEventEdit, setActiveEventEdit, updateEvent}: EventEditPanelProps) => {
 
     const [eventName, setEventName] = useState<string>(activeEventEdit.label);
     const [description, setDescription] = useState<string>(activeEventEdit.description);
@@ -42,7 +42,7 @@ const EditEventPanel = ({activeLayer, activeEventEdit, setActiveEventEdit, updat
         setActiveEventEdit(null);
     };
     return (
-        <>
+        <div>
             <h4>Edit Event</h4>
             <form onSubmit={handleFormSubmbit} >
                 <div className={'form-row'}>
@@ -100,12 +100,12 @@ const EditEventPanel = ({activeLayer, activeEventEdit, setActiveEventEdit, updat
                     </div>
                 </div>
             </form>
-        </>
+        </div>
     );
 };
 
 
-export interface AddEventPanelProps {
+export interface EventAddPanelProps {
     showAddEventForm: boolean;
     setShowAddEventForm(val: boolean): any;
     activePosition: Position | null;
@@ -114,9 +114,9 @@ export interface AddEventPanelProps {
     setActiveTab(val: number): any;
 }
 
-const AddEventPanel = ({
+const EventAddPanel = ({
     showAddEventForm, setShowAddEventForm,
-    activePosition, addEvent, clearActivePosition, setActiveTab}: AddEventPanelProps) => {
+    activePosition, addEvent, clearActivePosition, setActiveTab}: EventAddPanelProps) => {
 
     const [eventName, setEventName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
@@ -151,7 +151,7 @@ const AddEventPanel = ({
         clearActivePosition();
     };
     return (
-        <>
+        <div>
             <h4>Add Event</h4>
             <form onSubmit={handleFormSubmbit} >
                 <div className={'form-row'}>
@@ -209,11 +209,11 @@ const AddEventPanel = ({
                     </div>
                 </div>
             </form>
-        </>
+        </div>
     );
 };
 
-interface DetailEventPanelProps {
+interface EventDetailPanelProps {
     activeLayer: number | null;
     activeEventDetail: LayerEventDatum | null;
     setActiveEventDetail(d: LayerEventDatum | null): any;
@@ -222,9 +222,9 @@ interface DetailEventPanelProps {
     deleteEvent(pk: number, layerPk: number): any;
 }
 
-const DetailEventPanel = ({
+const EventDetailPanel = ({
     activeLayer, activeEventDetail, setActiveEventDetail, activeEventEdit,
-    setActiveEventEdit, deleteEvent}: DetailEventPanelProps) => {
+    setActiveEventEdit, deleteEvent}: EventDetailPanelProps) => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
 
     const handleDelete = (e: React.MouseEvent) => {
@@ -260,41 +260,32 @@ const DetailEventPanel = ({
     );
 }
 
-export interface ProjectMapSidebarProps {
-    title: string;
+interface DefaultPanelProps {
+    activeTab: number;
+    setActiveTab(idx: number): void;
+    addLayer(): void;
     description: string;
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
-    activeLayer: number | null;
-    setActiveLayer(pk: number): void;
-    addLayer(): void;
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
     setLayerVisibility(pk: number): void;
-    showAddEventForm: boolean;
-    setShowAddEventForm(val: boolean): void;
-    activePosition: Position | null;
-    addEvent(label: string, description: string, lat: number, lng: number): void;
-    deleteEvent(pk: number, layerPk: number): void;
-    clearActivePosition(): void;
+    activeLayer: number | null;
+    setActiveLayer(pk: number): void;
     activeEvent: LayerEventDatum | null;
     setActiveEvent(d: LayerEventDatum): void;
     activeEventDetail: LayerEventDatum | null;
     setActiveEventDetail(d: LayerEventDatum): void;
     activeEventEdit: LayerEventDatum | null;
     setActiveEventEdit(d: LayerEventDatum): void;
-    updateEvent(label: string, description: string, lat: number, lng: number, pk: number, layerPk: number): void;
 }
 
-export const ProjectMapSidebar = (
-    {title, description, layers, events, activeLayer, setActiveLayer, addLayer,
-        deleteLayer, updateLayer, setLayerVisibility, showAddEventForm,
-        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
-        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
-        activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent}: ProjectMapSidebarProps) => {
-
-    const [activeTab, setActiveTab] = useState<number>(0);
-
+const DefaultPanel = (
+    {activeTab, setActiveTab, addLayer, description, layers, events,
+        deleteLayer, updateLayer, setLayerVisibility, activeLayer,
+        setActiveLayer, activeEvent, setActiveEvent, activeEventDetail,
+        setActiveEventDetail, activeEventEdit, setActiveEventEdit}:
+            DefaultPanelProps) => {
     const handleSetActiveTab = (e: React.MouseEvent<HTMLAnchorElement>) => {
         e.preventDefault();
         setActiveTab(Number(e.currentTarget.dataset.activeTab));
@@ -305,45 +296,8 @@ export const ProjectMapSidebar = (
         addLayer();
     };
 
-    let panelState = 3;
-    if (activeEventEdit) {
-        panelState = 2;
-    } else if (activeEventDetail) {
-        panelState = 1;
-    } else if (showAddEventForm) {
-        panelState = 0;
-    }
-
-
-    const PANEL: any = {
-        0: <div>
-            <AddEventPanel
-                showAddEventForm={showAddEventForm}
-                setShowAddEventForm={setShowAddEventForm}
-                activePosition={activePosition}
-                addEvent={addEvent}
-                clearActivePosition={clearActivePosition}
-                setActiveTab={setActiveTab}/>
-        </div>,
-        1: <div>
-            <DetailEventPanel
-                activeLayer={activeLayer}
-                activeEventDetail={activeEventDetail}
-                setActiveEventDetail={setActiveEventDetail}
-                activeEventEdit={activeEventEdit}
-                setActiveEventEdit={setActiveEventEdit}
-                deleteEvent={deleteEvent}/>
-        </div>,
-        2: <div>
-            {activeEventEdit && (
-                <EditEventPanel
-                    activeLayer={activeLayer}
-                    activeEventEdit={activeEventEdit}
-                    setActiveEventEdit={setActiveEventEdit}
-                    updateEvent={updateEvent}/>
-            )}
-        </div>,
-        3: <>
+    return (
+        <>
             <div>
                 <ul className="nav nav-tabs">
                     {['Overview', 'Base'].map((el, idx) => {
@@ -402,6 +356,102 @@ export const ProjectMapSidebar = (
                 </>
             )}
         </>
+    );
+};
+
+export interface ProjectMapSidebarProps {
+    title: string;
+    description: string;
+    layers: LayerProps[];
+    events: Map<number, LayerEventData>;
+    activeLayer: number | null;
+    setActiveLayer(pk: number): void;
+    addLayer(): void;
+    deleteLayer(pk: number): void;
+    updateLayer(pk: number, title: string): void;
+    setLayerVisibility(pk: number): void;
+    showAddEventForm: boolean;
+    setShowAddEventForm(val: boolean): void;
+    activePosition: Position | null;
+    addEvent(label: string,
+             description: string, lat: number, lng: number): void;
+    deleteEvent(pk: number, layerPk: number): void;
+    clearActivePosition(): void;
+    activeEvent: LayerEventDatum | null;
+    setActiveEvent(d: LayerEventDatum): void;
+    activeEventDetail: LayerEventDatum | null;
+    setActiveEventDetail(d: LayerEventDatum): void;
+    activeEventEdit: LayerEventDatum | null;
+    setActiveEventEdit(d: LayerEventDatum): void;
+    updateEvent(label: string, description: string,
+                lat: number, lng: number, pk: number, layerPk: number): void;
+}
+
+export const ProjectMapSidebar = (
+    {title, description, layers, events, activeLayer, setActiveLayer, addLayer,
+        deleteLayer, updateLayer, setLayerVisibility, showAddEventForm,
+        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
+        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
+        activeEventEdit, setActiveEventEdit,
+        deleteEvent, updateEvent}: ProjectMapSidebarProps) => {
+
+    const [activeTab, setActiveTab] = useState<number>(0);
+
+    const DEFAULT_PANEL = 3;
+    const EVENT_EDIT_PANEL = 2;
+    const EVENT_DETAIL_PANEL = 1;
+    const EVENT_ADD_PANEL = 0;
+
+    let panelState = DEFAULT_PANEL;
+    if (activeEventEdit) {
+        panelState = EVENT_EDIT_PANEL;
+    } else if (activeEventDetail) {
+        panelState = EVENT_DETAIL_PANEL;
+    } else if (showAddEventForm) {
+        panelState = EVENT_ADD_PANEL;
+    }
+
+
+    const PANEL: any = {
+        0: <EventAddPanel
+            showAddEventForm={showAddEventForm}
+            setShowAddEventForm={setShowAddEventForm}
+            activePosition={activePosition}
+            addEvent={addEvent}
+            clearActivePosition={clearActivePosition}
+            setActiveTab={setActiveTab}/>,
+        1: <EventDetailPanel
+            activeLayer={activeLayer}
+            activeEventDetail={activeEventDetail}
+            setActiveEventDetail={setActiveEventDetail}
+            activeEventEdit={activeEventEdit}
+            setActiveEventEdit={setActiveEventEdit}
+            deleteEvent={deleteEvent}/>,
+        2: <> {activeEventEdit && (
+            <EventEditPanel
+                activeLayer={activeLayer}
+                activeEventEdit={activeEventEdit}
+                setActiveEventEdit={setActiveEventEdit}
+                updateEvent={updateEvent}/>
+        )} </>,
+        3: <DefaultPanel
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            addLayer={addLayer}
+            description={description}
+            layers={layers}
+            events={events}
+            deleteLayer={deleteLayer}
+            updateLayer={updateLayer}
+            setLayerVisibility={setLayerVisibility}
+            activeLayer={activeLayer}
+            setActiveLayer={setActiveLayer}
+            activeEvent={activeEvent}
+            setActiveEvent={setActiveEvent}
+            activeEventDetail={activeEventDetail}
+            setActiveEventDetail={setActiveEventDetail}
+            activeEventEdit={activeEventEdit}
+            setActiveEventEdit={setActiveEventEdit}/>
     };
 
     return (
