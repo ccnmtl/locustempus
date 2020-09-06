@@ -1,8 +1,6 @@
-import React, { useState } from 'react';
-import { Layer, LayerProps } from './layer';
+import React, { useState, ReactElement } from 'react';
+import { LayerProps } from './layer';
 import { LayerEventData, LayerEventDatum } from './project-map';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLayerGroup, faArrowLeft, faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel
@@ -37,13 +35,15 @@ export interface ProjectMapSidebarProps {
                 lat: number, lng: number, pk: number, layerPk: number): void;
 }
 
-export const ProjectMapSidebar = (
-    {title, description, layers, events, activeLayer, setActiveLayer, addLayer,
-        deleteLayer, updateLayer, setLayerVisibility, showAddEventForm,
-        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
-        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
-        activeEventEdit, setActiveEventEdit,
-        deleteEvent, updateEvent}: ProjectMapSidebarProps) => {
+export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
+    {
+        title, description, layers, events, activeLayer, setActiveLayer,
+        addLayer, deleteLayer, updateLayer, setLayerVisibility,
+        showAddEventForm, setShowAddEventForm, activePosition, addEvent,
+        clearActivePosition, activeEvent, setActiveEvent, activeEventDetail,
+        setActiveEventDetail, activeEventEdit, setActiveEventEdit, deleteEvent,
+        updateEvent
+    }: ProjectMapSidebarProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
 
@@ -62,7 +62,7 @@ export const ProjectMapSidebar = (
     }
 
 
-    const PANEL: any = {
+    const PANEL: {[key: number]: ReactElement} = {
         0: <EventAddPanel
             showAddEventForm={showAddEventForm}
             setShowAddEventForm={setShowAddEventForm}

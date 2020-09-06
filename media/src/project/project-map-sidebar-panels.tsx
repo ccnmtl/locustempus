@@ -16,9 +16,10 @@ interface EventEditPanelProps {
                 lat: number, lng: number, pk: number, layerPk: number): void;
 }
 
-export const EventEditPanel = ({
-    activeLayer, activeEventEdit,
-    setActiveEventEdit, updateEvent}: EventEditPanelProps) => {
+export const EventEditPanel: React.FC<EventEditPanelProps> = (
+    {
+        activeEventEdit, setActiveEventEdit, updateEvent
+    }: EventEditPanelProps) => {
 
     const [
         eventName, setEventName] = useState<string>(activeEventEdit.label);
@@ -29,19 +30,20 @@ export const EventEditPanel = ({
         datetime, setDatetime
     ] = useState<string>(activeEventEdit.datetime || '');
 
-    const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setEventName(e.target.value);
     };
 
-    const handleDescription= (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleDescription = (
+        e: React.ChangeEvent<HTMLTextAreaElement>): void => {
         setDescription(e.target.value);
     };
 
-    const handleDatetime = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleDatetime = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setDatetime(e.target.value);
     };
 
-    const handleFormSubmbit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleFormSubmbit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         updateEvent(
             eventName, description, activeEventEdit.location.lng_lat[1],
@@ -50,9 +52,11 @@ export const EventEditPanel = ({
         setActiveEventEdit(null);
     };
 
-    const handleCancel = (e: React.MouseEvent) => {
+    const handleCancel = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
         setActiveEventEdit(null);
     };
+
     return (
         <div>
             <h4>Edit Event</h4>
@@ -120,35 +124,36 @@ export const EventEditPanel = ({
 
 interface EventAddPanelProps {
     showAddEventForm: boolean;
-    setShowAddEventForm(val: boolean): any;
+    setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
-    addEvent(label: string, description: string, lat: number, lng: number): any;
-    clearActivePosition(): any;
-    setActiveTab(val: number): any;
+    addEvent(
+        label: string, description: string, lat: number, lng: number): void;
+    clearActivePosition(): void;
+    setActiveTab(val: number): void;
 }
 
-export const EventAddPanel = ({
-    showAddEventForm, setShowAddEventForm,
-    activePosition, addEvent,
-    clearActivePosition, setActiveTab}: EventAddPanelProps) => {
+export const EventAddPanel: React.FC<EventAddPanelProps> = (
+    { setShowAddEventForm, activePosition, addEvent,
+        clearActivePosition, setActiveTab}: EventAddPanelProps) => {
 
     const [eventName, setEventName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [datetime, setDatetime] = useState<string>('');
 
-    const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setEventName(e.target.value);
     };
 
-    const handleDescription= (e: React.ChangeEvent<HTMLTextAreaElement>) => {
+    const handleDescription = (
+        e: React.ChangeEvent<HTMLTextAreaElement>): void => {
         setDescription(e.target.value);
     };
 
-    const handleDatetime = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleDatetime = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setDatetime(e.target.value);
     };
 
-    const handleFormSubmbit = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleFormSubmbit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         if (activePosition) {
             addEvent(
@@ -160,10 +165,12 @@ export const EventAddPanel = ({
         }
     };
 
-    const handleCancel = (e: React.MouseEvent) => {
+    const handleCancel = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
         setShowAddEventForm(false);
         clearActivePosition();
     };
+
     return (
         <div>
             <h4>Add Event</h4>
@@ -231,18 +238,30 @@ export const EventAddPanel = ({
 interface EventDetailPanelProps {
     activeLayer: number | null;
     activeEventDetail: LayerEventDatum | null;
-    setActiveEventDetail(d: LayerEventDatum | null): any;
+    setActiveEventDetail(d: LayerEventDatum | null): void;
     activeEventEdit: LayerEventDatum | null;
-    setActiveEventEdit(d: LayerEventDatum | null): any;
-    deleteEvent(pk: number, layerPk: number): any;
+    setActiveEventEdit(d: LayerEventDatum | null): void;
+    deleteEvent(pk: number, layerPk: number): void;
 }
 
-export const EventDetailPanel = ({
-    activeLayer, activeEventDetail, setActiveEventDetail, activeEventEdit,
-    setActiveEventEdit, deleteEvent}: EventDetailPanelProps) => {
+export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
+    {
+        activeLayer, activeEventDetail, setActiveEventDetail,
+        setActiveEventEdit, deleteEvent
+    }: EventDetailPanelProps) => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
 
-    const handleDelete = (e: React.MouseEvent) => {
+    const handleBack = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        setActiveEventDetail(null);
+    };
+
+    const handleMenuToggle = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        setShowMenu((prev) => {return !prev;});
+    };
+
+    const handleDelete = (e: React.MouseEvent): void => {
         e.preventDefault();
         if (activeEventDetail && activeLayer) {
             deleteEvent(activeEventDetail.pk, activeLayer);
@@ -250,23 +269,25 @@ export const EventDetailPanel = ({
         }
     };
 
+    const handleEdit = (e: React.MouseEvent<HTMLAnchorElement>): void => {
+        e.preventDefault();
+        setActiveEventEdit(activeEventDetail);
+    };
+
     return (
         <div>
             <div>
-                <button onClick={() => {setActiveEventDetail(null);}}>
+                <button onClick={handleBack}>
                     <FontAwesomeIcon icon={faArrowLeft}/> Back
                 </button>
-                <button
-                    onClick={() => {setShowMenu((prev) => {return !prev;});}}>
+                <button onClick={handleMenuToggle}>
                     <FontAwesomeIcon icon={faEllipsisV}/>
                 </button>
-
             </div>
             {showMenu && (
                 <div>
                     <ul>
-                        <li><a onClick={
-                            () => {setActiveEventEdit(activeEventDetail);}}>
+                        <li><a onClick={handleEdit}>
                             Edit marker</a>
                         </li>
                         {/* TODO: Implement confirmation */}
@@ -300,18 +321,21 @@ interface DefaultPanelProps {
     setActiveEventEdit(d: LayerEventDatum): void;
 }
 
-export const DefaultPanel = (
-    {activeTab, setActiveTab, addLayer, description, layers, events,
+export const DefaultPanel: React.FC<DefaultPanelProps> = (
+    {
+        activeTab, setActiveTab, addLayer, description, layers, events,
         deleteLayer, updateLayer, setLayerVisibility, activeLayer,
-        setActiveLayer, activeEvent, setActiveEvent, activeEventDetail,
-        setActiveEventDetail, activeEventEdit, setActiveEventEdit}:
-            DefaultPanelProps) => {
-    const handleSetActiveTab = (e: React.MouseEvent<HTMLAnchorElement>) => {
+        setActiveLayer, activeEvent, setActiveEvent,
+        setActiveEventDetail, activeEventEdit
+    }: DefaultPanelProps) => {
+
+    const handleSetActiveTab = (
+        e: React.MouseEvent<HTMLAnchorElement>): void => {
         e.preventDefault();
         setActiveTab(Number(e.currentTarget.dataset.activeTab));
     };
 
-    const handleCreateLayer = (e: React.FormEvent<HTMLFormElement>) => {
+    const handleCreateLayer = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         addLayer();
     };
@@ -346,7 +370,7 @@ export const DefaultPanel = (
                     {layers && layers.map(
                         (layer, idx) => {
                             let layerEvents: LayerEventDatum[] = [];
-                            let data = events.get(layer.pk);
+                            const data = events.get(layer.pk);
                             if (data && data.events) {
                                 layerEvents = data.events;
                             }
@@ -368,10 +392,8 @@ export const DefaultPanel = (
                                     setLayerVisibility={setLayerVisibility}
                                     activeEvent={activeEvent}
                                     setActiveEvent={setActiveEvent}
-                                    activeEventDetail={activeEventDetail}
                                     setActiveEventDetail={setActiveEventDetail}
-                                    activeEventEdit={activeEventEdit}
-                                    setActiveEventEdit={setActiveEventEdit}/>
+                                    activeEventEdit={activeEventEdit}/>
                             );
                         })}
                 </>

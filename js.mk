@@ -20,7 +20,7 @@ JS_FILES ?= media/js
 
 NODE_MODULES ?= ./node_modules
 JS_SENTINAL ?= $(NODE_MODULES)/sentinal
-ESLINT ?= $(NODE_MODULES)/.bin/eslint
+ESLINT ?= $(NODE_MODULES)/.bin/eslint --ext .js,.tsx
 
 $(JS_SENTINAL): package.json
 	rm -rf $(NODE_MODULES)
