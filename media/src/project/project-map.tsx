@@ -370,6 +370,8 @@ export const ProjectMap: React.FC = () => {
         if (event.tapCount === 1) {
             // Clear the active event
             setActiveEvent(null);
+            setActiveEventDetail(null);
+            setActiveEventEdit(null);
             setShowAddEventForm(true);
             setActivePosition([info.lngLat[1], info.lngLat[0]]);
             let updatedLayers = mapboxLayers.filter((el) => {
