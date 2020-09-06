@@ -70,7 +70,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             type={'text'}
                             id={'event-form__name'}
                             value={eventName}
-                            placeholder={'Untitled Marker'}
+                            autoFocus={true}
                             onChange={handleName}/>
                     </div>
                 </div>
@@ -108,6 +108,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                     </div>
                     <div className={'form-group col-9'}>
                         <button
+                            type={'button'}
                             onClick={handleCancel} className={'btn btn-danger'}>
                             Cancel
                         </button>
@@ -184,6 +185,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                             type={'text'}
                             id={'event-form__name'}
                             value={eventName}
+                            autoFocus={true}
                             placeholder={'Untitled Marker'}
                             onChange={handleName}/>
                     </div>
@@ -222,6 +224,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                     </div>
                     <div className={'form-group col-9'}>
                         <button
+                            type={'button'}
                             onClick={handleCancel} className={'btn btn-danger'}>
                             Cancel
                         </button>
