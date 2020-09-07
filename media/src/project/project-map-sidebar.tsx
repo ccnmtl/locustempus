@@ -1,118 +1,11 @@
-import React, { useState } from 'react';
-import { Layer, LayerProps } from './layer';
+import React, { useState, ReactElement } from 'react';
+import { LayerProps } from './layer';
 import { LayerEventData, LayerEventDatum } from './project-map';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
+import {
+    EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel
+} from './project-map-sidebar-panels';
 
-
-export interface AddEventPanelProps {
-    showAddEventForm: boolean;
-    setShowAddEventForm(val: boolean): any;
-    activePosition: Position | null;
-    addEvent(label: string, lat: number, lng: number): any;
-    clearActivePosition(): any;
-    setActiveTab(val: number): any;
-}
-
-const AddEventPanel = ({
-    showAddEventForm, setShowAddEventForm,
-    activePosition, addEvent, clearActivePosition, setActiveTab}: AddEventPanelProps) => {
-
-    const [eventName, setEventName] = useState<string>('');
-    const [description, setDescription] = useState<string>('');
-    const [datetime, setDatetime] = useState<string>('');
-
-    const handleName = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setEventName(e.target.value);
-    };
-
-    const handleDescription= (e: React.ChangeEvent<HTMLTextAreaElement>) => {
-        setDescription(e.target.value);
-    };
-
-    const handleDatetime = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setDatetime(e.target.value);
-    };
-
-    const handleFormSubmbit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if (activePosition) {
-            addEvent(
-                eventName === '' ? 'Untitled Marker' : eventName,
-                activePosition[0], activePosition[1]);
-            setShowAddEventForm(false);
-            setActiveTab(1);
-            clearActivePosition();
-        }
-    };
-
-    const handleCancel = (e: React.MouseEvent) => {
-        setShowAddEventForm(false);
-        clearActivePosition();
-    };
-    return (
-        <>
-            <h4>Add Event</h4>
-            <form onSubmit={handleFormSubmbit} >
-                <div className={'form-row'}>
-                    <div className={'form-group col-3'}>
-                        <label htmlFor={'event-form__name'}>Name</label>
-                    </div>
-                    <div className={'form-group col-9'}>
-                        <input
-                            type={'text'}
-                            id={'event-form__name'}
-                            value={eventName}
-                            placeholder={'Untitled Marker'}
-                            onChange={handleName}/>
-                    </div>
-                </div>
-                <div className="form-row">
-                    <div className={'form-group col-3'}>
-                        <label htmlFor={'event-form__description'}>
-                            Description
-                        </label>
-                    </div>
-                    <div className={'form-group col-9'}>
-                        <textarea
-                            id={'event-form__description'}
-                            value={description}
-                            rows={3}
-                            onChange={handleDescription}>
-                        </textarea>
-                    </div>
-                </div>
-                <div className="form-row">
-                    <div className={'form-group col-3'}>
-                        <label htmlFor={'event-form__date'}>
-                            Date
-                        </label>
-                    </div>
-                    <div className={'form-group col-9'}>
-                        <input
-                            type={'datetime-local'}
-                            id={'event-form__date'}
-                            value={datetime}
-                            onChange={handleDatetime}/>
-                    </div>
-                </div>
-                <div className="form-row">
-                    <div className={'form-group col-3'}>
-                    </div>
-                    <div className={'form-group col-9'}>
-                        <button onClick={handleCancel} className={'btn btn-danger'}>
-                            Cancel
-                        </button>
-                        <button type={'submit'} className={'btn btn-primary'}>
-                            Save
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </>
-    );
-};
 
 export interface ProjectMapSidebarProps {
     title: string;
@@ -120,107 +13,101 @@ export interface ProjectMapSidebarProps {
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
     activeLayer: number | null;
-    setActiveLayer(pk: number): any;
-    addLayer(): any;
-    deleteLayer(pk: number): any;
-    updateLayer(pk: number, title: string): any;
-    setLayerVisibility(pk: number): any;
+    setActiveLayer(pk: number): void;
+    addLayer(): void;
+    deleteLayer(pk: number): void;
+    updateLayer(pk: number, title: string): void;
+    setLayerVisibility(pk: number): void;
     showAddEventForm: boolean;
-    setShowAddEventForm(val: boolean): any;
+    setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
-    addEvent(label: string, lat: number, lng: number): any;
-    clearActivePosition(): any;
-    activeEvent: number | null;
-    setActiveEvent(pk: number): any;
+    addEvent(label: string,
+             description: string, lat: number, lng: number): void;
+    deleteEvent(pk: number, layerPk: number): void;
+    clearActivePosition(): void;
+    activeEvent: LayerEventDatum | null;
+    setActiveEvent(d: LayerEventDatum): void;
+    activeEventDetail: LayerEventDatum | null;
+    setActiveEventDetail(d: LayerEventDatum): void;
+    activeEventEdit: LayerEventDatum | null;
+    setActiveEventEdit(d: LayerEventDatum): void;
+    updateEvent(label: string, description: string,
+                lat: number, lng: number, pk: number, layerPk: number): void;
 }
 
-export const ProjectMapSidebar = (
-    {title, description, layers, events, activeLayer, setActiveLayer, addLayer,
-        deleteLayer, updateLayer, setLayerVisibility, showAddEventForm,
-        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
-        activeEvent, setActiveEvent}: ProjectMapSidebarProps) => {
+export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
+    {
+        title, description, layers, events, activeLayer, setActiveLayer,
+        addLayer, deleteLayer, updateLayer, setLayerVisibility,
+        showAddEventForm, setShowAddEventForm, activePosition, addEvent,
+        clearActivePosition, activeEvent, setActiveEvent, activeEventDetail,
+        setActiveEventDetail, activeEventEdit, setActiveEventEdit, deleteEvent,
+        updateEvent
+    }: ProjectMapSidebarProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
 
-    const handleSetActiveTab = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        e.preventDefault();
-        setActiveTab(Number(e.currentTarget.dataset.activeTab));
-    };
+    const DEFAULT_PANEL = 3;
+    const EVENT_EDIT_PANEL = 2;
+    const EVENT_DETAIL_PANEL = 1;
+    const EVENT_ADD_PANEL = 0;
 
-    const handleCreateLayer = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        addLayer();
+    let panelState = DEFAULT_PANEL;
+    if (activeEventEdit) {
+        panelState = EVENT_EDIT_PANEL;
+    } else if (activeEventDetail) {
+        panelState = EVENT_DETAIL_PANEL;
+    } else if (showAddEventForm) {
+        panelState = EVENT_ADD_PANEL;
+    }
+
+
+    const PANEL: {[key: number]: ReactElement} = {
+        0: <EventAddPanel
+            showAddEventForm={showAddEventForm}
+            setShowAddEventForm={setShowAddEventForm}
+            activePosition={activePosition}
+            addEvent={addEvent}
+            clearActivePosition={clearActivePosition}
+            setActiveTab={setActiveTab}/>,
+        1: <EventDetailPanel
+            activeLayer={activeLayer}
+            activeEventDetail={activeEventDetail}
+            setActiveEventDetail={setActiveEventDetail}
+            activeEventEdit={activeEventEdit}
+            setActiveEventEdit={setActiveEventEdit}
+            deleteEvent={deleteEvent}/>,
+        2: <> {activeEventEdit && (
+            <EventEditPanel
+                activeLayer={activeLayer}
+                activeEventEdit={activeEventEdit}
+                setActiveEventEdit={setActiveEventEdit}
+                updateEvent={updateEvent}/>
+        )} </>,
+        3: <DefaultPanel
+            activeTab={activeTab}
+            setActiveTab={setActiveTab}
+            addLayer={addLayer}
+            description={description}
+            layers={layers}
+            events={events}
+            deleteLayer={deleteLayer}
+            updateLayer={updateLayer}
+            setLayerVisibility={setLayerVisibility}
+            activeLayer={activeLayer}
+            setActiveLayer={setActiveLayer}
+            activeEvent={activeEvent}
+            setActiveEvent={setActiveEvent}
+            activeEventDetail={activeEventDetail}
+            setActiveEventDetail={setActiveEventDetail}
+            activeEventEdit={activeEventEdit}
+            setActiveEventEdit={setActiveEventEdit}/>
     };
 
     return (
         <div id='project-map-sidebar'>
             <h2>{title}</h2>
-            <div>
-                {showAddEventForm && (
-                    <AddEventPanel
-                        showAddEventForm={showAddEventForm}
-                        setShowAddEventForm={setShowAddEventForm}
-                        activePosition={activePosition}
-                        addEvent={addEvent}
-                        clearActivePosition={clearActivePosition}
-                        setActiveTab={setActiveTab}/>
-                )}
-                {!showAddEventForm && (
-                    <ul className="nav nav-tabs">
-                        {['Overview', 'Base'].map((el, idx) => {
-                            return (
-                                <li className="nav-item" key={idx}>
-                                    <a className={activeTab == idx ? 'nav-link active' : 'nav-link'}
-                                        href='#'
-                                        data-active-tab={idx}
-                                        onClick={handleSetActiveTab}>{el}</a>
-                                </li>
-                            );
-                        })}
-                    </ul>
-                )}
-            </div>
-            {activeTab === 0 && !showAddEventForm && (
-                <>
-                    <p>{description}</p>
-                </>
-            )}
-            {activeTab === 1 && !showAddEventForm && (
-                <>
-                    <form onSubmit={handleCreateLayer}>
-                        <button type='submit'>
-                            <FontAwesomeIcon icon={faLayerGroup}/>Add Layer
-                        </button>
-                    </form>
-                    {layers && layers.map(
-                        (layer, idx) => {
-                            let layerEvents: LayerEventDatum[] = [];
-                            let data = events.get(layer.pk);
-                            if (data && data.events) {
-                                layerEvents = data.events;
-                            }
-
-                            let layerVisibility = true;
-                            if (data && data.visibility) {
-                                layerVisibility = data.visibility;
-                            }
-
-                            return (
-                                <Layer {...layer}
-                                    deleteLayer={deleteLayer}
-                                    updateLayer={updateLayer}
-                                    key={idx}
-                                    activeLayer={activeLayer}
-                                    setActiveLayer={setActiveLayer}
-                                    layerEvents={layerEvents}
-                                    layerVisibility={layerVisibility}
-                                    setLayerVisibility={setLayerVisibility}
-                                    activeEvent={activeEvent}
-                                    setActiveEvent={setActiveEvent}/>
-                            );
-                        })}
-                </>
-            )}
+            {PANEL[panelState]}
         </div>
     );
 };

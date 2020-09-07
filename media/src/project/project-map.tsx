@@ -1,18 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import ReactDOM from 'react-dom';
-import ReactMapGL, { _MapContext as MapContext, StaticMap, InteractiveMap, NavigationControl} from 'react-map-gl';
+import {
+    _MapContext as MapContext, StaticMap, NavigationControl, Popup
+} from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
-import DeckGL, { MapController, FlyToInterpolator }  from 'deck.gl';
+import DeckGL, { Controller, FlyToInterpolator }  from 'deck.gl';
 import { IconLayer } from '@deck.gl/layers';
 import { Position } from '@deck.gl/core/utils/positions';
+import { PickInfo } from '@deck.gl/core/lib/deck';
 
-import {
-    ProjectMapSidebar, ProjectMapSidebarProps } from './project-map-sidebar';
+import { ProjectMapSidebar } from './project-map-sidebar';
 import { LayerProps } from './layer';
 
-const authedFetch = (url: string, method: string, data: any) => {
-    let csrf = (document.getElementById('csrf-token') as any).getAttribute('content');
+// TODO: fix types
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+const authedFetch = (url: string, method: string, data: any): Promise<any> => {
+    const csrf = (document.getElementById(
+        'csrf-token') as HTMLElement).getAttribute('content') || '';
     return fetch(url,{
         method: method,
         headers: {
@@ -44,7 +48,7 @@ export interface LayerEventDatum {
         point: string;
         polygon: string;
         lng_lat: Position;
-    }
+    };
 }
 
 export interface LayerEventData {
@@ -53,16 +57,16 @@ export interface LayerEventData {
 }
 
 interface ViewportState {
-    latitude: number,
-    longitude: number,
-    zoom: number,
-    bearing: number,
-    pitch: number,
-    transitionDuration?: number,
-    transitionInterpolator?: FlyToInterpolator,
+    latitude: number;
+    longitude: number;
+    zoom: number;
+    bearing: number;
+    pitch: number;
+    transitionDuration?: number;
+    transitionInterpolator?: FlyToInterpolator;
 }
 
-export const ProjectMap = () => {
+export const ProjectMap: React.FC = () => {
     const [viewportState, setViewportState] = useState<ViewportState>({
         latitude: 40.8075395,
         longitude: -73.9647614,
@@ -71,69 +75,94 @@ export const ProjectMap = () => {
         pitch: 40.5
     });
 
-    const mapContainer: any = document.querySelector('#project-map-container');
-    const BASEMAP_STYLE = mapContainer.dataset.basemap;
-    const TOKEN = mapContainer.dataset.maptoken;
+    const mapContainer: HTMLElement | null =
+        document.querySelector('#project-map-container');
+    const BASEMAP_STYLE =
+        mapContainer ? mapContainer.dataset.basemap : 'basemap-style';
+    const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
     const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
-    const [activeEvent, setActiveEvent] = useState<number | null>(null);
+    const [ activeEvent, setActiveEvent] =
+        useState<LayerEventDatum | null>(null);
+    const [ activeEventDetail, setActiveEventDetail ] =
+        useState<LayerEventDatum | null>(null);
+    const [activeEventEdit, setActiveEventEdit] =
+        useState<LayerEventDatum | null>(null);
 
-    // Data structure to hold events, keyed by event PK
+    // Data structure to hold events, keyed by layer PK
     const [eventData, setEventData] =
         useState<Map<number, LayerEventData>>(new Map());
-    const [mapboxLayers, setMapboxLayers] = useState<any[]>([]);
+    const [mapboxLayers, setMapboxLayers] =
+        useState<IconLayer<LayerEventDatum>[]>([]);
 
     const [layerTitleCount, setLayerTitleCount] = useState<number>(1);
 
     const [showAddEventForm, setShowAddEventForm] = useState<boolean>(false);
     const [activePosition, setActivePosition] = useState<Position | null>(null);
 
-    useEffect(() => {
-        let getData = async() => {
-            // Fetch the Project data
-            let projectResponse = await fetch(`/api/project/${projectPk}/`);
-            if (!projectResponse.ok) {
-                throw new Error('Project data not loaded');
-            }
-            let projectData = await projectResponse.json();
-            setProjectInfo(projectData);
+    const ICON_ATLAS = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png';
+    const ICON_MAPPING = {
+        marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
+    };
 
-            // Fetch the layers
-            let layersRsps = await Promise.all(
-                projectData.layers.map((layer: string) => {
-                    return fetch(layer);
-                })
-            );
-            let layers = await Promise.all(
-                layersRsps.map((response: any) => { return response.json(); })
-            );
+    const clearActivePosition = (): void => {
+        setActivePosition(null);
+        setMapboxLayers((prev) => {
+            return prev.filter((el) => {
+                return el.id !== 'active-position';
+            });
+        });
+    };
 
-            // Create an empty layer if none exist, otherwise
-            // unpack the event data
-            if (layers.length === 0) {
-                addLayer();
-                setLayerTitleCount((prev) => {return prev + 1;});
-            } else {
-                setLayerData(layers);
-                setActiveLayer(layers[0].pk);
+    const pickEventClickHandler = (
+        info: PickInfo<LayerEventDatum>): boolean => {
+        // Clear the 'Add Event Form' and 'Add Event Pin'
+        setShowAddEventForm(false);
+        clearActivePosition();
 
-                let events = layers.reduce((acc, val) => {
-                    acc.set(val.pk, {visibility: true, events: val.event_set});
+        // Set the active event
+        setActiveEvent(info.object as LayerEventDatum);
+
+        // Returning true prevents event from bubling to map canvas
+        return true;
+    };
+
+    const updateEventData = (events: Map<number, LayerEventData>): void => {
+        const mapLayers = [...events.keys()].reduce(
+            (acc: IconLayer<LayerEventDatum>[], val: number) => {
+                const data = events.get(val);
+                if (data && data.visibility) {
+                    const layer = new IconLayer({
+                        id: 'icon-layer-' + val,
+                        data: data.events,
+                        pickable: true,
+                        iconAtlas: ICON_ATLAS,
+                        iconMapping: ICON_MAPPING,
+                        getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
+                        sizeScale: 15,
+                        getPosition: (d): Position => d.location.lng_lat,
+                        onClick: pickEventClickHandler,
+                        getSize: 5,
+                        getColor: [255, 0, 0],
+                    });
+                    return [...acc, layer];
+                } else {
                     return acc;
-                }, new Map());
-                updateEventData(events);
-            }
-        };
+                }
+            },
+            []);
 
-        getData();
-    }, []);
+        setEventData(events);
+        setMapboxLayers(mapLayers);
+    };
 
-    const addLayer = () => {
+    const addLayer = (): void => {
         authedFetch('/api/layer/', 'POST', JSON.stringify(
-            {title: `Layer ${layerTitleCount}`, content_object: `/api/project/${projectPk}/`}))
+            {title: `Layer ${layerTitleCount}`,
+                content_object: `/api/project/${projectPk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
             .then((response) => {
                 if (response.status === 201) {
                     return response.json();
@@ -148,19 +177,19 @@ export const ProjectMap = () => {
             });
     };
 
-    const deleteLayer = (pk: number) => {
+    const deleteLayer = (pk: number): void => {
         authedFetch(`/api/layer/${pk}/`, 'DELETE', JSON.stringify({pk: pk}))
             .then((response) => {
                 if (response.status !== 204) {
                     throw 'Layer deletion failed.';
                 } else {
-                    let updatedLayerData = layerData.filter((el) => {
+                    const updatedLayerData = layerData.filter((el) => {
                         return el.pk !== pk;
                     });
                     setLayerData(updatedLayerData);
 
                     // remove from eventData and mapboxLayers
-                    let updatedEventData = new Map(eventData);
+                    const updatedEventData = new Map(eventData);
                     updatedEventData.delete(pk);
                     updateEventData(updatedEventData);
 
@@ -169,7 +198,7 @@ export const ProjectMap = () => {
                         // is called here instead
                         authedFetch('/api/layer/', 'POST', JSON.stringify(
                             {title: `Layer ${layerTitleCount}`,
-                                content_object: `/api/project/${projectPk}/`}))
+                                content_object: `/api/project/${projectPk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
                             .then((response) => {
                                 if (response.status === 201) {
                                     return response.json();
@@ -188,9 +217,9 @@ export const ProjectMap = () => {
             });
     };
 
-    const updateLayer = (pk: number, title: string) => {
+    const updateLayer = (pk: number, title: string): void => {
         authedFetch(`/api/layer/${pk}/`, 'PUT', JSON.stringify(
-            {title: title, content_object: `/api/project/${projectPk}/`}))
+            {title: title, content_object: `/api/project/${projectPk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
             .then((response) => {
                 if (response.status === 200) {
                     return response.json();
@@ -199,16 +228,16 @@ export const ProjectMap = () => {
                 }
             })
             .then((data) => {
-                let layer = layerData.filter((el) => {
+                const layer = layerData.filter((el) => {
                     return el.pk !== pk;
                 });
                 setLayerData([...layer, data]);
             });
     };
 
-    const setLayerVisibility = (pk: number) => {
-        let updatedEvents = new Map(eventData);
-        let layerEvents = updatedEvents.get(pk);
+    const setLayerVisibility = (pk: number): void => {
+        const updatedEvents = new Map(eventData);
+        const layerEvents = updatedEvents.get(pk);
 
         if (layerEvents) {
             updatedEvents.set(pk, {
@@ -220,8 +249,23 @@ export const ProjectMap = () => {
         }
     };
 
-    const addEvent = (label: string, lat: number, lng: number) => {
-        let data = {
+    const goToNewEvent = useCallback(() => {
+        if (activePosition) {
+            setViewportState({
+                latitude: activePosition[0],
+                longitude: activePosition[1],
+                zoom: 12,
+                bearing: 0,
+                pitch: 40.5,
+                transitionDuration: 1000,
+                transitionInterpolator: new FlyToInterpolator()
+            });
+        }
+    }, [activePosition]);
+
+    const addEvent = (
+        label: string, description: string, lat: number, lng: number): void => {
+        const data = {
             label: label,
             layer: activeLayer,
             description: '',
@@ -241,8 +285,9 @@ export const ProjectMap = () => {
             })
             .then((data: LayerEventDatum) => {
                 if (activeLayer) {
-                    let updatedEvents = new Map(eventData);
-                    let layerEvents: LayerEventData = updatedEvents.get(activeLayer) || {visibility: true, events: []};
+                    const updatedEvents = new Map(eventData);
+                    const layerEvents: LayerEventData =
+                        updatedEvents.get(activeLayer) || {visibility: true, events: []}; // eslint-disable-line max-len
 
                     updatedEvents.set(activeLayer, {
                         visibility: layerEvents.visibility,
@@ -250,47 +295,83 @@ export const ProjectMap = () => {
                     });
 
                     updateEventData(updatedEvents);
-                    setActiveEvent(data.pk);
+                    setActiveEvent(data);
                     goToNewEvent();
                 }
             });
     };
 
-    const updateEventData = (events: Map<number, LayerEventData>) => {
-        let mapLayers = [...events.keys()].reduce(
-            (acc: IconLayer<LayerEventDatum>[], val: number) => {
-                let data = events.get(val);
-                if (data && data.visibility) {
-                    let layer = new IconLayer({
-                        id: 'icon-layer-' + val,
-                        data: data.events,
-                        pickable: true,
-                        iconAtlas: ICON_ATLAS,
-                        iconMapping: ICON_MAPPING,
-                        getIcon: d => 'marker',
-                        sizeScale: 15,
-                        getPosition: (d) => d.location.lng_lat,
-                        getSize: 5,
-                        getColor: [255, 0, 0],
-                    });
-                    return [...acc, layer];
+    const updateEvent = (
+        label: string, description: string, lat: number, lng: number,
+        pk: number, layerPk: number): void => {
+        const obj = {
+            label: label,
+            description: description,
+            layer: layerPk,
+            location: {
+                point: {lat: lat, lng: lng},
+                polygon: null
+            }
+        };
+        authedFetch(`/api/event/${pk}/`, 'PUT', JSON.stringify(obj))
+            .then((response) => {
+                if (response.status === 200) {
+                    return response.json();
                 } else {
-                    return acc;
+                    throw 'Event update failed.';
                 }
-            },
-            []);
-
-        setEventData(events);
-        setMapboxLayers(mapLayers);
+            })
+            .then((data: LayerEventDatum) => {
+                // Revomve the event from eventData and mapboxLayers
+                const updatedEventData = new Map(eventData);
+                const layerEventObj = updatedEventData.get(layerPk);
+                if (layerEventObj && layerEventObj.events) {
+                    updatedEventData.set(layerPk, {
+                        visibility: layerEventObj.visibility,
+                        events: layerEventObj.events.map((el) => {
+                            return el.pk !== data.pk ? el : data;
+                        })
+                    });
+                }
+                updateEventData(updatedEventData);
+                // Update the data for the active event
+                setActiveEventDetail(data);
+                setActiveEvent(data);
+            });
     };
 
-    const ICON_ATLAS = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png';
-    const ICON_MAPPING = {
-        marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
+    const deleteEvent = (pk: number, layerPk: number): void => {
+        authedFetch(`/api/event/${pk}/`, 'DELETE', JSON.stringify({pk: pk}))
+            .then((response) => {
+                if (response.status !== 204) {
+                    throw 'Event deletion failed.';
+                } else {
+                    // Remove the event from eventData and mapboxLayers
+                    const updatedEventData = new Map(eventData);
+                    const layerEventObj = updatedEventData.get(layerPk);
+                    if (layerEventObj && layerEventObj.events) {
+                        updatedEventData.set(layerPk, {
+                            visibility: layerEventObj.visibility,
+                            events: layerEventObj.events.filter((el) => {
+                                return el.pk !== pk; })
+                        });
+                    }
+                    setActiveEvent(null);
+                    updateEventData(updatedEventData);
+                }
+            });
     };
 
-    const handleDeckGlClick = (info: any, event: any) => {
+    // TODO: figure out how to type this
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const handleDeckGlClick = (info: any, event: any): void => {
+        // Create on single click, make sure that new event
+        // is not created when user intends to pick an existing event
         if (event.tapCount === 1) {
+            // Clear the active event
+            setActiveEvent(null);
+            setActiveEventDetail(null);
+            setActiveEventEdit(null);
             setShowAddEventForm(true);
             setActivePosition([info.lngLat[1], info.lngLat[0]]);
             let updatedLayers = mapboxLayers.filter((el) => {
@@ -303,9 +384,9 @@ export const ProjectMap = () => {
                 pickable: true,
                 iconAtlas: ICON_ATLAS,
                 iconMapping: ICON_MAPPING,
-                getIcon: d => 'marker',
+                getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
                 sizeScale: 15,
-                getPosition: d => d.position,
+                getPosition: (d): Position => d.position,
                 getSize: 5,
                 getColor: [0, 0, 255],
             }));
@@ -313,26 +394,47 @@ export const ProjectMap = () => {
         }
     };
 
-    const clearActivePosition = () => {
-        setActivePosition(null);
-        setMapboxLayers(mapboxLayers.filter((el) => {
-            return el.id !== 'active-position';
-        }));
-    };
+    useEffect(() => {
+        const getData = async(): Promise<void> => {
+            // Fetch the Project data
+            const projectResponse = await fetch(`/api/project/${projectPk}/`);
+            if (!projectResponse.ok) {
+                throw new Error('Project data not loaded');
+            }
+            const projectData = await projectResponse.json();
+            setProjectInfo(projectData);
 
-    const goToNewEvent = useCallback(() => {
-        if (activePosition) {
-            setViewportState({
-                latitude: activePosition[0],
-                longitude: activePosition[1],
-                zoom: 12,
-                bearing: 0,
-                pitch: 40.5,
-                transitionDuration: 1000,
-                transitionInterpolator: new FlyToInterpolator()
-            });
-        }
-    }, [activePosition]);
+            // Fetch the layers
+            const layersRsps = await Promise.all(
+                projectData.layers.map((layer: string) => {
+                    return fetch(layer);
+                })
+            );
+
+            // TODO: fix type
+            const layers = await Promise.all(
+                layersRsps.map((response: any) => { return response.json(); }) // eslint-disable-line @typescript-eslint/no-explicit-any, max-len
+            );
+
+            // Create an empty layer if none exist, otherwise
+            // unpack the event data
+            if (layers.length === 0) {
+                addLayer();
+                setLayerTitleCount((prev) => {return prev + 1;});
+            } else {
+                setLayerData(layers);
+                setActiveLayer(layers[0].pk);
+
+                const events = layers.reduce((acc, val) => {
+                    acc.set(val.pk, {visibility: true, events: val.event_set});
+                    return acc;
+                }, new Map());
+                updateEventData(events);
+            }
+        };
+
+        getData();
+    }, []);
 
     return (
         <>
@@ -341,8 +443,10 @@ export const ProjectMap = () => {
                 initialViewState={viewportState}
                 width={'100%'}
                 height={'100%'}
-                controller={{doubleClickZoom: false} as any}
-                onClick={handleDeckGlClick}>
+                controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
+                onClick={handleDeckGlClick}
+                pickingRadius={15}
+                ContextProvider={MapContext.Provider}>
                 <StaticMap
                     reuseMaps
                     width={'100%'}
@@ -350,7 +454,22 @@ export const ProjectMap = () => {
                     preventStyleDiffing={true}
                     mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
                     mapboxApiAccessToken={TOKEN} />
+                {activeEvent && (
+                    <Popup
+                        latitude={activeEvent.location.lng_lat[1]}
+                        longitude={activeEvent.location.lng_lat[0]}
+                        closeOnClick={false}
+                        onClose={(): void => {setActiveEvent(null);}}>
+                        <div>{activeEvent.label}</div>
+                        <div><p>{activeEvent.description}</p></div>
+                        <button onClick={
+                            (): void => {setActiveEventDetail(activeEvent);}}>
+                            More
+                        </button>
+                    </Popup>
+                )}
                 <div id='map-navigation-control'>
+                    <NavigationControl />
                 </div>
             </DeckGL>
             {projectInfo && (
@@ -371,7 +490,13 @@ export const ProjectMap = () => {
                     clearActivePosition={clearActivePosition}
                     activeEvent={activeEvent}
                     setActiveEvent={setActiveEvent}
-                    addEvent={addEvent}/>
+                    activeEventDetail={activeEventDetail}
+                    setActiveEventDetail={setActiveEventDetail}
+                    activeEventEdit={activeEventEdit}
+                    setActiveEventEdit={setActiveEventEdit}
+                    addEvent={addEvent}
+                    deleteEvent={deleteEvent}
+                    updateEvent={updateEvent}/>
             )}
         </>
     );
