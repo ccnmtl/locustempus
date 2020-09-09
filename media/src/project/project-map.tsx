@@ -30,13 +30,6 @@ const authedFetch = (url: string, method: string, data: any): Promise<any> => {
     });
 };
 
-interface ProjectInfo {
-    title: string;
-    description: string;
-    base_map: string;
-    layers: LayerProps[];
-}
-
 export interface LayerEventDatum {
     lngLat: Position;
     label: string;
@@ -66,6 +59,19 @@ interface ViewportState {
     transitionInterpolator?: FlyToInterpolator;
 }
 
+export const BASE_MAPS = new Map([
+    ['streets-v11', 'Street'],
+    ['outdoors-v11', 'Outdoors'],
+    ['light-v10', 'Light'],
+    ['dark-v10', 'Dark'],
+    ['satellite-v9', 'Satellite'],
+    ['satellite-streets-v11', 'Street - Satellite'],
+    ['navigation-preview-day-v4', 'Navigation - Day'],
+    ['navigation-preview-night-v4', 'Navigation - Night'],
+    ['navigation-guidance-day-v4', 'Navigation/Guidance - Day'],
+    ['navigation-guidance-night-v4', 'Navigation/Guidance - Night']
+]);
+
 export const ProjectMap: React.FC = () => {
     const [viewportState, setViewportState] = useState<ViewportState>({
         latitude: 40.8075395,
@@ -77,12 +83,13 @@ export const ProjectMap: React.FC = () => {
 
     const mapContainer: HTMLElement | null =
         document.querySelector('#project-map-container');
-    const BASEMAP_STYLE =
-        mapContainer ? mapContainer.dataset.basemap : 'basemap-style';
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
-    const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
+    const [projectTitle, setProjectTitle] = useState<string | null>(null);
+    const [projectDescription, setProjectDescription] =
+        useState<string | null>(null);
+    const [projectBaseMap, setProjectBaseMap] = useState<string | null>(null);
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
     const [ activeEvent, setActiveEvent] =
@@ -402,7 +409,9 @@ export const ProjectMap: React.FC = () => {
                 throw new Error('Project data not loaded');
             }
             const projectData = await projectResponse.json();
-            setProjectInfo(projectData);
+            setProjectTitle(projectData.title);
+            setProjectDescription(projectData.description);
+            setProjectBaseMap(projectData.base_map);
 
             // Fetch the layers
             const layersRsps = await Promise.all(
@@ -452,7 +461,7 @@ export const ProjectMap: React.FC = () => {
                     width={'100%'}
                     height={'100%'}
                     preventStyleDiffing={true}
-                    mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
+                    mapStyle={'mapbox://styles/mapbox/' + projectBaseMap}
                     mapboxApiAccessToken={TOKEN} />
                 {activeEvent && (
                     <Popup
@@ -472,10 +481,12 @@ export const ProjectMap: React.FC = () => {
                     <NavigationControl />
                 </div>
             </DeckGL>
-            {projectInfo && (
+            {projectTitle && (
                 <ProjectMapSidebar
-                    title={projectInfo.title}
-                    description={projectInfo.description}
+                    title={projectTitle || 'Untitled'}
+                    description={projectDescription || ''}
+                    baseMap={projectBaseMap || ''}
+                    setBaseMap={setProjectBaseMap}
                     layers={layerData}
                     events={eventData}
                     activeLayer={activeLayer}

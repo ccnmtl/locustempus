@@ -1,11 +1,142 @@
 import React, { useState } from 'react';
 import { Layer, LayerProps } from './layer';
-import { LayerEventData, LayerEventDatum } from './project-map';
+import { LayerEventData, LayerEventDatum, BASE_MAPS } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faLayerGroup, faArrowLeft, faEllipsisV
+    faLayerGroup, faArrowLeft, faEllipsisV, faAngleRight, faAngleDown
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
+
+
+interface ProjectEditPanelProps {
+    projectTitle: string;
+    projectDescription: string;
+    projectBaseMap: string;
+    setBaseMap(baseMap: string): void;
+}
+
+export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = (
+    {
+        projectTitle, projectDescription, projectBaseMap, setBaseMap
+    }: ProjectEditPanelProps) => {
+
+    const [title, setTitle] = useState<string>(projectTitle);
+    const [description, setDescription] = useState<string>(projectDescription);
+    const [showBaseMapMenu, setShowBaseMapMenu] = useState<boolean>(false);
+
+    const handleTitle = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        setTitle(e.target.value);
+    };
+
+    const handleDescription = (
+        e: React.ChangeEvent<HTMLTextAreaElement>): void => {
+        setDescription(e.target.value);
+    };
+
+    const handleBaseMap = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        setBaseMap(e.target.value);
+    };
+
+    const toggleBaseMapMenu = (e: React.MouseEvent): void => {
+        e.preventDefault();
+        setShowBaseMapMenu((prev) => {return !prev;});
+    };
+
+    const handleFormSubmbit = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.stopPropagation();
+    };
+
+    const handleCancel = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        // TODO
+    };
+
+    return (
+        <div>
+            <h4>Edit Project</h4>
+            <form onSubmit={handleFormSubmbit} >
+                <div className={'form-group'}>
+                    <label htmlFor={'event-form__name'}>Title</label>
+                    <input
+                        type={'text'}
+                        id={'event-form__name'}
+                        className={'form-control'}
+                        value={title}
+                        autoFocus={true}
+                        onChange={handleTitle}/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor={'event-form__description'}>
+                        Description
+                    </label>
+                    <textarea
+                        id={'event-form__description'}
+                        className={'form-control'}
+                        value={description}
+                        rows={3}
+                        onChange={handleDescription}>
+                    </textarea>
+                </div>
+                { showBaseMapMenu ? (
+                    <div>
+                        <div onClick={toggleBaseMapMenu}>
+                            <FontAwesomeIcon icon={faAngleDown}/>
+                                Base Map: {BASE_MAPS.get(projectBaseMap)}
+                        </div>
+                        <fieldset className="form-group">
+                            <div className="row">
+                                <div className="col">
+                                    {[...BASE_MAPS.keys()].map((val, idx) => {
+                                        return (
+                                            <div className="form-check"
+                                                key={idx}>
+                                                <input
+                                                    className={
+                                                        'form-check-input'}
+                                                    type={'radio'}
+                                                    id={'base-map-' + idx}
+                                                    value={val}
+                                                    onChange={handleBaseMap}
+                                                    checked={
+                                                        val === projectBaseMap}
+                                                />
+                                                <label
+                                                    htmlFor={'base-map-' + idx}>
+                                                    {BASE_MAPS.get(val)}
+                                                </label>
+                                            </div>
+                                        );})
+                                    }
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                ) : (
+                    <div onClick={toggleBaseMapMenu}>
+                        <div>
+                            <FontAwesomeIcon
+                                icon={faAngleRight}/> Base Map: {projectBaseMap}
+                        </div>
+                    </div>
+                ) }
+                <div className="form-row">
+                    <div className={'form-group col-3'}>
+                    </div>
+                    <div className={'form-group col-9'}>
+                        <button
+                            type={'button'}
+                            onClick={handleCancel} className={'btn btn-danger'}>
+                            Cancel
+                        </button>
+                        <button type={'submit'} className={'btn btn-primary'}>
+                            Save
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    );
+};
 
 
 interface EventEditPanelProps {
