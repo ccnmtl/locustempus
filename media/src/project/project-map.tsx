@@ -509,12 +509,15 @@ export const ProjectMap: React.FC = () => {
                             closeOnClick={false}
                             onClose={(): void => {setActiveEvent(null);}}>
                             <div>{activeEvent.label}</div>
-                            <div><p>{activeEvent.description}</p></div>
-                            <button onClick={
-                                (): void => {
-                                    setActiveEventDetail(activeEvent);}}>
-                                More
-                            </button>
+                            <div dangerouslySetInnerHTML={
+                                {__html: activeEvent.description}}/>
+                            {!activeEventDetail && (
+                                <button onClick={
+                                    (): void => {
+                                        setActiveEventDetail(activeEvent);}}>
+                                    More
+                                </button>
+                            )}
                         </Popup>
                     )}
                     <div id='map-navigation-control'>

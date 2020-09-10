@@ -6,6 +6,7 @@ import {
     faLayerGroup, faArrowLeft, faEllipsisV, faAngleRight, faAngleDown
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
+import ReactQuill from 'react-quill';
 
 
 interface ProjectCreateEditPanelProps {
@@ -36,11 +37,6 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
 
     const handleTitle = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setTitle(e.target.value);
-    };
-
-    const handleDescription = (
-        e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-        setDescription(e.target.value);
     };
 
     const handleBaseMap = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -87,13 +83,9 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                     <label htmlFor={'event-form__description'}>
                         Description
                     </label>
-                    <textarea
-                        id={'event-form__description'}
-                        className={'form-control'}
+                    <ReactQuill
                         value={description}
-                        rows={3}
-                        onChange={handleDescription}>
-                    </textarea>
+                        onChange={setDescription}/>
                 </div>
                 { showBaseMapMenu ? (
                     <div>
@@ -204,11 +196,6 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
         setEventName(e.target.value);
     };
 
-    const handleDescription = (
-        e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-        setDescription(e.target.value);
-    };
-
     const handleDatetime = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setDatetime(e.target.value);
     };
@@ -251,12 +238,9 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                         </label>
                     </div>
                     <div className={'form-group col-9'}>
-                        <textarea
-                            id={'event-form__description'}
+                        <ReactQuill
                             value={description}
-                            rows={3}
-                            onChange={handleDescription}>
-                        </textarea>
+                            onChange={setDescription}/>
                     </div>
                 </div>
                 <div className="form-row">
@@ -315,11 +299,6 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
         setEventName(e.target.value);
     };
 
-    const handleDescription = (
-        e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-        setDescription(e.target.value);
-    };
-
     const handleDatetime = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setDatetime(e.target.value);
     };
@@ -367,12 +346,9 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                         </label>
                     </div>
                     <div className={'form-group col-9'}>
-                        <textarea
-                            id={'event-form__description'}
+                        <ReactQuill
                             value={description}
-                            rows={3}
-                            onChange={handleDescription}>
-                        </textarea>
+                            onChange={setDescription}/>
                     </div>
                 </div>
                 <div className="form-row">
@@ -469,7 +445,10 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 </div>
             )}
             <h3>{activeEventDetail && activeEventDetail.label}</h3>
-            <p>{activeEventDetail && activeEventDetail.description}</p>
+            {activeEventDetail && (
+                <div dangerouslySetInnerHTML={
+                    {__html: activeEventDetail.description}}/>
+            )}
         </div>
     );
 };
@@ -531,7 +510,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 </ul>
             </div>
             {activeTab === 0 && (
-                <p>{description}</p>
+                <div dangerouslySetInnerHTML={{__html: description}}/>
             )}
             {activeTab === 1 && (
                 <>
