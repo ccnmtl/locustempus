@@ -84,8 +84,11 @@ export const ProjectMap: React.FC = () => {
     const mapContainer: HTMLElement | null =
         document.querySelector('#project-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
+    const isNewProject = mapContainer ?
+        mapContainer.dataset.newproject === 'True': false;
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
+    const coursePk = pathList[pathList.length - 4];
     const [projectTitle, setProjectTitle] = useState<string | null>(null);
     const [projectDescription, setProjectDescription] =
         useState<string | null>(null);
@@ -166,7 +169,8 @@ export const ProjectMap: React.FC = () => {
         setMapboxLayers(mapLayers);
     };
 
-    const updateProject = (title: string, description: string, baseMap: string): void => {
+    const updateProject = (
+        title: string, description: string, baseMap: string): void => {
         authedFetch(`/api/project/${projectPk}/`, 'PUT', JSON.stringify(
             {title: title, description: description, base_map: baseMap})) // eslint-disable-line @typescript-eslint/camelcase, max-len
             .then((response) => {
@@ -176,11 +180,28 @@ export const ProjectMap: React.FC = () => {
                     throw 'Project update failed.';
                 }
             })
-            .then((data) => {
+            .then(() => {
                 setProjectTitle(title);
                 setProjectDescription(description);
                 setProjectBaseMap(baseMap);
             });
+    };
+
+    const deleteProject = (): void => {
+        const csrf = (document.getElementById(
+            'csrf-token') as HTMLElement).getAttribute('content') || '';
+        const form = document.createElement('form');
+        form.style.visibility = 'hidden';
+        form.method = 'POST';
+        form.action = `/course/${coursePk}/project/${projectPk}/delete/`;
+
+        const csrfField = document.createElement('input');
+        csrfField.name = 'csrfmiddlewaretoken';
+        csrfField.value = csrf;
+        form.appendChild(csrfField);
+        document.body.appendChild(form);
+
+        form.submit();
     };
 
     const addLayer = (): void => {
@@ -490,7 +511,8 @@ export const ProjectMap: React.FC = () => {
                             <div>{activeEvent.label}</div>
                             <div><p>{activeEvent.description}</p></div>
                             <button onClick={
-                                (): void => {setActiveEventDetail(activeEvent);}}>
+                                (): void => {
+                                    setActiveEventDetail(activeEvent);}}>
                                 More
                             </button>
                         </Popup>
@@ -506,7 +528,9 @@ export const ProjectMap: React.FC = () => {
                     description={projectDescription || ''}
                     baseMap={projectBaseMap || ''}
                     setBaseMap={setProjectBaseMap}
+                    isNewProject={isNewProject}
                     updateProject={updateProject}
+                    deleteProject={deleteProject}
                     layers={layerData}
                     events={eventData}
                     activeLayer={activeLayer}

@@ -41,52 +41,6 @@ class ProjectTest(CourseTestMixin, TestCase):
             reverse('course-project-create', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 403)
 
-    def test_update_project_faculty(self):
-        """Test that faculty can update projects"""
-        project = ProjectFactory.create(course=self.sandbox_course)
-        self.assertTrue(
-            self.client.login(
-                username=self.faculty.username,
-                password='test'
-            )
-        )
-        response = self.client.post(
-            reverse(
-                'course-project-edit',
-                args=[self.sandbox_course.pk, project.pk]),
-            {
-                'title': 'A Test Project',
-                'description': 'A fine description',
-                'base_map': 'dark-v10'
-            }
-        )
-        self.assertEqual(response.status_code, 302)
-        self.assertEqual(
-            response.url,
-            "/course/{}/project/{}/".format(
-                self.sandbox_course.pk, project.pk))
-
-    def test_update_project_students(self):
-        """Test that students can not update projects"""
-        project = ProjectFactory.create(course=self.sandbox_course)
-        self.assertTrue(
-            self.client.login(
-                username=self.student.username,
-                password='test'
-            )
-        )
-        response = self.client.post(
-            reverse(
-                'course-project-edit',
-                args=[self.sandbox_course.pk, project.pk]),
-            {
-                'title': 'A Test Project',
-                'description': 'A fine description',
-                'base_map': 'dark-v10'
-            }
-        )
-        self.assertEqual(response.status_code, 403)
-
     def test_delete_project_faculty(self):
         """Test that faculty can delete projects"""
         project = ProjectFactory.create(course=self.sandbox_course)

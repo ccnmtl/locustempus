@@ -572,72 +572,40 @@ class ProjectView(LoggedInCourseMixin, View):
         project: Any = get_object_or_404(
             Project.objects.filter(course=course.pk),
             pk=kwargs.get('project_pk', None))
+
+        new_project = False
+        if request.session.get('new_project'):
+            del request.session['new_project']
+            new_project = True
+
         ctx = {
             'course': course,
             'project': project,
             'token': getattr(settings, 'MAPBOX_TOKEN', '123abc'),
             'is_faculty': course.is_true_faculty(request.user),
-            'page_type': 'project'
+            'page_type': 'project',
+            'is_new_project': new_project
         }
         return render(request, self.template_name, ctx)
 
 
-class ProjectCreateView(LoggedInFacultyMixin, CreateView):
-    model = Project
-    fields = ['title', 'description', 'base_map']
-    template_name = 'main/course_project_create.html'
+class ProjectCreateView(LoggedInFacultyMixin, View):
+    def post(self, request, *args, **kwargs):
+        course = get_object_or_404(Course, pk=kwargs.get('pk', None))
+        project = Project.objects.create(course=course)
+        request.session['new_project'] = True
 
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['page_type'] = 'project'
-        return ctx
-
-    def get_success_url(self):
-        messages.add_message(
-            self.request, messages.SUCCESS,
-            '<strong>{}</strong> has been created.'.format(self.object.title)
-        )
-        return reverse(
+        return HttpResponseRedirect(reverse(
             'course-project-detail',
             kwargs={
-                'pk': self.kwargs.get('pk'),
-                'project_pk': self.object.pk
-            })
-
-    def form_valid(self, form):
-        course = get_object_or_404(
-            Course, pk=self.kwargs.get('pk'))
-        form.instance.course = course
-        return super().form_valid(form)
-
-
-class ProjectUpdateView(LoggedInFacultyMixin, UpdateView):
-    model = Project
-    fields = ['title', 'description', 'base_map']
-    template_name = 'main/course_project_edit.html'
-    pk_url_kwarg = 'project_pk'
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['page_type'] = 'project'
-        return ctx
-
-    def get_success_url(self):
-        messages.add_message(
-            self.request, messages.SUCCESS,
-            '<strong>{}</strong> has been updated.'.format(self.object.title)
-        )
-        return reverse(
-            'course-project-detail',
-            kwargs={
-                'pk': self.kwargs.get('pk'),
-                'project_pk': self.kwargs.get('project_pk'),
-            })
+                'pk': course.pk,
+                'project_pk': project.pk
+            }))
 
 
 class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
     model = Project
-    template_name = 'main/course_project_delete.html'
+    http_method_names = ['post']
     pk_url_kwarg = 'project_pk'
 
     def get_context_data(self, **kwargs):

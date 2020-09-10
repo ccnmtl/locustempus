@@ -8,20 +8,22 @@ import {
 import { Position } from '@deck.gl/core/utils/positions';
 
 
-interface ProjectEditPanelProps {
+interface ProjectCreateEditPanelProps {
+    isNewProject: boolean;
     projectTitle: string;
     projectDescription: string;
     projectBaseMap: string;
     setBaseMap(baseMap: string): void;
     updateProject(title: string, description: string, baseMap: string): void;
     setShowProjectEditPanel(show: boolean): void;
+    deleteProject(): void;
 }
 
-export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = (
+export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
     {
-        projectTitle, projectDescription, projectBaseMap, setBaseMap,
-        updateProject, setShowProjectEditPanel
-    }: ProjectEditPanelProps) => {
+        isNewProject, projectTitle, projectDescription, projectBaseMap,
+        setBaseMap, updateProject, setShowProjectEditPanel, deleteProject
+    }: ProjectCreateEditPanelProps) => {
 
     const [title, setTitle] = useState<string>(projectTitle);
     const [description, setDescription] = useState<string>(projectDescription);
@@ -61,9 +63,15 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = (
         setShowProjectEditPanel(false);
     };
 
+    const handleNewProjectCancel = (
+        e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        deleteProject();
+    };
+
     return (
         <div>
-            <h4>Edit Project</h4>
+            <h4>{isNewProject ? 'Create Project' : 'Edit Project'}</h4>
             <form onSubmit={handleFormSubmbit} >
                 <div className={'form-group'}>
                     <label htmlFor={'event-form__name'}>Title</label>
@@ -133,14 +141,35 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = (
                     <div className={'form-group col-3'}>
                     </div>
                     <div className={'form-group col-9'}>
-                        <button
-                            type={'button'}
-                            onClick={handleCancel} className={'btn btn-danger'}>
-                            Cancel
-                        </button>
-                        <button type={'submit'} className={'btn btn-primary'}>
-                            Save
-                        </button>
+                        {isNewProject ? (
+                            <>
+                                <button
+                                    type={'button'}
+                                    onClick={handleNewProjectCancel}
+                                    className={'btn btn-danger'}>
+                                    Cancel
+                                </button>
+                                <button
+                                    type={'submit'}
+                                    className={'btn btn-primary'}>
+                                    Create project
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    type={'button'}
+                                    onClick={handleCancel}
+                                    className={'btn btn-danger'}>
+                                    Cancel
+                                </button>
+                                <button
+                                    type={'submit'}
+                                    className={'btn btn-primary'}>
+                                    Save
+                                </button>
+                            </>
+                        )}
                     </div>
                 </div>
             </form>

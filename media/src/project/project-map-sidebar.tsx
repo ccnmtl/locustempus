@@ -4,7 +4,7 @@ import { LayerEventData, LayerEventDatum } from './project-map';
 import { Position } from '@deck.gl/core/utils/positions';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
-    ProjectEditPanel
+    ProjectCreateEditPanel
 } from './project-map-sidebar-panels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
@@ -14,7 +14,9 @@ export interface ProjectMapSidebarProps {
     description: string;
     baseMap: string;
     setBaseMap(baseMap: string): void;
+    isNewProject: boolean;
     updateProject(title: string, description: string, baseMap: string): void;
+    deleteProject(): void;
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
     activeLayer: number | null;
@@ -42,17 +44,18 @@ export interface ProjectMapSidebarProps {
 
 export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
     {
-        title, description, baseMap, setBaseMap, updateProject, layers, events,
-        activeLayer, setActiveLayer, addLayer, deleteLayer, updateLayer,
-        setLayerVisibility, showAddEventForm, setShowAddEventForm,
-        activePosition, addEvent, clearActivePosition, activeEvent,
-        setActiveEvent, activeEventDetail, setActiveEventDetail,
+        title, description, baseMap, setBaseMap, isNewProject, updateProject,
+        deleteProject, layers, events, activeLayer, setActiveLayer, addLayer,
+        deleteLayer, updateLayer, setLayerVisibility, showAddEventForm,
+        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
+        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
         activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent
     }: ProjectMapSidebarProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
     const [showProjectMenu, setShowProjectMenu] = useState<boolean>(false);
-    const [showProjectEditPanel, setShowProjectEditPanel] = useState<boolean>(false);
+    const [showProjectEditPanel, setShowProjectEditPanel] =
+        useState<boolean>(false);
 
     const toggleProjectMenu = (e: React.MouseEvent): void => {
         e.preventDefault();
@@ -67,7 +70,7 @@ export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
 
     const handleDelete = (e: React.MouseEvent<HTMLAnchorElement>): void => {
         e.preventDefault();
-        // TODO
+        deleteProject();
     };
 
     const DEFAULT_PANEL = 4;
@@ -77,7 +80,7 @@ export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
     const EVENT_ADD_PANEL = 0;
 
     let panelState = DEFAULT_PANEL;
-    if (showProjectEditPanel) {
+    if (showProjectEditPanel || isNewProject) {
         panelState = PROJECT_EDIT_PANEL;
     } else if (activeEventEdit) {
         panelState = EVENT_EDIT_PANEL;
@@ -110,12 +113,14 @@ export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
                 setActiveEventEdit={setActiveEventEdit}
                 updateEvent={updateEvent}/>
         )} </>,
-        3: <ProjectEditPanel
+        3: <ProjectCreateEditPanel
+            isNewProject={isNewProject}
             projectTitle={title}
             projectDescription={description}
             projectBaseMap={baseMap}
             setBaseMap={setBaseMap}
             updateProject={updateProject}
+            deleteProject={deleteProject}
             setShowProjectEditPanel={setShowProjectEditPanel}/>,
         4: <DefaultPanel
             activeTab={activeTab}
@@ -151,7 +156,6 @@ export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
                         <li><a onClick={handleEdit}>
                             Edit project</a>
                         </li>
-                        {/* TODO: Implement confirmation */}
                         <li><a onClick={handleDelete}>Delete project</a></li>
                     </ul>
                 </div>

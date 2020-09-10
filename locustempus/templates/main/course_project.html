@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<div id="project-map-container" data-basemap="{{ project.base_map }}" data-maptoken="{{ token }}"></div>
+<div id="project-map-container" data-basemap="{{ project.base_map }}" data-maptoken="{{ token }}" data-newproject="{{ is_new_project }}"></div>
 {% endblock %}
 
 {% block js %}

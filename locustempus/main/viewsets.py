@@ -4,8 +4,7 @@ from locustempus.main.permissions import IsLoggedInCourse
 from locustempus.main.serializers import (
     LayerSerializer, ProjectSerializer, EventSerializer
 )
-from rest_framework.mixins import RetrieveModelMixin
-from rest_framework.viewsets import GenericViewSet, ModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 
 class ProjectApiView(ModelViewSet):
