@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layer, LayerProps } from './layer';
 import { LayerEventData, LayerEventDatum, BASE_MAPS } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -13,16 +13,24 @@ interface ProjectEditPanelProps {
     projectDescription: string;
     projectBaseMap: string;
     setBaseMap(baseMap: string): void;
+    updateProject(title: string, description: string, baseMap: string): void;
+    setShowProjectEditPanel(show: boolean): void;
 }
 
 export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = (
     {
-        projectTitle, projectDescription, projectBaseMap, setBaseMap
+        projectTitle, projectDescription, projectBaseMap, setBaseMap,
+        updateProject, setShowProjectEditPanel
     }: ProjectEditPanelProps) => {
 
     const [title, setTitle] = useState<string>(projectTitle);
     const [description, setDescription] = useState<string>(projectDescription);
     const [showBaseMapMenu, setShowBaseMapMenu] = useState<boolean>(false);
+
+    useEffect(() => {
+        setTitle(projectTitle);
+        setDescription(projectDescription);
+    }, [projectTitle, projectDescription]);
 
     const handleTitle = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setTitle(e.target.value);
@@ -43,12 +51,14 @@ export const ProjectEditPanel: React.FC<ProjectEditPanelProps> = (
     };
 
     const handleFormSubmbit = (e: React.FormEvent<HTMLFormElement>): void => {
-        e.stopPropagation();
+        e.preventDefault();
+        updateProject(title, description, projectBaseMap);
+        setShowProjectEditPanel(false);
     };
 
     const handleCancel = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
-        // TODO
+        setShowProjectEditPanel(false);
     };
 
     return (

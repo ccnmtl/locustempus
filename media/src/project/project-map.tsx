@@ -166,6 +166,23 @@ export const ProjectMap: React.FC = () => {
         setMapboxLayers(mapLayers);
     };
 
+    const updateProject = (title: string, description: string, baseMap: string): void => {
+        authedFetch(`/api/project/${projectPk}/`, 'PUT', JSON.stringify(
+            {title: title, description: description, base_map: baseMap})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+            .then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw 'Project update failed.';
+                }
+            })
+            .then((data) => {
+                setProjectTitle(title);
+                setProjectDescription(description);
+                setProjectBaseMap(baseMap);
+            });
+    };
+
     const addLayer = (): void => {
         authedFetch('/api/layer/', 'POST', JSON.stringify(
             {title: `Layer ${layerTitleCount}`,
@@ -447,46 +464,49 @@ export const ProjectMap: React.FC = () => {
 
     return (
         <>
-            <DeckGL
-                layers={mapboxLayers}
-                initialViewState={viewportState}
-                width={'100%'}
-                height={'100%'}
-                controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
-                onClick={handleDeckGlClick}
-                pickingRadius={15}
-                ContextProvider={MapContext.Provider}>
-                <StaticMap
-                    reuseMaps
+            {projectBaseMap && (
+                <DeckGL
+                    layers={mapboxLayers}
+                    initialViewState={viewportState}
                     width={'100%'}
                     height={'100%'}
-                    preventStyleDiffing={true}
-                    mapStyle={'mapbox://styles/mapbox/' + projectBaseMap}
-                    mapboxApiAccessToken={TOKEN} />
-                {activeEvent && (
-                    <Popup
-                        latitude={activeEvent.location.lng_lat[1]}
-                        longitude={activeEvent.location.lng_lat[0]}
-                        closeOnClick={false}
-                        onClose={(): void => {setActiveEvent(null);}}>
-                        <div>{activeEvent.label}</div>
-                        <div><p>{activeEvent.description}</p></div>
-                        <button onClick={
-                            (): void => {setActiveEventDetail(activeEvent);}}>
-                            More
-                        </button>
-                    </Popup>
-                )}
-                <div id='map-navigation-control'>
-                    <NavigationControl />
-                </div>
-            </DeckGL>
+                    controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
+                    onClick={handleDeckGlClick}
+                    pickingRadius={15}
+                    ContextProvider={MapContext.Provider}>
+                    <StaticMap
+                        reuseMaps
+                        width={'100%'}
+                        height={'100%'}
+                        preventStyleDiffing={true}
+                        mapStyle={'mapbox://styles/mapbox/' + projectBaseMap}
+                        mapboxApiAccessToken={TOKEN} />
+                    {activeEvent && (
+                        <Popup
+                            latitude={activeEvent.location.lng_lat[1]}
+                            longitude={activeEvent.location.lng_lat[0]}
+                            closeOnClick={false}
+                            onClose={(): void => {setActiveEvent(null);}}>
+                            <div>{activeEvent.label}</div>
+                            <div><p>{activeEvent.description}</p></div>
+                            <button onClick={
+                                (): void => {setActiveEventDetail(activeEvent);}}>
+                                More
+                            </button>
+                        </Popup>
+                    )}
+                    <div id='map-navigation-control'>
+                        <NavigationControl />
+                    </div>
+                </DeckGL>
+            )}
             {projectTitle && (
                 <ProjectMapSidebar
                     title={projectTitle || 'Untitled'}
                     description={projectDescription || ''}
                     baseMap={projectBaseMap || ''}
                     setBaseMap={setProjectBaseMap}
+                    updateProject={updateProject}
                     layers={layerData}
                     events={eventData}
                     activeLayer={activeLayer}

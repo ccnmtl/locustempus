@@ -8,7 +8,7 @@ from rest_framework.mixins import RetrieveModelMixin
 from rest_framework.viewsets import GenericViewSet, ModelViewSet
 
 
-class ProjectApiView(RetrieveModelMixin, GenericViewSet):
+class ProjectApiView(ModelViewSet):
     """Retrieves a single project"""
     serializer_class = ProjectSerializer
     queryset = Project.objects.all()
