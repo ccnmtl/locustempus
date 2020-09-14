@@ -1,11 +1,173 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layer, LayerProps } from './layer';
-import { LayerEventData, LayerEventDatum } from './project-map';
+import { LayerEventData, LayerEventDatum, BASE_MAPS } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faLayerGroup, faArrowLeft, faEllipsisV
+    faLayerGroup, faArrowLeft, faEllipsisV, faAngleRight, faAngleDown
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
+import ReactQuill from 'react-quill';
+
+
+interface ProjectCreateEditPanelProps {
+    isNewProject: boolean;
+    projectTitle: string;
+    projectDescription: string;
+    projectBaseMap: string;
+    setBaseMap(baseMap: string): void;
+    updateProject(title: string, description: string, baseMap: string): void;
+    setShowProjectEditPanel(show: boolean): void;
+    deleteProject(): void;
+}
+
+export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
+    {
+        isNewProject, projectTitle, projectDescription, projectBaseMap,
+        setBaseMap, updateProject, setShowProjectEditPanel, deleteProject
+    }: ProjectCreateEditPanelProps) => {
+
+    const [title, setTitle] = useState<string>(projectTitle);
+    const [description, setDescription] = useState<string>(projectDescription);
+    const [showBaseMapMenu, setShowBaseMapMenu] = useState<boolean>(false);
+
+    useEffect(() => {
+        setTitle(projectTitle);
+        setDescription(projectDescription);
+    }, [projectTitle, projectDescription]);
+
+    const handleTitle = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        setTitle(e.target.value);
+    };
+
+    const handleBaseMap = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        setBaseMap(e.target.value);
+    };
+
+    const toggleBaseMapMenu = (e: React.MouseEvent): void => {
+        e.preventDefault();
+        setShowBaseMapMenu((prev) => {return !prev;});
+    };
+
+    const handleFormSubmbit = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
+        updateProject(title, description, projectBaseMap);
+        setShowProjectEditPanel(false);
+    };
+
+    const handleCancel = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        setShowProjectEditPanel(false);
+    };
+
+    const handleNewProjectCancel = (
+        e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        deleteProject();
+    };
+
+    return (
+        <div>
+            <h4>{isNewProject ? 'Create Project' : 'Edit Project'}</h4>
+            <form onSubmit={handleFormSubmbit} >
+                <div className={'form-group'}>
+                    <label htmlFor={'event-form__name'}>Title</label>
+                    <input
+                        type={'text'}
+                        id={'event-form__name'}
+                        className={'form-control'}
+                        value={title}
+                        autoFocus={true}
+                        onChange={handleTitle}/>
+                </div>
+                <div className="form-group">
+                    <label htmlFor={'event-form__description'}>
+                        Description
+                    </label>
+                    <ReactQuill
+                        value={description}
+                        onChange={setDescription}/>
+                </div>
+                { showBaseMapMenu ? (
+                    <div>
+                        <div onClick={toggleBaseMapMenu}>
+                            <FontAwesomeIcon icon={faAngleDown}/>
+                                Base Map: {BASE_MAPS.get(projectBaseMap)}
+                        </div>
+                        <fieldset className="form-group">
+                            <div className="row">
+                                <div className="col">
+                                    {[...BASE_MAPS.keys()].map((val, idx) => {
+                                        return (
+                                            <div className="form-check"
+                                                key={idx}>
+                                                <input
+                                                    className={
+                                                        'form-check-input'}
+                                                    type={'radio'}
+                                                    id={'base-map-' + idx}
+                                                    value={val}
+                                                    onChange={handleBaseMap}
+                                                    checked={
+                                                        val === projectBaseMap}
+                                                />
+                                                <label
+                                                    htmlFor={'base-map-' + idx}>
+                                                    {BASE_MAPS.get(val)}
+                                                </label>
+                                            </div>
+                                        );})
+                                    }
+                                </div>
+                            </div>
+                        </fieldset>
+                    </div>
+                ) : (
+                    <div onClick={toggleBaseMapMenu}>
+                        <div>
+                            <FontAwesomeIcon
+                                icon={faAngleRight}/> Base Map: {projectBaseMap}
+                        </div>
+                    </div>
+                ) }
+                <div className="form-row">
+                    <div className={'form-group col-3'}>
+                    </div>
+                    <div className={'form-group col-9'}>
+                        {isNewProject ? (
+                            <>
+                                <button
+                                    type={'button'}
+                                    onClick={handleNewProjectCancel}
+                                    className={'btn btn-danger'}>
+                                    Cancel
+                                </button>
+                                <button
+                                    type={'submit'}
+                                    className={'btn btn-primary'}>
+                                    Create project
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                <button
+                                    type={'button'}
+                                    onClick={handleCancel}
+                                    className={'btn btn-danger'}>
+                                    Cancel
+                                </button>
+                                <button
+                                    type={'submit'}
+                                    className={'btn btn-primary'}>
+                                    Save
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
+            </form>
+        </div>
+    );
+};
 
 
 interface EventEditPanelProps {
@@ -32,11 +194,6 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
 
     const handleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setEventName(e.target.value);
-    };
-
-    const handleDescription = (
-        e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-        setDescription(e.target.value);
     };
 
     const handleDatetime = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -81,12 +238,9 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                         </label>
                     </div>
                     <div className={'form-group col-9'}>
-                        <textarea
-                            id={'event-form__description'}
+                        <ReactQuill
                             value={description}
-                            rows={3}
-                            onChange={handleDescription}>
-                        </textarea>
+                            onChange={setDescription}/>
                     </div>
                 </div>
                 <div className="form-row">
@@ -145,11 +299,6 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
         setEventName(e.target.value);
     };
 
-    const handleDescription = (
-        e: React.ChangeEvent<HTMLTextAreaElement>): void => {
-        setDescription(e.target.value);
-    };
-
     const handleDatetime = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setDatetime(e.target.value);
     };
@@ -197,12 +346,9 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                         </label>
                     </div>
                     <div className={'form-group col-9'}>
-                        <textarea
-                            id={'event-form__description'}
+                        <ReactQuill
                             value={description}
-                            rows={3}
-                            onChange={handleDescription}>
-                        </textarea>
+                            onChange={setDescription}/>
                     </div>
                 </div>
                 <div className="form-row">
@@ -299,7 +445,10 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 </div>
             )}
             <h3>{activeEventDetail && activeEventDetail.label}</h3>
-            <p>{activeEventDetail && activeEventDetail.description}</p>
+            {activeEventDetail && (
+                <div dangerouslySetInnerHTML={
+                    {__html: activeEventDetail.description}}/>
+            )}
         </div>
     );
 };
@@ -361,7 +510,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 </ul>
             </div>
             {activeTab === 0 && (
-                <p>{description}</p>
+                <div dangerouslySetInnerHTML={{__html: description}}/>
             )}
             {activeTab === 1 && (
                 <>

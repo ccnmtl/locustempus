@@ -104,8 +104,13 @@ class Location(models.Model):
 
 
 class Project(models.Model):
-    title = models.CharField(max_length=256)
-    description = models.CharField(max_length=256)
+    title = models.CharField(
+        max_length=256,
+        default='Untitled project'
+    )
+    description = models.TextField(
+        blank=True
+    )
     course = models.ForeignKey(
         Course, on_delete=models.CASCADE, related_name='projects')
     base_map = models.CharField(

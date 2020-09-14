@@ -4,7 +4,7 @@ from locustempus.main.models import Layer, Project, Response, Event, Location
 from rest_framework import serializers
 
 
-class ProjectSerializer(serializers.HyperlinkedModelSerializer):
+class ProjectSerializer(serializers.ModelSerializer):
     layers = serializers.HyperlinkedRelatedField(
         read_only=True,
         many=True,

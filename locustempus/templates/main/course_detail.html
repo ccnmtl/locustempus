@@ -19,7 +19,10 @@
             <h2>Course Projects</h2>
             <div class="ml-auto">
                 {% if is_faculty %}
-                <a href="{% url 'course-project-create' object.pk %}" class="btn btn-sm btn-primary" data-cy="project-create-button">Create New Project</a>
+                <form action="{% url 'course-project-create' object.pk %}" method="post">
+                    {% csrf_token %}
+                    <button class="btn btn-sm btn-primary" data-cy="project-create-button">Create New Project</button>
+                </form>
                 {% endif %}
             </div>
         </div>
@@ -42,7 +45,6 @@
                     <td><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></td>
                     <td>
                         {% if user in object.faculty %}
-                        <a class="btn btn-sm btn-primary" href="{% url 'course-project-edit' course.pk project.pk %}">Edit</a>
                             {% if project.activity %}
                             <a class="btn btn-sm btn-primary" data-cy="manage-activity-button" href="{% url 'activity-detail' course.pk project.pk %}">Manage Activity</a>
                             {% else %}

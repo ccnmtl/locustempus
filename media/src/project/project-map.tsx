@@ -30,13 +30,6 @@ const authedFetch = (url: string, method: string, data: any): Promise<any> => {
     });
 };
 
-interface ProjectInfo {
-    title: string;
-    description: string;
-    base_map: string;
-    layers: LayerProps[];
-}
-
 export interface LayerEventDatum {
     lngLat: Position;
     label: string;
@@ -66,6 +59,19 @@ interface ViewportState {
     transitionInterpolator?: FlyToInterpolator;
 }
 
+export const BASE_MAPS = new Map([
+    ['streets-v11', 'Street'],
+    ['outdoors-v11', 'Outdoors'],
+    ['light-v10', 'Light'],
+    ['dark-v10', 'Dark'],
+    ['satellite-v9', 'Satellite'],
+    ['satellite-streets-v11', 'Street - Satellite'],
+    ['navigation-preview-day-v4', 'Navigation - Day'],
+    ['navigation-preview-night-v4', 'Navigation - Night'],
+    ['navigation-guidance-day-v4', 'Navigation/Guidance - Day'],
+    ['navigation-guidance-night-v4', 'Navigation/Guidance - Night']
+]);
+
 export const ProjectMap: React.FC = () => {
     const [viewportState, setViewportState] = useState<ViewportState>({
         latitude: 40.8075395,
@@ -77,12 +83,16 @@ export const ProjectMap: React.FC = () => {
 
     const mapContainer: HTMLElement | null =
         document.querySelector('#project-map-container');
-    const BASEMAP_STYLE =
-        mapContainer ? mapContainer.dataset.basemap : 'basemap-style';
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
+    const isNewProject = mapContainer ?
+        mapContainer.dataset.newproject === 'True': false;
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
-    const [projectInfo, setProjectInfo] = useState<ProjectInfo | null>(null);
+    const coursePk = pathList[pathList.length - 4];
+    const [projectTitle, setProjectTitle] = useState<string | null>(null);
+    const [projectDescription, setProjectDescription] =
+        useState<string | null>(null);
+    const [projectBaseMap, setProjectBaseMap] = useState<string | null>(null);
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
     const [ activeEvent, setActiveEvent] =
@@ -157,6 +167,41 @@ export const ProjectMap: React.FC = () => {
 
         setEventData(events);
         setMapboxLayers(mapLayers);
+    };
+
+    const updateProject = (
+        title: string, description: string, baseMap: string): void => {
+        authedFetch(`/api/project/${projectPk}/`, 'PUT', JSON.stringify(
+            {title: title, description: description, base_map: baseMap})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+            .then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw 'Project update failed.';
+                }
+            })
+            .then(() => {
+                setProjectTitle(title);
+                setProjectDescription(description);
+                setProjectBaseMap(baseMap);
+            });
+    };
+
+    const deleteProject = (): void => {
+        const csrf = (document.getElementById(
+            'csrf-token') as HTMLElement).getAttribute('content') || '';
+        const form = document.createElement('form');
+        form.style.visibility = 'hidden';
+        form.method = 'POST';
+        form.action = `/course/${coursePk}/project/${projectPk}/delete/`;
+
+        const csrfField = document.createElement('input');
+        csrfField.name = 'csrfmiddlewaretoken';
+        csrfField.value = csrf;
+        form.appendChild(csrfField);
+        document.body.appendChild(form);
+
+        form.submit();
     };
 
     const addLayer = (): void => {
@@ -402,7 +447,9 @@ export const ProjectMap: React.FC = () => {
                 throw new Error('Project data not loaded');
             }
             const projectData = await projectResponse.json();
-            setProjectInfo(projectData);
+            setProjectTitle(projectData.title);
+            setProjectDescription(projectData.description);
+            setProjectBaseMap(projectData.base_map);
 
             // Fetch the layers
             const layersRsps = await Promise.all(
@@ -438,44 +485,55 @@ export const ProjectMap: React.FC = () => {
 
     return (
         <>
-            <DeckGL
-                layers={mapboxLayers}
-                initialViewState={viewportState}
-                width={'100%'}
-                height={'100%'}
-                controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
-                onClick={handleDeckGlClick}
-                pickingRadius={15}
-                ContextProvider={MapContext.Provider}>
-                <StaticMap
-                    reuseMaps
+            {projectBaseMap && (
+                <DeckGL
+                    layers={mapboxLayers}
+                    initialViewState={viewportState}
                     width={'100%'}
                     height={'100%'}
-                    preventStyleDiffing={true}
-                    mapStyle={'mapbox://styles/mapbox/' + BASEMAP_STYLE}
-                    mapboxApiAccessToken={TOKEN} />
-                {activeEvent && (
-                    <Popup
-                        latitude={activeEvent.location.lng_lat[1]}
-                        longitude={activeEvent.location.lng_lat[0]}
-                        closeOnClick={false}
-                        onClose={(): void => {setActiveEvent(null);}}>
-                        <div>{activeEvent.label}</div>
-                        <div><p>{activeEvent.description}</p></div>
-                        <button onClick={
-                            (): void => {setActiveEventDetail(activeEvent);}}>
-                            More
-                        </button>
-                    </Popup>
-                )}
-                <div id='map-navigation-control'>
-                    <NavigationControl />
-                </div>
-            </DeckGL>
-            {projectInfo && (
+                    controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
+                    onClick={handleDeckGlClick}
+                    pickingRadius={15}
+                    ContextProvider={MapContext.Provider}>
+                    <StaticMap
+                        reuseMaps
+                        width={'100%'}
+                        height={'100%'}
+                        preventStyleDiffing={true}
+                        mapStyle={'mapbox://styles/mapbox/' + projectBaseMap}
+                        mapboxApiAccessToken={TOKEN} />
+                    {activeEvent && (
+                        <Popup
+                            latitude={activeEvent.location.lng_lat[1]}
+                            longitude={activeEvent.location.lng_lat[0]}
+                            closeOnClick={false}
+                            onClose={(): void => {setActiveEvent(null);}}>
+                            <div>{activeEvent.label}</div>
+                            <div dangerouslySetInnerHTML={
+                                {__html: activeEvent.description}}/>
+                            {!activeEventDetail && (
+                                <button onClick={
+                                    (): void => {
+                                        setActiveEventDetail(activeEvent);}}>
+                                    More
+                                </button>
+                            )}
+                        </Popup>
+                    )}
+                    <div id='map-navigation-control'>
+                        <NavigationControl />
+                    </div>
+                </DeckGL>
+            )}
+            {projectTitle && (
                 <ProjectMapSidebar
-                    title={projectInfo.title}
-                    description={projectInfo.description}
+                    title={projectTitle || 'Untitled'}
+                    description={projectDescription || ''}
+                    baseMap={projectBaseMap || ''}
+                    setBaseMap={setProjectBaseMap}
+                    isNewProject={isNewProject}
+                    updateProject={updateProject}
+                    deleteProject={deleteProject}
                     layers={layerData}
                     events={eventData}
                     activeLayer={activeLayer}
