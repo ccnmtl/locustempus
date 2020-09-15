@@ -23,6 +23,7 @@ INSTALLED_APPS += [  # noqa
     'courseaffils',
     'lti_provider',
     'locustempus.main',
+    'locustempus.design',
     'widget_tweaks',
     'django_registration',
     'rest_framework',

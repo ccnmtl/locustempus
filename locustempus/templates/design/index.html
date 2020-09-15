@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block title %}Design{% endblock %}
+
+{% block content %}
+<section>
+    <ul>
+        <li><a href="{% url 'design-identity'%}">Identity</></li>
+        <li><a href="{% url 'design-colors'%}">Colors</></li>
+        <li><a href="{% url 'design-typography'%}">Typography</></li>
+        <li><a href="{% url 'design-components'%}">Components</></li>
+    </ul>
+</section>
+{% endblock %}
