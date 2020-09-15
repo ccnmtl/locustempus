@@ -1,1 +1,1 @@
-import locustempus.design.views
+import locustempus.design.views  # noqa
