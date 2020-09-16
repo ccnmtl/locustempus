@@ -48,7 +48,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
         setShowBaseMapMenu((prev) => {return !prev;});
     };
 
-    const handleFormSubmbit = (e: React.FormEvent<HTMLFormElement>): void => {
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         updateProject(title, description, projectBaseMap);
         setShowProjectEditPanel(false);
@@ -68,7 +68,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
     return (
         <div>
             <h4>{isNewProject ? 'Create Project' : 'Edit Project'}</h4>
-            <form onSubmit={handleFormSubmbit} >
+            <form onSubmit={handleFormSubmit} >
                 <div className={'form-group'}>
                     <label htmlFor={'event-form__name'}>Title</label>
                     <input

@@ -66,10 +66,6 @@ export const BASE_MAPS = new Map([
     ['dark-v10', 'Dark'],
     ['satellite-v9', 'Satellite'],
     ['satellite-streets-v11', 'Street - Satellite'],
-    ['navigation-preview-day-v4', 'Navigation - Day'],
-    ['navigation-preview-night-v4', 'Navigation - Night'],
-    ['navigation-guidance-day-v4', 'Navigation/Guidance - Day'],
-    ['navigation-guidance-night-v4', 'Navigation/Guidance - Night']
 ]);
 
 export const ProjectMap: React.FC = () => {
