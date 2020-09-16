@@ -4,6 +4,7 @@ from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views.static import serve
 from locustempus.main import views, viewsets
+from locustempus import design
 from rest_framework import routers
 
 
@@ -88,6 +89,26 @@ urlpatterns = [
     url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/activity/delete/$',
         views.ActivityDeleteView.as_view(),
         name='activity-delete'),
+]
+
+
+# Design app
+urlpatterns += [
+    url(r'^design/$',
+        design.views.Index.as_view(),
+        name='design-index'),
+    url(r'^design/identity/$',
+        design.views.Identity.as_view(),
+        name='design-identity'),
+    url(r'^design/colors/$',
+        design.views.Colors.as_view(),
+        name='design-colors'),
+    url(r'^design/typography/$',
+        design.views.Typography.as_view(),
+        name='design-typography'),
+    url(r'^design/components/$',
+        design.views.Components.as_view(),
+        name='design-components'),
 ]
 
 
