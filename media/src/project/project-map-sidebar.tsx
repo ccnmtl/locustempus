@@ -58,6 +58,14 @@ export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
         useState<boolean>(false);
     const [isNewProject, setIsNewProject] = useState<boolean>(newProjectFlag);
 
+    // Clear the query string param
+    // This is done in this component so it could make use of the isNewProject
+    // state var. Otherwise replaceState would continue to be called with each
+    // render
+    if (isNewProject) {
+        window.history.replaceState({}, '', window.location.pathname);
+    }
+
     const toggleProjectMenu = (e: React.MouseEvent): void => {
         e.preventDefault();
         setShowProjectMenu((prev) => {return !prev;});
@@ -67,7 +75,6 @@ export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
         setActiveTab(0);
         setShowProjectMenu(false);
         setShowProjectEditPanel(false);
-        console.log('showDefaultMenu called');
     };
 
     const handleEdit = (e: React.MouseEvent<HTMLAnchorElement>): void => {
