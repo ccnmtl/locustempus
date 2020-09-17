@@ -23,7 +23,7 @@ header {
         opacity: 0.6;
     }
     &__logo { /* .header__logo */
-        height: 4.75rem;
+        height: 6.5rem;
         transition: all 0.4s ease-in-out;
         -webkit-transition: all 0.4s ease-in-out;
         -moz-transition: all 0.4s ease-in-out;
@@ -36,13 +36,21 @@ header {
 }
 
 .header--homepage.shrink .header__logo {
-    height: 2.5rem;
-}
-
-.header--dashboard .header__logo {
-    height: 2.5rem;
+    height: 4.125rem;
 }
 
 .header--default .header__logo {
-    height: 2.5rem;
+    height: 4.125rem;
+}
+
+.header--dashboard .header__logo {
+    height: 4.125rem;
+}
+
+.header--course .header__logo {
+    height: 4.125rem;
+}
+
+.header--project .header__logo {
+    height: 4.125rem;
 }

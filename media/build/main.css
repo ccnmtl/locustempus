@@ -8357,7 +8357,7 @@ header {
 
 .header__logo {
   /* .header__logo */
-  height: 4.75rem;
+  height: 6.5rem;
   transition: all 0.4s ease-in-out;
   -webkit-transition: all 0.4s ease-in-out;
   -moz-transition: all 0.4s ease-in-out; }
@@ -8367,13 +8367,19 @@ header {
   background-color: #424242; }
 
 .header--homepage.shrink .header__logo {
-  height: 2.5rem; }
-
-.header--dashboard .header__logo {
-  height: 2.5rem; }
+  height: 4.125rem; }
 
 .header--default .header__logo {
-  height: 2.5rem; }
+  height: 4.125rem; }
+
+.header--dashboard .header__logo {
+  height: 4.125rem; }
+
+.header--course .header__logo {
+  height: 4.125rem; }
+
+.header--project .header__logo {
+  height: 4.125rem; }
 
 .header--homepage .user-auth--login, .header--homepage .user-auth--logout, .header--homepage.shrink .user-auth--login, .user-auth--login, .header--homepage.shrink .user-auth--logout, .user-auth--logout {
   background-image: url(/media/img/icon-user.svg);
