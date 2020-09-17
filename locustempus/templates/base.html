@@ -44,8 +44,8 @@
             <span class="skip-header__text">Skip to main content</span>
         </a>
         <div class="header__shadow"></div>
-        <nav class="navbar">
-            <a href="/" class="navbar-brand"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo.svg" alt="Locus Tempus logo"></a>
+        <nav class="navbar py-0 pl-0">
+            <a href="/" class="navbar-brand py-0"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo-bgdark.svg" alt="Locus Tempus logo"></a>
             {% block usernav %}
                 {% if request.user.is_anonymous %}
                 <a href="/accounts/login/?next=/" class="user-auth--login">Log in</a>
