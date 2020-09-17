@@ -11,19 +11,21 @@ import ReactQuill from 'react-quill';
 
 interface ProjectCreateEditPanelProps {
     isNewProject: boolean;
+    setIsNewProject(val: boolean): void;
     projectTitle: string;
     projectDescription: string;
     projectBaseMap: string;
     setBaseMap(baseMap: string): void;
     updateProject(title: string, description: string, baseMap: string): void;
-    setShowProjectEditPanel(show: boolean): void;
+    showDefaultMenu(): void;
     deleteProject(): void;
 }
 
 export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
     {
-        isNewProject, projectTitle, projectDescription, projectBaseMap,
-        setBaseMap, updateProject, setShowProjectEditPanel, deleteProject
+        isNewProject, setIsNewProject, projectTitle, projectDescription,
+        projectBaseMap, setBaseMap, updateProject, showDefaultMenu,
+        deleteProject
     }: ProjectCreateEditPanelProps) => {
 
     const [title, setTitle] = useState<string>(projectTitle);
@@ -51,12 +53,13 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         updateProject(title, description, projectBaseMap);
-        setShowProjectEditPanel(false);
+        setIsNewProject(false);
+        showDefaultMenu();
     };
 
     const handleCancel = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
-        setShowProjectEditPanel(false);
+        showDefaultMenu();
     };
 
     const handleNewProjectCancel = (

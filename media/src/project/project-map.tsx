@@ -80,7 +80,7 @@ export const ProjectMap: React.FC = () => {
     const mapContainer: HTMLElement | null =
         document.querySelector('#project-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
-    const isNewProject = mapContainer ?
+    const newProjectFlag = mapContainer ?
         mapContainer.dataset.newproject === 'True': false;
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
@@ -527,7 +527,7 @@ export const ProjectMap: React.FC = () => {
                     description={projectDescription || ''}
                     baseMap={projectBaseMap || ''}
                     setBaseMap={setProjectBaseMap}
-                    isNewProject={isNewProject}
+                    newProjectFlag={newProjectFlag}
                     updateProject={updateProject}
                     deleteProject={deleteProject}
                     layers={layerData}
