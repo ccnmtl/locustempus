@@ -1,7 +1,195 @@
-{% extends 'base.html' %}
+{% extends 'base_design.html' %}
 
-{% block title %}Design - Typography{% endblock %}
+{% block title %}Design System{% endblock %}
 
 {% block content %}
-    <h1>Typography</h1>
+
+<div class="row flex-xl-nowrap mx-0">
+    <div class="col-md-3 ltds-sidebar">
+        <div class="heading-designsystem">
+            Design System
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-index'%}">Introduction</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-identity'%}">Identity</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-colors'%}">Colors</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-typography'%}">Typography</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-components'%}">Components</a></li>
+        </ul>
+    </div>
+    <div class="col-md-9 py-md-3 pl-md-5 order-1">
+        <h1>Typography</h1>
+
+<h2>Typefaces</h2>
+
+<p>Locus Tempus uses Google Fonts’ <a href="https://fonts.google.com/specimen/Poppins">Poppins</a> and <a href="https://fonts.google.com/specimen/Roboto">Roboto</a> as typefaces.</p>
+
+<p>The type scale makes use of the variety of weights available by using: Light 300 (Roboto), Regular 400, Medium 500, Semi-bold 600 (Poppins) and Bold 700.</p>
+        
+<h2>Type scale: Pages</h2>
+
+<p>Locus Tempus type scale in in <code>rem</code> unit, relative to the default font-size of most browsers (1rem = 16px)</p>
+
+<table class="table typescale">
+  <tbody>
+    <tr>
+      <td class="text-right typescale-meta">
+      <b>H1 Heading1</b><br/>
+      Poppins<br/>
+      Medium 500
+      </td>
+      <td class="text-right typescale-meta">
+      S: <br/>
+      M: 2.375rem<br />
+      L: 3rem
+      </td>
+      <td><h1>Location at the time</h1></td>
+    </tr>
+    <tr>
+      <td class="text-right typescale-meta">
+      <b>H2 Heading2</b><br/>
+      Poppins<br/>
+      Medium 500
+      </td>
+      <td class="text-right typescale-meta">
+      S: <br/>
+      M: 1.875rem<br />
+      L: 2.25rem
+      </td>
+      <td><h2>Location at the time</h2></td>
+    </tr>
+    <tr>
+      <td class="text-right typescale-meta">
+      <b>H3 Heading3</b><br/>
+      Poppins<br/>
+      Medium 500
+      </td>
+      <td class="text-right typescale-meta">
+      S: <br/>
+      M: 1.5rem<br />
+      L: 1.875rem
+      </td>
+      <td><h3>Location at the time</h3></td>
+    </tr>
+    <tr>
+      <td class="text-right typescale-meta">
+      <b>H4 Heading4</b><br/>
+      Poppins<br/>
+      Medium 500
+      </td>
+      <td class="text-right typescale-meta">
+      S: <br/>
+      M: 1.25rem<br />
+      L: 1.5rem
+      </td>
+      <td><h4>Location at the time</h4></td>
+    </tr>
+    <tr>
+      <td class="text-right typescale-meta">
+      <b>H5 Heading5</b><br/>
+      Poppins<br/>
+      Medium 500
+      </td>
+      <td class="text-right typescale-meta">
+      S: <br/>
+      M: 1.125rem<br />
+      L: 1.25rem
+      </td>
+      <td><h5>Location at the time</h5></td>
+    </tr>
+    <tr>
+      <td class="text-right typescale-meta">
+      Poppins<br/>
+      Bold
+      </td>
+      <td class="text-right typescale-meta">
+      S: <br/>
+      M: <br />
+      L: 
+      </td>
+      <td><p class="subtitle">Subtitle</p></td>
+    </tr>
+    <tr>
+      <td class="text-right typescale-meta">
+      Poppins<br/>
+      Bold
+      </td>
+      <td class="text-right typescale-meta">
+      S: <br/>
+      M: <br />
+      L: 
+      </td>
+      <td><p>Body text</p></td>
+    </tr>
+    <tr>
+      <td class="text-right typescale-meta">
+      Poppins<br/>
+      Bold
+      </td>
+      <td class="text-right typescale-meta">
+      S: <br/>
+      M: <br />
+      L: 
+      </td>
+      <td><p>Button</p></td>
+    </tr>
+    <tr>
+      <td class="text-right typescale-meta">
+      Poppins<br/>
+      Bold
+      </td>
+      <td class="text-right typescale-meta">
+      S: <br/>
+      M: <br />
+      L: 
+      </td>
+      <td><p>Caption</p></td>
+    </tr>
+    <tr>
+      <td class="text-right typescale-meta">
+      Poppins<br/>
+      Bold
+      </td>
+      <td class="text-right typescale-meta">
+      S: <br/>
+      M: <br />
+      L: 
+      </td>
+      <td><p>Overline</p></td>
+    </tr>
+  </tbody>
+</table>
+
+<h2>Type scale: Map Panes</h2>
+
+<div class="p-4 border typescale paneview" style="width: 32rem;">
+<h1>Heading Level 1</h1>
+
+<p>
+Duis condimentum hendrerit metus, eu pulvinar est ultrices vel. Quisque suscipit, tellus in lacinia dictum, ipsum elit blandit lectus, at finibus ligula neque nec arcu. Vivamus magna felis, pharetra egestas maximus in, commodo molestie velit.
+</p>
+
+<h2>Heading Level 2</h2>
+
+<p>
+Nunc non posuere ipsum. Nunc convallis erat a ipsum laoreet imperdiet. Etiam cursus libero non dolor egestas porttitor. Vestibulum hendrerit eget orci quis dapibus. Praesent eget facilisis nisi, sed mattis diam. Nam id laoreet leo, sed cursus felis. Nulla enim dolor, aliquam in bibendum in, imperdiet ut turpis.
+</p>
+
+<h3>Heading Level 3</h3>
+
+<p>
+Integer suscipit non augue et fringilla. Maecenas blandit risus vitae gravida gravida. Fusce vel lobortis mi. Proin ligula enim, elementum eu sollicitudin nec, interdum non leo. Curabitur mauris sem, dapibus vel neque eget, vehicula ullamcorper tortor. In vitae sem at sapien dictum blandit eget in nunc. Aenean imperdiet lacinia est, at vestibulum velit tincidunt egestas. Nulla imperdiet molestie porta. Sed condimentum velit nunc, id ornare risus fringilla id. Vestibulum in leo rhoncus, suscipit mi eget, aliquet mi. Integer vel lacus consectetur, lacinia libero placerat, gravida mi. Morbi auctor vestibulum ex a suscipit. Donec a velit scelerisque, consequat elit euismod, dignissim lacus. Nunc ac commodo nisi, sed sagittis odio.
+</p>
+
+<h4>Heading Level 4</h4>
+
+<p>
+Nunc dignissim leo lacinia, fringilla ligula ac, pretium ligula. Integer pulvinar, sapien in rutrum ornare, neque mi dignissim ante, et ultrices mauris quam eu eros. Duis aliquam sapien velit, vel ultrices eros pulvinar luctus. Sed nec euismod justo. Quisque ut sapien ut augue dictum laoreet in in odio. Maecenas dictum sapien id urna mattis commodo. Cras nulla dolor, dapibus porta erat vitae, imperdiet ultrices felis.
+</p>
+</div>
+
+
+
+    </div>
+</div>
 {% endblock %}
