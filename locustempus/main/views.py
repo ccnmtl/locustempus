@@ -574,7 +574,7 @@ class ProjectView(LoggedInCourseMixin, View):
             pk=kwargs.get('project_pk', None))
 
         new_project = False
-        if request.GET.get('new_project'):
+        if request.GET.get('new_project', None):
             new_project = True
 
         ctx = {
