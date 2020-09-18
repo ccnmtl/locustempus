@@ -174,7 +174,9 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
                             <li><a onClick={handleEdit}>
                                 Edit project</a>
                             </li>
-                            <li><a onClick={handleDelete}>Delete project</a></li>
+                            <li>
+                                <a onClick={handleDelete}>Delete project</a>
+                            </li>
                         </ul>
                     </div>
                 )}
