@@ -14,7 +14,7 @@ export interface ProjectMapSidebarProps {
     description: string;
     baseMap: string;
     setBaseMap(baseMap: string): void;
-    isNewProject: boolean;
+    newProjectFlag: boolean;
     updateProject(title: string, description: string, baseMap: string): void;
     deleteProject(): void;
     layers: LayerProps[];
@@ -44,7 +44,7 @@ export interface ProjectMapSidebarProps {
 
 export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
     {
-        title, description, baseMap, setBaseMap, isNewProject, updateProject,
+        title, description, baseMap, setBaseMap, newProjectFlag, updateProject,
         deleteProject, layers, events, activeLayer, setActiveLayer, addLayer,
         deleteLayer, updateLayer, setLayerVisibility, showAddEventForm,
         setShowAddEventForm, activePosition, addEvent, clearActivePosition,
@@ -56,10 +56,25 @@ export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
     const [showProjectMenu, setShowProjectMenu] = useState<boolean>(false);
     const [showProjectEditPanel, setShowProjectEditPanel] =
         useState<boolean>(false);
+    const [isNewProject, setIsNewProject] = useState<boolean>(newProjectFlag);
+
+    // Clear the query string param
+    // This is done in this component so it could make use of the isNewProject
+    // state var. Otherwise replaceState would continue to be called with each
+    // render
+    if (isNewProject) {
+        window.history.replaceState({}, '', window.location.pathname);
+    }
 
     const toggleProjectMenu = (e: React.MouseEvent): void => {
         e.preventDefault();
         setShowProjectMenu((prev) => {return !prev;});
+    };
+
+    const showDefaultMenu = (): void => {
+        setActiveTab(0);
+        setShowProjectMenu(false);
+        setShowProjectEditPanel(false);
     };
 
     const handleEdit = (e: React.MouseEvent<HTMLAnchorElement>): void => {
@@ -115,13 +130,14 @@ export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
         )} </>,
         3: <ProjectCreateEditPanel
             isNewProject={isNewProject}
+            setIsNewProject={setIsNewProject}
             projectTitle={title}
             projectDescription={description}
             projectBaseMap={baseMap}
             setBaseMap={setBaseMap}
             updateProject={updateProject}
             deleteProject={deleteProject}
-            setShowProjectEditPanel={setShowProjectEditPanel}/>,
+            showDefaultMenu={showDefaultMenu}/>,
         4: <DefaultPanel
             activeTab={activeTab}
             setActiveTab={setActiveTab}

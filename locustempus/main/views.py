@@ -574,8 +574,7 @@ class ProjectView(LoggedInCourseMixin, View):
             pk=kwargs.get('project_pk', None))
 
         new_project = False
-        if request.session.get('new_project'):
-            del request.session['new_project']
+        if request.GET.get('new_project', None):
             new_project = True
 
         ctx = {
@@ -593,14 +592,13 @@ class ProjectCreateView(LoggedInFacultyMixin, View):
     def post(self, request, *args, **kwargs):
         course = get_object_or_404(Course, pk=kwargs.get('pk', None))
         project = Project.objects.create(course=course)
-        request.session['new_project'] = True
 
         return HttpResponseRedirect(reverse(
             'course-project-detail',
             kwargs={
                 'pk': course.pk,
                 'project_pk': project.pk
-            }))
+            }) + '?new_project=true')
 
 
 class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
