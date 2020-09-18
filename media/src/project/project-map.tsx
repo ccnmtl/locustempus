@@ -9,7 +9,7 @@ import { IconLayer } from '@deck.gl/layers';
 import { Position } from '@deck.gl/core/utils/positions';
 import { PickInfo } from '@deck.gl/core/lib/deck';
 
-import { ProjectMapSidebar } from './project-map-sidebar';
+import { ProjectMapPane } from './project-map-pane';
 import { LayerProps } from './layer';
 
 // TODO: fix types
@@ -522,7 +522,7 @@ export const ProjectMap: React.FC = () => {
                 </DeckGL>
             )}
             {projectTitle && (
-                <ProjectMapSidebar
+                <ProjectMapPane
                     title={projectTitle || 'Untitled'}
                     description={projectDescription || ''}
                     baseMap={projectBaseMap || ''}

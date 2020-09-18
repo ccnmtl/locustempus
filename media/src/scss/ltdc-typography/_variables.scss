@@ -12,4 +12,17 @@ $Roboto:   'Roboto';
 $Poppins:   'Poppins';
 
 $font-family-base:     $Roboto, $font-family-sans-serif;
-$headings-font-family: $Poppins, $font-family-sans-serif;
+$font-size-base:              1rem; // Assumes the browser default, typically `16px`
+
+$headings-font-family:        $Poppins, $font-family-sans-serif;
+$headings-font-weight:        500;
+$headings-line-height:        1.2;
+$headings-color:              null;
+
+
+$h1-font-size:                $font-size-base * 3;
+$h2-font-size:                $font-size-base * 2.25;
+$h3-font-size:                $font-size-base * 1.875;
+$h4-font-size:                $font-size-base * 1.5;
+$h5-font-size:                $font-size-base * 1.25;
+$h6-font-size:                $font-size-base;
