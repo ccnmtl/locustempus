@@ -522,7 +522,7 @@ export const ProjectMap: React.FC = () => {
                 </DeckGL>
             )}
             {projectTitle && (
-                <ProjectMapSidebar
+                <ProjectMapPane
                     title={projectTitle || 'Untitled'}
                     description={projectDescription || ''}
                     baseMap={projectBaseMap || ''}
