@@ -2,6 +2,16 @@ main {
     padding-top: 4.125rem;
 }
 
-main.main--homepage {
-    padding-top: 0;
+.main {
+    &--homepage {
+        padding-top: 0;
+    }
+    &--project {
+        position: absolute;
+        top: 4rem;
+        bottom: 0;
+        padding-top: 0;
+        width: 100%;
+        z-index: 2;
+    }
 }

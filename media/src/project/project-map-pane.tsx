@@ -5,11 +5,11 @@ import { Position } from '@deck.gl/core/utils/positions';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
     ProjectCreateEditPanel
-} from './project-map-sidebar-panels';
+} from './project-map-pane-panels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 
-export interface ProjectMapSidebarProps {
+export interface ProjectMapPaneProps {
     title: string;
     description: string;
     baseMap: string;
@@ -42,7 +42,7 @@ export interface ProjectMapSidebarProps {
                 lat: number, lng: number, pk: number, layerPk: number): void;
 }
 
-export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
+export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     {
         title, description, baseMap, setBaseMap, newProjectFlag, updateProject,
         deleteProject, layers, events, activeLayer, setActiveLayer, addLayer,
@@ -50,7 +50,7 @@ export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
         setShowAddEventForm, activePosition, addEvent, clearActivePosition,
         activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
         activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent
-    }: ProjectMapSidebarProps) => {
+    }: ProjectMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
     const [showProjectMenu, setShowProjectMenu] = useState<boolean>(false);
@@ -159,24 +159,27 @@ export const ProjectMapSidebar: React.FC<ProjectMapSidebarProps> = (
     };
 
     return (
-        <div id='project-map-sidebar'>
-            <div>
-                <h2>{title}</h2>
-                <button onClick={toggleProjectMenu}>
-                    <FontAwesomeIcon icon={faEllipsisV}/>
-                </button>
+        <div id='project-map-pane' className='widget-pane'>
+            <div className='widget-pane-content'>
+                <header className="d-flex flex-row">
+                    <h1>{title}</h1>
+                    <button onClick={toggleProjectMenu}
+                        className='overflow-menu'>
+                        <FontAwesomeIcon icon={faEllipsisV}/>
+                    </button>
+                </header>
+                {showProjectMenu && (
+                    <div>
+                        <ul>
+                            <li><a onClick={handleEdit}>
+                                Edit project</a>
+                            </li>
+                            <li><a onClick={handleDelete}>Delete project</a></li>
+                        </ul>
+                    </div>
+                )}
+                {PANEL[panelState]}
             </div>
-            {showProjectMenu && (
-                <div>
-                    <ul>
-                        <li><a onClick={handleEdit}>
-                            Edit project</a>
-                        </li>
-                        <li><a onClick={handleDelete}>Delete project</a></li>
-                    </ul>
-                </div>
-            )}
-            {PANEL[panelState]}
         </div>
     );
 };

@@ -9,7 +9,7 @@ import { IconLayer } from '@deck.gl/layers';
 import { Position } from '@deck.gl/core/utils/positions';
 import { PickInfo } from '@deck.gl/core/lib/deck';
 
-import { ProjectMapSidebar } from './project-map-sidebar';
+import { ProjectMapPane } from './project-map-pane';
 import { LayerProps } from './layer';
 
 // TODO: fix types
@@ -481,6 +481,37 @@ export const ProjectMap: React.FC = () => {
 
     return (
         <>
+            {projectTitle && (
+                <ProjectMapPane
+                    title={projectTitle || 'Untitled'}
+                    description={projectDescription || ''}
+                    baseMap={projectBaseMap || ''}
+                    setBaseMap={setProjectBaseMap}
+                    isNewProject={isNewProject}
+                    updateProject={updateProject}
+                    deleteProject={deleteProject}
+                    layers={layerData}
+                    events={eventData}
+                    activeLayer={activeLayer}
+                    setActiveLayer={setActiveLayer}
+                    addLayer={addLayer}
+                    deleteLayer={deleteLayer}
+                    updateLayer={updateLayer}
+                    setLayerVisibility={setLayerVisibility}
+                    showAddEventForm={showAddEventForm}
+                    setShowAddEventForm={setShowAddEventForm}
+                    activePosition={activePosition}
+                    clearActivePosition={clearActivePosition}
+                    activeEvent={activeEvent}
+                    setActiveEvent={setActiveEvent}
+                    activeEventDetail={activeEventDetail}
+                    setActiveEventDetail={setActiveEventDetail}
+                    activeEventEdit={activeEventEdit}
+                    setActiveEventEdit={setActiveEventEdit}
+                    addEvent={addEvent}
+                    deleteEvent={deleteEvent}
+                    updateEvent={updateEvent}/>
+            )}
             {projectBaseMap && (
                 <DeckGL
                     layers={mapboxLayers}
@@ -520,37 +551,6 @@ export const ProjectMap: React.FC = () => {
                         <NavigationControl />
                     </div>
                 </DeckGL>
-            )}
-            {projectTitle && (
-                <ProjectMapSidebar
-                    title={projectTitle || 'Untitled'}
-                    description={projectDescription || ''}
-                    baseMap={projectBaseMap || ''}
-                    setBaseMap={setProjectBaseMap}
-                    newProjectFlag={newProjectFlag}
-                    updateProject={updateProject}
-                    deleteProject={deleteProject}
-                    layers={layerData}
-                    events={eventData}
-                    activeLayer={activeLayer}
-                    setActiveLayer={setActiveLayer}
-                    addLayer={addLayer}
-                    deleteLayer={deleteLayer}
-                    updateLayer={updateLayer}
-                    setLayerVisibility={setLayerVisibility}
-                    showAddEventForm={showAddEventForm}
-                    setShowAddEventForm={setShowAddEventForm}
-                    activePosition={activePosition}
-                    clearActivePosition={clearActivePosition}
-                    activeEvent={activeEvent}
-                    setActiveEvent={setActiveEvent}
-                    activeEventDetail={activeEventDetail}
-                    setActiveEventDetail={setActiveEventDetail}
-                    activeEventEdit={activeEventEdit}
-                    setActiveEventEdit={setActiveEventEdit}
-                    addEvent={addEvent}
-                    deleteEvent={deleteEvent}
-                    updateEvent={updateEvent}/>
             )}
         </>
     );
