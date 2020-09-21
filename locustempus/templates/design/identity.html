@@ -1,7 +1,66 @@
-{% extends 'base.html' %}
+{% extends 'base_design.html' %}
 
-{% block title %}Design - Identity{% endblock %}
+{% block title %}Design System{% endblock %}
 
 {% block content %}
+
+<div class="row flex-xl-nowrap mx-0">
+    <div class="col-md-3 ltds-sidebar">
+        <div class="heading-designsystem">
+            Design System
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-index'%}">Introduction</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-identity'%}">Identity</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-colors'%}">Colors</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-typography'%}">Typography</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-components'%}">Components</a></li>
+        </ul>
+    </div>
+    <div class="col-md-9 py-md-3 pl-md-5 order-1">
     <h1>Identity</h1>
+<h2>Main Identity</h2>
+
+<div class="row mb-5">
+    <div class="col-md-9 px-0 border"><img src="{{STATIC_URL}}img/lt-logo-default.svg" /></div>
+</div>
+
+<h3>Clear Space</h3>
+
+<div class="row mb-5">
+    <div class="col-md-9 px-0 border"><img src="{{STATIC_URL}}img/lt-logo-clearspace.svg" /></div>
+</div>
+
+
+<h2>Open Graph Image</h2>
+
+<div class="row mb-5">
+    <div class="col-md-9 px-0"><img src="{{STATIC_URL}}img/lt-og-1200.png" class="img-fluid border" /></div>
+</div>
+
+<h2>Variations</h2>
+
+<div class="row mb-5">
+    <div class="col-md-6 px-0 border bg-dark"><img src="{{STATIC_URL}}img/lt-logo-bgdark.svg" /></div>
+    <div class="col-md-5 px-0 offset-md-1">Dark background</div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-6 px-0 border"><img src="{{STATIC_URL}}img/lt-logo-grayscale.svg" /></div>
+    <div class="col-md-5 px-0 offset-md-1">Grayscale logo</div>
+</div>
+
+<div class="row mb-5">
+    <div class="col-md-6 px-0 border" style="background: #000"><img src="{{STATIC_URL}}img/lt-logo-white.svg" /></div>
+    <div class="col-md-5 px-0 offset-md-1">White logo</div>
+</div>
+
+ <div class="row mb-5">
+    <div class="col-md-6 px-0 border"><img src="{{STATIC_URL}}img/lt-logo-black.svg" /></div>
+    <div class="col-md-5 px-0 offset-md-1">Black logo</div>
+</div>
+
+
+    </div>
+</div>
 {% endblock %}

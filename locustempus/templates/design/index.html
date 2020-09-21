@@ -1,14 +1,33 @@
-{% extends 'base.html' %}
+{% extends 'base_design.html' %}
 
-{% block title %}Design{% endblock %}
+{% block title %}Design System{% endblock %}
 
 {% block content %}
-<section>
-    <ul>
-        <li><a href="{% url 'design-identity'%}">Identity</></li>
-        <li><a href="{% url 'design-colors'%}">Colors</></li>
-        <li><a href="{% url 'design-typography'%}">Typography</></li>
-        <li><a href="{% url 'design-components'%}">Components</></li>
-    </ul>
-</section>
+
+<div class="row flex-xl-nowrap mx-0">
+    <div class="col-md-3 ltds-sidebar">
+        <div class="heading-designsystem">
+            Design System
+        </div>
+        <ul class="list-group list-group-flush">
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-index'%}">Introduction</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-identity'%}">Identity</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-colors'%}">Colors</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-typography'%}">Typography</a></li>
+            <li class="list-group-item bg-transparent"><a href="{% url 'design-components'%}">Components</a></li>
+        </ul>
+    </div>
+    <div class="col-md-9 py-md-3 pl-md-5 order-1">
+    <h1>Locus Tempus Design System</h1>
+
+<p>
+Curabitur at sapien et tellus rhoncus ultricies nec ut magna. Cras quis leo sollicitudin, porttitor urna a, eleifend odio. Morbi hendrerit augue volutpat augue cursus, id faucibus ante malesuada. In libero diam, luctus in congue a, dignissim ac turpis. Sed sit amet ipsum ut purus semper bibendum at vitae mauris. Donec ac faucibus metus. Mauris et fermentum neque, vitae feugiat purus. Quisque non sapien facilisis, ultrices enim vitae, fermentum risus. Suspendisse id luctus dui. Proin porttitor eu risus sed facilisis.
+</p>
+
+<p>
+Maecenas cursus turpis ac purus luctus, non viverra ex fringilla. Suspendisse pretium nisi eu ex dictum, et pulvinar urna elementum. Integer rhoncus eros vitae urna faucibus, eget ornare turpis rutrum. Ut ut erat ac ipsum mattis gravida ac et justo. Donec eu urna id ex interdum finibus et in ante. Cras vestibulum mi condimentum odio euismod, in ultricies libero bibendum. Nullam condimentum dui vitae enim porta laoreet. Fusce lobortis turpis a dui volutpat molestie. Phasellus et enim nec tellus lacinia tristique. Phasellus accumsan dui at elit maximus consequat. Morbi id accumsan nisi. Morbi sit amet pretium elit. Proin eget neque odio. Integer pharetra dictum tortor vel convallis.
+</p>
+
+    </div>
+</div>
 {% endblock %}
