@@ -1,0 +1,139 @@
+{% load compress %}
+
+<!DOCTYPE html>
+
+<html lang="en">
+    <head>
+	    <title>Design System – Locus Tempus</title>
+
+        <!-- Required meta tags -->
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+        <!-- The above 2 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+        <!-- Local CSS -->
+        {% compress css %}
+        <link href="{{STATIC_URL}}build/main.css" rel="stylesheet">
+        {% endcompress %}
+        {% block css %}{% endblock %}
+
+        <!-- Standard Meta Data, TBD -->
+
+        <!-- Dublin Core Metadata, TBD -->
+
+        <!-- Open Graph, TBD -->
+
+        <!-- Twitter, TBD -->
+        <meta name="twitter:image" content="{{STATIC_URL}}img/favicon.png" />
+
+        <!-- JSON Structured data, TBD -->
+
+        <!-- Favicons, TBD -->
+        <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico">
+        <link rel="icon" href="{{STATIC_URL}}img/favicon.ico">
+        <link rel="icon" type="image/png" href="{{STATIC_URL}}img/favicon.png">
+
+        <meta id="csrf-token" name="csrf-token" content="{{csrf_token}}">
+
+    </head>
+    <body class="{% block bodyclass %}{% endblock %}" id="{% block bodyid %}{% endblock %}">
+
+    {% block topnavbar %}
+    <header class="header--default">
+        <a class="skip-header" href="#content">
+            <span class="skip-header__text">Skip to main content</span>
+        </a>
+        <div class="header__shadow"></div>
+        <nav class="navbar py-0 pl-0">
+            <a href="/" class="navbar-brand py-0"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo-bgdark.svg" alt="Locus Tempus logo"></a>
+            {% block usernav %}
+                {% if request.user.is_anonymous %}
+                <a href="/accounts/login/?next=/" class="user-auth--login">Log in</a>
+                {% else %}
+                <a href="/accounts/logout/?next=/" class="user-auth--logout">Log out</a>
+                {% endif %}
+            {% endblock %}
+        </nav>
+    </header>
+    {% endblock %}
+
+    <main class="main--default" id="content">
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+{% block footer %}
+<footer>
+    <ul class="navlist--footer">
+        <li class="nav-item">
+            <a href="#">About Locus Tempus</a>
+        </li>
+        <li class="nav-item">
+            <a href="mailto:ctl-locustempus@columbia.edu" title="Send email to ctl-locustempus@columbia.edu">Contact Us</a>
+        </li>
+    </ul>
+
+    <span itemscope itemtype="http://schema.org/EducationalOrganization"><a href="http://ctl.columbia.edu" target="_blank" itemprop="url"><img src="{{STATIC_URL}}img/ctl-logo-white.svg" class="footer__logo" alt="" itemprop="logo" /><span class="sr-only" itemprop="name">Center for Teaching and Learning at Columbia University</span></a></span>
+
+</footer>
+{% endblock %}
+
+<script src="{{STATIC_URL}}build/main.js"></script>
+
+{% if SENTRY_DSN %}
+    <script src="https://browser.sentry-cdn.com/5.9.1/bundle.min.js" integrity="sha384-/x1aHz0nKRd6zVUazsV6CbQvjJvr6zQL2CHbQZf3yoLkezyEtZUpqUNnOLW9Nt3v" crossorigin="anonymous">
+    </script>
+     Sentry.init({ dsn: '{{ SENTRY_DSN }}'});
+
+     {% if user.is_anonymous %}
+     Sentry.configureScope(function(scope) {
+         scope.setUser({
+            "email": 'none',
+            "id": 'anonymous'
+         });
+     });
+     {% else %}
+     Sentry.configureScope(function(scope) {
+         scope.setUser({
+            "email": {{ user.email }},
+            "id": '{{ user.username }}'
+         });
+     });
+     {% endif %}
+    </script>
+{% endif %}
+
+{% block js %}{% endblock %}
+
+{% if STAGING_ENV %}
+<div class="alert alert-danger alert-dismissable" style="position: fixed; bottom: 0px;">
+<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+<h4>Warning: Staging Site</h4>
+<p>You are viewing a staging version of this site, not the production site.</p>
+<p>This site was last updated on: <b>{{STAGING_DEPLOY_TIME}}</b></p>
+</div>
+{% endif %}
+
+{% if request.user.is_impersonate %}
+<div class="alert alert-danger alert-dismissable" style="position: fixed; left: 0px; top: 75px">
+<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
+You are impersonating.<br />
+<a class="btn" href="{% url 'impersonate-stop' %}">stop</a>
+</div>
+{% endif %}
+
+{% if GA_CODE %}
+<script type="text/javascript">
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+  ga('create', '{{GA_CODE}}', 'columbia.edu');
+  ga('set', 'anonymizeIp', true);
+  ga('send', 'pageview');
+</script>
+{% endif %}
+</body>
+</html>

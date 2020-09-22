@@ -1760,7 +1760,7 @@ textarea.form-control {
     .form-inline .custom-control-label {
       margin-bottom: 0; } }
 
-.btn, .header--homepage .user-auth--login, .header--homepage .user-auth--logout, .header--homepage.shrink .user-auth--login, .user-auth--login, .header--homepage.shrink .user-auth--logout, .user-auth--logout {
+.btn, .header--homepage .user-auth--login, .header--homepage .user-auth--logout, .header--homepage.shrink .user-auth--login, .user-auth--login, .header--homepage.shrink .user-auth--logout, .user-auth--logout, .overflow-menu {
   display: inline-block;
   font-weight: 400;
   color: #212529;
@@ -1778,27 +1778,28 @@ textarea.form-control {
   border-radius: 0.25rem;
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; }
   @media (prefers-reduced-motion: reduce) {
-    .btn, .header--homepage .user-auth--login, .header--homepage .user-auth--logout, .header--homepage.shrink .user-auth--login, .user-auth--login, .header--homepage.shrink .user-auth--logout, .user-auth--logout {
+    .btn, .header--homepage .user-auth--login, .header--homepage .user-auth--logout, .header--homepage.shrink .user-auth--login, .user-auth--login, .header--homepage.shrink .user-auth--logout, .user-auth--logout, .overflow-menu {
       transition: none; } }
-  .btn:hover, .user-auth--login:hover, .user-auth--logout:hover {
+  .btn:hover, .user-auth--login:hover, .user-auth--logout:hover, .overflow-menu:hover {
     color: #212529;
     text-decoration: none; }
-  .btn:focus, .user-auth--login:focus, .user-auth--logout:focus, .btn.focus, .focus.user-auth--login, .focus.user-auth--logout {
+  .btn:focus, .user-auth--login:focus, .user-auth--logout:focus, .overflow-menu:focus, .btn.focus, .focus.user-auth--login, .focus.user-auth--logout, .focus.overflow-menu {
     outline: 0;
     box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); }
-  .btn.disabled, .disabled.user-auth--login, .disabled.user-auth--logout, .btn:disabled, .user-auth--login:disabled, .user-auth--logout:disabled {
+  .btn.disabled, .disabled.user-auth--login, .disabled.user-auth--logout, .disabled.overflow-menu, .btn:disabled, .user-auth--login:disabled, .user-auth--logout:disabled, .overflow-menu:disabled {
     opacity: 0.65; }
-  .btn:not(:disabled):not(.disabled), .user-auth--login:not(:disabled):not(.disabled), .user-auth--logout:not(:disabled):not(.disabled) {
+  .btn:not(:disabled):not(.disabled), .user-auth--login:not(:disabled):not(.disabled), .user-auth--logout:not(:disabled):not(.disabled), .overflow-menu:not(:disabled):not(.disabled) {
     cursor: pointer; }
 
-a.btn.disabled, a.disabled.user-auth--login, a.disabled.user-auth--logout,
+a.btn.disabled, a.disabled.user-auth--login, a.disabled.user-auth--logout, a.disabled.overflow-menu,
 fieldset:disabled a.btn,
 fieldset:disabled .header--homepage.shrink a.user-auth--login,
 .header--homepage.shrink fieldset:disabled a.user-auth--login,
 fieldset:disabled a.user-auth--login,
 fieldset:disabled .header--homepage.shrink a.user-auth--logout,
 .header--homepage.shrink fieldset:disabled a.user-auth--logout,
-fieldset:disabled a.user-auth--logout {
+fieldset:disabled a.user-auth--logout,
+fieldset:disabled a.overflow-menu {
   pointer-events: none; }
 
 .btn-primary {
@@ -2190,13 +2191,13 @@ fieldset:disabled a.user-auth--logout {
     color: #6c757d;
     pointer-events: none; }
 
-.btn-lg, .btn-group-lg > .btn, .header--homepage .btn-group-lg > .user-auth--login, .header--homepage .btn-group-lg > .user-auth--logout, .btn-group-lg > .user-auth--login, .btn-group-lg > .user-auth--logout {
+.btn-lg, .btn-group-lg > .btn, .header--homepage .btn-group-lg > .user-auth--login, .header--homepage .btn-group-lg > .user-auth--logout, .btn-group-lg > .user-auth--login, .btn-group-lg > .user-auth--logout, .btn-group-lg > .overflow-menu {
   padding: 0.5rem 1rem;
   font-size: 1.25rem;
   line-height: 1.5;
   border-radius: 0.3rem; }
 
-.btn-sm, .btn-group-sm > .btn, .header--homepage .btn-group-sm > .user-auth--login, .header--homepage .btn-group-sm > .user-auth--logout, .btn-group-sm > .user-auth--login, .btn-group-sm > .user-auth--logout {
+.btn-sm, .btn-group-sm > .btn, .header--homepage .btn-group-sm > .user-auth--login, .header--homepage .btn-group-sm > .user-auth--logout, .btn-group-sm > .user-auth--login, .btn-group-sm > .user-auth--logout, .btn-group-sm > .overflow-menu {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
   line-height: 1.5;
@@ -2440,37 +2441,42 @@ input[type="button"].btn-block {
   position: relative;
   display: inline-flex;
   vertical-align: middle; }
-  .btn-group > .btn, .header--homepage .btn-group > .user-auth--login, .header--homepage .btn-group > .user-auth--logout, .btn-group > .user-auth--login, .btn-group > .user-auth--logout,
+  .btn-group > .btn, .header--homepage .btn-group > .user-auth--login, .header--homepage .btn-group > .user-auth--logout, .btn-group > .user-auth--login, .btn-group > .user-auth--logout, .btn-group > .overflow-menu,
   .btn-group-vertical > .btn,
   .header--homepage .btn-group-vertical > .user-auth--login,
   .header--homepage .btn-group-vertical > .user-auth--logout,
   .btn-group-vertical > .user-auth--login,
-  .btn-group-vertical > .user-auth--logout {
+  .btn-group-vertical > .user-auth--logout,
+  .btn-group-vertical > .overflow-menu {
     position: relative;
     flex: 1 1 auto; }
-    .btn-group > .btn:hover, .btn-group > .user-auth--login:hover, .btn-group > .user-auth--logout:hover, .header--homepage .btn-group > .user-auth--login:hover, .header--homepage .btn-group > .user-auth--logout:hover,
+    .btn-group > .btn:hover, .btn-group > .user-auth--login:hover, .btn-group > .user-auth--logout:hover, .header--homepage .btn-group > .user-auth--login:hover, .header--homepage .btn-group > .user-auth--logout:hover, .btn-group > .overflow-menu:hover,
     .btn-group-vertical > .btn:hover,
     .btn-group-vertical > .user-auth--login:hover,
     .btn-group-vertical > .user-auth--logout:hover,
     .header--homepage .btn-group-vertical > .user-auth--login:hover,
-    .header--homepage .btn-group-vertical > .user-auth--logout:hover {
+    .header--homepage .btn-group-vertical > .user-auth--logout:hover,
+    .btn-group-vertical > .overflow-menu:hover {
       z-index: 1; }
-    .btn-group > .btn:focus, .btn-group > .user-auth--login:focus, .btn-group > .user-auth--logout:focus, .header--homepage .btn-group > .user-auth--login:focus, .header--homepage .btn-group > .user-auth--logout:focus, .btn-group > .btn:active, .btn-group > .user-auth--login:active, .btn-group > .user-auth--logout:active, .header--homepage .btn-group > .user-auth--login:active, .header--homepage .btn-group > .user-auth--logout:active, .btn-group > .btn.active, .btn-group > .active.user-auth--login, .btn-group > .active.user-auth--logout, .header--homepage .btn-group > .active.user-auth--login, .header--homepage .btn-group > .active.user-auth--logout,
+    .btn-group > .btn:focus, .btn-group > .user-auth--login:focus, .btn-group > .user-auth--logout:focus, .header--homepage .btn-group > .user-auth--login:focus, .header--homepage .btn-group > .user-auth--logout:focus, .btn-group > .overflow-menu:focus, .btn-group > .btn:active, .btn-group > .user-auth--login:active, .btn-group > .user-auth--logout:active, .header--homepage .btn-group > .user-auth--login:active, .header--homepage .btn-group > .user-auth--logout:active, .btn-group > .overflow-menu:active, .btn-group > .btn.active, .btn-group > .active.user-auth--login, .btn-group > .active.user-auth--logout, .header--homepage .btn-group > .active.user-auth--login, .header--homepage .btn-group > .active.user-auth--logout, .btn-group > .active.overflow-menu,
     .btn-group-vertical > .btn:focus,
     .btn-group-vertical > .user-auth--login:focus,
     .btn-group-vertical > .user-auth--logout:focus,
     .header--homepage .btn-group-vertical > .user-auth--login:focus,
     .header--homepage .btn-group-vertical > .user-auth--logout:focus,
+    .btn-group-vertical > .overflow-menu:focus,
     .btn-group-vertical > .btn:active,
     .btn-group-vertical > .user-auth--login:active,
     .btn-group-vertical > .user-auth--logout:active,
     .header--homepage .btn-group-vertical > .user-auth--login:active,
     .header--homepage .btn-group-vertical > .user-auth--logout:active,
+    .btn-group-vertical > .overflow-menu:active,
     .btn-group-vertical > .btn.active,
     .btn-group-vertical > .active.user-auth--login,
     .btn-group-vertical > .active.user-auth--logout,
     .header--homepage .btn-group-vertical > .active.user-auth--login,
-    .header--homepage .btn-group-vertical > .active.user-auth--logout {
+    .header--homepage .btn-group-vertical > .active.user-auth--logout,
+    .btn-group-vertical > .active.overflow-menu {
       z-index: 1; }
 
 .btn-toolbar {
@@ -2480,25 +2486,27 @@ input[type="button"].btn-block {
   .btn-toolbar .input-group {
     width: auto; }
 
-.btn-group > .btn:not(:first-child), .btn-group > .user-auth--login:not(:first-child), .btn-group > .user-auth--logout:not(:first-child), .header--homepage .btn-group > .user-auth--login:not(:first-child), .header--homepage .btn-group > .user-auth--logout:not(:first-child),
+.btn-group > .btn:not(:first-child), .btn-group > .user-auth--login:not(:first-child), .btn-group > .user-auth--logout:not(:first-child), .header--homepage .btn-group > .user-auth--login:not(:first-child), .header--homepage .btn-group > .user-auth--logout:not(:first-child), .btn-group > .overflow-menu:not(:first-child),
 .btn-group > .btn-group:not(:first-child) {
   margin-left: -1px; }
 
-.btn-group > .btn:not(:last-child):not(.dropdown-toggle), .btn-group > .user-auth--login:not(:last-child):not(.dropdown-toggle), .btn-group > .user-auth--logout:not(:last-child):not(.dropdown-toggle), .header--homepage .btn-group > .user-auth--login:not(:last-child):not(.dropdown-toggle), .header--homepage .btn-group > .user-auth--logout:not(:last-child):not(.dropdown-toggle),
+.btn-group > .btn:not(:last-child):not(.dropdown-toggle), .btn-group > .user-auth--login:not(:last-child):not(.dropdown-toggle), .btn-group > .user-auth--logout:not(:last-child):not(.dropdown-toggle), .header--homepage .btn-group > .user-auth--login:not(:last-child):not(.dropdown-toggle), .header--homepage .btn-group > .user-auth--logout:not(:last-child):not(.dropdown-toggle), .btn-group > .overflow-menu:not(:last-child):not(.dropdown-toggle),
 .btn-group > .btn-group:not(:last-child) > .btn,
 .header--homepage .btn-group > .btn-group:not(:last-child) > .user-auth--login,
 .header--homepage .btn-group > .btn-group:not(:last-child) > .user-auth--logout,
 .btn-group > .btn-group:not(:last-child) > .user-auth--login,
-.btn-group > .btn-group:not(:last-child) > .user-auth--logout {
+.btn-group > .btn-group:not(:last-child) > .user-auth--logout,
+.btn-group > .btn-group:not(:last-child) > .overflow-menu {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0; }
 
-.btn-group > .btn:not(:first-child), .btn-group > .user-auth--login:not(:first-child), .btn-group > .user-auth--logout:not(:first-child), .header--homepage .btn-group > .user-auth--login:not(:first-child), .header--homepage .btn-group > .user-auth--logout:not(:first-child),
+.btn-group > .btn:not(:first-child), .btn-group > .user-auth--login:not(:first-child), .btn-group > .user-auth--logout:not(:first-child), .header--homepage .btn-group > .user-auth--login:not(:first-child), .header--homepage .btn-group > .user-auth--logout:not(:first-child), .btn-group > .overflow-menu:not(:first-child),
 .btn-group > .btn-group:not(:first-child) > .btn,
 .header--homepage .btn-group > .btn-group:not(:first-child) > .user-auth--login,
 .header--homepage .btn-group > .btn-group:not(:first-child) > .user-auth--logout,
 .btn-group > .btn-group:not(:first-child) > .user-auth--login,
-.btn-group > .btn-group:not(:first-child) > .user-auth--logout {
+.btn-group > .btn-group:not(:first-child) > .user-auth--logout,
+.btn-group > .btn-group:not(:first-child) > .overflow-menu {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0; }
 
@@ -2512,11 +2520,11 @@ input[type="button"].btn-block {
   .dropleft .dropdown-toggle-split::before {
     margin-right: 0; }
 
-.btn-sm + .dropdown-toggle-split, .btn-group-sm > .btn + .dropdown-toggle-split, .header--homepage .btn-group-sm > .user-auth--login + .dropdown-toggle-split, .header--homepage .btn-group-sm > .user-auth--logout + .dropdown-toggle-split, .btn-group-sm > .user-auth--login + .dropdown-toggle-split, .btn-group-sm > .user-auth--logout + .dropdown-toggle-split {
+.btn-sm + .dropdown-toggle-split, .btn-group-sm > .btn + .dropdown-toggle-split, .header--homepage .btn-group-sm > .user-auth--login + .dropdown-toggle-split, .header--homepage .btn-group-sm > .user-auth--logout + .dropdown-toggle-split, .btn-group-sm > .user-auth--login + .dropdown-toggle-split, .btn-group-sm > .user-auth--logout + .dropdown-toggle-split, .btn-group-sm > .overflow-menu + .dropdown-toggle-split {
   padding-right: 0.375rem;
   padding-left: 0.375rem; }
 
-.btn-lg + .dropdown-toggle-split, .btn-group-lg > .btn + .dropdown-toggle-split, .header--homepage .btn-group-lg > .user-auth--login + .dropdown-toggle-split, .header--homepage .btn-group-lg > .user-auth--logout + .dropdown-toggle-split, .btn-group-lg > .user-auth--login + .dropdown-toggle-split, .btn-group-lg > .user-auth--logout + .dropdown-toggle-split {
+.btn-lg + .dropdown-toggle-split, .btn-group-lg > .btn + .dropdown-toggle-split, .header--homepage .btn-group-lg > .user-auth--login + .dropdown-toggle-split, .header--homepage .btn-group-lg > .user-auth--logout + .dropdown-toggle-split, .btn-group-lg > .user-auth--login + .dropdown-toggle-split, .btn-group-lg > .user-auth--logout + .dropdown-toggle-split, .btn-group-lg > .overflow-menu + .dropdown-toggle-split {
   padding-right: 0.75rem;
   padding-left: 0.75rem; }
 
@@ -2530,51 +2538,58 @@ input[type="button"].btn-block {
   .header--homepage .btn-group-vertical > .user-auth--logout,
   .btn-group-vertical > .user-auth--login,
   .btn-group-vertical > .user-auth--logout,
+  .btn-group-vertical > .overflow-menu,
   .btn-group-vertical > .btn-group {
     width: 100%; }
-  .btn-group-vertical > .btn:not(:first-child), .btn-group-vertical > .user-auth--login:not(:first-child), .btn-group-vertical > .user-auth--logout:not(:first-child), .header--homepage .btn-group-vertical > .user-auth--login:not(:first-child), .header--homepage .btn-group-vertical > .user-auth--logout:not(:first-child),
+  .btn-group-vertical > .btn:not(:first-child), .btn-group-vertical > .user-auth--login:not(:first-child), .btn-group-vertical > .user-auth--logout:not(:first-child), .header--homepage .btn-group-vertical > .user-auth--login:not(:first-child), .header--homepage .btn-group-vertical > .user-auth--logout:not(:first-child), .btn-group-vertical > .overflow-menu:not(:first-child),
   .btn-group-vertical > .btn-group:not(:first-child) {
     margin-top: -1px; }
-  .btn-group-vertical > .btn:not(:last-child):not(.dropdown-toggle), .btn-group-vertical > .user-auth--login:not(:last-child):not(.dropdown-toggle), .btn-group-vertical > .user-auth--logout:not(:last-child):not(.dropdown-toggle), .header--homepage .btn-group-vertical > .user-auth--login:not(:last-child):not(.dropdown-toggle), .header--homepage .btn-group-vertical > .user-auth--logout:not(:last-child):not(.dropdown-toggle),
+  .btn-group-vertical > .btn:not(:last-child):not(.dropdown-toggle), .btn-group-vertical > .user-auth--login:not(:last-child):not(.dropdown-toggle), .btn-group-vertical > .user-auth--logout:not(:last-child):not(.dropdown-toggle), .header--homepage .btn-group-vertical > .user-auth--login:not(:last-child):not(.dropdown-toggle), .header--homepage .btn-group-vertical > .user-auth--logout:not(:last-child):not(.dropdown-toggle), .btn-group-vertical > .overflow-menu:not(:last-child):not(.dropdown-toggle),
   .btn-group-vertical > .btn-group:not(:last-child) > .btn,
   .header--homepage .btn-group-vertical > .btn-group:not(:last-child) > .user-auth--login,
   .header--homepage .btn-group-vertical > .btn-group:not(:last-child) > .user-auth--logout,
   .btn-group-vertical > .btn-group:not(:last-child) > .user-auth--login,
-  .btn-group-vertical > .btn-group:not(:last-child) > .user-auth--logout {
+  .btn-group-vertical > .btn-group:not(:last-child) > .user-auth--logout,
+  .btn-group-vertical > .btn-group:not(:last-child) > .overflow-menu {
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0; }
-  .btn-group-vertical > .btn:not(:first-child), .btn-group-vertical > .user-auth--login:not(:first-child), .btn-group-vertical > .user-auth--logout:not(:first-child), .header--homepage .btn-group-vertical > .user-auth--login:not(:first-child), .header--homepage .btn-group-vertical > .user-auth--logout:not(:first-child),
+  .btn-group-vertical > .btn:not(:first-child), .btn-group-vertical > .user-auth--login:not(:first-child), .btn-group-vertical > .user-auth--logout:not(:first-child), .header--homepage .btn-group-vertical > .user-auth--login:not(:first-child), .header--homepage .btn-group-vertical > .user-auth--logout:not(:first-child), .btn-group-vertical > .overflow-menu:not(:first-child),
   .btn-group-vertical > .btn-group:not(:first-child) > .btn,
   .header--homepage .btn-group-vertical > .btn-group:not(:first-child) > .user-auth--login,
   .header--homepage .btn-group-vertical > .btn-group:not(:first-child) > .user-auth--logout,
   .btn-group-vertical > .btn-group:not(:first-child) > .user-auth--login,
-  .btn-group-vertical > .btn-group:not(:first-child) > .user-auth--logout {
+  .btn-group-vertical > .btn-group:not(:first-child) > .user-auth--logout,
+  .btn-group-vertical > .btn-group:not(:first-child) > .overflow-menu {
     border-top-left-radius: 0;
     border-top-right-radius: 0; }
 
-.btn-group-toggle > .btn, .header--homepage .btn-group-toggle > .user-auth--login, .header--homepage .btn-group-toggle > .user-auth--logout, .btn-group-toggle > .user-auth--login, .btn-group-toggle > .user-auth--logout,
+.btn-group-toggle > .btn, .header--homepage .btn-group-toggle > .user-auth--login, .header--homepage .btn-group-toggle > .user-auth--logout, .btn-group-toggle > .user-auth--login, .btn-group-toggle > .user-auth--logout, .btn-group-toggle > .overflow-menu,
 .btn-group-toggle > .btn-group > .btn,
 .header--homepage .btn-group-toggle > .btn-group > .user-auth--login,
 .header--homepage .btn-group-toggle > .btn-group > .user-auth--logout,
 .btn-group-toggle > .btn-group > .user-auth--login,
-.btn-group-toggle > .btn-group > .user-auth--logout {
+.btn-group-toggle > .btn-group > .user-auth--logout,
+.btn-group-toggle > .btn-group > .overflow-menu {
   margin-bottom: 0; }
-  .btn-group-toggle > .btn input[type="radio"], .header--homepage .btn-group-toggle > .user-auth--login input[type="radio"], .header--homepage .btn-group-toggle > .user-auth--logout input[type="radio"], .btn-group-toggle > .user-auth--login input[type="radio"], .btn-group-toggle > .user-auth--logout input[type="radio"],
+  .btn-group-toggle > .btn input[type="radio"], .header--homepage .btn-group-toggle > .user-auth--login input[type="radio"], .header--homepage .btn-group-toggle > .user-auth--logout input[type="radio"], .btn-group-toggle > .user-auth--login input[type="radio"], .btn-group-toggle > .user-auth--logout input[type="radio"], .btn-group-toggle > .overflow-menu input[type="radio"],
   .btn-group-toggle > .btn input[type="checkbox"],
   .header--homepage .btn-group-toggle > .user-auth--login input[type="checkbox"],
   .header--homepage .btn-group-toggle > .user-auth--logout input[type="checkbox"],
   .btn-group-toggle > .user-auth--login input[type="checkbox"],
   .btn-group-toggle > .user-auth--logout input[type="checkbox"],
+  .btn-group-toggle > .overflow-menu input[type="checkbox"],
   .btn-group-toggle > .btn-group > .btn input[type="radio"],
   .header--homepage .btn-group-toggle > .btn-group > .user-auth--login input[type="radio"],
   .header--homepage .btn-group-toggle > .btn-group > .user-auth--logout input[type="radio"],
   .btn-group-toggle > .btn-group > .user-auth--login input[type="radio"],
   .btn-group-toggle > .btn-group > .user-auth--logout input[type="radio"],
+  .btn-group-toggle > .btn-group > .overflow-menu input[type="radio"],
   .btn-group-toggle > .btn-group > .btn input[type="checkbox"],
   .header--homepage .btn-group-toggle > .btn-group > .user-auth--login input[type="checkbox"],
   .header--homepage .btn-group-toggle > .btn-group > .user-auth--logout input[type="checkbox"],
   .btn-group-toggle > .btn-group > .user-auth--login input[type="checkbox"],
-  .btn-group-toggle > .btn-group > .user-auth--logout input[type="checkbox"] {
+  .btn-group-toggle > .btn-group > .user-auth--logout input[type="checkbox"],
+  .btn-group-toggle > .btn-group > .overflow-menu input[type="checkbox"] {
     position: absolute;
     clip: rect(0, 0, 0, 0);
     pointer-events: none; }
@@ -2635,61 +2650,78 @@ input[type="button"].btn-block {
 .input-group-prepend,
 .input-group-append {
   display: flex; }
-  .input-group-prepend .btn, .input-group-prepend .header--homepage.shrink .user-auth--login, .header--homepage.shrink .input-group-prepend .user-auth--login, .input-group-prepend .user-auth--login, .input-group-prepend .header--homepage.shrink .user-auth--logout, .header--homepage.shrink .input-group-prepend .user-auth--logout, .input-group-prepend .user-auth--logout,
+  .input-group-prepend .btn, .input-group-prepend .header--homepage.shrink .user-auth--login, .header--homepage.shrink .input-group-prepend .user-auth--login, .input-group-prepend .user-auth--login, .input-group-prepend .header--homepage.shrink .user-auth--logout, .header--homepage.shrink .input-group-prepend .user-auth--logout, .input-group-prepend .user-auth--logout, .input-group-prepend .overflow-menu,
   .input-group-append .btn,
   .input-group-append .header--homepage.shrink .user-auth--login,
   .header--homepage.shrink .input-group-append .user-auth--login,
   .input-group-append .user-auth--login,
   .input-group-append .header--homepage.shrink .user-auth--logout,
   .header--homepage.shrink .input-group-append .user-auth--logout,
-  .input-group-append .user-auth--logout {
+  .input-group-append .user-auth--logout,
+  .input-group-append .overflow-menu {
     position: relative;
     z-index: 2; }
-    .input-group-prepend .btn:focus, .input-group-prepend .user-auth--login:focus, .input-group-prepend .user-auth--logout:focus,
+    .input-group-prepend .btn:focus, .input-group-prepend .user-auth--login:focus, .input-group-prepend .user-auth--logout:focus, .input-group-prepend .overflow-menu:focus,
     .input-group-append .btn:focus,
     .input-group-append .user-auth--login:focus,
-    .input-group-append .user-auth--logout:focus {
+    .input-group-append .user-auth--logout:focus,
+    .input-group-append .overflow-menu:focus {
       z-index: 3; }
-  .input-group-prepend .btn + .btn, .input-group-prepend .header--homepage .user-auth--login + .btn, .input-group-prepend .header--homepage .user-auth--logout + .btn, .input-group-prepend .user-auth--login + .btn, .input-group-prepend .user-auth--logout + .btn, .input-group-prepend .header--homepage .btn + .user-auth--login, .input-group-prepend .header--homepage .btn + .user-auth--logout, .input-group-prepend .btn + .user-auth--login, .input-group-prepend .header--homepage .user-auth--login + .user-auth--login, .input-group-prepend .header--homepage .user-auth--logout + .user-auth--login, .input-group-prepend .user-auth--login + .user-auth--login, .input-group-prepend .user-auth--logout + .user-auth--login, .input-group-prepend .btn + .user-auth--logout, .input-group-prepend .header--homepage .user-auth--login + .user-auth--logout, .input-group-prepend .header--homepage .user-auth--logout + .user-auth--logout, .input-group-prepend .user-auth--login + .user-auth--logout, .input-group-prepend .user-auth--logout + .user-auth--logout,
+  .input-group-prepend .btn + .btn, .input-group-prepend .header--homepage .user-auth--login + .btn, .input-group-prepend .header--homepage .user-auth--logout + .btn, .input-group-prepend .user-auth--login + .btn, .input-group-prepend .user-auth--logout + .btn, .input-group-prepend .overflow-menu + .btn, .input-group-prepend .header--homepage .btn + .user-auth--login, .input-group-prepend .header--homepage .overflow-menu + .user-auth--login, .input-group-prepend .header--homepage .btn + .user-auth--logout, .input-group-prepend .header--homepage .overflow-menu + .user-auth--logout, .input-group-prepend .btn + .user-auth--login, .input-group-prepend .header--homepage .user-auth--login + .user-auth--login, .input-group-prepend .header--homepage .user-auth--logout + .user-auth--login, .input-group-prepend .user-auth--login + .user-auth--login, .input-group-prepend .user-auth--logout + .user-auth--login, .input-group-prepend .overflow-menu + .user-auth--login, .input-group-prepend .btn + .user-auth--logout, .input-group-prepend .header--homepage .user-auth--login + .user-auth--logout, .input-group-prepend .header--homepage .user-auth--logout + .user-auth--logout, .input-group-prepend .user-auth--login + .user-auth--logout, .input-group-prepend .user-auth--logout + .user-auth--logout, .input-group-prepend .overflow-menu + .user-auth--logout, .input-group-prepend .btn + .overflow-menu, .input-group-prepend .header--homepage .user-auth--login + .overflow-menu, .input-group-prepend .header--homepage .user-auth--logout + .overflow-menu, .input-group-prepend .user-auth--login + .overflow-menu, .input-group-prepend .user-auth--logout + .overflow-menu, .input-group-prepend .overflow-menu + .overflow-menu,
   .input-group-prepend .btn + .input-group-text,
   .input-group-prepend .header--homepage .user-auth--login + .input-group-text,
   .input-group-prepend .header--homepage .user-auth--logout + .input-group-text,
   .input-group-prepend .user-auth--login + .input-group-text,
   .input-group-prepend .user-auth--logout + .input-group-text,
+  .input-group-prepend .overflow-menu + .input-group-text,
   .input-group-prepend .input-group-text + .input-group-text,
   .input-group-prepend .input-group-text + .btn,
   .input-group-prepend .header--homepage .input-group-text + .user-auth--login,
   .input-group-prepend .header--homepage .input-group-text + .user-auth--logout,
   .input-group-prepend .input-group-text + .user-auth--login,
   .input-group-prepend .input-group-text + .user-auth--logout,
+  .input-group-prepend .input-group-text + .overflow-menu,
   .input-group-append .btn + .btn,
   .input-group-append .header--homepage .user-auth--login + .btn,
   .input-group-append .header--homepage .user-auth--logout + .btn,
   .input-group-append .user-auth--login + .btn,
   .input-group-append .user-auth--logout + .btn,
+  .input-group-append .overflow-menu + .btn,
   .input-group-append .header--homepage .btn + .user-auth--login,
+  .input-group-append .header--homepage .overflow-menu + .user-auth--login,
   .input-group-append .header--homepage .btn + .user-auth--logout,
+  .input-group-append .header--homepage .overflow-menu + .user-auth--logout,
   .input-group-append .btn + .user-auth--login,
   .input-group-append .header--homepage .user-auth--login + .user-auth--login,
   .input-group-append .header--homepage .user-auth--logout + .user-auth--login,
   .input-group-append .user-auth--login + .user-auth--login,
   .input-group-append .user-auth--logout + .user-auth--login,
+  .input-group-append .overflow-menu + .user-auth--login,
   .input-group-append .btn + .user-auth--logout,
   .input-group-append .header--homepage .user-auth--login + .user-auth--logout,
   .input-group-append .header--homepage .user-auth--logout + .user-auth--logout,
   .input-group-append .user-auth--login + .user-auth--logout,
   .input-group-append .user-auth--logout + .user-auth--logout,
+  .input-group-append .overflow-menu + .user-auth--logout,
+  .input-group-append .btn + .overflow-menu,
+  .input-group-append .header--homepage .user-auth--login + .overflow-menu,
+  .input-group-append .header--homepage .user-auth--logout + .overflow-menu,
+  .input-group-append .user-auth--login + .overflow-menu,
+  .input-group-append .user-auth--logout + .overflow-menu,
+  .input-group-append .overflow-menu + .overflow-menu,
   .input-group-append .btn + .input-group-text,
   .input-group-append .header--homepage .user-auth--login + .input-group-text,
   .input-group-append .header--homepage .user-auth--logout + .input-group-text,
   .input-group-append .user-auth--login + .input-group-text,
   .input-group-append .user-auth--logout + .input-group-text,
+  .input-group-append .overflow-menu + .input-group-text,
   .input-group-append .input-group-text + .input-group-text,
   .input-group-append .input-group-text + .btn,
   .input-group-append .header--homepage .input-group-text + .user-auth--login,
   .input-group-append .header--homepage .input-group-text + .user-auth--logout,
   .input-group-append .input-group-text + .user-auth--login,
-  .input-group-append .input-group-text + .user-auth--logout {
+  .input-group-append .input-group-text + .user-auth--logout,
+  .input-group-append .input-group-text + .overflow-menu {
     margin-left: -1px; }
 
 .input-group-prepend {
@@ -2729,11 +2761,13 @@ input[type="button"].btn-block {
 .header--homepage .input-group-lg > .input-group-prepend > .user-auth--logout,
 .input-group-lg > .input-group-prepend > .user-auth--login,
 .input-group-lg > .input-group-prepend > .user-auth--logout,
+.input-group-lg > .input-group-prepend > .overflow-menu,
 .input-group-lg > .input-group-append > .btn,
 .header--homepage .input-group-lg > .input-group-append > .user-auth--login,
 .header--homepage .input-group-lg > .input-group-append > .user-auth--logout,
 .input-group-lg > .input-group-append > .user-auth--login,
-.input-group-lg > .input-group-append > .user-auth--logout {
+.input-group-lg > .input-group-append > .user-auth--logout,
+.input-group-lg > .input-group-append > .overflow-menu {
   padding: 0.5rem 1rem;
   font-size: 1.25rem;
   line-height: 1.5;
@@ -2752,11 +2786,13 @@ input[type="button"].btn-block {
 .header--homepage .input-group-sm > .input-group-prepend > .user-auth--logout,
 .input-group-sm > .input-group-prepend > .user-auth--login,
 .input-group-sm > .input-group-prepend > .user-auth--logout,
+.input-group-sm > .input-group-prepend > .overflow-menu,
 .input-group-sm > .input-group-append > .btn,
 .header--homepage .input-group-sm > .input-group-append > .user-auth--login,
 .header--homepage .input-group-sm > .input-group-append > .user-auth--logout,
 .input-group-sm > .input-group-append > .user-auth--login,
-.input-group-sm > .input-group-append > .user-auth--logout {
+.input-group-sm > .input-group-append > .user-auth--logout,
+.input-group-sm > .input-group-append > .overflow-menu {
   padding: 0.25rem 0.5rem;
   font-size: 0.875rem;
   line-height: 1.5;
@@ -2766,36 +2802,40 @@ input[type="button"].btn-block {
 .input-group-sm > .custom-select {
   padding-right: 1.75rem; }
 
-.input-group > .input-group-prepend > .btn, .header--homepage .input-group > .input-group-prepend > .user-auth--login, .header--homepage .input-group > .input-group-prepend > .user-auth--logout, .input-group > .input-group-prepend > .user-auth--login, .input-group > .input-group-prepend > .user-auth--logout,
+.input-group > .input-group-prepend > .btn, .header--homepage .input-group > .input-group-prepend > .user-auth--login, .header--homepage .input-group > .input-group-prepend > .user-auth--logout, .input-group > .input-group-prepend > .user-auth--login, .input-group > .input-group-prepend > .user-auth--logout, .input-group > .input-group-prepend > .overflow-menu,
 .input-group > .input-group-prepend > .input-group-text,
 .input-group > .input-group-append:not(:last-child) > .btn,
 .header--homepage .input-group > .input-group-append:not(:last-child) > .user-auth--login,
 .header--homepage .input-group > .input-group-append:not(:last-child) > .user-auth--logout,
 .input-group > .input-group-append:not(:last-child) > .user-auth--login,
 .input-group > .input-group-append:not(:last-child) > .user-auth--logout,
+.input-group > .input-group-append:not(:last-child) > .overflow-menu,
 .input-group > .input-group-append:not(:last-child) > .input-group-text,
 .input-group > .input-group-append:last-child > .btn:not(:last-child):not(.dropdown-toggle),
 .input-group > .input-group-append:last-child > .user-auth--login:not(:last-child):not(.dropdown-toggle),
 .input-group > .input-group-append:last-child > .user-auth--logout:not(:last-child):not(.dropdown-toggle),
 .header--homepage .input-group > .input-group-append:last-child > .user-auth--login:not(:last-child):not(.dropdown-toggle),
 .header--homepage .input-group > .input-group-append:last-child > .user-auth--logout:not(:last-child):not(.dropdown-toggle),
+.input-group > .input-group-append:last-child > .overflow-menu:not(:last-child):not(.dropdown-toggle),
 .input-group > .input-group-append:last-child > .input-group-text:not(:last-child) {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0; }
 
-.input-group > .input-group-append > .btn, .header--homepage .input-group > .input-group-append > .user-auth--login, .header--homepage .input-group > .input-group-append > .user-auth--logout, .input-group > .input-group-append > .user-auth--login, .input-group > .input-group-append > .user-auth--logout,
+.input-group > .input-group-append > .btn, .header--homepage .input-group > .input-group-append > .user-auth--login, .header--homepage .input-group > .input-group-append > .user-auth--logout, .input-group > .input-group-append > .user-auth--login, .input-group > .input-group-append > .user-auth--logout, .input-group > .input-group-append > .overflow-menu,
 .input-group > .input-group-append > .input-group-text,
 .input-group > .input-group-prepend:not(:first-child) > .btn,
 .header--homepage .input-group > .input-group-prepend:not(:first-child) > .user-auth--login,
 .header--homepage .input-group > .input-group-prepend:not(:first-child) > .user-auth--logout,
 .input-group > .input-group-prepend:not(:first-child) > .user-auth--login,
 .input-group > .input-group-prepend:not(:first-child) > .user-auth--logout,
+.input-group > .input-group-prepend:not(:first-child) > .overflow-menu,
 .input-group > .input-group-prepend:not(:first-child) > .input-group-text,
 .input-group > .input-group-prepend:first-child > .btn:not(:first-child),
 .input-group > .input-group-prepend:first-child > .user-auth--login:not(:first-child),
 .input-group > .input-group-prepend:first-child > .user-auth--logout:not(:first-child),
 .header--homepage .input-group > .input-group-prepend:first-child > .user-auth--login:not(:first-child),
 .header--homepage .input-group > .input-group-prepend:first-child > .user-auth--logout:not(:first-child),
+.input-group > .input-group-prepend:first-child > .overflow-menu:not(:first-child),
 .input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child) {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0; }
@@ -3768,7 +3808,7 @@ input[type="button"].btn-block {
   .badge:empty {
     display: none; }
 
-.btn .badge, .header--homepage.shrink .user-auth--login .badge, .user-auth--login .badge, .header--homepage.shrink .user-auth--logout .badge, .user-auth--logout .badge {
+.btn .badge, .header--homepage.shrink .user-auth--login .badge, .user-auth--login .badge, .header--homepage.shrink .user-auth--logout .badge, .user-auth--logout .badge, .overflow-menu .badge {
   position: relative;
   top: -1px; }
 
@@ -7336,7 +7376,7 @@ a.text-dark:hover, a.text-dark:focus {
   *::after {
     text-shadow: none !important;
     box-shadow: none !important; }
-  a:not(.btn):not(.user-auth--login):not(.user-auth--logout) {
+  a:not(.btn):not(.user-auth--login):not(.user-auth--logout):not(.overflow-menu) {
     text-decoration: underline; }
   abbr[title]::after {
     content: " (" attr(title) ")"; }
@@ -8398,11 +8438,41 @@ header {
   -webkit-transition: all 0.5s ease-in-out;
   -moz-transition: all 0.5s ease-in-out; }
 
+.overflow-menu {
+  width: 2.25rem;
+  height: 2.25rem;
+  background-color: transparent;
+  color: #212121;
+  border-radius: 50%;
+  margin-left: auto;
+  transition: background-color 0.3s ease-out;
+  cursor: pointer;
+  border: 1px solid transparent; }
+
+.overflow-menu:hover {
+  background-color: #ccc;
+  border: 1px solid transparent;
+  cursor: pointer; }
+
+.overflow-menu:focus {
+  background-color: #ccc;
+  border: 1px solid #999;
+  cursor: pointer;
+  box-shadow: none; }
+
 main {
   padding-top: 4.125rem; }
 
-main.main--homepage {
+.main--homepage {
   padding-top: 0; }
+
+.main--project {
+  position: absolute;
+  top: 4rem;
+  bottom: 0;
+  padding-top: 0;
+  width: 100%;
+  z-index: 2; }
 
 .section--pitch,
 .section--invitation, .section--feature {
@@ -8560,9 +8630,40 @@ footer {
     width: 25rem;
     margin: 3rem auto; }
 
-h1, h2, h3, h4, h5, h6 {
+h1, h2, h3, h4, h5, h6, .widget-pane h1, .widget-pane h2, .widget-pane h3, .widget-pane h4 {
   font-family: "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-  font-weight: 400; }
+  font-weight: 500;
+  line-height: 1.2; }
+
+h1 {
+  font-size: 3rem; }
+
+h2 {
+  font-size: 2.25rem; }
+
+h3 {
+  font-size: 1.875rem; }
+
+h4 {
+  font-size: 1.5rem; }
+
+h5 {
+  font-size: 1.25rem; }
+
+h6 {
+  font-size: 1rem; }
+
+.widget-pane h1 {
+  font-size: 1.75rem; }
+
+.widget-pane h2 {
+  font-size: 1.5rem; }
+
+.widget-pane h3 {
+  font-size: 1.375rem; }
+
+.widget-pane h4 {
+  font-size: 1.25rem; }
 
 .tablesorter-bootstrap {
   width: 100%; }
@@ -8721,9 +8822,9 @@ h1, h2, h3, h4, h5, h6 {
   .email-invite-input-group button {
     margin-left: 0.5rem; }
 
-#project-map-container {
-  height: calc(100vh - 52px); }
-
+/* #project-map-container {
+    height: calc(100vh - 52px);
+} */
 #project-map-title, #project-map-description {
   display: none; }
 
@@ -8732,17 +8833,17 @@ h1, h2, h3, h4, h5, h6 {
   bottom: 30px;
   right: 30px; }
 
-#project-map-sidebar {
-  position: relative;
-  top: 0;
-  left: 0;
-  width: 32rem;
-  height: 100%;
-  background-color: #FFFFFF;
-  z-index: 10000;
-  padding: 1rem;
-  overflow-y: scroll; }
-
+/*#project-map-pane {
+    position: relative;
+    top: 0;
+    left: 0;
+    width: 32rem;
+    height: 100%;
+    background-color: #FFFFFF;
+    z-index: 10000;
+    padding: 1rem;
+    overflow-y: scroll;
+}*/
 .sidebar-layer--active {
   background-color: #F0F0F0; }
 
@@ -8776,15 +8877,57 @@ h1, h2, h3, h4, h5, h6 {
 .sidebar-layer-event--active {
   color: #F00; }
 
+/* New ones */
+.widget-pane {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  margin: 0;
+  padding: 0;
+  width: calc(100% - 2.5rem);
+  height: 50%;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+  z-index: 1;
+  /* transition-property: -webkit-transform,transform,opacity;
+    transition-duration: 0.2s;
+    transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);*/ }
+  @media (min-width: 992px) {
+    .widget-pane {
+      top: 0;
+      width: 32rem;
+      height: 100%;
+      box-shadow: 0 0 20px rgba(0, 0, 0, 0.3); } }
+
+.widget-pane-content {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  /*background-color: #f8f5f4;*/
+  background-color: #fafafa;
+  z-index: 1; }
+
+.widget-pane header {
+  position: static;
+  background-color: transparent;
+  height: auto;
+  padding: 0.625rem; }
+
 html, body {
-  background-color: #f5f5f5;
+  background-color: #fff;
   position: relative;
   height: 100%;
   width: 100%;
   margin: 0;
   font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   color: #212121;
-  font-weight: 300; }
+  font-weight: 400;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  moz-osx-font-smoothing: grayscale; }
 
 .loginbox {
   width: 30rem;
@@ -8811,6 +8954,41 @@ html, body {
     display: block;
     margin: -4rem auto; }
 
+.ltds-sidebar {
+  flex: 0 1 15rem;
+  position: -webkit-sticky;
+  position: sticky;
+  top: 4.125rem;
+  z-index: 1000;
+  height: calc(100vh - 4.125rem);
+  border-right: 1px solid #ccc;
+  order: 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1); }
+
+.heading-designsystem {
+  display: block;
+  margin-right: auto;
+  color: #212121;
+  font-family: 'Poppins';
+  font-weight: 500;
+  font-size: 1.5rem;
+  line-height: 4.125rem; }
+
+.table.typescale td {
+  padding-top: 2rem;
+  padding-bottom: 0;
+  vertical-align: bottom !important;
+  border-color: #ccc; }
+
+.typescale-meta {
+  font-family: 'Roboto Mono', monospace;
+  font-size: 0.75rem;
+  border-right: 1px dashed #ccc; }
+
+.subtitle {
+  font-weight: 500;
+  font-size: 1.125rem; }
+
 /* 
 Extra small devices (portrait phones, less than 576px)
 No media query for `xs` since this is the default in Bootstrap
@@ -8821,7 +8999,19 @@ No media query for `xs` since this is the default in Bootstrap
     display: block;
     padding: 4rem 0; }
   .feature p {
-    font-size: 1.2rem; } }
+    font-size: 1.2rem; }
+  .typescale.paneview h1 {
+    font-size: 1.75rem;
+    font-weight: 500; }
+  .typescale.paneview h2 {
+    font-size: 1.5rem;
+    font-weight: 600; }
+  .typescale.paneview h3 {
+    font-size: 1.375rem;
+    font-weight: 500; }
+  .typescale.paneview h4 {
+    font-size: 1.25rem;
+    font-weight: 500; } }
 
 /* Extra large devices (large desktops, 1200px and up) */
 .skip-header {

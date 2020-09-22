@@ -37,3 +37,33 @@
         @extend %user-auth;
     }
 }
+
+.overflow-menu {
+    @extend .btn;
+    width: 2.25rem;
+    height: 2.25rem;
+    background-color: transparent;
+    color: $gray-ltds-900;
+    border-radius: 50%;
+    margin-left: auto;
+  -webkit-transition: background-color 0.3s ease-out;
+  -moz-transition: background-color 0.3s ease-out;
+  -o-transition: background-color 0.3s ease-out;
+  transition: background-color 0.3s ease-out;
+  cursor: pointer;
+  border: 1px solid transparent;
+}
+
+.overflow-menu:hover {
+  background-color: #ccc;
+  border: 1px solid transparent;
+  cursor: pointer;
+}
+
+
+.overflow-menu:focus {
+  background-color: #ccc;
+  border: 1px solid #999;
+  cursor: pointer;
+  box-shadow: none;
+}

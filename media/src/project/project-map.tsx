@@ -9,7 +9,7 @@ import { IconLayer } from '@deck.gl/layers';
 import { Position } from '@deck.gl/core/utils/positions';
 import { PickInfo } from '@deck.gl/core/lib/deck';
 
-import { ProjectMapSidebar } from './project-map-sidebar';
+import { ProjectMapPane } from './project-map-pane';
 import { LayerProps } from './layer';
 
 // TODO: fix types
@@ -80,7 +80,7 @@ export const ProjectMap: React.FC = () => {
     const mapContainer: HTMLElement | null =
         document.querySelector('#project-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
-    const isNewProject = mapContainer ?
+    const newProjectFlag = mapContainer ?
         mapContainer.dataset.newproject === 'True': false;
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
@@ -522,12 +522,12 @@ export const ProjectMap: React.FC = () => {
                 </DeckGL>
             )}
             {projectTitle && (
-                <ProjectMapSidebar
+                <ProjectMapPane
                     title={projectTitle || 'Untitled'}
                     description={projectDescription || ''}
                     baseMap={projectBaseMap || ''}
                     setBaseMap={setProjectBaseMap}
-                    isNewProject={isNewProject}
+                    newProjectFlag={newProjectFlag}
                     updateProject={updateProject}
                     deleteProject={deleteProject}
                     layers={layerData}
