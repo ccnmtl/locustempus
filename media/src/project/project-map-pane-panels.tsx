@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Layer, LayerProps } from './layer';
-import { LayerEventData, LayerEventDatum, BASE_MAPS } from './project-map';
+import {
+    LayerEventData, LayerEventDatum,
+    BASE_MAPS, BASE_MAP_IMAGES } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faLayerGroup, faArrowLeft, faEllipsisV, faAngleRight, faAngleDown
@@ -95,15 +97,14 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                         <div>
                             <div onClick={toggleBaseMapMenu}>
                                 <FontAwesomeIcon icon={faAngleDown}/>
-                                    Base Map: {BASE_MAPS.get(projectBaseMap)}
+                                Base Map: {BASE_MAPS.get(projectBaseMap)}
                             </div>
                             <fieldset className="form-group">
                                 <div className="row">
-                                    <div className="col">
-                                        {[...BASE_MAPS.keys()].map((val, idx) => {
-                                            return (
-                                                <div className="form-check"
-                                                    key={idx}>
+                                    {[...BASE_MAPS.keys()].map((val, idx) => {
+                                        return (
+                                            <div className="col-4" key={idx}>
+                                                <div className="form-check">
                                                     <input
                                                         className={
                                                             'form-check-input'}
@@ -116,12 +117,15 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                                                     />
                                                     <label
                                                         htmlFor={'base-map-' + idx}>
+                                                        <div className="base-map-image"> {/* eslint-disable-line max-len */}
+                                                            <img className="img-fluid" src={BASE_MAP_IMAGES.get(val)} alt="" /> {/* eslint-disable-line max-len */}
+                                                        </div>
                                                         {BASE_MAPS.get(val)}
                                                     </label>
                                                 </div>
-                                            );})
-                                        }
-                                    </div>
+                                            </div>
+                                        );})
+                                    }
                                 </div>
                             </fieldset>
                         </div>
