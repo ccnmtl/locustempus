@@ -85,6 +85,7 @@
     height: 50%;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     z-index: 1;
+
     /* transition-property: -webkit-transform,transform,opacity;
     transition-duration: 0.2s;
     transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);*/
@@ -104,8 +105,9 @@
     height: 100%;
     margin: 0;
     padding: 0;
-    /*background-color: #f8f5f4;*/
-    background-color: #fafafa;
+    /*background-color: #f8f5f4;
+    background-color: #fafafa;*/
+    background-color: #e3f2fd;
     z-index: 1;
 }
 
@@ -115,6 +117,19 @@
     background-color: transparent;
     height: auto;
     padding: 0.625rem;
+}
+
+.pane-content {
+    height: calc(100% - 4rem);
+    border-bottom: 1px solid #ccc;
+}
+
+.pane-content-body {
+    background-color: #fff;
+    margin: 0;
+    padding: 1rem;
+    overflow-y: scroll;
+    height: calc(100% - 3.25rem);
 }
 
 
