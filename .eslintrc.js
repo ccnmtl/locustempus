@@ -100,5 +100,11 @@ module.exports = {
         'security/detect-possible-timing-attacks': 1,
         'security/detect-pseudoRandomBytes': 1,
         'security/detect-unsafe-regex': 1
-    }
+    },
+    "overrides": [{
+        "files": ["*.tsx"],
+        "rules": {
+            "max-len": [2, {"code": 100, "tabWidth": 4, "ignoreUrls": true}],
+        }
+    }]
 };
