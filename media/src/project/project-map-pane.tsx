@@ -181,7 +181,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
                     </div>
                 )}
                 <div className='pane-content'>
-                {PANEL[panelState]}
+                    {PANEL[panelState]}
                 </div>
             </div>
         </div>
