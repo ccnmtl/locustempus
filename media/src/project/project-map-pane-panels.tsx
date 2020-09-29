@@ -69,106 +69,108 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
     };
 
     return (
-        <div>
+        <>
             <h4>{isNewProject ? 'Create Project' : 'Edit Project'}</h4>
-            <form onSubmit={handleFormSubmit} >
-                <div className={'form-group'}>
-                    <label htmlFor={'event-form__name'}>Title</label>
-                    <input
-                        type={'text'}
-                        id={'event-form__name'}
-                        className={'form-control'}
-                        value={title}
-                        autoFocus={true}
-                        onChange={handleTitle}/>
-                </div>
-                <div className="form-group">
-                    <label htmlFor={'event-form__description'}>
-                        Description
-                    </label>
-                    <ReactQuill
-                        value={description}
-                        onChange={setDescription}/>
-                </div>
-                { showBaseMapMenu ? (
-                    <div>
-                        <div onClick={toggleBaseMapMenu}>
-                            <FontAwesomeIcon icon={faAngleDown}/>
-                                Base Map: {BASE_MAPS.get(projectBaseMap)}
-                        </div>
-                        <fieldset className="form-group">
-                            <div className="row">
-                                <div className="col">
-                                    {[...BASE_MAPS.keys()].map((val, idx) => {
-                                        return (
-                                            <div className="form-check"
-                                                key={idx}>
-                                                <input
-                                                    className={
-                                                        'form-check-input'}
-                                                    type={'radio'}
-                                                    id={'base-map-' + idx}
-                                                    value={val}
-                                                    onChange={handleBaseMap}
-                                                    checked={
-                                                        val === projectBaseMap}
-                                                />
-                                                <label
-                                                    htmlFor={'base-map-' + idx}>
-                                                    {BASE_MAPS.get(val)}
-                                                </label>
-                                            </div>
-                                        );})
-                                    }
-                                </div>
-                            </div>
-                        </fieldset>
+            <div className='pane-content-body'>
+                <form onSubmit={handleFormSubmit} >
+                    <div className={'form-group'}>
+                        <label htmlFor={'event-form__name'}>Title</label>
+                        <input
+                            type={'text'}
+                            id={'event-form__name'}
+                            className={'form-control'}
+                            value={title}
+                            autoFocus={true}
+                            onChange={handleTitle}/>
                     </div>
-                ) : (
-                    <div onClick={toggleBaseMapMenu}>
+                    <div className="form-group">
+                        <label htmlFor={'event-form__description'}>
+                            Description
+                        </label>
+                        <ReactQuill
+                            value={description}
+                            onChange={setDescription}/>
+                    </div>
+                    { showBaseMapMenu ? (
                         <div>
-                            <FontAwesomeIcon
-                                icon={faAngleRight}/> Base Map: {projectBaseMap}
+                            <div onClick={toggleBaseMapMenu}>
+                                <FontAwesomeIcon icon={faAngleDown}/>
+                                    Base Map: {BASE_MAPS.get(projectBaseMap)}
+                            </div>
+                            <fieldset className="form-group">
+                                <div className="row">
+                                    <div className="col">
+                                        {[...BASE_MAPS.keys()].map((val, idx) => {
+                                            return (
+                                                <div className="form-check"
+                                                    key={idx}>
+                                                    <input
+                                                        className={
+                                                            'form-check-input'}
+                                                        type={'radio'}
+                                                        id={'base-map-' + idx}
+                                                        value={val}
+                                                        onChange={handleBaseMap}
+                                                        checked={
+                                                            val === projectBaseMap}
+                                                    />
+                                                    <label
+                                                        htmlFor={'base-map-' + idx}>
+                                                        {BASE_MAPS.get(val)}
+                                                    </label>
+                                                </div>
+                                            );})
+                                        }
+                                    </div>
+                                </div>
+                            </fieldset>
+                        </div>
+                    ) : (
+                        <div onClick={toggleBaseMapMenu}>
+                            <div>
+                                <FontAwesomeIcon
+                                    icon={faAngleRight}/>Base Map: {projectBaseMap}
+                            </div>
+                        </div>
+                    ) }
+                    <div className="form-row">
+                        <div className={'form-group col-3'}>
+                        </div>
+                        <div className={'form-group col-9'}>
+                            {isNewProject ? (
+                                <>
+                                    <button
+                                        type={'button'}
+                                        onClick={handleNewProjectCancel}
+                                        className={'btn btn-danger'}>
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type={'submit'}
+                                        className={'btn btn-primary'}>
+                                        Create project
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    <button
+                                        type={'button'}
+                                        onClick={handleCancel}
+                                        className={'btn btn-danger'}>
+                                        Cancel
+                                    </button>
+                                    <button
+                                        type={'submit'}
+                                        className={'btn btn-primary'}>
+                                        Save
+                                    </button>
+                                </>
+                            )}
                         </div>
                     </div>
-                ) }
-                <div className="form-row">
-                    <div className={'form-group col-3'}>
-                    </div>
-                    <div className={'form-group col-9'}>
-                        {isNewProject ? (
-                            <>
-                                <button
-                                    type={'button'}
-                                    onClick={handleNewProjectCancel}
-                                    className={'btn btn-danger'}>
-                                    Cancel
-                                </button>
-                                <button
-                                    type={'submit'}
-                                    className={'btn btn-primary'}>
-                                    Create project
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                <button
-                                    type={'button'}
-                                    onClick={handleCancel}
-                                    className={'btn btn-danger'}>
-                                    Cancel
-                                </button>
-                                <button
-                                    type={'submit'}
-                                    className={'btn btn-primary'}>
-                                    Save
-                                </button>
-                            </>
-                        )}
-                    </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        </>
     );
 };
 
@@ -218,7 +220,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
     };
 
     return (
-        <div>
+        <div className='EditEvent'>
             <h4>Edit Event</h4>
             <form onSubmit={handleFormSubmbit} >
                 <div className={'form-row'}>
@@ -325,7 +327,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
     };
 
     return (
-        <div>
+        <div className='AddEvent'>
             <h4>Add Event</h4>
             <form onSubmit={handleFormSubmbit} >
                 <div className={'form-row'}>
@@ -497,62 +499,62 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
     return (
         <>
-            <div>
-                <ul className="nav nav-tabs">
-                    {['Overview', 'Base'].map((el, idx) => {
-                        return (
-                            <li className="nav-item" key={idx}>
-                                <a className={activeTab == idx ?
-                                    'nav-link active' : 'nav-link'}
-                                href='#'
-                                data-active-tab={idx}
-                                onClick={handleSetActiveTab}>{el}</a>
-                            </li>
-                        );
-                    })}
-                </ul>
+            <ul className="nav nav-tabs pane-content-tabs">
+                {['Overview', 'Base'].map((el, idx) => {
+                    return (
+                        <li className="nav-item" key={idx}>
+                            <a className={activeTab == idx ?
+                                'nav-link active' : 'nav-link'}
+                            href='#'
+                            data-active-tab={idx}
+                            onClick={handleSetActiveTab}>{el}</a>
+                        </li>
+                    );
+                })}
+            </ul>
+            <div className='pane-content-body'>
+                {activeTab === 0 && (
+                    <div className='whyisthis' dangerouslySetInnerHTML={{__html: description}}/>
+                )}
+                {activeTab === 1 && (
+                    <>
+                        <form onSubmit={handleCreateLayer}>
+                            <button type='submit'>
+                                <FontAwesomeIcon icon={faLayerGroup}/>Add Layer
+                            </button>
+                        </form>
+                        {layers && layers.map(
+                            (layer, idx) => {
+                                let layerEvents: LayerEventDatum[] = [];
+                                const data = events.get(layer.pk);
+                                if (data && data.events) {
+                                    layerEvents = data.events;
+                                }
+
+                                let layerVisibility = true;
+                                if (data && data.visibility) {
+                                    layerVisibility = data.visibility;
+                                }
+
+                                return (
+                                    <Layer {...layer}
+                                        deleteLayer={deleteLayer}
+                                        updateLayer={updateLayer}
+                                        key={idx}
+                                        activeLayer={activeLayer}
+                                        setActiveLayer={setActiveLayer}
+                                        layerEvents={layerEvents}
+                                        layerVisibility={layerVisibility}
+                                        setLayerVisibility={setLayerVisibility}
+                                        activeEvent={activeEvent}
+                                        setActiveEvent={setActiveEvent}
+                                        setActiveEventDetail={setActiveEventDetail}
+                                        activeEventEdit={activeEventEdit}/>
+                                );
+                            })}
+                    </>
+                )}
             </div>
-            {activeTab === 0 && (
-                <div dangerouslySetInnerHTML={{__html: description}}/>
-            )}
-            {activeTab === 1 && (
-                <>
-                    <form onSubmit={handleCreateLayer}>
-                        <button type='submit'>
-                            <FontAwesomeIcon icon={faLayerGroup}/>Add Layer
-                        </button>
-                    </form>
-                    {layers && layers.map(
-                        (layer, idx) => {
-                            let layerEvents: LayerEventDatum[] = [];
-                            const data = events.get(layer.pk);
-                            if (data && data.events) {
-                                layerEvents = data.events;
-                            }
-
-                            let layerVisibility = true;
-                            if (data && data.visibility) {
-                                layerVisibility = data.visibility;
-                            }
-
-                            return (
-                                <Layer {...layer}
-                                    deleteLayer={deleteLayer}
-                                    updateLayer={updateLayer}
-                                    key={idx}
-                                    activeLayer={activeLayer}
-                                    setActiveLayer={setActiveLayer}
-                                    layerEvents={layerEvents}
-                                    layerVisibility={layerVisibility}
-                                    setLayerVisibility={setLayerVisibility}
-                                    activeEvent={activeEvent}
-                                    setActiveEvent={setActiveEvent}
-                                    setActiveEventDetail={setActiveEventDetail}
-                                    activeEventEdit={activeEventEdit}/>
-                            );
-                        })}
-                </>
-            )}
         </>
     );
 };

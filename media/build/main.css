@@ -8373,7 +8373,7 @@ a.text-dark:hover, a.text-dark:focus {
   border: 1px solid #ccc; }
 
 header {
-  background-color: #424242;
+  background-color: #01579b;
   height: 4.125rem; }
 
 .header--homepage {
@@ -8392,7 +8392,7 @@ header {
   position: absolute;
   top: 0;
   left: 0;
-  background-color: #424242;
+  background-color: #01579b;
   opacity: 0.6; }
 
 .header__logo {
@@ -8404,7 +8404,7 @@ header {
 
 .header--homepage.shrink {
   height: 4.125rem;
-  background-color: #424242; }
+  background-color: #01579b; }
 
 .header--homepage.shrink .header__logo {
   height: 4.125rem; }
@@ -8522,7 +8522,7 @@ main {
       left: 0; } }
   @media (min-width: 1200px) {
     .hero-text {
-      width: 50rem;
+      width: 49rem;
       top: 15.25rem;
       left: 0; } }
   .hero-text h1 {
@@ -8613,16 +8613,17 @@ main {
 .navlist--footer {
   justify-content: center; }
   .navlist--footer a {
-    color: #fff;
+    color: #000;
     text-decoration: none;
     display: block;
     padding: 0.5rem 1rem; }
     .navlist--footer a:hover {
-      color: #fff;
-      text-decoration: underline; }
+      color: #000;
+      text-decoration: underline;
+      background-color: #eff6ff; }
 
 footer {
-  background-color: #494949;
+  background-color: #f6faff;
   padding-top: 2rem;
   padding-bottom: 4rem; }
   footer .footer__logo {
@@ -8906,8 +8907,9 @@ h6 {
   height: 100%;
   margin: 0;
   padding: 0;
-  /*background-color: #f8f5f4;*/
-  background-color: #fafafa;
+  /*background-color: #f8f5f4;
+    background-color: #fafafa;*/
+  background-color: #e3f2fd;
   z-index: 1; }
 
 .widget-pane header {
@@ -8915,6 +8917,17 @@ h6 {
   background-color: transparent;
   height: auto;
   padding: 0.625rem; }
+
+.pane-content {
+  height: calc(100% - 4rem);
+  border-bottom: 1px solid #ccc; }
+
+.pane-content-body {
+  background-color: #fff;
+  margin: 0;
+  padding: 1rem;
+  overflow-y: scroll;
+  height: calc(100% - 3.25rem); }
 
 html, body {
   background-color: #fff;

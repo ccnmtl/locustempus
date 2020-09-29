@@ -2,13 +2,14 @@
     @extend .nav;
     justify-content: center;
     a {
-        color: $white;
+        color: $black;
         text-decoration: none;
         display: block;
         padding: 0.5rem 1rem;
         &:hover {
-            color: $white;
+            color: $black;
             text-decoration: underline;
+            background-color: #eff6ff;
         }
     }
 }
