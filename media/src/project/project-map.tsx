@@ -12,6 +12,8 @@ import { PickInfo } from '@deck.gl/core/lib/deck';
 import { ProjectMapPane } from './project-map-pane';
 import { LayerProps } from './layer';
 
+const STATIC_URL = LocusTempus.staticUrl;
+
 // TODO: fix types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const authedFetch = (url: string, method: string, data: any): Promise<any> => {
@@ -66,6 +68,15 @@ export const BASE_MAPS = new Map([
     ['dark-v10', 'Dark'],
     ['satellite-v9', 'Satellite'],
     ['satellite-streets-v11', 'Street - Satellite'],
+]);
+
+export const BASE_MAP_IMAGES = new Map([
+    ['streets-v11', STATIC_URL + '/img/map_thumbnails/demo.png'],
+    ['outdoors-v11', STATIC_URL + '/img/map_thumbnails/demo.png'],
+    ['light-v10', STATIC_URL + '/img/map_thumbnails/demo.png'],
+    ['dark-v10', STATIC_URL + '/img/map_thumbnails/demo.png'],
+    ['satellite-v9', STATIC_URL + '/img/map_thumbnails/demo.png'],
+    ['satellite-streets-v11', STATIC_URL + '/img/map_thumbnails/demo.png'],
 ]);
 
 export const ProjectMap: React.FC = () => {
