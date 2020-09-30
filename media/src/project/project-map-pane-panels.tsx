@@ -503,10 +503,10 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
     return (
         <>
-            <ul className="nav nav-tabs pane-content-tabs">
+            <ul className='nav nav-tabs pane-content-tabs' style={{ top: 98 }}>
                 {['Overview', 'Base'].map((el, idx) => {
                     return (
-                        <li className="nav-item" key={idx}>
+                        <li className='nav-item button' key={idx}>
                             <a className={activeTab == idx ?
                                 'nav-link active' : 'nav-link'}
                             href='#'
@@ -518,44 +518,46 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
             </ul>
             <div className='pane-content-body'>
                 {activeTab === 0 && (
-                    <div className='whyisthis' dangerouslySetInnerHTML={{__html: description}}/>
+                    <div className='fade-load' dangerouslySetInnerHTML={{__html: description}}/>
                 )}
                 {activeTab === 1 && (
                     <>
-                        <form onSubmit={handleCreateLayer}>
-                            <button type='submit'>
-                                <FontAwesomeIcon icon={faLayerGroup}/>Add Layer
-                            </button>
-                        </form>
-                        {layers && layers.map(
-                            (layer, idx) => {
-                                let layerEvents: LayerEventDatum[] = [];
-                                const data = events.get(layer.pk);
-                                if (data && data.events) {
-                                    layerEvents = data.events;
-                                }
+                        <div className='fade-load'>
+                            <form onSubmit={handleCreateLayer}>
+                                <button type='submit'>
+                                    <FontAwesomeIcon icon={faLayerGroup}/>Add Layer
+                                </button>
+                            </form>
+                            {layers && layers.map(
+                                (layer, idx) => {
+                                    let layerEvents: LayerEventDatum[] = [];
+                                    const data = events.get(layer.pk);
+                                    if (data && data.events) {
+                                        layerEvents = data.events;
+                                    }
 
-                                let layerVisibility = true;
-                                if (data && data.visibility) {
-                                    layerVisibility = data.visibility;
-                                }
+                                    let layerVisibility = true;
+                                    if (data && data.visibility) {
+                                        layerVisibility = data.visibility;
+                                    }
 
-                                return (
-                                    <Layer {...layer}
-                                        deleteLayer={deleteLayer}
-                                        updateLayer={updateLayer}
-                                        key={idx}
-                                        activeLayer={activeLayer}
-                                        setActiveLayer={setActiveLayer}
-                                        layerEvents={layerEvents}
-                                        layerVisibility={layerVisibility}
-                                        setLayerVisibility={setLayerVisibility}
-                                        activeEvent={activeEvent}
-                                        setActiveEvent={setActiveEvent}
-                                        setActiveEventDetail={setActiveEventDetail}
-                                        activeEventEdit={activeEventEdit}/>
-                                );
-                            })}
+                                    return (
+                                        <Layer {...layer}
+                                            deleteLayer={deleteLayer}
+                                            updateLayer={updateLayer}
+                                            key={idx}
+                                            activeLayer={activeLayer}
+                                            setActiveLayer={setActiveLayer}
+                                            layerEvents={layerEvents}
+                                            layerVisibility={layerVisibility}
+                                            setLayerVisibility={setLayerVisibility}
+                                            activeEvent={activeEvent}
+                                            setActiveEvent={setActiveEvent}
+                                            setActiveEventDetail={setActiveEventDetail}
+                                            activeEventEdit={activeEventEdit}/>
+                                    );
+                                })}
+                        </div>
                     </>
                 )}
             </div>

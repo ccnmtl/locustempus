@@ -160,8 +160,8 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
 
     return (
         <div id='project-map-pane' className='widget-pane'>
-            <div className='widget-pane-content'>
-                <header className="d-flex flex-row">
+            <div className='widget-pane-content project-pane' id='pane-scroll-y'>
+                <header className='d-flex flex-row project-pane__header'>
                     <h1>{title}</h1>
                     <button onClick={toggleProjectMenu}
                         className='overflow-menu'>
