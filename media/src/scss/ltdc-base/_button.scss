@@ -38,7 +38,7 @@
     }
 }
 
-.overflow-menu {
+.overflow-toggle {
     @extend .btn;
     width: 2.25rem;
     height: 2.25rem;
@@ -54,14 +54,14 @@
   border: 1px solid transparent;
 }
 
-.overflow-menu:hover {
+.overflow-toggle:hover {
   background-color: #ccc;
   border: 1px solid transparent;
   cursor: pointer;
 }
 
 
-.overflow-menu:focus {
+.overflow-toggle:focus {
   background-color: #ccc;
   border: 1px solid #999;
   cursor: pointer;

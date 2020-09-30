@@ -151,4 +151,51 @@
     background-color: #999;
 }
 
+.overflow-menu {
+    position: relative;
+}
 
+.overflow-menu-show {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: .5rem 0;
+    margin: .125rem 0 0;
+    font-size: .875rem;
+    line-height: 20px;
+    transform: translate3d(0px, 30px, 0px);
+    min-width: 10rem;
+    z-index: 1000;
+    display: block;
+    color: #212529;
+    text-align: left;
+    list-style: none;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: none;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+-webkit-box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
+    box-shadow: 0 8px 10px 1px rgba(0,0,0,0.14), 0 3px 14px 2px rgba(0,0,0,0.12), 0 5px 5px -3px rgba(0,0,0,0.2);
+    }
+
+.overflow-menu-show li {
+    color: #202124;
+}
+
+.overflow-menu-show li a {
+padding-bottom: 0.5rem;
+    padding-top: 0.5rem;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    display: block;
+    cursor: pointer;
+}
+
+.overflow-menu-show li a:hover {
+    background-color: #efefef;
+}
+
+.overflow-icon {
+    padding-right: 0.875rem;
+}

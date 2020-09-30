@@ -8,6 +8,8 @@ import {
 } from './project-map-pane-panels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
+import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
+import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 export interface ProjectMapPaneProps {
     title: string;
@@ -163,23 +165,32 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
                 <header className='d-flex flex-row project-pane__header'>
                     <h1>{title}</h1>
-                    <button onClick={toggleProjectMenu}
-                        className='overflow-menu'>
-                        <FontAwesomeIcon icon={faEllipsisV}/>
-                    </button>
-                </header>
-                {showProjectMenu && (
-                    <div>
-                        <ul>
-                            <li><a onClick={handleEdit}>
-                                Edit project</a>
-                            </li>
-                            <li>
-                                <a onClick={handleDelete}>Delete project</a>
-                            </li>
-                        </ul>
+                    <div className='overflow-menu'>
+                        <button onClick={toggleProjectMenu}
+                            className='overflow-toggle'>
+                            <FontAwesomeIcon icon={faEllipsisV}/>
+                        </button>
+                        {showProjectMenu && (
+                            <ul className='overflow-menu-show'>
+                                <li><a onClick={handleEdit}>
+                                    <span className='overflow-icon'>
+                                        <FontAwesomeIcon icon={faPencilAlt}/>
+                                    </span>
+                                    Edit project
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onClick={handleDelete}>
+                                    <span className='overflow-icon'>
+                                        <FontAwesomeIcon icon={faTrashAlt}/>
+                                    </span>
+                                    Delete project
+                                    </a>
+                                </li>
+                            </ul>
+                        )}
                     </div>
-                )}
+                </header>
                 <div className='pane-content'>
                     {PANEL[panelState]}
                 </div>
