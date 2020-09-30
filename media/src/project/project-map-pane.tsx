@@ -172,19 +172,20 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
                         </button>
                         {showProjectMenu && (
                             <ul className='overflow-menu-show'>
-                                <li><a onClick={handleEdit}>
-                                    <span className='overflow-icon'>
-                                        <FontAwesomeIcon icon={faPencilAlt}/>
-                                    </span>
-                                    Edit project
+                                <li>
+                                    <a onClick={handleEdit}>
+                                        <span className='overflow-icon'>
+                                            <FontAwesomeIcon icon={faPencilAlt}/>
+                                        </span>
+                                        Edit project
                                     </a>
                                 </li>
                                 <li>
                                     <a onClick={handleDelete}>
-                                    <span className='overflow-icon'>
-                                        <FontAwesomeIcon icon={faTrashAlt}/>
-                                    </span>
-                                    Delete project
+                                        <span className='overflow-icon'>
+                                            <FontAwesomeIcon icon={faTrashAlt}/>
+                                        </span>
+                                        Delete project
                                     </a>
                                 </li>
                             </ul>
