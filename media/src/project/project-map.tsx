@@ -421,6 +421,28 @@ export const ProjectMap: React.FC = () => {
             });
     };
 
+    const createActivity = (instructions: string): void => {
+        if (activity) {
+            // TODO: write some kind of error warning
+            return;
+        }
+        const data = {
+            project: projectPk,
+            instructions: instructions
+        };
+        authedFetch('/api/activity/', 'POST', JSON.stringify(data))
+            .then((response) => {
+                if (response.status === 201) {
+                    return response.json();
+                } else {
+                    throw 'Activity creation failed.';
+                }
+            })
+            .then((data: ActivityData) => {
+                setActivity(data);
+            });
+    };
+
     // TODO: figure out how to type this
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleDeckGlClick = (info: any, event: any): void => {
@@ -560,6 +582,7 @@ export const ProjectMap: React.FC = () => {
                     layers={layerData}
                     events={eventData}
                     activity={activity}
+                    createActivity={createActivity}
                     activeLayer={activeLayer}
                     setActiveLayer={setActiveLayer}
                     addLayer={addLayer}

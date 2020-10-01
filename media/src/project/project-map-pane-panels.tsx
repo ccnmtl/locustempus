@@ -469,6 +469,65 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     );
 };
 
+interface ActivityProps {
+    activity: ActivityData | null;
+    createActivity(instructions: string): void;
+}
+
+const Activity: React.FC<ActivityProps> = (
+    {activity, createActivity}: ActivityProps) => {
+
+    const [instructions, setInstructions] = useState<string | null>(null);
+    const [showForm, setShowForm] = useState<boolean>(false);
+
+    const handleCreateActivity = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
+        instructions && createActivity(instructions);
+    };
+
+    if (activity) {
+        return (<div dangerouslySetInnerHTML={{__html: activity.instructions}}/>);
+    } else {
+        return (
+            <>
+                {showForm ? (
+                    <form onSubmit={handleCreateActivity}>
+                        <div className="form-group">
+                            <label htmlFor={'activity-form__instructions'}>
+                            </label>
+                            <ReactQuill
+                                value={instructions || ''}
+                                onChange={setInstructions}/>
+                        </div>
+                        <div className="form-row">
+                            <div className={'form-group col-3'}>
+                            </div>
+                            <div className={'form-group col-9'}>
+                                <button
+                                    type={'button'}
+                                    onClick={(): void => setShowForm(false)}
+                                    className={'btn btn-danger'}>
+                                    Cancel
+                                </button>
+                                <button type={'submit'} className={'btn btn-primary'}>
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                ) : (
+                    <button
+                        type={'submit'}
+                        className={'btn btn-primary'}
+                        onClick={(): void => setShowForm(true)}>
+                        Create Activity
+                    </button>
+                )}
+            </>
+        );
+    }
+};
+
 interface DefaultPanelProps {
     activeTab: number;
     setActiveTab(idx: number): void;
@@ -477,6 +536,7 @@ interface DefaultPanelProps {
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
     activity: ActivityData | null;
+    createActivity(instructions: string): void;
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
     setLayerVisibility(pk: number): void;
@@ -493,9 +553,9 @@ interface DefaultPanelProps {
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
     {
         activeTab, setActiveTab, addLayer, description, layers, events,
-        activity, deleteLayer, updateLayer, setLayerVisibility, activeLayer,
-        setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
-        activeEventEdit
+        activity, createActivity, deleteLayer, updateLayer, setLayerVisibility,
+        activeLayer, setActiveLayer, activeEvent, setActiveEvent,
+        setActiveEventDetail, activeEventEdit
     }: DefaultPanelProps) => {
 
     const handleSetActiveTab = (
@@ -542,9 +602,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                         </div>
                         <div>
                             <h2>Create Activity</h2>
-                            {activity && (
-                                <div dangerouslySetInnerHTML={{__html: activity.instructions}}/>
-                            )}
+                            <Activity activity={activity} createActivity={createActivity}/>
                         </div>
                     </div>
                 )}
