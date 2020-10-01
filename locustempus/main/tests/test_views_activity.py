@@ -188,5 +188,6 @@ class ApiTest(CourseTestMixin, TestCase):
             )
         )
         response = self.client.get(
-            reverse('api-activity-detail', args=[self.registrar_course_activity.pk]))
+            reverse('api-activity-detail',
+                    args=[self.registrar_course_activity.pk]))
         self.assertEqual(response.status_code, 200)
