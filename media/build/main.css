@@ -9038,7 +9038,8 @@ No media query for `xs` since this is the default in Bootstrap
   position: sticky;
   background-color: #fff;
   height: auto;
-  padding: 1rem; }
+  padding: 1rem;
+  z-index: 1000; }
 
 .pane-content {
   background-color: #fff; }
@@ -9047,7 +9048,8 @@ No media query for `xs` since this is the default in Bootstrap
   position: -webkit-sticky;
   position: sticky;
   background-color: #fff;
-  border-bottom: 1px solid #ccc; }
+  border-bottom: 1px solid #ccc;
+  z-index: 900; }
 
 .pane-content-tabs .nav-item {
   margin: 0;
@@ -9111,6 +9113,11 @@ No media query for `xs` since this is the default in Bootstrap
   transition-timing-function: ease-in;
   -webkit-animation: background-fade 1s;
           animation: background-fade 1s; }
+
+.fade-load {
+  -webkit-animation: opacity-fade-in 500ms;
+          animation: opacity-fade-in 500ms;
+  z-index: 10; }
 
 .pane-content-tabs .nav-item {
   margin-bottom: 0; }

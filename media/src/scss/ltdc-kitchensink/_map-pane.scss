@@ -33,6 +33,7 @@
     background-color: #fff;
     height: auto;
     padding: 1rem;
+    z-index: 1000;
 }
 
 .pane-content {
@@ -44,6 +45,7 @@
     position: sticky;
     background-color: #fff;
     border-bottom: 1px solid #ccc;
+    z-index: 900;
 }
 
 .pane-content-tabs .nav-item {
@@ -111,6 +113,11 @@
     -moz-transition-timing-function: ease-in;
     transition-timing-function: ease-in;
     animation: background-fade 1s;
+}
+
+.fade-load {
+    animation: opacity-fade-in 500ms;
+    z-index: 10;
 }
 
 .pane-content-tabs .nav-item {
