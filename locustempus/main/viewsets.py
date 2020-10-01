@@ -18,7 +18,6 @@ class ActivityApiView(ModelViewSet):
     """Retrieves a single project"""
     serializer_class = ActivitySerializer
     queryset = Activity.objects.all()
-    permission_classes = [IsLoggedInCourse]
 
 
 class LayerApiView(ModelViewSet):

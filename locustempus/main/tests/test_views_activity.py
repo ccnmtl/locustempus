@@ -174,3 +174,19 @@ class ActivityTest(CourseTestMixin, TestCase):
             reverse('activity-delete', args=[c.pk, p.pk])
         )
         self.assertEqual(response.status_code, 403)
+
+
+class ApiTest(CourseTestMixin, TestCase):
+    def setUp(self):
+        self.setup_course()
+
+    def test_api_get(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.superuser.username,
+                password='test'
+            )
+        )
+        response = self.client.get(
+            reverse('api-activity-detail', args=[self.registrar_course_activity.pk]))
+        self.assertEqual(response.status_code, 200)
