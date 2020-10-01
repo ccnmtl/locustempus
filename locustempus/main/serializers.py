@@ -1,6 +1,8 @@
 from django.contrib.gis.geos import Point
 from generic_relations.relations import GenericRelatedField
-from locustempus.main.models import Layer, Project, Response, Event, Location
+from locustempus.main.models import (
+    Layer, Project, Response, Event, Location, Activity
+)
 from rest_framework import serializers
 
 
@@ -14,7 +16,15 @@ class ProjectSerializer(serializers.ModelSerializer):
     class Meta:
         model = Project
         fields = (
-            'title', 'description', 'base_map', 'layers'
+            'title', 'description', 'base_map', 'layers', 'activity'
+        )
+
+
+class ActivitySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Activity
+        fields = (
+            'title', 'description', 'instructions'
         )
 
 

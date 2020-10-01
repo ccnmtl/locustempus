@@ -51,6 +51,12 @@ export interface LayerEventData {
     events: LayerEventDatum[];
 }
 
+export interface ActivityData {
+    title: string;
+    description: string;
+    instructions: string;
+}
+
 interface ViewportState {
     latitude: number;
     longitude: number;
@@ -108,6 +114,7 @@ export const ProjectMap: React.FC = () => {
         useState<LayerEventDatum | null>(null);
     const [activeEventEdit, setActiveEventEdit] =
         useState<LayerEventDatum | null>(null);
+    const [activity, setActivity] = useState<ActivityData | null>(null);
 
     // Data structure to hold events, keyed by layer PK
     const [eventData, setEventData] =
@@ -485,6 +492,15 @@ export const ProjectMap: React.FC = () => {
                 }, new Map());
                 updateEventData(events);
             }
+
+            // Get Activity info
+            if (projectData.activity) {
+                const activityResponse = await fetch(`/api/activity/${projectData.activity}`);
+                if (!activityResponse.ok) {
+                    throw new Error('Activity data not loaded.');
+                }
+                setActivity(await activityResponse.json());
+            }
         };
 
         getData();
@@ -543,6 +559,7 @@ export const ProjectMap: React.FC = () => {
                     deleteProject={deleteProject}
                     layers={layerData}
                     events={eventData}
+                    activity={activity}
                     activeLayer={activeLayer}
                     setActiveLayer={setActiveLayer}
                     addLayer={addLayer}
