@@ -72,22 +72,24 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
 
     return (
         <>
-            <h4>{isNewProject ? 'Create Project' : 'Edit Project'}</h4>
-            <div className='pane-content-body'>
+            <div className={'pane-content-header'} style={{ top: 98 }}>
+                <h2>{isNewProject ? 'Create Project' : 'Edit Project'}</h2>
+            </div>
+            <div className={'pane-content-body'}>
                 <form onSubmit={handleFormSubmit} >
-                    <div className={'form-group'}>
-                        <label htmlFor={'event-form__name'}>Title</label>
+                    <div className={'form-group pane-form-group'}>
+                        <label htmlFor={'form-field__name'}>Title</label>
                         <input
                             type={'text'}
-                            id={'event-form__name'}
+                            id={'form-field__name'}
                             className={'form-control'}
                             value={title}
                             autoFocus={true}
                             onChange={handleTitle}/>
                     </div>
-                    <div className="form-group">
-                        <label htmlFor={'event-form__description'}>
-                            Description
+                    <div className={'form-group pane-form-group'}>
+                        <label htmlFor={'form-field__description'}>
+                            About this project
                         </label>
                         <ReactQuill
                             value={description}
@@ -229,12 +231,12 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
             <form onSubmit={handleFormSubmbit} >
                 <div className={'form-row'}>
                     <div className={'form-group col-3'}>
-                        <label htmlFor={'event-form__name'}>Name</label>
+                        <label htmlFor={'form-field__name'}>Name</label>
                     </div>
                     <div className={'form-group col-9'}>
                         <input
                             type={'text'}
-                            id={'event-form__name'}
+                            id={'form-field__name'}
                             value={eventName}
                             autoFocus={true}
                             onChange={handleName}/>
@@ -242,7 +244,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                 </div>
                 <div className="form-row">
                     <div className={'form-group col-3'}>
-                        <label htmlFor={'event-form__description'}>
+                        <label htmlFor={'form-field__description'}>
                             Description
                         </label>
                     </div>
@@ -254,14 +256,14 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                 </div>
                 <div className="form-row">
                     <div className={'form-group col-3'}>
-                        <label htmlFor={'event-form__date'}>
+                        <label htmlFor={'form-field__date'}>
                             Date
                         </label>
                     </div>
                     <div className={'form-group col-9'}>
                         <input
                             type={'datetime-local'}
-                            id={'event-form__date'}
+                            id={'form-field__date'}
                             value={datetime}
                             onChange={handleDatetime}/>
                     </div>
@@ -336,12 +338,12 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
             <form onSubmit={handleFormSubmbit} >
                 <div className={'form-row'}>
                     <div className={'form-group col-3'}>
-                        <label htmlFor={'event-form__name'}>Name</label>
+                        <label htmlFor={'form-field__name'}>Name</label>
                     </div>
                     <div className={'form-group col-9'}>
                         <input
                             type={'text'}
-                            id={'event-form__name'}
+                            id={'form-field__name'}
                             value={eventName}
                             autoFocus={true}
                             placeholder={'Untitled Marker'}
@@ -350,7 +352,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                 </div>
                 <div className="form-row">
                     <div className={'form-group col-3'}>
-                        <label htmlFor={'event-form__description'}>
+                        <label htmlFor={'form-field__description'}>
                             Description
                         </label>
                     </div>
@@ -362,14 +364,14 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                 </div>
                 <div className="form-row">
                     <div className={'form-group col-3'}>
-                        <label htmlFor={'event-form__date'}>
+                        <label htmlFor={'form-field__date'}>
                             Date
                         </label>
                     </div>
                     <div className={'form-group col-9'}>
                         <input
                             type={'datetime-local'}
-                            id={'event-form__date'}
+                            id={'form-field__date'}
                             value={datetime}
                             onChange={handleDatetime}/>
                     </div>
