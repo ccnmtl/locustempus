@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Layer, LayerProps } from './layer';
 import {
-    LayerEventData, LayerEventDatum,
+    LayerEventData, LayerEventDatum, ActivityData,
     BASE_MAPS, BASE_MAP_IMAGES } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -469,6 +469,7 @@ interface DefaultPanelProps {
     description: string;
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
+    activity: ActivityData | null;
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
     setLayerVisibility(pk: number): void;
@@ -485,9 +486,9 @@ interface DefaultPanelProps {
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
     {
         activeTab, setActiveTab, addLayer, description, layers, events,
-        deleteLayer, updateLayer, setLayerVisibility, activeLayer,
-        setActiveLayer, activeEvent, setActiveEvent,
-        setActiveEventDetail, activeEventEdit
+        activity, deleteLayer, updateLayer, setLayerVisibility, activeLayer,
+        setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
+        activeEventEdit
     }: DefaultPanelProps) => {
 
     const handleSetActiveTab = (
@@ -500,6 +501,9 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         e.preventDefault();
         addLayer();
     };
+
+    const OVERVIEW = 0;
+    const BASE = 1;
 
     return (
         <>
@@ -517,10 +521,27 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 })}
             </ul>
             <div className='pane-content-body'>
-                {activeTab === 0 && (
-                    <div className='fade-load' dangerouslySetInnerHTML={{__html: description}}/>
+                {activeTab === OVERVIEW && (
+                    <div className='fade-load'>
+                        <div>
+                            <h2>About This Project</h2>
+                            <div dangerouslySetInnerHTML={{__html: description}}/>
+                        </div>
+                        <div>
+                            <h2>Share This Project</h2>
+                        </div>
+                        <div>
+                            <h2>Clone This Project</h2>
+                        </div>
+                        <div>
+                            <h2>Create Activity</h2>
+                            {activity && (
+                                <div dangerouslySetInnerHTML={{__html: activity.instructions}}/>
+                            )}
+                        </div>
+                    </div>
                 )}
-                {activeTab === 1 && (
+                {activeTab === BASE && (
                     <>
                         <div className='fade-load'>
                             <form onSubmit={handleCreateLayer}>

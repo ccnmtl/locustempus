@@ -1,6 +1,6 @@
 import React, { useState, ReactElement } from 'react';
 import { LayerProps } from './layer';
-import { LayerEventData, LayerEventDatum } from './project-map';
+import { LayerEventData, LayerEventDatum, ActivityData } from './project-map';
 import { Position } from '@deck.gl/core/utils/positions';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
@@ -21,6 +21,7 @@ export interface ProjectMapPaneProps {
     deleteProject(): void;
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
+    activity: ActivityData | null;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;
     addLayer(): void;
@@ -47,11 +48,12 @@ export interface ProjectMapPaneProps {
 export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     {
         title, description, baseMap, setBaseMap, newProjectFlag, updateProject,
-        deleteProject, layers, events, activeLayer, setActiveLayer, addLayer,
-        deleteLayer, updateLayer, setLayerVisibility, showAddEventForm,
-        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
-        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
-        activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent
+        deleteProject, layers, events, activity, activeLayer, setActiveLayer,
+        addLayer, deleteLayer, updateLayer, setLayerVisibility,
+        showAddEventForm, setShowAddEventForm, activePosition, addEvent,
+        clearActivePosition, activeEvent, setActiveEvent, activeEventDetail,
+        setActiveEventDetail, activeEventEdit, setActiveEventEdit, deleteEvent,
+        updateEvent
     }: ProjectMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
@@ -147,6 +149,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             description={description}
             layers={layers}
             events={events}
+            activity={activity}
             deleteLayer={deleteLayer}
             updateLayer={updateLayer}
             setLayerVisibility={setLayerVisibility}

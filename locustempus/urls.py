@@ -17,6 +17,7 @@ if hasattr(settings, 'CAS_BASE'):
 
 router = routers.DefaultRouter()
 router.register(r'project', viewsets.ProjectApiView, basename='api-project')
+router.register(r'activity', viewsets.ActivityApiView, basename='api-activity')
 router.register(r'layer', viewsets.LayerApiView, basename='api-layer')
 router.register(r'event', viewsets.EventApiView, basename='api-event')
 
