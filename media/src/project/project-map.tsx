@@ -77,12 +77,12 @@ export const BASE_MAPS = new Map([
 ]);
 
 export const BASE_MAP_IMAGES = new Map([
-    ['streets-v11', STATIC_URL + '/img/map_thumbnails/demo.png'],
-    ['outdoors-v11', STATIC_URL + '/img/map_thumbnails/demo.png'],
-    ['light-v10', STATIC_URL + '/img/map_thumbnails/demo.png'],
-    ['dark-v10', STATIC_URL + '/img/map_thumbnails/demo.png'],
-    ['satellite-v9', STATIC_URL + '/img/map_thumbnails/demo.png'],
-    ['satellite-streets-v11', STATIC_URL + '/img/map_thumbnails/demo.png'],
+    ['streets-v11', STATIC_URL + 'img/map_thumbnails/streets.jpg'],
+    ['outdoors-v11', STATIC_URL + 'img/map_thumbnails/outdoors.jpg'],
+    ['light-v10', STATIC_URL + 'img/map_thumbnails/light.jpg'],
+    ['dark-v10', STATIC_URL + 'img/map_thumbnails/dark.jpg'],
+    ['satellite-v9', STATIC_URL + 'img/map_thumbnails/satellite.jpg'],
+    ['satellite-streets-v11', STATIC_URL + 'img/map_thumbnails/satellite-streets.jpg'],
 ]);
 
 export const ProjectMap: React.FC = () => {

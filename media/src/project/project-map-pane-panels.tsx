@@ -5,7 +5,7 @@ import {
     BASE_MAPS, BASE_MAP_IMAGES } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faLayerGroup, faArrowLeft, faEllipsisV, faAngleRight, faAngleDown
+    faLayerGroup, faArrowLeft, faEllipsisV, faCaretRight, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
@@ -96,9 +96,9 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             onChange={setDescription}/>
                     </div>
                     { showBaseMapMenu ? (
-                        <div>
+                        <div className={'base-map-expanded'}>
                             <div onClick={toggleBaseMapMenu}>
-                                <FontAwesomeIcon icon={faAngleDown}/>
+                                <FontAwesomeIcon icon={faCaretDown}/>
                                 Base Map: {BASE_MAPS.get(projectBaseMap)}
                             </div>
                             <fieldset className="form-group">
@@ -132,10 +132,10 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             </fieldset>
                         </div>
                     ) : (
-                        <div onClick={toggleBaseMapMenu}>
-                            <div>
+                        <div className={'base-map-collapsed'}>
+                            <div onClick={toggleBaseMapMenu}>
                                 <FontAwesomeIcon
-                                    icon={faAngleRight}/>Base Map: {projectBaseMap}
+                                    icon={faCaretRight}/>Base Map: {BASE_MAPS.get(projectBaseMap)}
                             </div>
                         </div>
                     ) }
