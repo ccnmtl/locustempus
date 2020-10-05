@@ -96,11 +96,14 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             onChange={setDescription}/>
                     </div>
                     { showBaseMapMenu ? (
-                        <div className={'base-map-expanded'}>
-                            <div onClick={toggleBaseMapMenu}>
-                                <FontAwesomeIcon icon={faCaretDown}/>
+                        <div className={'form-group pane-form-group base-map-expanded'}>
+                            <button onClick={toggleBaseMapMenu}
+                                className={'btn btn__accordion'}>
+                                <span className='menu-icon'>
+                                    <FontAwesomeIcon icon={faCaretDown}/>
+                                </span>
                                 Base Map: {BASE_MAPS.get(projectBaseMap)}
-                            </div>
+                            </button>
                             <fieldset className="form-group">
                                 <div className="row">
                                     {[...BASE_MAPS.keys()].map((val, idx) => {
@@ -132,11 +135,15 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             </fieldset>
                         </div>
                     ) : (
-                        <div className={'base-map-collapsed'}>
-                            <div onClick={toggleBaseMapMenu}>
-                                <FontAwesomeIcon
-                                    icon={faCaretRight}/>Base Map: {BASE_MAPS.get(projectBaseMap)}
-                            </div>
+                        <div className={'form-group pane-form-group base-map-collapsed'}>
+                            <button onClick={toggleBaseMapMenu}
+                                className={'btn btn__accordion'}>
+                                <span className='menu-icon'>
+                                    <FontAwesomeIcon
+                                        icon={faCaretRight}/>
+                                </span>
+                                Base Map: {BASE_MAPS.get(projectBaseMap)}
+                            </button>
                         </div>
                     ) }
                     <div className="form-row">
