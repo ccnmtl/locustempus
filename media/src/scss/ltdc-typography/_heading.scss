@@ -57,3 +57,12 @@ h6 {
 @extend %heading;
   @include font-size($font-size-base * 1.25);
 }
+
+.pane-content-header h2 {
+@extend %heading;
+  @include font-size($font-size-base);
+    font-weight: 600;
+    padding: 0;
+    margin: 0;
+}
+

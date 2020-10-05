@@ -40,6 +40,20 @@
     background-color: #fff;
 }
 
+.pane-content-header {
+    position: -webkit-sticky;
+    position: sticky;
+    padding: 0.9375rem 1rem;
+    margin: 0;
+    background-color: #efefef;
+    border-bottom: 1px solid #ccc;
+    z-index: 900;
+    display: -ms-flexbox;
+    display: flex;
+    -ms-flex-wrap: wrap;
+    flex-wrap: wrap;
+}
+
 .pane-content-tabs {
     position: -webkit-sticky;
     position: sticky;
@@ -104,7 +118,7 @@
 .pane-content-tabs .nav-item .nav-link.active {
     border-bottom-width: 3px;
     border-bottom-style: solid;
-    border-bottom-color: blue;
+    border-bottom-color: #333;
     border-radius: 3px;
     -moz-transition-property: border-bottom-color;
     transition-property: border-bottom-color;
@@ -205,4 +219,15 @@ padding-bottom: 0.5rem;
 
 .overflow-icon {
     padding-right: 0.875rem;
+}
+
+.pane-form-group {
+    padding: 1rem;
+    border-radius: 0.25rem;
+}
+
+.pane-form-group:focus-within {
+    background-color: #fafafa;
+    box-shadow: 0 0 0.2rem rgba(0,0,0,0.3);
+    outline: 0;
 }
