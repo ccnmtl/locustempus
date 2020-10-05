@@ -16,7 +16,7 @@ const STATIC_URL = LocusTempus.staticUrl;
 
 // TODO: fix types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const authedFetch = (url: string, method: string, data: any): Promise<any> => {
+const authedFetch = (url: string, method: string, data?: any): Promise<any> => {
     const csrf = (document.getElementById(
         'csrf-token') as HTMLElement).getAttribute('content') || '';
     return fetch(url,{
@@ -53,6 +53,7 @@ export interface LayerEventData {
 
 export interface ActivityData {
     title: string;
+    pk: number;
     description: string;
     instructions: string;
 }
@@ -443,6 +444,35 @@ export const ProjectMap: React.FC = () => {
             });
     };
 
+    const updateActivity = (instructions: string, pk: number): void => {
+        const data = {
+            project: projectPk,
+            instructions: instructions
+        };
+        authedFetch(`/api/activity/${pk}/`, 'PUT', JSON.stringify(data))
+            .then((response) => {
+                if (response.status === 201) {
+                    return response.json();
+                } else {
+                    throw 'Activity update failed.';
+                }
+            })
+            .then((data: ActivityData) => {
+                setActivity(data);
+            });
+    };
+
+    const deleteActivity = (id: number): void => {
+        authedFetch(`/api/activity/${id}/`, 'DELETE')
+            .then((response) => {
+                if (response.status === 204) {
+                    setActivity(null);
+                } else {
+                    throw 'Activity deletion failed.';
+                }
+            });
+    };
+
     // TODO: figure out how to type this
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleDeckGlClick = (info: any, event: any): void => {
@@ -583,6 +613,8 @@ export const ProjectMap: React.FC = () => {
                     events={eventData}
                     activity={activity}
                     createActivity={createActivity}
+                    updateActivity={updateActivity}
+                    deleteActivity={deleteActivity}
                     activeLayer={activeLayer}
                     setActiveLayer={setActiveLayer}
                     addLayer={addLayer}

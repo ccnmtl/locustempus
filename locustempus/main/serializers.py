@@ -24,9 +24,9 @@ class ProjectSerializer(serializers.ModelSerializer):
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        read_only_fields = ('title', 'description')
+        read_only_fields = ('title', 'pk', 'description')
         fields = (
-            'title', 'project', 'description', 'instructions'
+            'title', 'pk', 'project', 'description', 'instructions'
         )
 
 
