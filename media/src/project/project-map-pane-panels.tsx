@@ -104,34 +104,32 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                                 </span>
                                 Base Map: {BASE_MAPS.get(projectBaseMap)}
                             </button>
-                            <fieldset className="form-group">
-                                <div className="row">
+                            <fieldset>
+                                <ul className='d-flex flex-row flex-wrap md-radio basemap__listview' role='radiogroup'> {/* eslint-disable-line max-len */}
                                     {[...BASE_MAPS.keys()].map((val, idx) => {
                                         return (
-                                            <div className="col-4" key={idx}>
-                                                <div className="form-check">
-                                                    <input
-                                                        className={
-                                                            'form-check-input'}
-                                                        type={'radio'}
-                                                        id={'base-map-' + idx}
-                                                        value={val}
-                                                        onChange={handleBaseMap}
-                                                        checked={
-                                                            val === projectBaseMap}
-                                                    />
-                                                    <label
-                                                        htmlFor={'base-map-' + idx}>
-                                                        <div className="base-map-image"> {/* eslint-disable-line max-len */}
-                                                            <img className="img-fluid" src={BASE_MAP_IMAGES.get(val)} alt="" /> {/* eslint-disable-line max-len */}
-                                                        </div>
-                                                        {BASE_MAPS.get(val)}
-                                                    </label>
-                                                </div>
-                                            </div>
+                                            <li className='basemap__item' key={idx}>
+                                                <input
+                                                    name="basemapselection"
+                                                    id={'base-map-' + idx}
+                                                    type={'radio'}
+                                                    value={val}
+                                                    onChange={handleBaseMap}
+                                                    checked={
+                                                        val === projectBaseMap}
+                                                />
+                                                <label htmlFor={'base-map-' + idx}
+                                                    className={'basemap__label'}>
+                                                    <span className='basemap__name'>{BASE_MAPS.get(val)}</span> {/* eslint-disable-line max-len */}
+                                                    <img
+                                                        src={BASE_MAP_IMAGES.get(val)}
+                                                        alt='Thumbnail for {BASE_MAPS.get(val)}'
+                                                        className="img-fluid basemap__thumbnail" /> {/* eslint-disable-line max-len */}
+                                                </label>
+                                            </li>
                                         );})
                                     }
-                                </div>
+                                </ul>
                             </fieldset>
                         </div>
                     ) : (

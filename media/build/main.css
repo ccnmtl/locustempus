@@ -9150,6 +9150,12 @@ No media query for `xs` since this is the default in Bootstrap
   font-weight: 600;
   text-transform: uppercase; }
 
+label {
+  font-family: Poppins;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1rem; }
+
 #pane-scroll-y::-webkit-scrollbar-track {
   box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
   background-color: #fff; }
@@ -9221,7 +9227,124 @@ No media query for `xs` since this is the default in Bootstrap
   outline: 0; }
 
 .btn__accordion {
-  padding: 0; }
+  padding: 0.5rem; }
+
+/* Material design experiment */
+@-webkit-keyframes ripple {
+  0% {
+    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0); }
+  50% {
+    box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0.1); }
+  100% {
+    box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0); } }
+@keyframes ripple {
+  0% {
+    box-shadow: 0px 0px 0px 1px rgba(0, 0, 0, 0); }
+  50% {
+    box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0.1); }
+  100% {
+    box-shadow: 0px 0px 0px 15px rgba(0, 0, 0, 0); } }
+
+.md-radio {
+  position: relative; }
+
+.md-radio.md-radio-inline {
+  display: inline-block; }
+
+.md-radio input[type="radio"] {
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  margin-bottom: 0.25rem; }
+
+.md-radio input[type="radio"]:checked + label::before {
+  margin-top: 0.1rem;
+  border-color: #333;
+  -webkit-animation: ripple 0.2s linear forwards;
+          animation: ripple 0.2s linear forwards; }
+
+.md-radio input[type="radio"]:checked + label::after {
+  transform: scale(1); }
+
+.md-radio label {
+  display: block;
+  min-height: 20px;
+  position: relative;
+  padding: 0 0 0 25px;
+  margin-bottom: 0.25rem;
+  cursor: pointer;
+  vertical-align: bottom; }
+
+.md-radio label::before, .md-radio label::after {
+  margin-top: 0.1rem;
+  position: absolute;
+  content: '';
+  border-radius: 50%;
+  transition: all .3s ease;
+  transition-property: transform, border-color;
+  background-color: #efefef; }
+
+.md-radio label::before {
+  left: 0;
+  top: 0.25rem;
+  width: 20px;
+  height: 20px;
+  border: 2px solid rgba(0, 0, 0, 0.54); }
+
+.md-radio label::after {
+  top: 9px;
+  left: 5px;
+  width: 10px;
+  height: 10px;
+  transform: scale(0);
+  background: #333; }
+
+.md-radio input[type="radio"]:focus + label::before {
+  border: 2px solid #333 !important;
+  box-shadow: 0 0 5px 2px #51cbee !important; }
+
+.md-radio input[type="radio"]:focus + label::after {
+  border: 2px solid #333 !important;
+  box-shadow: 0 0 5px 2px #51cbee !important; }
+
+.base-map-collapsed .btn__accordion {
+  border: 1px solid #ccc; }
+
+.basemap__listview {
+  margin: 0.75rem 0 0 0;
+  padding: 0;
+  list-style: none; }
+
+.basemap__item {
+  width: 146px;
+  margin-bottom: 2rem;
+  padding-right: 0.5rem;
+  padding-left: 0.5rem; }
+
+/*.basemap__label {
+    min-width: 25%;
+}*/
+.basemap__name {
+  display: block;
+  padding: 0.25rem;
+  background-color: #e0e0e0;
+  font-size: 0.75rem;
+  border: 2px solid #fafafa;
+  border-bottom: 0; }
+
+.basemap__thumbnail {
+  display: block;
+  border: 2px solid #fafafa;
+  border-top: 0; }
+
+.basemap__item input:checked + .basemap__label .basemap__name {
+  background-color: #666;
+  color: white; }
+
+.basemap__item input:checked + .basemap__label .basemap__name,
+.basemap__item input:checked + .basemap__label .basemap__thumbnail {
+  border-color: #666; }
 
 .ql-container {
   font-family: "Roboto", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji"; }

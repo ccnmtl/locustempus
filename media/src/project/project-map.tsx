@@ -73,7 +73,7 @@ export const BASE_MAPS = new Map([
     ['light-v10', 'Light'],
     ['dark-v10', 'Dark'],
     ['satellite-v9', 'Satellite'],
-    ['satellite-streets-v11', 'Street - Satellite'],
+    ['satellite-streets-v11', 'Satellite-Street'],
 ]);
 
 export const BASE_MAP_IMAGES = new Map([
