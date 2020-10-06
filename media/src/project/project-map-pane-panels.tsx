@@ -5,7 +5,8 @@ import {
     BASE_MAPS, BASE_MAP_IMAGES } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faLayerGroup, faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt
+    faLayerGroup, faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
+    faCaretRight, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
@@ -479,14 +480,14 @@ interface ActivityProps {
 const Activity: React.FC<ActivityProps> = (
     {activity, createActivity, updateActivity, deleteActivity}: ActivityProps) => {
 
-    const [instructions, setInstructions] = useState<string | null>(null);
+    const [instructions, setInstructions] = useState<string>('');
     const [showMenu, setShowMenu] = useState<boolean>(false);
     const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
     const [showEditForm, setShowEditForm] = useState<boolean>(false);
 
     const handleCreateActivity = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        instructions && createActivity(instructions);
+        createActivity(instructions);
     };
 
     const toggleMenu = (e: React.MouseEvent): void => {
@@ -496,20 +497,18 @@ const Activity: React.FC<ActivityProps> = (
 
     const handleEdit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        activity && instructions && updateActivity(instructions, activity.pk);
+        activity && updateActivity(instructions, activity.pk);
         setShowEditForm(false);
     };
 
     const handleDelete  = (e: React.MouseEvent): void => {
         e.preventDefault();
         activity && deleteActivity(activity.pk);
-        setShowEditForm(false);
-        setShowCreateForm(false);
         setShowMenu(false);
     };
 
     useEffect(() => {
-        setInstructions(activity ? activity.instructions : '');
+        activity && setInstructions(activity.instructions);
     }, [activity]);
 
     if (activity) {
@@ -551,7 +550,7 @@ const Activity: React.FC<ActivityProps> = (
                             <label htmlFor={'activity-form__instructions'}>
                             </label>
                             <ReactQuill
-                                value={instructions || ''}
+                                value={instructions}
                                 onChange={setInstructions}/>
                         </div>
                         <div className="form-row">
