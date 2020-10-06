@@ -5,7 +5,7 @@ import {
     BASE_MAPS, BASE_MAP_IMAGES } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faLayerGroup, faArrowLeft, faEllipsisV, faAngleRight, faAngleDown
+    faLayerGroup, faArrowLeft, faEllipsisV, faCaretRight, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
@@ -96,11 +96,14 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             onChange={setDescription}/>
                     </div>
                     { showBaseMapMenu ? (
-                        <div>
-                            <div onClick={toggleBaseMapMenu}>
-                                <FontAwesomeIcon icon={faAngleDown}/>
+                        <div className={'form-group pane-form-group base-map-expanded'}>
+                            <button onClick={toggleBaseMapMenu}
+                                className={'btn btn__accordion'}>
+                                <span className='menu-icon'>
+                                    <FontAwesomeIcon icon={faCaretDown}/>
+                                </span>
                                 Base Map: {BASE_MAPS.get(projectBaseMap)}
-                            </div>
+                            </button>
                             <fieldset className="form-group">
                                 <div className="row">
                                     {[...BASE_MAPS.keys()].map((val, idx) => {
@@ -132,11 +135,15 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             </fieldset>
                         </div>
                     ) : (
-                        <div onClick={toggleBaseMapMenu}>
-                            <div>
-                                <FontAwesomeIcon
-                                    icon={faAngleRight}/>Base Map: {projectBaseMap}
-                            </div>
+                        <div className={'form-group pane-form-group base-map-collapsed'}>
+                            <button onClick={toggleBaseMapMenu}
+                                className={'btn btn__accordion'}>
+                                <span className='menu-icon'>
+                                    <FontAwesomeIcon
+                                        icon={faCaretRight}/>
+                                </span>
+                                Base Map: {BASE_MAPS.get(projectBaseMap)}
+                            </button>
                         </div>
                     ) }
                     <div className="form-row">

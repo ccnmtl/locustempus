@@ -217,8 +217,13 @@ padding-bottom: 0.5rem;
     background-color: #efefef;
 }
 
-.overflow-icon {
+.overflow-icon, .menu-icon {
     padding-right: 0.875rem;
+}
+
+.menu-icon {
+    display: inline-block;
+    min-width: 1.5rem;
 }
 
 .pane-form-group {
@@ -230,4 +235,8 @@ padding-bottom: 0.5rem;
     background-color: #fafafa;
     box-shadow: 0 0 0.2rem rgba(0,0,0,0.3);
     outline: 0;
+}
+
+.btn__accordion {
+    padding: 0;
 }
