@@ -15,6 +15,7 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
+        read_only_fields = ('activity',)
         fields = (
             'title', 'description', 'base_map', 'layers', 'activity'
         )
