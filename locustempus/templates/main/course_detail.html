@@ -44,16 +44,8 @@
                 <tr>
                     <td><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></td>
                     <td>
-                        {% if user in object.faculty %}
-                            {% if project.activity %}
-                            <a class="btn btn-sm btn-primary" data-cy="manage-activity-button" href="{% url 'activity-detail' course.pk project.pk %}">Manage Activity</a>
-                            {% else %}
-                            <a class="btn btn-sm btn-primary" data-cy="create-activity-button" href="{% url 'activity-create' course.pk project.pk %}">Create Activity</a>
-                            {% endif %}
-                        {% else %}
-                            {% if project.activity %}
+                        {% if user not in object.faculty and project.activity %}
                             <a class="btn btn-sm btn-primary" data-cy="view-activity-button" href="{% url 'activity-detail' course.pk project.pk %}">View Activity</a>
-                            {% endif %}
                         {% endif %}
                         <a class="btn btn-sm btn-primary" href="{% url 'course-project-detail' course.pk project.pk %}">View</a>
                     </td>

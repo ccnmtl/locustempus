@@ -5,7 +5,8 @@ import {
     BASE_MAPS, BASE_MAP_IMAGES } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faLayerGroup, faArrowLeft, faEllipsisV, faCaretRight, faCaretDown
+    faLayerGroup, faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
+    faCaretRight, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
@@ -469,6 +470,152 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     );
 };
 
+interface ActivityProps {
+    activity: ActivityData | null;
+    createActivity(instructions: string): void;
+    updateActivity(instructions: string, pk: number): void;
+    deleteActivity(pk: number): void;
+}
+
+const Activity: React.FC<ActivityProps> = (
+    {activity, createActivity, updateActivity, deleteActivity}: ActivityProps) => {
+
+    const [instructions, setInstructions] = useState<string>('');
+    const [showMenu, setShowMenu] = useState<boolean>(false);
+    const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
+    const [showEditForm, setShowEditForm] = useState<boolean>(false);
+
+    const handleCreateActivity = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
+        createActivity(instructions);
+    };
+
+    const toggleMenu = (e: React.MouseEvent): void => {
+        e.preventDefault();
+        setShowMenu((prev) => !prev);
+    };
+
+    const handleEdit = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
+        activity && updateActivity(instructions, activity.pk);
+        setShowEditForm(false);
+    };
+
+    const handleDelete  = (e: React.MouseEvent): void => {
+        e.preventDefault();
+        activity && deleteActivity(activity.pk);
+        setShowMenu(false);
+    };
+
+    useEffect(() => {
+        activity && setInstructions(activity.instructions);
+    }, [activity]);
+
+    if (activity) {
+        return (
+            <>
+                <div>
+                    <h2>Activity</h2>
+                    <div className='overflow-menu'>
+                        <button onClick={toggleMenu}
+                            className='overflow-toggle'>
+                            <FontAwesomeIcon icon={faEllipsisV}/>
+                        </button>
+                        {showMenu && (
+                            <ul className='overflow-menu-show'>
+                                <li>
+                                    <a onClick={
+                                        (): void => {setShowMenu(false); setShowEditForm(true);}}>
+                                        <span className='overflow-icon'>
+                                            <FontAwesomeIcon icon={faPencilAlt}/>
+                                        </span>
+                                        Edit activity
+                                    </a>
+                                </li>
+                                <li>
+                                    <a onClick={handleDelete}>
+                                        <span className='overflow-icon'>
+                                            <FontAwesomeIcon icon={faTrashAlt}/>
+                                        </span>
+                                        Delete activity
+                                    </a>
+                                </li>
+                            </ul>
+                        )}
+                    </div>
+                </div>
+                {showEditForm ? (
+                    <form onSubmit={handleEdit}>
+                        <div className="form-group">
+                            <label htmlFor={'activity-form__instructions'}>
+                            </label>
+                            <ReactQuill
+                                value={instructions}
+                                onChange={setInstructions}/>
+                        </div>
+                        <div className="form-row">
+                            <div className={'form-group col-3'}>
+                            </div>
+                            <div className={'form-group col-9'}>
+                                <button
+                                    type={'button'}
+                                    onClick={(): void => setShowEditForm(false)}
+                                    className={'btn btn-danger'}>
+                                    Cancel
+                                </button>
+                                <button type={'submit'} className={'btn btn-primary'}>
+                                    Save
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                ) : (
+                    <div dangerouslySetInnerHTML={{__html: activity.instructions}}/>
+                )}
+            </>
+        );
+    } else {
+        return (
+            <>
+                <h2>Create Activity</h2>
+                {showCreateForm ? (
+                    <form onSubmit={handleCreateActivity}>
+                        <div className="form-group">
+                            <label htmlFor={'activity-form__instructions'}>
+                            </label>
+                            <ReactQuill
+                                value={instructions || ''}
+                                onChange={setInstructions}/>
+                        </div>
+                        <div className="form-row">
+                            <div className={'form-group col-3'}>
+                            </div>
+                            <div className={'form-group col-9'}>
+                                <button
+                                    type={'button'}
+                                    onClick={(): void => setShowCreateForm(false)}
+                                    className={'btn btn-danger'}>
+                                    Cancel
+                                </button>
+                                <button type={'submit'} className={'btn btn-primary'}>
+                                    Create
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                ) : (
+                    <button
+                        type={'submit'}
+                        className={'btn btn-primary'}
+                        onClick={(): void => setShowCreateForm(true)}>
+                        Create Activity
+                    </button>
+                )}
+            </>
+        );
+    }
+};
+
 interface DefaultPanelProps {
     activeTab: number;
     setActiveTab(idx: number): void;
@@ -477,6 +624,9 @@ interface DefaultPanelProps {
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
     activity: ActivityData | null;
+    updateActivity(instructions: string, pk: number): void;
+    deleteActivity(pk: number): void;
+    createActivity(instructions: string): void;
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
     setLayerVisibility(pk: number): void;
@@ -493,9 +643,9 @@ interface DefaultPanelProps {
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
     {
         activeTab, setActiveTab, addLayer, description, layers, events,
-        activity, deleteLayer, updateLayer, setLayerVisibility, activeLayer,
-        setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
-        activeEventEdit
+        activity, createActivity, updateActivity, deleteActivity, deleteLayer,
+        updateLayer, setLayerVisibility, activeLayer, setActiveLayer,
+        activeEvent, setActiveEvent, setActiveEventDetail, activeEventEdit
     }: DefaultPanelProps) => {
 
     const handleSetActiveTab = (
@@ -541,10 +691,10 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             <h2>Clone This Project</h2>
                         </div>
                         <div>
-                            <h2>Create Activity</h2>
-                            {activity && (
-                                <div dangerouslySetInnerHTML={{__html: activity.instructions}}/>
-                            )}
+                            <Activity activity={activity}
+                                createActivity={createActivity}
+                                updateActivity={updateActivity}
+                                deleteActivity={deleteActivity}/>
                         </div>
                     </div>
                 )}
