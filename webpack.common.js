@@ -8,7 +8,6 @@ module.exports = {
         main: './media/src/main.js',
         project: './media/src/project.tsx',
     },
-    mode: process.env.WEBPACK_SERVE ? 'development' : 'production',
     output: {
         path: path.resolve(__dirname, 'media/build'),
         filename: '[name].js'
@@ -18,6 +17,12 @@ module.exports = {
     },
     module: {
         rules: [
+            {
+                test: /\.m?js/,
+                resolve: {
+                    fullySpecified: false
+                },
+            },
             {
                 test: /\.(tsx|ts|js)$/,
                 include: path.resolve(__dirname, 'media/src'),
@@ -41,6 +46,7 @@ module.exports = {
                         loader: MiniCssExtractPlugin.loader,
                         options: {
                             sourceMap: true,
+                            publicPath: '',
                         }
                     },
                     {
