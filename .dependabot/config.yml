@@ -11,6 +11,13 @@ update_configs:
       - match:
           dependency_type: "production"
           update_type: "in_range"
+    ignored_updates:
+      - match:
+        dependency_name: "webpack",
+        version_requirement: "4.x"
+      - match:
+        dependency_name: "webpack-cli",
+        version_requirement: "3.x"
   - package_manager: "python"
     directory: "/"
     update_schedule: "live"
