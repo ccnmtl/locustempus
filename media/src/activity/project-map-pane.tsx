@@ -1,31 +1,17 @@
 import React, { useState, ReactElement } from 'react';
 import { LayerProps } from './layer';
 import { LayerEventData, LayerEventDatum, ActivityData } from './activity-map';
-import { OverflowMenu } from '../project-activity-components/overflow-menu';
 import { Position } from '@deck.gl/core/utils/positions';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
-    ProjectCreateEditPanel
 } from './project-map-pane-panels';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
 
 export interface ProjectMapPaneProps {
     title: string;
     description: string;
-    baseMap: string;
-    setBaseMap(baseMap: string): void;
-    newProjectFlag: boolean;
-    updateProject(title: string, description: string, baseMap: string): void;
-    deleteProject?(): void;
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
     activity: ActivityData | null;
-    createActivity(instructions: string): void;
-    updateActivity(instructions: string, pk: number): void;
-    deleteActivity(pk: number): void;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;
     addLayer(): void;
@@ -51,61 +37,24 @@ export interface ProjectMapPaneProps {
 
 export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     {
-        title, description, baseMap, setBaseMap, newProjectFlag, updateProject,
-        deleteProject, layers, events, activity, createActivity,
-        updateActivity, deleteActivity, activeLayer, setActiveLayer, addLayer,
-        deleteLayer, updateLayer, setLayerVisibility, showAddEventForm,
-        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
-        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
-        activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent
+        title, description, layers, events, activity, activeLayer,
+        setActiveLayer, addLayer, deleteLayer, updateLayer, setLayerVisibility,
+        showAddEventForm, setShowAddEventForm, activePosition, addEvent,
+        clearActivePosition, activeEvent, setActiveEvent, activeEventDetail,
+        setActiveEventDetail, activeEventEdit, setActiveEventEdit, deleteEvent,
+        updateEvent
     }: ProjectMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
-    const [showProjectMenu, setShowProjectMenu] = useState<boolean>(false);
-    const [showProjectEditPanel, setShowProjectEditPanel] =
-        useState<boolean>(false);
-    const [isNewProject, setIsNewProject] = useState<boolean>(newProjectFlag);
 
-    // Clear the query string param
-    // This is done in this component so it could make use of the isNewProject
-    // state var. Otherwise replaceState would continue to be called with each
-    // render
-    if (isNewProject) {
-        window.history.replaceState({}, '', window.location.pathname);
-    }
 
-    const toggleProjectMenu = (e: React.MouseEvent): void => {
-        e.preventDefault();
-        setShowProjectMenu((prev) => {return !prev;});
-    };
-
-    const showDefaultMenu = (): void => {
-        setActiveTab(0);
-        setShowProjectMenu(false);
-        setShowProjectEditPanel(false);
-    };
-
-    const handleEdit = (e: React.MouseEvent<HTMLAnchorElement>): void => {
-        e.preventDefault();
-        setShowProjectEditPanel(true);
-        setShowProjectMenu(false);
-    };
-
-    const handleDelete = (e: React.MouseEvent<HTMLAnchorElement>): void => {
-        e.preventDefault();
-        deleteProject();
-    };
-
-    const DEFAULT_PANEL = 4;
-    const PROJECT_EDIT_PANEL = 3;
+    const DEFAULT_PANEL = 3;
     const EVENT_EDIT_PANEL = 2;
     const EVENT_DETAIL_PANEL = 1;
     const EVENT_ADD_PANEL = 0;
 
     let panelState = DEFAULT_PANEL;
-    if (showProjectEditPanel || isNewProject) {
-        panelState = PROJECT_EDIT_PANEL;
-    } else if (activeEventEdit) {
+    if (activeEventEdit) {
         panelState = EVENT_EDIT_PANEL;
     } else if (activeEventDetail) {
         panelState = EVENT_DETAIL_PANEL;
@@ -136,17 +85,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
                 setActiveEventEdit={setActiveEventEdit}
                 updateEvent={updateEvent}/>
         )} </>,
-        3: <ProjectCreateEditPanel
-            isNewProject={isNewProject}
-            setIsNewProject={setIsNewProject}
-            projectTitle={title}
-            projectDescription={description}
-            projectBaseMap={baseMap}
-            setBaseMap={setBaseMap}
-            updateProject={updateProject}
-            deleteProject={deleteProject}
-            showDefaultMenu={showDefaultMenu}/>,
-        4: <DefaultPanel
+        3: <DefaultPanel
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             addLayer={addLayer}
@@ -154,9 +93,6 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             layers={layers}
             events={events}
             activity={activity}
-            createActivity={createActivity}
-            updateActivity={updateActivity}
-            deleteActivity={deleteActivity}
             deleteLayer={deleteLayer}
             updateLayer={updateLayer}
             setLayerVisibility={setLayerVisibility}
@@ -175,18 +111,6 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
                 <header className='d-flex flex-row project-pane__header'>
                     <h1>{title}</h1>
-                    <OverflowMenu items={[
-                        {
-                            handler: (): void => { setShowProjectEditPanel(true);},
-                            icon: <FontAwesomeIcon icon={faPencilAlt}/>,
-                            label: 'Edit project',
-                        },
-                        {
-                            handler: (): void => { setShowProjectEditPanel(true);},
-                            icon: <FontAwesomeIcon icon={faTrashAlt}/>,
-                            label: 'Delete project',
-                        }
-                    ]}/>
                 </header>
                 <div className='pane-content'>
                     {PANEL[panelState]}

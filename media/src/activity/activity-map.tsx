@@ -96,10 +96,8 @@ export const ActivityMap: React.FC = () => {
     });
 
     const mapContainer: HTMLElement | null =
-        document.querySelector('#project-activity-map-container');
+        document.querySelector('#activity-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
-    const newProjectFlag = mapContainer ?
-        mapContainer.dataset.newproject === 'True': false;
     const projectPk = mapContainer && mapContainer.dataset.projectpk;
     const [projectTitle, setProjectTitle] = useState<string | null>(null);
     const [projectDescription, setProjectDescription] =
@@ -534,10 +532,6 @@ export const ActivityMap: React.FC = () => {
                 <ProjectMapPane
                     title={projectTitle || 'Untitled'}
                     description={projectDescription || ''}
-                    baseMap={projectBaseMap || ''}
-                    setBaseMap={setProjectBaseMap}
-                    newProjectFlag={newProjectFlag}
-                    updateProject={updateProject}
                     layers={layerData}
                     events={eventData}
                     activity={activity}

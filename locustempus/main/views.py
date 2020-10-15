@@ -656,6 +656,7 @@ class ActivityDetailView(LoggedInCourseMixin, View):
         try:
             ctx = {
                 'activity': project.activity,
+                'token': getattr(settings, 'MAPBOX_TOKEN', '123abc'),
                 'project': project,
                 'is_faculty': project.course.is_true_faculty(request.user),
                 'page_type': 'activity',
