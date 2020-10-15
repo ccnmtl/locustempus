@@ -6,18 +6,16 @@ Activity: {{ activity.title }}
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <h1>Activity: {{ activity.title }}</h1>
-        <p>{{ activity.instructions }}</p>
-        {% if is_faculty %}
-        <a class="btn btn-primary" data-cy="edit-activity-button" href="{% url 'activity-update' project.course.pk project.pk %}">Edit Activity</a>
-            {% if activity.responses %}
-            <a class="btn btn-danger" data-cy="delete-activity-button" href="{% url 'activity-delete' project.course.pk project.pk %}">Delete Activity</a>
-            {% else %}
-            <p>There are {{ activity.responses.count }} responses to this activity. Activities can not be deleted if it has responses.</p>
-            {% endif %}
-        {% endif %}
-    </div>
-</div>
+<div id="activity-map-container" data-activitypk="{{ activity.pk }}" data-projectpk="{{ project.pk }}"></div>
 {% endblock %}
+
+{% block js %}
+<script src="{{STATIC_URL}}build/activity.js"></script>
+{% endblock %}
+
+{% block css %}
+<link href="{{STATIC_URL}}build/activity.css" rel="stylesheet">
+{% endblock %}
+
+{# Clear the footer blocks #}
+{% block footer%}{% endblock %}
