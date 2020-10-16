@@ -7,6 +7,7 @@ module.exports = {
     entry: {
         main: './media/src/main.js',
         project: './media/src/project.tsx',
+        activity: './media/src/activity.tsx',
     },
     output: {
         path: path.resolve(__dirname, 'media/build'),
