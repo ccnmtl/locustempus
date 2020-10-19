@@ -1,6 +1,7 @@
 import React, { useState, ReactElement } from 'react';
-import { LayerProps } from './layer';
-import { LayerEventData, LayerEventDatum, ActivityData } from './activity-map';
+import { LayerProps } from '../project-activity-components/layers/layer';
+import { LayerEventData, LayerEventDatum } from '../project-activity-components/layers/layer-set';
+import { ActivityData } from './activity-map';
 import { Position } from '@deck.gl/core/utils/positions';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
