@@ -46,7 +46,7 @@
     "webpack-merge": "^5.2.0"
   },
   "dependencies": {
-    "@danmarshall/deckgl-typings": "^3.4.8",
+    "@danmarshall/deckgl-typings": "^4.3.6",
     "@fortawesome/fontawesome-svg-core": "^1.2.31",
     "@fortawesome/free-solid-svg-icons": "^5.15.0",
     "@fortawesome/react-fontawesome": "^0.1.11",
