@@ -14,6 +14,7 @@ import { LayerProps } from '../project-activity-components/layers/layer';
 import {
     LayerEventData, LayerEventDatum
 } from '../project-activity-components/layers/layer-set';
+import { LoadingModal } from '../project-activity-components/loading-modal';
 
 const STATIC_URL = LocusTempus.staticUrl;
 
@@ -107,6 +108,8 @@ export const ActivityMap: React.FC = () => {
 
     const [showAddEventForm, setShowAddEventForm] = useState<boolean>(false);
     const [activePosition, setActivePosition] = useState<Position | null>(null);
+
+    const [isLoading, setIsLoading] = useState<boolean>(true);
 
     const ICON_ATLAS = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png';
     const ICON_MAPPING = {
@@ -454,6 +457,7 @@ export const ActivityMap: React.FC = () => {
 
     return (
         <>
+            {isLoading && <LoadingModal />}
             {projectBaseMap && (
                 <DeckGL
                     layers={mapboxLayers}
@@ -470,7 +474,8 @@ export const ActivityMap: React.FC = () => {
                         height={'100%'}
                         preventStyleDiffing={true}
                         mapStyle={'mapbox://styles/mapbox/' + projectBaseMap}
-                        mapboxApiAccessToken={TOKEN} />
+                        mapboxApiAccessToken={TOKEN}
+                        onLoad={(): void => { setIsLoading(false); }}/>
                     {activeEvent && (
                         <Popup
                             latitude={activeEvent.location.lng_lat[1]}
