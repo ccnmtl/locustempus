@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { LayerEventDatum } from './activity-map';
+import { LayerEventDatum } from './layer-set';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEye, faEyeSlash, faAngleDown, faAngleUp, faEllipsisV, faMapMarker

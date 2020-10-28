@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { Layer, LayerProps } from './layer';
 import {
-    LayerEventData, LayerEventDatum, ActivityData,
+    LayerSet, LayerEventData, LayerEventDatum
+} from '../project-activity-components/layers/layer-set';
+import { LayerProps } from '../project-activity-components/layers/layer';
+import { ActivityData,
     BASE_MAPS, BASE_MAP_IMAGES } from './activity-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faLayerGroup, faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
-    faCaretRight, faCaretDown
+    faArrowLeft, faEllipsisV, faCaretRight, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
@@ -506,19 +507,14 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         setActiveTab(Number(e.currentTarget.dataset.activeTab));
     };
 
-    {/* this handler should live closer to a layer */}
-    const handleCreateLayer = (e: React.FormEvent<HTMLFormElement>): void => {
-        e.preventDefault();
-        addLayer();
-    };
-
     const OVERVIEW = 0;
     const BASE = 1;
+    const RESPONSE = 2;
 
     return (
         <>
             <ul className='nav nav-tabs pane-content-tabs' style={{ top: 98 }}>
-                {['Overview', 'Base'].map((el, idx) => {
+                {['Overview', 'Base', 'Response'].map((el, idx) => {
                     return (
                         <li className='nav-item button' key={idx}>
                             <a className={activeTab == idx ?
@@ -534,53 +530,52 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 {/* TODO: Render the tabs for activities here.
                     Think about how to turn these into components that can be passed into
                     this larger panel */}
-                {activeTab === OVERVIEW && (
+                {activeTab === OVERVIEW && activity && (
                     <div className='fade-load'>
                         <div>
-                            <h2>About This Project</h2>
-                            <div dangerouslySetInnerHTML={{__html: description}}/>
+                            <h2>Activity Description</h2>
+                            <div dangerouslySetInnerHTML={{__html: activity.description}}/>
+                        </div>
+                        <div>
+                            <h2>Activity Instructions</h2>
+                            <div dangerouslySetInnerHTML={{__html: activity.instructions}}/>
                         </div>
                     </div>
                 )}
                 {activeTab === BASE && (
-                    <>
-                        <div className='fade-load'>
-                            <form onSubmit={handleCreateLayer}>
-                                <button type='submit'>
-                                    <FontAwesomeIcon icon={faLayerGroup}/>Add Layer
-                                </button>
-                            </form>
-                            {layers && layers.map(
-                                (layer, idx) => {
-                                    let layerEvents: LayerEventDatum[] = [];
-                                    const data = events.get(layer.pk);
-                                    if (data && data.events) {
-                                        layerEvents = data.events;
-                                    }
-
-                                    let layerVisibility = true;
-                                    if (data && data.visibility) {
-                                        layerVisibility = data.visibility;
-                                    }
-
-                                    return (
-                                        <Layer {...layer}
-                                            deleteLayer={deleteLayer}
-                                            updateLayer={updateLayer}
-                                            key={idx}
-                                            activeLayer={activeLayer}
-                                            setActiveLayer={setActiveLayer}
-                                            layerEvents={layerEvents}
-                                            layerVisibility={layerVisibility}
-                                            setLayerVisibility={setLayerVisibility}
-                                            activeEvent={activeEvent}
-                                            setActiveEvent={setActiveEvent}
-                                            setActiveEventDetail={setActiveEventDetail}
-                                            activeEventEdit={activeEventEdit}/>
-                                    );
-                                })}
-                        </div>
-                    </>
+                    <div className='fade-load'>
+                        {/* TODO: Implement a read-only layer for project events */}
+                        <LayerSet
+                            layers={layers}
+                            events={events}
+                            addLayer={addLayer}
+                            deleteLayer={deleteLayer}
+                            updateLayer={updateLayer}
+                            setLayerVisibility={setLayerVisibility}
+                            activeLayer={activeLayer}
+                            setActiveLayer={setActiveLayer}
+                            setActiveEvent={setActiveEvent}
+                            activeEvent={activeEvent}
+                            setActiveEventDetail={setActiveEventDetail}
+                            activeEventEdit={activeEventEdit} />
+                    </div>
+                )}
+                {activeTab == RESPONSE && (
+                    <div className='fade-load'>
+                        <LayerSet
+                            layers={layers}
+                            events={events}
+                            addLayer={addLayer}
+                            deleteLayer={deleteLayer}
+                            updateLayer={updateLayer}
+                            setLayerVisibility={setLayerVisibility}
+                            activeLayer={activeLayer}
+                            setActiveLayer={setActiveLayer}
+                            setActiveEvent={setActiveEvent}
+                            activeEvent={activeEvent}
+                            setActiveEventDetail={setActiveEventDetail}
+                            activeEventEdit={activeEventEdit} />
+                    </div>
                 )}
             </div>
         </>

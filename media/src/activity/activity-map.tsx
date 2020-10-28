@@ -10,7 +10,11 @@ import { Position } from '@deck.gl/core/utils/positions';
 import { PickInfo } from '@deck.gl/core/lib/deck';
 
 import { ProjectMapPane } from './project-map-pane';
-import { LayerProps } from './layer';
+import { LayerProps } from '../project-activity-components/layers/layer';
+import {
+    LayerEventData, LayerEventDatum
+} from '../project-activity-components/layers/layer-set';
+import { LoadingModal } from '../project-activity-components/loading-modal';
 
 const STATIC_URL = LocusTempus.staticUrl;
 
@@ -31,25 +35,6 @@ const authedFetch = (url: string, method: string, data: any): Promise<any> => {
         credentials: 'same-origin'
     });
 };
-
-export interface LayerEventDatum {
-    lngLat: Position;
-    label: string;
-    layer: number;
-    pk: number;
-    description: string;
-    datetime: string;
-    location: {
-        point: string;
-        polygon: string;
-        lng_lat: Position;
-    };
-}
-
-export interface LayerEventData {
-    visibility: boolean;
-    events: LayerEventDatum[];
-}
 
 export interface ActivityData {
     title: string;
@@ -124,6 +109,8 @@ export const ActivityMap: React.FC = () => {
     const [showAddEventForm, setShowAddEventForm] = useState<boolean>(false);
     const [activePosition, setActivePosition] = useState<Position | null>(null);
 
+    const [isLoading, setIsLoading] = useState<boolean>(true);
+
     const ICON_ATLAS = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png';
     const ICON_MAPPING = {
         marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
@@ -178,24 +165,6 @@ export const ActivityMap: React.FC = () => {
 
         setEventData(events);
         setMapboxLayers(mapLayers);
-    };
-
-    const updateProject = (
-        title: string, description: string, baseMap: string): void => {
-        authedFetch(`/api/project/${projectPk}/`, 'PUT', JSON.stringify(
-            {title: title, description: description, base_map: baseMap})) // eslint-disable-line @typescript-eslint/camelcase, max-len
-            .then((response) => {
-                if (response.status === 200) {
-                    return response.json();
-                } else {
-                    throw 'Project update failed.';
-                }
-            })
-            .then(() => {
-                setProjectTitle(title);
-                setProjectDescription(description);
-                setProjectBaseMap(baseMap);
-            });
     };
 
     const addLayer = (): void => {
@@ -488,6 +457,7 @@ export const ActivityMap: React.FC = () => {
 
     return (
         <>
+            {isLoading && <LoadingModal />}
             {projectBaseMap && (
                 <DeckGL
                     layers={mapboxLayers}
@@ -504,7 +474,8 @@ export const ActivityMap: React.FC = () => {
                         height={'100%'}
                         preventStyleDiffing={true}
                         mapStyle={'mapbox://styles/mapbox/' + projectBaseMap}
-                        mapboxApiAccessToken={TOKEN} />
+                        mapboxApiAccessToken={TOKEN}
+                        onLoad={(): void => { setIsLoading(false); }}/>
                     {activeEvent && (
                         <Popup
                             latitude={activeEvent.location.lng_lat[1]}
