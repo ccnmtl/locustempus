@@ -172,12 +172,17 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     return (
         <div id='project-map-pane' className='widget-pane'>
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
-                <header className='d-flex flex-row project-pane__header'>
+                <header className='project-pane__header'>
                     <h1>{title}</h1>
-                    <div className='overflow-menu'>
+                    <div className='overflow-menu trailing'>
                         <button onClick={toggleProjectMenu}
-                            className='overflow-toggle'>
-                            <FontAwesomeIcon icon={faEllipsisV}/>
+                            className={'lt-icon-button lt-icon-button--transparent'}
+                            aria-label='More actions'>
+                            <span
+                                className={'lt-icons lt-icon-button__icon'}
+                                aria-hidden='true'>
+                                <FontAwesomeIcon icon={faEllipsisV}/>
+                            </span>
                         </button>
                         {showProjectMenu && (
                             <ul className='overflow-menu-show'>

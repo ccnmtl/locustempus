@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { LayerEventDatum } from './project-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faEye, faEyeSlash, faAngleDown, faAngleUp, faEllipsisV, faMapMarker
+    faEye, faEyeSlash, faAngleDown, faAngleRight, faEllipsisV, faMapMarker
 } from '@fortawesome/free-solid-svg-icons';
 
 export interface LayerProps {
@@ -69,23 +69,35 @@ export const Layer: React.FC<LayerProps> = (
         onClick={handleSetActiveLayer}>
             <div className={'sidebar-layer-infobar'}>
                 <button
-                    id={'sidebar-layer-infobar__visibility-btn'}
-                    onClick={handleLayerVisibility}>
-                    <FontAwesomeIcon
-                        icon={layerVisibility ? faEye : faEyeSlash}/>
+                    onClick={handleLayerVisibility}
+                    className={'lt-icon-button lt-icon-button--transparent'}
+                    aria-label={layerVisibility ? 'Hide layer' : 'Show layer'}>
+                    <span className={'lt-icons lt-icon-button__icon'}
+                        aria-hidden='true'>
+                        <FontAwesomeIcon
+                            icon={layerVisibility ? faEye : faEyeSlash}/>
+                    </span>
                 </button>
                 <button
-                    id={'sidebar-layer-infobar__collapsed-btn'}
-                    onClick={handleLayerCollapse}>
-                    <FontAwesomeIcon
-                        icon={isLayerCollapsed ? faAngleUp : faAngleDown}/>
+                    onClick={handleLayerCollapse}
+                    className={'lt-icon-button lt-icon-button--transparent'}
+                    aria-label={isLayerCollapsed ? 'Expand layer' : 'Collapse layer'}>
+                    <span className={'lt-icons lt-icon-button__icon'}
+                        aria-hidden='true'>
+                        <FontAwesomeIcon
+                            icon={isLayerCollapsed ? faAngleRight : faAngleDown}/>
+                    </span>
                 </button>
                 <span id={'sidebar-layer-infobar__title'}
                     className="font-weight-bold">{title}</span>
-                <button
-                    id={'sidebar-layer-infobar__menu-btn'}
-                    onClick={handleLayerMenu}>
-                    <FontAwesomeIcon icon={faEllipsisV}/>
+                <button onClick={handleLayerMenu}
+                    className={'lt-icon-button lt-icon-button--transparent trailing'}
+                    aria-label='More actions'>
+                    <span
+                        className={'lt-icons lt-icon-button__icon'}
+                        aria-hidden='true'>
+                        <FontAwesomeIcon icon={faEllipsisV}/>
+                    </span>
                 </button>
             </div>
             { openLayerMenu && (
@@ -119,9 +131,11 @@ export const Layer: React.FC<LayerProps> = (
                                 {val.label}
                                 {activeEvent && activeEvent.pk === val.pk && (
                                     <button
+                                        type="button"
                                         onClick={(): void => {
-                                            setActiveEventDetail(val);}}>
-                                        More
+                                            setActiveEventDetail(val);}}
+                                        className={'lt-button btn-sm trailing'}>
+                                        <span className='lt-button__text'>More</span>
                                     </button>
                                 )}
                             </div>
