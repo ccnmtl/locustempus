@@ -701,11 +701,16 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 {activeTab === BASE && (
                     <>
                         <div className='fade-load'>
-                            <form onSubmit={handleCreateLayer}>
-                                <button type='submit'>
-                                    <FontAwesomeIcon icon={faLayerGroup}/>Add Layer
-                                </button>
-                            </form>
+                            <div className={'d-flex justify-content-end'}>
+                                <form onSubmit={handleCreateLayer}>
+                                    <button type='submit' className={'lt-button'}>
+                                        <span className={'lt-icons lt-button__icon'}>
+                                            <FontAwesomeIcon icon={faLayerGroup}/>
+                                        </span>
+                                        <span className={'lt-button__text'}>Add layer</span>
+                                    </button>
+                                </form>
+                            </div>
                             {layers && layers.map(
                                 (layer, idx) => {
                                     let layerEvents: LayerEventDatum[] = [];
