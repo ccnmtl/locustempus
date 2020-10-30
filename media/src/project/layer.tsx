@@ -129,7 +129,7 @@ export const Layer: React.FC<LayerProps> = (
                                     (activeEvent && activeEvent.pk === val.pk ?
                                         ' sidebar-layer-event--active' : '')}>
                                 <div className={'lt-list-item__link'}
-                                    role='button' tabIndex='0'
+                                    role='button' tabIndex={0}
                                     onClick={(): void => {setActiveEvent(val);}}>
                                     <span className={'lt-icons lt-list-item__icon'}
                                         aria-hidden='true'>
