@@ -74,3 +74,16 @@ h6 {
     font-size: 0.875rem;
     text-transform: uppercase;
 }
+
+// List
+
+
+@mixin list-typography {
+    font-family: $font-family-base;
+    font-weight: 400;
+    font-size: 0.875rem;
+    line-height: 1.5rem;
+    text-transform: uppercase;
+    text-decoration: inherit;
+    text-transform: inherit;
+}

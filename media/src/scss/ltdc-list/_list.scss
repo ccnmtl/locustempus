@@ -1,0 +1,40 @@
+.lt-list {
+    @include list-typography;
+    margin: 0;
+    padding: 0.5rem 0;
+    list-style-type: none;
+}
+
+.lt-list-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    position: relative;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    height: 3.25rem;
+    &__icon {
+        display: inline-block;
+        margin-right: 0.875rem;
+        flex-shrink: 0;
+        align-items: center;
+        justify-content: center;
+    }
+    &__link {
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+        margin-right: 0.875rem;
+        padding-top: 0.25rem;
+        padding-bottom: 0.25rem;
+        cursor: pointer;
+    }
+    &__primary-text {
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        overflow: hidden;
+    }
+}

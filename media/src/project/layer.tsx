@@ -64,10 +64,12 @@ export const Layer: React.FC<LayerProps> = (
     };
 
     return (
-        <div className={isActiveLayer ?
-            'sidebar-layer sidebar-layer--active' : 'sidebar-layer'}
-        onClick={handleSetActiveLayer}>
-            <div className={'sidebar-layer-infobar'}>
+        <div
+            className={'lt-list-group ' +
+                (isActiveLayer ? 'sidebar-layer--active' : '')}
+            style={{ border: '1px solid #ccc' }}
+            onClick={handleSetActiveLayer}>
+            <div className={'lt-list-group__header'}>
                 <button
                     onClick={handleLayerVisibility}
                     className={'lt-icon-button lt-icon-button--transparent'}
@@ -88,8 +90,8 @@ export const Layer: React.FC<LayerProps> = (
                             icon={isLayerCollapsed ? faAngleRight : faAngleDown}/>
                     </span>
                 </button>
-                <span id={'sidebar-layer-infobar__title'}
-                    className="font-weight-bold">{title}</span>
+                <h2
+                    className="lt-list-group__title">{title}</h2>
                 <button onClick={handleLayerMenu}
                     className={'lt-icon-button lt-icon-button--transparent trailing'}
                     aria-label='More actions'>
@@ -119,16 +121,24 @@ export const Layer: React.FC<LayerProps> = (
                 </div>
             ) }
             { !isLayerCollapsed && (
-                <div>
+                <ul className={'lt-list'}>
                     {layerEvents.map((val, idx) => {
                         return (
-                            <div key={idx}
-                                className={'sidebar-layer-event' +
+                            <li key={idx}
+                                className={'lt-list-item' +
                                     (activeEvent && activeEvent.pk === val.pk ?
-                                        ' sidebar-layer-event--active' : '')}
-                                onClick={(): void => {setActiveEvent(val);}}>
-                                <FontAwesomeIcon icon={faMapMarker}/>
-                                {val.label}
+                                        ' sidebar-layer-event--active' : '')}>
+                                <div className={'lt-list-item__link'}
+                                    role='button' tabIndex={0}
+                                    onClick={(): void => {setActiveEvent(val);}}>
+                                    <span className={'lt-icons lt-list-item__icon'}
+                                        aria-hidden='true'>
+                                        <FontAwesomeIcon icon={faMapMarker}/>
+                                    </span>
+                                    <span className={'lt-list-item__primary-text'}>
+                                        {val.label}
+                                    </span>
+                                </div>
                                 {activeEvent && activeEvent.pk === val.pk && (
                                     <button
                                         type="button"
@@ -138,10 +148,10 @@ export const Layer: React.FC<LayerProps> = (
                                         <span className='lt-button__text'>More</span>
                                     </button>
                                 )}
-                            </div>
+                            </li>
                         );
                     })}
-                </div>
+                </ul>
             ) }
         </div>
     );
