@@ -31,13 +31,16 @@ class ActivitySerializer(serializers.ModelSerializer):
 
 
 class ResponseSerializer(serializers.HyperlinkedModelSerializer):
-    layers = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Layer.objects.all())
+    layers = serializers.HyperlinkedRelatedField(
+        read_only=True,
+        many=True,
+        view_name='api-layer-detail'
+    )
 
     class Meta:
         model = Response
         fields = (
-            'activity', 'layer'
+            'layers',
         )
 
 
