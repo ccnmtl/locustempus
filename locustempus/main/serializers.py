@@ -36,20 +36,15 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
         many=True,
         view_name='api-layer-detail'
     )
-    activity = ActivitySerializer()
+    activity = serializers.PrimaryKeyRelatedField(
+        queryset=Activity.objects.all())
 
     def create(self, validated_data):
-        try:
-            a = Activity.objects.get(
-                pk=validated_data.get('activity', None)
-            )
-
-            r = Response.objects.create(activity=a)
-            ResponseOwner(
-                response=r, owner=self.context['request'].user, activity=a)
-            return r
-        except Activity.DoesNotExist:
-            pass
+        a = validated_data.get('activity')
+        r = Response.objects.create(activity=a)
+        ResponseOwner.objects.create(
+            response=r, owner=self.context['request'].user, activity=a)
+        return r
 
     class Meta:
         model = Response

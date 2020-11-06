@@ -5,7 +5,7 @@ from locustempus.main.permissions import (
     IsLoggedInCourse, IsLoggedInFaculty
 )
 from locustempus.main.tests.factories import (
-    CourseTestMixin, UserFactory
+    CourseTestMixin, UserFactory, ProjectFactory, ActivityFactory
 )
 from unittest.mock import MagicMock
 
@@ -266,12 +266,15 @@ class ResponseAPITest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
+        p = ProjectFactory.create(course=self.sandbox_course)
+        a = ActivityFactory.create(project=p)
         response = self.client.post(
             reverse('api-response-list'),
             {
-                'activity': self.sandbox_course_activity.pk,
+                'activity': a.pk,
             }
         )
+        self.assertEqual(response.status_code, 201)
 
     def test_activity_response_querystring(self):
         self.assertTrue(
