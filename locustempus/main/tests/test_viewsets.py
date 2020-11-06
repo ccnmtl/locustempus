@@ -259,6 +259,20 @@ class ResponseAPITest(CourseTestMixin, TestCase):
     def setUp(self):
         self.setup_course()
 
+    def create_student_response(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        response = self.client.post(
+            reverse('api-response-list'),
+            {
+                'activity': self.sandbox_course_activity.pk,
+            }
+        )
+
     def test_activity_response_querystring(self):
         self.assertTrue(
             self.client.login(

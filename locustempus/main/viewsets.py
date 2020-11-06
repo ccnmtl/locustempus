@@ -1,6 +1,8 @@
 """The viewsets and views used for the API"""
 from django.contrib.auth.models import User
-from locustempus.main.models import Layer, Project, Event, Activity, Response
+from locustempus.main.models import (
+    Layer, Project, Event, Activity, Response
+)
 from locustempus.main.permissions import IsLoggedInCourse
 from locustempus.main.serializers import (
     LayerSerializer, ProjectSerializer, EventSerializer, ActivitySerializer,
