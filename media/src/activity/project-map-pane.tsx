@@ -12,6 +12,8 @@ export interface ProjectMapPaneProps {
     description: string;
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
+    projectLayers: LayerProps[];
+    projectEvents: Map<number, LayerEventData>;
     activity: ActivityData | null;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;
@@ -43,7 +45,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
         showAddEventForm, setShowAddEventForm, activePosition, addEvent,
         clearActivePosition, activeEvent, setActiveEvent, activeEventDetail,
         setActiveEventDetail, activeEventEdit, setActiveEventEdit, deleteEvent,
-        updateEvent
+        updateEvent, projectLayers, projectEvents
     }: ProjectMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
@@ -93,6 +95,8 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             description={description}
             layers={layers}
             events={events}
+            projectLayers={projectLayers}
+            projectEvents={projectEvents}
             activity={activity}
             deleteLayer={deleteLayer}
             updateLayer={updateLayer}

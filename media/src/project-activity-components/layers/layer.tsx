@@ -11,8 +11,8 @@ export interface LayerProps {
     activeLayer: number | null;
     layerEvents: LayerEventDatum[];
     setActiveLayer(pk: number): void;
-    deleteLayer(pk: number): void;
-    updateLayer(pk: number, title: string): void;
+    deleteLayer?(pk: number): void;
+    updateLayer?(pk: number, title: string): void;
     layerVisibility: boolean;
     setLayerVisibility(pk: number): void;
     activeEvent: LayerEventDatum | null;
@@ -37,12 +37,16 @@ export const Layer: React.FC<LayerProps> = (
 
     const handleUpdateLayer = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        updateLayer(pk, updatedLayerTitle);
+        if (updateLayer) {
+            updateLayer(pk, updatedLayerTitle);
+        }
     };
 
     const handleDeleteLayer = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        deleteLayer(pk);
+        if (deleteLayer) {
+            deleteLayer(pk);
+        }
     };
 
     const handleSetActiveLayer = (): void => {
@@ -82,13 +86,15 @@ export const Layer: React.FC<LayerProps> = (
                 </button>
                 <span id={'sidebar-layer-infobar__title'}
                     className="font-weight-bold">{title}</span>
-                <button
-                    id={'sidebar-layer-infobar__menu-btn'}
-                    onClick={handleLayerMenu}>
-                    <FontAwesomeIcon icon={faEllipsisV}/>
-                </button>
+                { updateLayer && deleteLayer && (
+                    <button
+                        id={'sidebar-layer-infobar__menu-btn'}
+                        onClick={handleLayerMenu}>
+                        <FontAwesomeIcon icon={faEllipsisV}/>
+                    </button>
+                )}
             </div>
-            { openLayerMenu && (
+            { openLayerMenu && updateLayer && deleteLayer && (
                 <div id={'sidebar-layer-infobar__menu'}>
                     <form onSubmit={handleUpdateLayer}>
                         <label>Layer Title:

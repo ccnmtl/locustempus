@@ -479,6 +479,8 @@ interface DefaultPanelProps {
     description: string;
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
+    projectLayers: LayerProps[];
+    projectEvents: Map<number, LayerEventData>;
     activity: ActivityData | null;
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
@@ -498,7 +500,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         activeTab, setActiveTab, addLayer, description, layers, events,
         activity, deleteLayer, updateLayer, setLayerVisibility, activeLayer,
         setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
-        activeEventEdit
+        activeEventEdit, projectLayers, projectEvents
     }: DefaultPanelProps) => {
 
     const handleSetActiveTab = (
@@ -544,13 +546,9 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 )}
                 {activeTab === BASE && (
                     <div className='fade-load'>
-                        {/* TODO: Implement a read-only layer for project events */}
                         <LayerSet
-                            layers={layers}
-                            events={events}
-                            addLayer={addLayer}
-                            deleteLayer={deleteLayer}
-                            updateLayer={updateLayer}
+                            layers={projectLayers}
+                            events={projectEvents}
                             setLayerVisibility={setLayerVisibility}
                             activeLayer={activeLayer}
                             setActiveLayer={setActiveLayer}

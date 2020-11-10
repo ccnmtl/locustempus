@@ -17,6 +17,7 @@ import {
 import { LoadingModal } from '../project-activity-components/loading-modal';
 
 const STATIC_URL = LocusTempus.staticUrl;
+const CURRENT_USER = LocusTempus.currentUser.id;
 
 // TODO: fix types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -41,6 +42,12 @@ export interface ActivityData {
     pk: number;
     description: string;
     instructions: string;
+}
+
+interface ResponseData {
+    pk: number;
+    activity: number;
+    layers: string[];
 }
 
 interface ViewportState {
@@ -84,10 +91,13 @@ export const ActivityMap: React.FC = () => {
         document.querySelector('#activity-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
     const projectPk = mapContainer && mapContainer.dataset.projectpk;
+    const activityPk = mapContainer && mapContainer.dataset.activitypk;
     const [projectTitle, setProjectTitle] = useState<string | null>(null);
     const [projectDescription, setProjectDescription] =
         useState<string | null>(null);
     const [projectBaseMap, setProjectBaseMap] = useState<string | null>(null);
+    const [projectLayerData, setProjectLayerData] = useState<LayerProps[]>([]);
+    const [responseData, setResponseData] = useState<ResponseData | null>(null);
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
     const [ activeEvent, setActiveEvent] =
@@ -101,7 +111,11 @@ export const ActivityMap: React.FC = () => {
     // Data structure to hold events, keyed by layer PK
     const [eventData, setEventData] =
         useState<Map<number, LayerEventData>>(new Map());
+    const [projectEventData, setProjectEventData] =
+        useState<Map<number, LayerEventData>>(new Map());
     const [mapboxLayers, setMapboxLayers] =
+        useState<IconLayer<LayerEventDatum>[]>([]);
+    const [projectMapboxLayers, setProjectMapboxLayers] =
         useState<IconLayer<LayerEventDatum>[]>([]);
 
     const [layerTitleCount, setLayerTitleCount] = useState<number>(1);
@@ -167,22 +181,56 @@ export const ActivityMap: React.FC = () => {
         setMapboxLayers(mapLayers);
     };
 
-    const addLayer = (): void => {
-        authedFetch('/api/layer/', 'POST', JSON.stringify(
-            {title: `Layer ${layerTitleCount}`,
-                content_object: `/api/project/${projectPk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
-            .then((response) => {
-                if (response.status === 201) {
-                    return response.json();
+    const updateProjectEventData = (events: Map<number, LayerEventData>): void => {
+        const mapLayers = [...events.keys()].reduce(
+            (acc: IconLayer<LayerEventDatum>[], val: number) => {
+                const data = events.get(val);
+                if (data && data.visibility) {
+                    const layer = new IconLayer({
+                        id: 'icon-layer-' + val,
+                        data: data.events,
+                        pickable: true,
+                        iconAtlas: ICON_ATLAS,
+                        iconMapping: ICON_MAPPING,
+                        getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
+                        sizeScale: 15,
+                        getPosition: (d): Position => d.location.lng_lat,
+                        onClick: pickEventClickHandler,
+                        getSize: 5,
+                        getColor: [0, 0, 0],
+                    });
+                    return [...acc, layer];
                 } else {
-                    throw 'Layer creation failed.';
+                    return acc;
                 }
-            })
-            .then((data) => {
-                setLayerData([...layerData, data]);
-                setActiveLayer(data.pk);
-                setLayerTitleCount((prev) => {return prev + 1;});
-            });
+            },
+            []);
+
+        setProjectEventData(events);
+        setProjectMapboxLayers(mapLayers);
+    };
+
+    const addLayer = (): void => {
+        if (responseData) {
+            authedFetch('/api/layer/', 'POST', JSON.stringify(
+                {title: `Layer ${layerTitleCount}`,
+                    content_object: `/api/response/${responseData.pk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+                .then((response) => {
+                    if (response.status === 201) {
+                        return response.json();
+                    } else {
+                        throw 'Layer creation failed.';
+                    }
+                })
+                .then((data) => {
+                    setLayerData([...layerData, data]);
+                    setActiveLayer(data.pk);
+                    setLayerTitleCount((prev) => {return prev + 1;});
+                });
+        } else {
+            throw new Error(
+                'Layer creation failed because no Locus Tempus response object has been set.');
+        }
     };
 
     const deleteLayer = (pk: number): void => {
@@ -204,46 +252,58 @@ export const ActivityMap: React.FC = () => {
                     if (updatedLayerData.length === 0) {
                         // addLayer has a stale closure, so the fetch
                         // is called here instead
-                        authedFetch('/api/layer/', 'POST', JSON.stringify(
-                            {title: `Layer ${layerTitleCount}`,
-                                content_object: `/api/project/${projectPk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
-                            .then((response) => {
-                                if (response.status === 201) {
-                                    return response.json();
-                                } else {
-                                    throw 'Layer creation failed.';
-                                }
-                            })
-                            .then((data) => {
-                                setLayerData([data]);
-                                setActiveLayer(data.pk);
-                                setLayerTitleCount(
-                                    (prev) => {return prev + 1;});
-                            });
+                        if (responseData) {
+                            authedFetch('/api/layer/', 'POST', JSON.stringify(
+                                {title: `Layer ${layerTitleCount}`,
+                                    content_object: `/api/response/${responseData.pk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+                                .then((response) => {
+                                    if (response.status === 201) {
+                                        return response.json();
+                                    } else {
+                                        throw 'Layer creation failed.';
+                                    }
+                                })
+                                .then((data) => {
+                                    setLayerData([data]);
+                                    setActiveLayer(data.pk);
+                                    setLayerTitleCount(
+                                        (prev) => {return prev + 1;});
+                                });
+                        } else {
+                            throw new Error(
+                                'Layer creation failed because no Locus Tempus Response ' +
+                                'object has been set.');
+                        }
                     }
                 }
             });
     };
 
     const updateLayer = (pk: number, title: string): void => {
-        authedFetch(`/api/layer/${pk}/`, 'PUT', JSON.stringify(
-            {title: title, content_object: `/api/project/${projectPk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
-            .then((response) => {
-                if (response.status === 200) {
-                    return response.json();
-                } else {
-                    throw 'Layer update failed.';
-                }
-            })
-            .then((data) => {
-                const layer = layerData.filter((el) => {
-                    return el.pk !== pk;
+        if (responseData) {
+            authedFetch(`/api/layer/${pk}/`, 'PUT', JSON.stringify(
+                {title: title, content_object: `/api/response/${responseData.pk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+                .then((response) => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        throw 'Layer update failed.';
+                    }
+                })
+                .then((data) => {
+                    const layer = layerData.filter((el) => {
+                        return el.pk !== pk;
+                    });
+                    setLayerData([...layer, data]);
                 });
-                setLayerData([...layer, data]);
-            });
+        } else {
+            throw new Error('Layer update failed because no Locus Tempus Response ' +
+                'object has been set');
+        }
     };
 
     const setLayerVisibility = (pk: number): void => {
+        // TODO: make this work with Project layers
         const updatedEvents = new Map(eventData);
         const layerEvents = updatedEvents.get(pk);
 
@@ -414,34 +474,6 @@ export const ActivityMap: React.FC = () => {
             setProjectDescription(projectData.description);
             setProjectBaseMap(projectData.base_map);
 
-            // Fetch the layers
-            const layersRsps = await Promise.all(
-                projectData.layers.map((layer: string) => {
-                    return fetch(layer);
-                })
-            );
-
-            // TODO: fix type
-            const layers = await Promise.all(
-                layersRsps.map((response: any) => { return response.json(); }) // eslint-disable-line @typescript-eslint/no-explicit-any, max-len
-            );
-
-            // Create an empty layer if none exist, otherwise
-            // unpack the event data
-            if (layers.length === 0) {
-                addLayer();
-                setLayerTitleCount((prev) => {return prev + 1;});
-            } else {
-                setLayerData(layers);
-                setActiveLayer(layers[0].pk);
-
-                const events = layers.reduce((acc, val) => {
-                    acc.set(val.pk, {visibility: true, events: val.event_set});
-                    return acc;
-                }, new Map());
-                updateEventData(events);
-            }
-
             // Get Activity info
             if (projectData.activity) {
                 const activityResponse = await fetch(`/api/activity/${projectData.activity}`);
@@ -449,6 +481,81 @@ export const ActivityMap: React.FC = () => {
                     throw new Error('Activity data not loaded.');
                 }
                 setActivity(await activityResponse.json());
+            }
+
+            // If a contributor, get or create a response
+            if (activityPk && CURRENT_USER) {
+                const resp = await fetch(
+                    `/api/response/?activity=${activityPk}&owner=${CURRENT_USER}`);
+                if (!resp.ok) {
+                    throw new Error('Project response request failed.');
+                }
+                // NB: The fetch returns a queryset, hence the list type
+                const respData: ResponseData[] = await resp.json();
+                if (respData.length > 0) {
+                    setResponseData(respData[0]);
+                    const layersRsps = await Promise.all(
+                        respData[0].layers.map((layer: string) => {
+                            return fetch(layer);
+                        })
+                    );
+                    // TODO: fix type
+                    const layers = await Promise.all(
+                        layersRsps.map((response: any) => { return response.json(); }) // eslint-disable-line @typescript-eslint/no-explicit-any, max-len
+                    );
+
+                    // Create an empty layer if none exist, otherwise
+                    // unpack the event data
+                    if (layers.length === 0) {
+                        addLayer();
+                        setLayerTitleCount((prev) => {return prev + 1;});
+                    } else {
+                        setLayerData(layers);
+                        setActiveLayer(layers[0].pk);
+
+                        const events = layers.reduce((acc, val) => {
+                            acc.set(val.pk, {visibility: true, events: val.event_set});
+                            return acc;
+                        }, new Map());
+                        updateEventData(events);
+                    }
+                } else {
+                    authedFetch('/api/response/', 'POST', JSON.stringify({activity: activityPk}))
+                        .then((response) => {
+                            if (response.status === 200) {
+                                return response.json();
+                            } else {
+                                throw 'Event update failed.';
+                            }
+                        })
+                        .then((data: ResponseData) => {
+                            setResponseData(data);
+                            addLayer();
+                            setLayerTitleCount((prev) => {return prev + 1;});
+                        });
+                }
+            }
+
+            // Fetch the Project layers
+            const projectLayersRsps = await Promise.all(
+                projectData.layers.map((layer: string) => {
+                    return fetch(layer);
+                })
+            );
+
+            // TODO: fix type
+            const layers = await Promise.all(
+                projectLayersRsps.map((response: any) => { return response.json(); }) // eslint-disable-line @typescript-eslint/no-explicit-any, max-len
+            );
+
+            if (layers.length > 0) {
+                setProjectLayerData(layers);
+
+                const events = layers.reduce((acc, val) => {
+                    acc.set(val.pk, {visibility: true, events: val.event_set});
+                    return acc;
+                }, new Map());
+                updateProjectEventData(events);
             }
         };
 
@@ -460,7 +567,7 @@ export const ActivityMap: React.FC = () => {
             {isLoading && <LoadingModal />}
             {projectBaseMap && (
                 <DeckGL
-                    layers={mapboxLayers}
+                    layers={mapboxLayers.concat(projectMapboxLayers)}
                     initialViewState={viewportState}
                     width={'100%'}
                     height={'100%'}
@@ -512,6 +619,8 @@ export const ActivityMap: React.FC = () => {
                     deleteLayer={deleteLayer}
                     updateLayer={updateLayer}
                     setLayerVisibility={setLayerVisibility}
+                    projectLayers={projectLayerData}
+                    projectEvents={projectEventData}
                     showAddEventForm={showAddEventForm}
                     setShowAddEventForm={setShowAddEventForm}
                     activePosition={activePosition}
