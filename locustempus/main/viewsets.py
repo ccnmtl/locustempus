@@ -43,21 +43,18 @@ class ResponseApiView(ModelViewSet):
     def get_queryset(self):
         qs = Response.objects.all()
 
-        try:
-            activity = Activity.objects.get(
-                pk=self.request.query_params.get('activity', None)
-            )
-
-            owner = User.objects.get(
-                pk=self.request.query_params.get('owner', None)
-            )
-
-            if activity and owner:
-                qs = Response.objects.filter(
-                    activity=activity,
-                    owners__in=[owner]
-                )
-        except (Activity.DoesNotExist, User.DoesNotExist):
-            pass
+        activity_qs = self.request.query_params.get('activity', None)
+        owner_qs = self.request.query_params.get('owner', None)
+        if activity_qs and owner_qs:
+            try:
+                activity = Activity.objects.get(pk=activity_qs)
+                owner = User.objects.get(pk=owner_qs)
+                if activity and owner:
+                    qs = Response.objects.filter(
+                        activity=activity,
+                        owners__in=[owner]
+                    )
+            except (Activity.DoesNotExist, User.DoesNotExist):
+                return []
 
         return qs

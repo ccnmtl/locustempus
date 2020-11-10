@@ -48,9 +48,9 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Response
-        read_only_fields = ('layers',)
+        read_only_fields = ('layers', 'pk')
         fields = (
-            'activity', 'layers'
+            'pk', 'activity', 'layers'
         )
 
 
