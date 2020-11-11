@@ -8,7 +8,7 @@ from locustempus.main.serializers import (
     LayerSerializer, ProjectSerializer, EventSerializer, ActivitySerializer,
     ResponseSerializer
 )
-from rest_framework.viewsets import ModelViewSet, ReadOnlyModelViewSet
+from rest_framework.viewsets import ModelViewSet
 
 
 class ProjectApiView(ModelViewSet):
