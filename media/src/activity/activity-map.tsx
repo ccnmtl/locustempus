@@ -302,9 +302,16 @@ export const ActivityMap: React.FC = () => {
         }
     };
 
+    const isProjectLayer = (pk: number): boolean => {
+        return projectEventData.has(pk);
+    };
+
     const setLayerVisibility = (pk: number): void => {
-        // TODO: make this work with Project layers
-        const updatedEvents = new Map(eventData);
+        const isProj = isProjectLayer(pk);
+        const data = isProj ? projectEventData : eventData;
+        const updateFunc = isProj ? updateProjectEventData : updateEventData;
+
+        const updatedEvents = new Map(data);
         const layerEvents = updatedEvents.get(pk);
 
         if (layerEvents) {
@@ -313,7 +320,7 @@ export const ActivityMap: React.FC = () => {
                 events: layerEvents.events
             });
 
-            updateEventData(updatedEvents);
+            updateFunc(updatedEvents);
         }
     };
 
@@ -621,6 +628,7 @@ export const ActivityMap: React.FC = () => {
                     setLayerVisibility={setLayerVisibility}
                     projectLayers={projectLayerData}
                     projectEvents={projectEventData}
+                    isProjectLayer={isProjectLayer}
                     showAddEventForm={showAddEventForm}
                     setShowAddEventForm={setShowAddEventForm}
                     activePosition={activePosition}

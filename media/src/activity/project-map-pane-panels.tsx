@@ -406,15 +406,15 @@ interface EventDetailPanelProps {
     activeLayer: number | null;
     activeEventDetail: LayerEventDatum | null;
     setActiveEventDetail(d: LayerEventDatum | null): void;
-    activeEventEdit: LayerEventDatum | null;
     setActiveEventEdit(d: LayerEventDatum | null): void;
     deleteEvent(pk: number, layerPk: number): void;
+    isProjectLayer(pk: number): boolean;
 }
 
 export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     {
         activeLayer, activeEventDetail, setActiveEventDetail,
-        setActiveEventEdit, deleteEvent
+        setActiveEventEdit, deleteEvent, isProjectLayer
     }: EventDetailPanelProps) => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
 
@@ -447,9 +447,11 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 <button onClick={handleBack}>
                     <FontAwesomeIcon icon={faArrowLeft}/> Back
                 </button>
-                <button onClick={handleMenuToggle}>
-                    <FontAwesomeIcon icon={faEllipsisV}/>
-                </button>
+                {activeLayer && !isProjectLayer(activeLayer) && (
+                    <button onClick={handleMenuToggle}>
+                        <FontAwesomeIcon icon={faEllipsisV}/>
+                    </button>
+                )}
             </div>
             {showMenu && (
                 <div>
