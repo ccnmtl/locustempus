@@ -24,10 +24,6 @@
     overflow-y: scroll;
 }*/
 
-.sidebar-layer--active {
-    background-color: #F0F0F0;
-}
-
 .sidebar-layer-infobar {
     display: flex;
     flex-flow: row nowrap;
@@ -54,6 +50,7 @@
     position: absolute;
     background-color: #FFFFFF;
     width: 30rem; // TODO: maybe inherit this somehow
+    z-index: 200;
 }
 
 .sidebar-layer-event {
@@ -64,9 +61,5 @@
             fill: #F00;
         }
     }
-}
-
-.sidebar-layer-event--active {
-    color: #F00;
 }
 

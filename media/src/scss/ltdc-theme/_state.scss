@@ -6,3 +6,9 @@
 .leading {
     margin-left: 0;
 }
+
+.focus-none {
+    outline: none;
+    border-color: transparent;
+    box-shadow: none;
+}
