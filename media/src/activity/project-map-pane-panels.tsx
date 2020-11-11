@@ -328,7 +328,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                 eventName === '' ? 'Untitled Marker' : eventName,
                 description, activePosition[0], activePosition[1]);
             setShowAddEventForm(false);
-            setActiveTab(1);
+            setActiveTab(2);
             clearActivePosition();
         }
     };
