@@ -131,9 +131,9 @@ export const ProjectMap: React.FC = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    const ICON_ATLAS = 'https://raw.githubusercontent.com/visgl/deck.gl-data/master/website/icon-atlas.png';
+    const ICON_ATLAS = STATIC_URL + 'img/icon-map-marker.png';
     const ICON_MAPPING = {
-        marker: {x: 0, y: 0, width: 128, height: 128, mask: true}
+        marker: {x: 0, y: 0, width: 384, height: 512, anchorY: 512, mask: true}
     };
 
     const clearActivePosition = (): void => {
@@ -173,8 +173,8 @@ export const ProjectMap: React.FC = () => {
                         sizeScale: 15,
                         getPosition: (d): Position => d.location.lng_lat,
                         onClick: pickEventClickHandler,
-                        getSize: 5,
-                        getColor: [255, 0, 0],
+                        getSize: 3,
+                        getColor: [204, 51, 51],
                     });
                     return [...acc, layer];
                 } else {
@@ -501,8 +501,8 @@ export const ProjectMap: React.FC = () => {
                 getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
                 sizeScale: 15,
                 getPosition: (d): Position => d.position,
-                getSize: 5,
-                getColor: [0, 0, 255],
+                getSize: 3,
+                getColor: [0, 51, 255],
             }));
             setMapboxLayers(updatedLayers);
         }
@@ -586,6 +586,7 @@ export const ProjectMap: React.FC = () => {
                         <Popup
                             latitude={activeEvent.location.lng_lat[1]}
                             longitude={activeEvent.location.lng_lat[0]}
+                            offsetTop={-35}
                             closeOnClick={false}
                             onClose={(): void => {setActiveEvent(null);}}>
                             <div>{activeEvent.label}</div>

@@ -5,6 +5,15 @@
     list-style-type: none;
 }
 
+.lt-list-layer {
+    @include list-layer-typography;
+    margin-left: 0.875rem;
+    &-item--active {
+        background-color: #e5e5e5;
+        color: #c00;
+    }
+}
+
 .lt-list-item {
     display: flex;
     align-items: center;
@@ -12,7 +21,7 @@
     position: relative;
     padding-left: 1rem;
     padding-right: 1rem;
-    height: 3.25rem;
+    height: 3rem;
     &__icon {
         display: inline-block;
         margin-right: 0.875rem;
@@ -31,6 +40,12 @@
         padding-top: 0.25rem;
         padding-bottom: 0.25rem;
         cursor: pointer;
+    }
+    &__link:focus {
+        outline: none;
+        border-color: transparent;
+        box-shadow: none;
+        background-color: #e5e5e5;
     }
     &__primary-text {
         text-overflow: ellipsis;

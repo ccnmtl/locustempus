@@ -66,34 +66,37 @@ export const Layer: React.FC<LayerProps> = (
     return (
         <div
             className={'lt-list-group ' +
-                (isActiveLayer ? 'sidebar-layer--active' : '')}
+                (isActiveLayer ? 'lt-list-group--active' : '')}
             style={{ border: '1px solid #ccc' }}
             onClick={handleSetActiveLayer}>
             <div className={'lt-list-group__header'}>
-                <button
-                    onClick={handleLayerVisibility}
-                    className={'lt-icon-button lt-icon-button--transparent'}
-                    aria-label={layerVisibility ? 'Hide layer' : 'Show layer'}>
-                    <span className={'lt-icons lt-icon-button__icon'}
-                        aria-hidden='true'>
-                        <FontAwesomeIcon
-                            icon={layerVisibility ? faEye : faEyeSlash}/>
-                    </span>
-                </button>
-                <button
-                    onClick={handleLayerCollapse}
-                    className={'lt-icon-button lt-icon-button--transparent'}
-                    aria-label={isLayerCollapsed ? 'Expand layer' : 'Collapse layer'}>
-                    <span className={'lt-icons lt-icon-button__icon'}
-                        aria-hidden='true'>
-                        <FontAwesomeIcon
-                            icon={isLayerCollapsed ? faAngleRight : faAngleDown}/>
-                    </span>
-                </button>
-                <h2
-                    className="lt-list-group__title">{title}</h2>
+                {/* Layer title */}
+                <h2 className="lt-list-group__title order-2">{title}</h2>
+                {/* Layer show-hide and expand-collapse */}
+                <div className="lt-list-group__action leading order-1">
+                    <button
+                        onClick={handleLayerVisibility}
+                        className={'lt-icon-button lt-icon-button--transparent'}
+                        aria-label={layerVisibility ? 'Hide layer' : 'Show layer'}>
+                        <span className={'lt-icons lt-icon-button__icon'}
+                            aria-hidden='true'>
+                            <FontAwesomeIcon
+                                icon={layerVisibility ? faEye : faEyeSlash}/>
+                        </span>
+                    </button>
+                    <button
+                        onClick={handleLayerCollapse}
+                        className={'lt-icon-button lt-icon-button--transparent'}
+                        aria-label={isLayerCollapsed ? 'Expand layer' : 'Collapse layer'}>
+                        <span className={'lt-icons lt-icon-button__icon'}
+                            aria-hidden='true'>
+                            <FontAwesomeIcon
+                                icon={isLayerCollapsed ? faAngleRight : faAngleDown}/>
+                        </span>
+                    </button>
+                </div>
                 <button onClick={handleLayerMenu}
-                    className={'lt-icon-button lt-icon-button--transparent trailing'}
+                    className={'lt-icon-button lt-icon-button--transparent trailing order-3'}
                     aria-label='More actions'>
                     <span
                         className={'lt-icons lt-icon-button__icon'}
@@ -121,13 +124,13 @@ export const Layer: React.FC<LayerProps> = (
                 </div>
             ) }
             { !isLayerCollapsed && (
-                <ul className={'lt-list'}>
+                <ul className={'lt-list lt-list-layer'}>
                     {layerEvents.map((val, idx) => {
                         return (
                             <li key={idx}
-                                className={'lt-list-item' +
+                                className={'lt-list-item lt-list-layer-item' +
                                     (activeEvent && activeEvent.pk === val.pk ?
-                                        ' sidebar-layer-event--active' : '')}>
+                                        ' lt-list-layer-item--active' : '')}>
                                 <div className={'lt-list-item__link'}
                                     role='button' tabIndex={0}
                                     onClick={(): void => {setActiveEvent(val);}}>

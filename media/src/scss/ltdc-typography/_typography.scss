@@ -81,9 +81,14 @@ h6 {
 @mixin list-typography {
     font-family: $font-family-base;
     font-weight: 400;
-    font-size: 0.875rem;
+    font-size: 1rem;
     line-height: 1.5rem;
     text-transform: uppercase;
     text-decoration: inherit;
     text-transform: inherit;
 }
+
+@mixin list-layer-typography {
+    font-size: 0.875rem;
+}
+
