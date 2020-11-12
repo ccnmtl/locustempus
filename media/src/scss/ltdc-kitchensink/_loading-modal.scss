@@ -1,7 +1,44 @@
-#loading-modal {
-    height: 100vh;
-    width: 100vw;
+.loading-modal {
+    height: 100%;
+    width: 100%;
     position: absolute;
-    background-color: rgba(0, 0, 0, 0.5);
+    top: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.75);
     z-index: 100000;
+    &__indicator {
+        position: absolute;
+        top: 30%;
+        left: 50%;
+        border: 2rem solid #ff9933;
+        border-radius: 50%;
+        border-top: 1.5rem solid #339933;
+        border-right: 0.75rem solid #339933;
+        width: 5.25rem !important;
+        height: 6.5rem !important;
+        -webkit-animation: spin 0.5s linear infinite;
+        animation: spin 2s linear infinite;
+        background-color: #78adff;
+    }
+    &__text {
+        position: absolute;
+        top: calc(30% + 130px);
+        left: calc(50% - 30px);
+        font-family: $heading-font-family;
+        font-weight: $heading-font-weight;
+        line-height: $heading-line-height;
+        color: #fff;
+        font-size: 2rem;
+    }
+}
+
+/* Safari */
+@-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
 }
