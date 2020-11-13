@@ -1,8 +1,12 @@
 """The viewsets and views used for the API"""
-from locustempus.main.models import Layer, Project, Event, Activity
+from django.contrib.auth.models import User
+from locustempus.main.models import (
+    Layer, Project, Event, Activity, Response
+)
 from locustempus.main.permissions import IsLoggedInCourse
 from locustempus.main.serializers import (
-    LayerSerializer, ProjectSerializer, EventSerializer, ActivitySerializer
+    LayerSerializer, ProjectSerializer, EventSerializer, ActivitySerializer,
+    ResponseSerializer
 )
 from rest_framework.viewsets import ModelViewSet
 
@@ -30,3 +34,29 @@ class EventApiView(ModelViewSet):
     """Retrieves events"""
     serializer_class = EventSerializer
     queryset = Event.objects.all()
+
+
+class ResponseApiView(ModelViewSet):
+    """Retrieves responses"""
+    serializer_class = ResponseSerializer
+
+    def get_queryset(self):
+        activity_qs = self.request.query_params.get('activity', None)
+        if activity_qs:
+            try:
+                activity = Activity.objects.get(pk=activity_qs)
+            except Activity.DoesNotExist:
+                return []
+
+        course = activity.project.course
+        user = self.request.user
+        if course.is_true_faculty(user):
+            return Activity.objects.filter(activity=activity)
+
+        if course.is_true_member(user):
+            return Response.objects.filter(
+                activity=activity,
+                owners__in=[user]
+            )
+
+        return []

@@ -26,9 +26,9 @@ export interface LayerEventData {
 interface LayerSetProps {
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
-    addLayer(): void;
-    deleteLayer(pk: number): void;
-    updateLayer(pk: number, title: string): void;
+    addLayer?(): void;
+    deleteLayer?(pk: number): void;
+    updateLayer?(pk: number, title: string): void;
     setLayerVisibility(pk: number): void;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;
@@ -47,16 +47,20 @@ export const LayerSet: React.FC<LayerSetProps> = (
 
     const handleCreateLayer = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        addLayer();
+        if (addLayer) {
+            addLayer();
+        }
     };
 
     return (
         <>
-            <form onSubmit={handleCreateLayer}>
-                <button type='submit'>
-                    <FontAwesomeIcon icon={faLayerGroup}/>Add Layer
-                </button>
-            </form>
+            {addLayer && (
+                <form onSubmit={handleCreateLayer}>
+                    <button type='submit'>
+                        <FontAwesomeIcon icon={faLayerGroup}/>Add Layer
+                    </button>
+                </form>
+            )}
             {layers && layers.map(
                 (layer, idx) => {
                     let layerEvents: LayerEventDatum[] = [];

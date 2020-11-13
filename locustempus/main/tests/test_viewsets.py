@@ -5,7 +5,7 @@ from locustempus.main.permissions import (
     IsLoggedInCourse, IsLoggedInFaculty
 )
 from locustempus.main.tests.factories import (
-    CourseTestMixin, UserFactory
+    CourseTestMixin, UserFactory, ProjectFactory, ActivityFactory
 )
 from unittest.mock import MagicMock
 
@@ -253,3 +253,41 @@ class LayerAPITest(CourseTestMixin, TestCase):
             reverse('api-layer-detail', args=[layer.pk])
         )
         self.assertEqual(response.status_code, 204)
+
+
+class ResponseAPITest(CourseTestMixin, TestCase):
+    def setUp(self):
+        self.setup_course()
+
+    def test_create_student_response(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        p = ProjectFactory.create(course=self.sandbox_course)
+        a = ActivityFactory.create(project=p)
+        response = self.client.post(
+            reverse('api-response-list'),
+            {
+                'activity': a.pk,
+            }
+        )
+        self.assertEqual(response.status_code, 201)
+
+    def test_activity_response_querystring(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        response = self.client.get(
+            reverse('api-response-list') + '?activity={}'.format(
+                self.sandbox_course_activity.pk
+            )
+        )
+
+        self.assertEqual(response.status_code, 200)

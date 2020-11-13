@@ -122,5 +122,8 @@ class CourseTestMixin(object):
         self.sandbox_course.group.user_set.add(self.faculty)
         self.sandbox_course.faculty_group.user_set.add(self.faculty)
         p2 = ProjectFactory.create(course=self.sandbox_course)
+        self.sandbox_course_project = p2
         a2 = ActivityFactory.create(project=p2)
-        ResponseFactory.create(activity=a2, owners=[self.student])
+        self.sandbox_course_activity = a2
+        self.sandbox_course_response = ResponseFactory.create(
+            activity=a2, owners=[self.student])

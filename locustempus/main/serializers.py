@@ -1,7 +1,7 @@
 from django.contrib.gis.geos import Point
 from generic_relations.relations import GenericRelatedField
 from locustempus.main.models import (
-    Layer, Project, Response, Event, Location, Activity
+    Layer, Project, Response, Event, Location, Activity, ResponseOwner
 )
 from rest_framework import serializers
 
@@ -31,13 +31,26 @@ class ActivitySerializer(serializers.ModelSerializer):
 
 
 class ResponseSerializer(serializers.HyperlinkedModelSerializer):
-    layers = serializers.PrimaryKeyRelatedField(
-        many=True, queryset=Layer.objects.all())
+    layers = serializers.HyperlinkedRelatedField(
+        read_only=True,
+        many=True,
+        view_name='api-layer-detail'
+    )
+    activity = serializers.PrimaryKeyRelatedField(
+        queryset=Activity.objects.all())
+
+    def create(self, validated_data):
+        a = validated_data.get('activity')
+        r = Response.objects.create(activity=a)
+        ResponseOwner.objects.create(
+            response=r, owner=self.context['request'].user, activity=a)
+        return r
 
     class Meta:
         model = Response
+        read_only_fields = ('layers', 'pk')
         fields = (
-            'activity', 'layer'
+            'pk', 'activity', 'layers'
         )
 
 

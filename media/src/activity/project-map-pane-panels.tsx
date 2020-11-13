@@ -328,7 +328,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                 eventName === '' ? 'Untitled Marker' : eventName,
                 description, activePosition[0], activePosition[1]);
             setShowAddEventForm(false);
-            setActiveTab(1);
+            setActiveTab(2);
             clearActivePosition();
         }
     };
@@ -406,15 +406,15 @@ interface EventDetailPanelProps {
     activeLayer: number | null;
     activeEventDetail: LayerEventDatum | null;
     setActiveEventDetail(d: LayerEventDatum | null): void;
-    activeEventEdit: LayerEventDatum | null;
     setActiveEventEdit(d: LayerEventDatum | null): void;
     deleteEvent(pk: number, layerPk: number): void;
+    isProjectLayer(pk: number): boolean;
 }
 
 export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     {
         activeLayer, activeEventDetail, setActiveEventDetail,
-        setActiveEventEdit, deleteEvent
+        setActiveEventEdit, deleteEvent, isProjectLayer
     }: EventDetailPanelProps) => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
 
@@ -447,9 +447,11 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 <button onClick={handleBack}>
                     <FontAwesomeIcon icon={faArrowLeft}/> Back
                 </button>
-                <button onClick={handleMenuToggle}>
-                    <FontAwesomeIcon icon={faEllipsisV}/>
-                </button>
+                {activeLayer && !isProjectLayer(activeLayer) && (
+                    <button onClick={handleMenuToggle}>
+                        <FontAwesomeIcon icon={faEllipsisV}/>
+                    </button>
+                )}
             </div>
             {showMenu && (
                 <div>
@@ -479,6 +481,8 @@ interface DefaultPanelProps {
     description: string;
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
+    projectLayers: LayerProps[];
+    projectEvents: Map<number, LayerEventData>;
     activity: ActivityData | null;
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
@@ -498,7 +502,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         activeTab, setActiveTab, addLayer, description, layers, events,
         activity, deleteLayer, updateLayer, setLayerVisibility, activeLayer,
         setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
-        activeEventEdit
+        activeEventEdit, projectLayers, projectEvents
     }: DefaultPanelProps) => {
 
     const handleSetActiveTab = (
@@ -544,13 +548,9 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 )}
                 {activeTab === BASE && (
                     <div className='fade-load'>
-                        {/* TODO: Implement a read-only layer for project events */}
                         <LayerSet
-                            layers={layers}
-                            events={events}
-                            addLayer={addLayer}
-                            deleteLayer={deleteLayer}
-                            updateLayer={updateLayer}
+                            layers={projectLayers}
+                            events={projectEvents}
                             setLayerVisibility={setLayerVisibility}
                             activeLayer={activeLayer}
                             setActiveLayer={setActiveLayer}

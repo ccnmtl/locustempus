@@ -12,6 +12,8 @@ export interface ProjectMapPaneProps {
     description: string;
     layers: LayerProps[];
     events: Map<number, LayerEventData>;
+    projectLayers: LayerProps[];
+    projectEvents: Map<number, LayerEventData>;
     activity: ActivityData | null;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;
@@ -19,6 +21,7 @@ export interface ProjectMapPaneProps {
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
     setLayerVisibility(pk: number): void;
+    isProjectLayer(pk: number): boolean;
     showAddEventForm: boolean;
     setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
@@ -40,10 +43,11 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     {
         title, description, layers, events, activity, activeLayer,
         setActiveLayer, addLayer, deleteLayer, updateLayer, setLayerVisibility,
-        showAddEventForm, setShowAddEventForm, activePosition, addEvent,
-        clearActivePosition, activeEvent, setActiveEvent, activeEventDetail,
-        setActiveEventDetail, activeEventEdit, setActiveEventEdit, deleteEvent,
-        updateEvent
+        isProjectLayer, showAddEventForm, setShowAddEventForm, activePosition,
+        addEvent, clearActivePosition, activeEvent, setActiveEvent,
+        activeEventDetail, setActiveEventDetail, activeEventEdit,
+        setActiveEventEdit, deleteEvent, updateEvent, projectLayers,
+        projectEvents
     }: ProjectMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
@@ -76,9 +80,9 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             activeLayer={activeLayer}
             activeEventDetail={activeEventDetail}
             setActiveEventDetail={setActiveEventDetail}
-            activeEventEdit={activeEventEdit}
             setActiveEventEdit={setActiveEventEdit}
-            deleteEvent={deleteEvent}/>,
+            deleteEvent={deleteEvent}
+            isProjectLayer={isProjectLayer}/>,
         2: <> {activeEventEdit && (
             <EventEditPanel
                 activeLayer={activeLayer}
@@ -93,6 +97,8 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             description={description}
             layers={layers}
             events={events}
+            projectLayers={projectLayers}
+            projectEvents={projectEvents}
             activity={activity}
             deleteLayer={deleteLayer}
             updateLayer={updateLayer}
