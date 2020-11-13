@@ -1,5 +1,4 @@
 """The viewsets and views used for the API"""
-from django.contrib.auth.models import User
 from locustempus.main.models import (
     Layer, Project, Event, Activity, Response
 )
