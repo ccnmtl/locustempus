@@ -1,6 +1,6 @@
 from django.conf import settings
 from locustempus.settings_shared import *  # noqa: F403
-from ccnmtlsettings.production import common
+from ccnmtlsettings.staging import common
 import sentry_sdk
 from sentry_sdk.integrations.django import DjangoIntegration
 
