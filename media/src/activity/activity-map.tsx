@@ -493,7 +493,7 @@ export const ActivityMap: React.FC = () => {
             // If a contributor, get or create a response
             if (activityPk && CURRENT_USER) {
                 const resp = await fetch(
-                    `/api/response/?activity=${activityPk}&owner=${CURRENT_USER}`);
+                    `/api/response/?activity=${activityPk}`);
                 if (!resp.ok) {
                     throw new Error('Project response request failed.');
                 }
