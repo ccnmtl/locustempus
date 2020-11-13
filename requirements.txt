@@ -45,7 +45,7 @@ urllib3==1.26.2  # requests
 chardet==3.0.4  # requests
 idna==2.10  # requests
 certifi==2020.11.8  # requests
-requests==2.24.0
+requests==2.25.0
 astroid==2.3.2
 wrapt==1.12.1
 lazy-object-proxy==1.5.1
