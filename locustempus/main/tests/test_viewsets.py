@@ -276,7 +276,23 @@ class ResponseAPITest(CourseTestMixin, TestCase):
         )
         self.assertEqual(response.status_code, 201)
 
-    def test_activity_response_querystring(self):
+    def test_faculty_activity_response_querystring(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        response = self.client.get(
+            reverse('api-response-list') + '?activity={}'.format(
+                self.sandbox_course_activity.pk
+            )
+        )
+
+        self.assertEqual(response.status_code, 200)
+
+    def test_student_activity_response_querystring(self):
         self.assertTrue(
             self.client.login(
                 username=self.student.username,
