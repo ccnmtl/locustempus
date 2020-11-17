@@ -44,10 +44,18 @@ export interface ActivityData {
     instructions: string;
 }
 
-interface ResponseData {
+export enum ResponseStatus {
+    DRAFT = 'DRAFT',
+    SUBMITTED = 'SUBMITTED',
+    REVIEWED = 'REVIEWED'
+}
+
+export interface ResponseData {
     pk: number;
     activity: number;
     layers: string[];
+    reflection: string;
+    status: ResponseStatus;
 }
 
 interface ViewportState {
@@ -437,6 +445,33 @@ export const ActivityMap: React.FC = () => {
             });
     };
 
+    const updateResponse = (reflection?: string, status?: ResponseStatus): void => {
+        const resp = responseData;
+        if (!reflection && !status) {
+            return;
+        }
+        if (resp) {
+            if (reflection) {
+                resp.reflection = reflection;
+            }
+
+            if (status) {
+                resp.status = status;
+            }
+            authedFetch(`/api/response/${resp.pk}/?activity=${activityPk}`, 'PUT', JSON.stringify(resp))
+                .then((response) => {
+                    if (response.status === 200) {
+                        return response.json();
+                    } else {
+                        throw 'Response update failed.';
+                    }
+                })
+                .then((data: ResponseData) => {
+                    setResponseData(data);
+                });
+        }
+    };
+
     // TODO: figure out how to type this
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleDeckGlClick = (info: any, event: any): void => {
@@ -527,7 +562,8 @@ export const ActivityMap: React.FC = () => {
                         updateEventData(events);
                     }
                 } else {
-                    authedFetch('/api/response/', 'POST', JSON.stringify({activity: activityPk}))
+                    authedFetch('/api/response/', 'POST', JSON.stringify(
+                        {activity: activityPk, status: 'DRAFT'}))
                         .then((response) => {
                             if (response.status === 200) {
                                 return response.json();
@@ -641,7 +677,9 @@ export const ActivityMap: React.FC = () => {
                     setActiveEventEdit={setActiveEventEdit}
                     addEvent={addEvent}
                     deleteEvent={deleteEvent}
-                    updateEvent={updateEvent}/>
+                    updateEvent={updateEvent}
+                    response={responseData}
+                    updateResponse={updateResponse}/>
             )}
         </>
     );

@@ -47,15 +47,15 @@ class ResponseApiView(ModelViewSet):
             except Activity.DoesNotExist:
                 return []
 
-        course = activity.project.course
-        user = self.request.user
-        if course.is_true_faculty(user):
-            return Response.objects.filter(activity=activity)
+            course = activity.project.course
+            user = self.request.user
+            if course.is_true_faculty(user):
+                return Response.objects.filter(activity=activity)
 
-        if course.is_true_member(user):
-            return Response.objects.filter(
-                activity=activity,
-                owners__in=[user]
-            )
+            if course.is_true_member(user):
+                return Response.objects.filter(
+                    activity=activity,
+                    owners__in=[user]
+                )
 
         return []
