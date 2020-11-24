@@ -458,7 +458,7 @@ export const ActivityMap: React.FC = () => {
             if (status) {
                 resp.status = status;
             }
-            authedFetch(`/api/response/${resp.pk}/?activity=${activityPk}`, 'PUT', JSON.stringify(resp))
+            authedFetch(`/api/response/${resp.pk}/`, 'PUT', JSON.stringify(resp))
                 .then((response) => {
                     if (response.status === 200) {
                         return response.json();

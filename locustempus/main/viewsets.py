@@ -2,7 +2,9 @@
 from locustempus.main.models import (
     Layer, Project, Event, Activity, Response
 )
-from locustempus.main.permissions import IsLoggedInCourse
+from locustempus.main.permissions import (
+    IsLoggedInCourse, IsResponseOwnerOrFaculty
+)
 from locustempus.main.serializers import (
     LayerSerializer, ProjectSerializer, EventSerializer, ActivitySerializer,
     ResponseSerializer
@@ -38,9 +40,25 @@ class EventApiView(ModelViewSet):
 class ResponseApiView(ModelViewSet):
     """Retrieves responses"""
     serializer_class = ResponseSerializer
+    permission_classes = [IsResponseOwnerOrFaculty]
 
     def get_queryset(self):
+        """
+        If no querystring param is provided, then return a queryset
+        that has the current user as owner
+
+        If a querystring is provided:
+        - If user is faculty for the course for that activity, then return
+          all response objects that have that activity as a foriegn key
+        _ If a user is a student in the related course, then return only
+          the responses they own.
+        """
+        user = self.request.user
         activity_qs = self.request.query_params.get('activity', None)
+
+        if user.is_anonymous:
+            return Response.objects.none()
+
         if activity_qs:
             try:
                 activity = Activity.objects.get(pk=activity_qs)
@@ -48,7 +66,6 @@ class ResponseApiView(ModelViewSet):
                 return []
 
             course = activity.project.course
-            user = self.request.user
             if course.is_true_faculty(user):
                 return Response.objects.filter(activity=activity)
 
@@ -57,5 +74,7 @@ class ResponseApiView(ModelViewSet):
                     activity=activity,
                     owners__in=[user]
                 )
-
-        return []
+        else:
+            return Response.objects.filter(
+                owners__in=[user]
+            )

@@ -1,11 +1,12 @@
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.urls.base import reverse
+from locustempus.main.models import Response
 from locustempus.main.permissions import (
     IsLoggedInCourse, IsLoggedInFaculty
 )
 from locustempus.main.tests.factories import (
-    CourseTestMixin, UserFactory, ProjectFactory, ActivityFactory
+    CourseTestMixin, UserFactory
 )
 from unittest.mock import MagicMock
 
@@ -256,41 +257,52 @@ class LayerAPITest(CourseTestMixin, TestCase):
 
 
 class ResponseAPITest(CourseTestMixin, TestCase):
+    """
+    This test class focuses on testing the get_queryset method of
+    the viewset.
+    """
     def setUp(self):
         self.setup_course()
 
-    def test_create_student_response(self):
-        self.assertTrue(
-            self.client.login(
-                username=self.student.username,
-                password='test'
-            )
-        )
-        p = ProjectFactory.create(course=self.sandbox_course)
-        a = ActivityFactory.create(project=p)
-        response = self.client.post(
-            reverse('api-response-list'),
-            {
-                'activity': a.pk,
-            }
-        )
-        self.assertEqual(response.status_code, 201)
-
-    def test_faculty_activity_response_querystring(self):
+    def test_get_queryset_get_faculty_get(self):
+        """
+        Tests that the expected queryset is returned for GET
+        requests from faculty
+        """
+        # List GET
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
                 password='test'
             )
         )
+        r1 = self.client.get(
+            reverse('api-response-list'),
+        )
+        self.assertEqual(r1.status_code, 200)
+        for el in r1.data:
+            r = Response.objects.get(pk=el['pk'])
+            self.assertIn(self.faculty, r.owners.all())
 
-        response = self.client.get(
+        self.assertEqual(len(r1.data), 0)
+
+        # List GET w/ querystring
+        r2 = self.client.get(
             reverse('api-response-list') + '?activity={}'.format(
                 self.sandbox_course_activity.pk
             )
         )
 
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(r2.status_code, 200)
+        self.assertEqual(len(r2.data), 1)
+
+        # GET
+        r3 = self.client.get(
+            reverse(
+                'api-response-detail', args=[self.sandbox_course_response.pk]
+            )
+        )
+        self.assertEqual(r3.status_code, 404)
 
     def test_student_activity_response_querystring(self):
         self.assertTrue(
@@ -307,3 +319,43 @@ class ResponseAPITest(CourseTestMixin, TestCase):
         )
 
         self.assertEqual(response.status_code, 200)
+
+    def test_get_queryset_get_student_get(self):
+        """
+        Tests that the expected queryset is returned for GET
+        requests from students
+        """
+        # List GET
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        r1 = self.client.get(
+            reverse('api-response-list'),
+        )
+        self.assertEqual(r1.status_code, 200)
+        for el in r1.data:
+            r = Response.objects.get(pk=el['pk'])
+            self.assertIn(self.student, r.owners.all())
+
+        self.assertEqual(len(r1.data), 2)
+
+        # List GET w/ querystring
+        r2 = self.client.get(
+            reverse('api-response-list') + '?activity={}'.format(
+                self.sandbox_course_activity.pk
+            )
+        )
+
+        self.assertEqual(r2.status_code, 200)
+        self.assertEqual(len(r2.data), 1)
+
+        # GET
+        r3 = self.client.get(
+            reverse(
+                'api-response-detail', args=[self.sandbox_course_response.pk]
+            )
+        )
+        self.assertEqual(r3.status_code, 200)
