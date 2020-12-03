@@ -1,0 +1,44 @@
+.lt-menu {
+    @extend .elevation-2;
+    position: relative;
+    background-color: #fff;
+    border: none;
+    -webkit-border-radius: 4px;
+    border-radius: 4px;
+    }
+
+.lt-menu-overflow {
+    position: relative;
+    &--expand {
+        position: absolute;
+        top: 2rem;
+        right: 0.5rem;
+        font-size: .875rem;
+        line-height: 20px;
+        /*transform: translate3d(0px, 30px, 0px);*/
+        min-width: 10rem;
+        z-index: 1000;
+        display: block;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-clip: padding-box;
+        /*padding: .5rem 0;
+        margin: .125rem 0 0;
+    */
+    }
+}
+
+.lt-menu .lt-list-item:hover,
+.lt-menu .lt-list-item:focus-within {
+    background-color: #e5e5e5;
+}
+
+.lt-menu .lt-list-item__link {
+    margin-right: 0;
+    color: #000000;
+}
+
+.lt-menu .lt-list-item__link:hover {
+    background-color: #e5e5e5;
+}

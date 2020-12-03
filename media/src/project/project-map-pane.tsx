@@ -174,10 +174,11 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
                 <header className='project-pane__header'>
                     <h1>{title}</h1>
-                    <div className='overflow-menu trailing'>
+                    <div className={'lt-menu-overflow trailing'}>
                         <button onClick={toggleProjectMenu}
                             className={'lt-icon-button lt-icon-button--transparent'}
-                            aria-label='More actions'>
+                            aria-label={showProjectMenu ?
+                                'Hide more actions' : 'Show more actions'}>
                             <span
                                 className={'lt-icons lt-icon-button__icon'}
                                 aria-hidden='true'>
@@ -185,24 +186,38 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
                             </span>
                         </button>
                         {showProjectMenu && (
-                            <ul className='overflow-menu-show'>
-                                <li>
-                                    <a onClick={handleEdit}>
-                                        <span className='overflow-icon'>
-                                            <FontAwesomeIcon icon={faPencilAlt}/>
-                                        </span>
-                                        Edit project
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onClick={handleDelete}>
-                                        <span className='overflow-icon'>
-                                            <FontAwesomeIcon icon={faTrashAlt}/>
-                                        </span>
-                                        Delete project
-                                    </a>
-                                </li>
-                            </ul>
+                            <div className={'lt-menu lt-menu-overflow--expand'}>
+                                <ul className={'lt-list'} role='menu'>
+                                    <li className={'lt-list-item'} role='menuitem'>
+                                        <a href='#' onClick={handleEdit}
+                                            className={'lt-list-item__link'}>
+                                            <span
+                                                className={'lt-icons lt-list-item__icon'}
+                                                aria-hidden='true'>
+                                                <FontAwesomeIcon icon={faPencilAlt}/>
+                                            </span>
+                                            <span
+                                                className={'lt-list-item__primary-text'}>
+                                                Edit project
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li className={'lt-list-item'} role='menuitem'>
+                                        <a href='#' onClick={handleDelete}
+                                            className={'lt-list-item__link'}>
+                                            <span
+                                                className={'lt-icons lt-list-item__icon'}
+                                                aria-hidden='true'>
+                                                <FontAwesomeIcon icon={faTrashAlt}/>
+                                            </span>
+                                            <span
+                                                className={'lt-list-item__primary-text'}>
+                                                Delete project
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         )}
                     </div>
                 </header>
