@@ -28,6 +28,7 @@ INSTALLED_APPS += [  # noqa
     'django_registration',
     'rest_framework',
     'generic_relations',
+    's3sign',
 ]
 
 MIDDLEWARE += [ # noqa

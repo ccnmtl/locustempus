@@ -38,6 +38,7 @@ from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin
 )
 from locustempus.utils import user_display_name
+from s3sign.views import SignS3View as BaseSignS3View
 from typing import (
     Any, Tuple, List
 )
@@ -716,6 +717,13 @@ class ActivityDeleteView(LoggedInFacultyMixin, DeleteView):
             '<strong>{}</strong> has been deleted.'.format(self.object.title)
         )
         return reverse('course-detail-view', args=[self.kwargs.get('pk')])
+
+
+class SignS3View(LoggedInCourseMixin, BaseSignS3View):
+    root = "uploads/"
+
+    def get_bucket(self):
+        return settings.AWS_STORAGE_BUCKET_NAME
 
 
 class ResetView(View):
