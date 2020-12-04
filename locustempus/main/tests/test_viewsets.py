@@ -264,7 +264,7 @@ class ResponseAPITest(CourseTestMixin, TestCase):
     def setUp(self):
         self.setup_course()
 
-    def test_get_queryset_get_faculty_get(self):
+    def test_get_queryset_faculty(self):
         """
         Tests that the expected queryset is returned for GET
         requests from faculty
@@ -304,23 +304,7 @@ class ResponseAPITest(CourseTestMixin, TestCase):
         )
         self.assertEqual(r3.status_code, 404)
 
-    def test_student_activity_response_querystring(self):
-        self.assertTrue(
-            self.client.login(
-                username=self.student.username,
-                password='test'
-            )
-        )
-
-        response = self.client.get(
-            reverse('api-response-list') + '?activity={}'.format(
-                self.sandbox_course_activity.pk
-            )
-        )
-
-        self.assertEqual(response.status_code, 200)
-
-    def test_get_queryset_get_student_get(self):
+    def test_get_queryset_student(self):
         """
         Tests that the expected queryset is returned for GET
         requests from students
@@ -359,3 +343,30 @@ class ResponseAPITest(CourseTestMixin, TestCase):
             )
         )
         self.assertEqual(r3.status_code, 200)
+
+    def test_get_queryset_authed(self):
+        """
+        Tests that authed users who make a GET request, with a querystring for
+        a course which they are not members, that it returns an empty queryset
+        """
+        authed_user = UserFactory.create(
+            first_name='Student',
+            last_name='Two',
+            email='studenttwo@example.com'
+        )
+
+        self.assertTrue(
+            self.client.login(
+                username=authed_user,
+                password='test'
+            )
+        )
+
+        r = self.client.get(
+            reverse('api-response-list') + '?activity={}'.format(
+                self.sandbox_course_activity.pk
+            )
+        )
+
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(r.data), 0)

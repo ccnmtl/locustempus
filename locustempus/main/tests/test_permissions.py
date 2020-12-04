@@ -5,6 +5,7 @@ from django.urls.base import reverse
 from locustempus.main.permissions import (
     IsResponseOwnerOrFaculty
 )
+from locustempus.main.models import Response
 from locustempus.main.tests.factories import (
     CourseTestMixin, UserFactory, ProjectFactory, ActivityFactory
 )
@@ -48,6 +49,14 @@ class IsResponseOwnerOrFacultyTest(CourseTestMixin, TestCase):
 
         # Faculty
         req.user = self.faculty
+        self.sandbox_course_response.status = Response.DRAFT
+        self.sandbox_course_activity.save()
+        self.assertFalse(
+            perm.has_object_permission(
+                req, None, self.sandbox_course_response))
+
+        self.sandbox_course_response.status = Response.SUBMITTED
+        self.sandbox_course_activity.save()
         self.assertTrue(
             perm.has_object_permission(
                 req, None, self.sandbox_course_response))
@@ -109,7 +118,7 @@ class IsResponseOwnerOrFacultyTest(CourseTestMixin, TestCase):
 
         # Related Faculty
         req.user = self.faculty
-        self.assertTrue(
+        self.assertFalse(
             perm.has_object_permission(
                 req, None, self.sandbox_course_response))
 
@@ -185,6 +194,6 @@ class IsResponseOwnerOrFacultyTest(CourseTestMixin, TestCase):
 
         # Student
         req.user = self.student
-        self.assertTrue(
+        self.assertFalse(
             perm.has_object_permission(
                 req, None, self.sandbox_course_response))

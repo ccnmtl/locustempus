@@ -56,14 +56,11 @@ class ResponseApiView(ModelViewSet):
         user = self.request.user
         activity_qs = self.request.query_params.get('activity', None)
 
-        if user.is_anonymous:
-            return Response.objects.none()
-
         if activity_qs:
             try:
                 activity = Activity.objects.get(pk=activity_qs)
             except Activity.DoesNotExist:
-                return []
+                return Activity.objects.none()
 
             course = activity.project.course
             if course.is_true_faculty(user):
@@ -74,7 +71,12 @@ class ResponseApiView(ModelViewSet):
                     activity=activity,
                     owners__in=[user]
                 )
+
+            # If a user is not faculty nor a student in the course, then return
+            # an empty queryset
+            return Activity.objects.none()
         else:
+            # Handles the case if no activity is specified in the querystring
             return Response.objects.filter(
                 owners__in=[user]
             )
