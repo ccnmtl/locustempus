@@ -3,8 +3,8 @@ import {
     LayerSet, LayerEventData, LayerEventDatum
 } from '../project-activity-components/layers/layer-set';
 import { LayerProps } from '../project-activity-components/layers/layer';
-import { ActivityData,
-    BASE_MAPS, BASE_MAP_IMAGES } from './activity-map';
+import { ActivityData, BASE_MAPS, BASE_MAP_IMAGES,
+    ResponseData, ResponseStatus} from './activity-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowLeft, faEllipsisV, faCaretRight, faCaretDown
@@ -495,6 +495,8 @@ interface DefaultPanelProps {
     setActiveEventDetail(d: LayerEventDatum): void;
     activeEventEdit: LayerEventDatum | null;
     setActiveEventEdit(d: LayerEventDatum): void;
+    response: ResponseData | null;
+    updateResponse(reflection?: string, status?: ResponseStatus): void;
 }
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
@@ -502,13 +504,33 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         activeTab, setActiveTab, addLayer, description, layers, events,
         activity, deleteLayer, updateLayer, setLayerVisibility, activeLayer,
         setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
-        activeEventEdit, projectLayers, projectEvents
+        activeEventEdit, projectLayers, projectEvents, response, updateResponse
     }: DefaultPanelProps) => {
+
+
+    const [reflection, setReflection] = useState<string>('');
+
+    useEffect(() => {
+        if (response && response.reflection) {
+            setReflection(response.reflection);
+        }
+    }, [response]);
 
     const handleSetActiveTab = (
         e: React.MouseEvent<HTMLAnchorElement>): void => {
         e.preventDefault();
         setActiveTab(Number(e.currentTarget.dataset.activeTab));
+    };
+
+    const handleSubmitResponse = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
+        updateResponse(reflection, ResponseStatus.SUBMITTED);
+    };
+
+    const handleReflectionSaveDraft = (
+        e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        updateResponse(reflection);
     };
 
     const OVERVIEW = 0;
@@ -575,6 +597,30 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             activeEvent={activeEvent}
                             setActiveEventDetail={setActiveEventDetail}
                             activeEventEdit={activeEventEdit} />
+                        <div>
+                            <h2>Reflection</h2>
+                            <form onSubmit={handleSubmitResponse}>
+                                <div className="form-row">
+                                    <div className={'form-group col-12'}>
+                                        <ReactQuill
+                                            value={reflection}
+                                            onChange={setReflection}/>
+                                    </div>
+                                </div>
+                                <div className="form-row">
+                                    <div className={'form-group col-12'}>
+                                        <button
+                                            type={'submit'}
+                                            className={'btn btn-primary'}>
+                                            Submit response
+                                        </button>
+                                        <button onClick={handleReflectionSaveDraft}>
+                                            Save draft
+                                        </button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 )}
             </div>

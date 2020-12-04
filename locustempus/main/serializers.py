@@ -50,7 +50,7 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
         model = Response
         read_only_fields = ('layers', 'pk')
         fields = (
-            'pk', 'activity', 'layers'
+            'pk', 'activity', 'layers', 'reflection', 'status'
         )
 
 

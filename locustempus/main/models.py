@@ -167,6 +167,16 @@ class Activity(models.Model):
 
 
 class Response(models.Model):
+    DRAFT = 'DRAFT'
+    SUBMITTED = 'SUBMITTED'
+    REVIEWED = 'REVIEWED'
+
+    STATUS_CHOICES = [
+        (DRAFT, 'Draft'),
+        (SUBMITTED, 'Submitted'),
+        (REVIEWED, 'Reviewed')
+    ]
+
     activity = models.ForeignKey(
         Activity,
         on_delete=models.CASCADE,
@@ -177,6 +187,14 @@ class Response(models.Model):
         through='ResponseOwner'
     )
     layers = GenericRelation(Layer, related_query_name='layer')
+    status = models.CharField(
+        max_length=12,
+        choices=STATUS_CHOICES,
+        default=DRAFT
+    )
+    reflection = models.TextField(
+        blank=True
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)

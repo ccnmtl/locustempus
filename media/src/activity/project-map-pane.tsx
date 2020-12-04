@@ -1,7 +1,7 @@
 import React, { useState, ReactElement } from 'react';
 import { LayerProps } from '../project-activity-components/layers/layer';
 import { LayerEventData, LayerEventDatum } from '../project-activity-components/layers/layer-set';
-import { ActivityData } from './activity-map';
+import { ActivityData, ResponseData, ResponseStatus } from './activity-map';
 import { Position } from '@deck.gl/core/utils/positions';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
@@ -37,6 +37,8 @@ export interface ProjectMapPaneProps {
     setActiveEventEdit(d: LayerEventDatum): void;
     updateEvent(label: string, description: string,
                 lat: number, lng: number, pk: number, layerPk: number): void;
+    response: ResponseData | null;
+    updateResponse(reflection?: string, status?: ResponseStatus): void;
 }
 
 export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
@@ -47,7 +49,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
         addEvent, clearActivePosition, activeEvent, setActiveEvent,
         activeEventDetail, setActiveEventDetail, activeEventEdit,
         setActiveEventEdit, deleteEvent, updateEvent, projectLayers,
-        projectEvents
+        projectEvents, response, updateResponse
     }: ProjectMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
@@ -110,7 +112,9 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             activeEventDetail={activeEventDetail}
             setActiveEventDetail={setActiveEventDetail}
             activeEventEdit={activeEventEdit}
-            setActiveEventEdit={setActiveEventEdit}/>
+            setActiveEventEdit={setActiveEventEdit}
+            response={response}
+            updateResponse={updateResponse}/>
     };
 
     return (
