@@ -91,7 +91,7 @@ export const ProjectMap: React.FC = () => {
     const [viewportState, setViewportState] = useState<ViewportState>({
         latitude: 40.8075395,
         longitude: -73.9647614,
-        zoom: 10,
+        zoom: 12,
         bearing: 0,
         pitch: 40.5
     });
@@ -317,7 +317,7 @@ export const ProjectMap: React.FC = () => {
             setViewportState({
                 latitude: activePosition[0],
                 longitude: activePosition[1],
-                zoom: 12,
+                zoom: 15,
                 bearing: 0,
                 pitch: 40.5,
                 transitionDuration: 1000,
@@ -586,17 +586,21 @@ export const ProjectMap: React.FC = () => {
                         <Popup
                             latitude={activeEvent.location.lng_lat[1]}
                             longitude={activeEvent.location.lng_lat[0]}
-                            offsetTop={-35}
+                            offsetTop={-30}
                             closeOnClick={false}
                             onClose={(): void => {setActiveEvent(null);}}>
-                            <div>{activeEvent.label}</div>
-                            <div dangerouslySetInnerHTML={
-                                {__html: activeEvent.description}}/>
+                            <h2>{activeEvent.label}</h2>
+                            <div
+                                dangerouslySetInnerHTML={{__html: activeEvent.description}}
+                                className={'mapboxgl-popup-description'} />
                             {!activeEventDetail && (
-                                <button onClick={
-                                    (): void => {
-                                        setActiveEventDetail(activeEvent);}}>
-                                    More
+                                <button
+                                    type="button"
+                                    onClick={
+                                        (): void => {
+                                            setActiveEventDetail(activeEvent);}}
+                                    className={'lt-button btn-sm trailing'}>
+                                    <span className='lt-button__text'>More</span>
                                 </button>
                             )}
                         </Popup>

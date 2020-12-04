@@ -51,3 +51,10 @@
         border: 1px solid transparent;
     }
 }
+
+.lt-button-group {
+    &__action {
+        white-space: nowrap;
+        margin-right: 0.5rem;
+    }
+}

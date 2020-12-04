@@ -2,8 +2,10 @@
     margin-top: 0.5rem;
     padding-left: 1rem;
     padding-right: 1rem;
+    border: 1px solid #ccc;
     &--active {
         background-color: #fafafa;
+        border-color: #999;
     }
     &__header {
         padding-top: 0.25rem;
@@ -22,6 +24,5 @@
     &__action {
         white-space: nowrap;
         margin-right: 0.5rem;
-    
     }
 }
