@@ -68,11 +68,7 @@ h6 {
 
 .mapboxgl-popup-content h2 {
 @extend %heading;
-  @include font-size($font-size-base * 1.25);
-}
-
-.mapboxgl-popup-description {
-@include font-size($font-size-base * 0.875)
+  @include font-size($font-size-base * 1.125);
 }
 
 // Button
