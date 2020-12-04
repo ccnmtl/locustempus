@@ -153,7 +153,7 @@ export const Layer: React.FC<LayerProps> = (
             </div>
             { !isLayerCollapsed && (
                 <>
-                    { layerEvents.length > 0  ? (
+                    {layerEvents.length > 0  ? (
                         <ul className={'lt-list lt-list-layer'}>
                             {layerEvents.map((val, idx) => {
                                 return (
@@ -185,11 +185,11 @@ export const Layer: React.FC<LayerProps> = (
                                 );
                             })}
                         </ul>
-                     ) : (
-                     <div className={'alert alert-secondary'}>
-                        Click on the map to add events in this layer.
-                    </div>
-                     ) }
+                    ) : (
+                        <div className={'alert alert-secondary'}>
+                            Click on the map to add events in this layer.
+                        </div>
+                    )}
                 </>
             ) }
         </div>
