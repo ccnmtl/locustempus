@@ -153,38 +153,43 @@ export const Layer: React.FC<LayerProps> = (
             </div>
             { !isLayerCollapsed && (
                 <>
-                    {layerEvents.length > 0 ? layerEvents.length : 'nothing'}
-                    <ul className={'lt-list lt-list-layer'}>
-                        {layerEvents.map((val, idx) => {
-                            return (
-                                <li key={idx}
-                                    className={'lt-list-item lt-list-layer-item' +
-                                        (activeEvent && activeEvent.pk === val.pk ?
-                                            ' lt-list-layer-item--active' : '')}>
-                                    <div className={'lt-list-item__link'}
-                                        role='button' tabIndex={0}
-                                        onClick={(): void => {setActiveEvent(val);}}>
-                                        <span className={'lt-icons lt-list-item__icon'}
-                                            aria-hidden='true'>
-                                            <FontAwesomeIcon icon={faMapMarker}/>
-                                        </span>
-                                        <span className={'lt-list-item__primary-text'}>
-                                            {val.label}
-                                        </span>
-                                    </div>
-                                    {activeEvent && activeEvent.pk === val.pk && (
-                                        <button
-                                            type="button"
-                                            onClick={(): void => {
-                                                setActiveEventDetail(val);}}
-                                            className={'lt-button btn-sm trailing'}>
-                                            <span className='lt-button__text'>More</span>
-                                        </button>
-                                    )}
-                                </li>
-                            );
-                        })}
-                    </ul>
+                    {layerEvents.length > 0  ? (
+                        <ul className={'lt-list lt-list-layer'}>
+                            {layerEvents.map((val, idx) => {
+                                return (
+                                    <li key={idx}
+                                        className={'lt-list-item lt-list-layer-item' +
+                                            (activeEvent && activeEvent.pk === val.pk ?
+                                                ' lt-list-layer-item--active' : '')}>
+                                        <div className={'lt-list-item__link'}
+                                            role='button' tabIndex={0}
+                                            onClick={(): void => {setActiveEvent(val);}}>
+                                            <span className={'lt-icons lt-list-item__icon'}
+                                                aria-hidden='true'>
+                                                <FontAwesomeIcon icon={faMapMarker}/>
+                                            </span>
+                                            <span className={'lt-list-item__primary-text'}>
+                                                {val.label}
+                                            </span>
+                                        </div>
+                                        {activeEvent && activeEvent.pk === val.pk && (
+                                            <button
+                                                type="button"
+                                                onClick={(): void => {
+                                                    setActiveEventDetail(val);}}
+                                                className={'lt-button btn-sm trailing'}>
+                                                <span className='lt-button__text'>More</span>
+                                            </button>
+                                        )}
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    ) : (
+                        <div className={'alert alert-secondary'}>
+                            Click on the map to add events in this layer.
+                        </div>
+                    )}
                 </>
             ) }
         </div>

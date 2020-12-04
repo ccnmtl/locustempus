@@ -589,17 +589,21 @@ export const ProjectMap: React.FC = () => {
                             offsetTop={-30}
                             closeOnClick={false}
                             onClose={(): void => {setActiveEvent(null);}}>
-                            <h2>{activeEvent.label}</h2>
                             <div
-                                dangerouslySetInnerHTML={{__html: activeEvent.description}}
-                                className={'mapboxgl-popup-description'} />
+                                className={'mapboxgl-popup-image'}
+                                // Placeholder for uploded image, should be a conditional
+                                style={{
+                                    backgroundImage: 'url(' +
+                                        STATIC_URL + 'img/image-placeholder-infobox.jpg' + ')'
+                                }}></div>
+                            <h2>{activeEvent.label}</h2>
                             {!activeEventDetail && (
                                 <button
                                     type="button"
                                     onClick={
                                         (): void => {
                                             setActiveEventDetail(activeEvent);}}
-                                    className={'lt-button btn-sm trailing'}>
+                                    className={'lt-button btn-sm mapboxgl-popup-more'}>
                                     <span className='lt-button__text'>More</span>
                                 </button>
                             )}
