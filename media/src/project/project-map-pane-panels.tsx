@@ -217,7 +217,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
         setDatetime(e.target.value);
     };
 
-    const handleFormSubmbit = (e: React.FormEvent<HTMLFormElement>): void => {
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         updateEvent(
             eventName, description, activeEventEdit.location.lng_lat[1],
@@ -232,64 +232,58 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
     };
 
     return (
-        <div className='EditEvent'>
-            <h4>Edit Event</h4>
-            <form onSubmit={handleFormSubmbit} >
-                <div className={'form-row'}>
-                    <div className={'form-group col-3'}>
+        <>
+            <div className={'pane-content-header'} style={{ top: 98 }}>
+                <h2>Edit Event Marker</h2>
+            </div>
+            <div className={'pane-content-body'}>
+                <form onSubmit={handleFormSubmit} >
+                    <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__name'}>Name</label>
-                    </div>
-                    <div className={'form-group col-9'}>
                         <input
                             type={'text'}
                             id={'form-field__name'}
+                            className={'form-control'}
                             value={eventName}
                             autoFocus={true}
-                            onChange={handleName}/>
+                            onChange={handleName} />
                     </div>
-                </div>
-                <div className="form-row">
-                    <div className={'form-group col-3'}>
+                    <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__description'}>
                             Description
                         </label>
-                    </div>
-                    <div className={'form-group col-9'}>
                         <ReactQuill
                             value={description}
                             onChange={setDescription}/>
                     </div>
-                </div>
-                <div className="form-row">
-                    <div className={'form-group col-3'}>
+                    <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__date'}>
                             Date
                         </label>
-                    </div>
-                    <div className={'form-group col-9'}>
                         <input
+                            className={'form-control'}
                             type={'datetime-local'}
                             id={'form-field__date'}
                             value={datetime}
                             onChange={handleDatetime}/>
                     </div>
-                </div>
-                <div className="form-row">
-                    <div className={'form-group col-3'}>
+                    <div className="form-row">
+                        <div className={'form-group col-3'}>
+                        </div>
+                        <div className={'form-group col-9'}>
+                            <button
+                                type={'button'}
+                                onClick={handleCancel} className={'btn btn-danger'}>
+                                Cancel
+                            </button>
+                            <button type={'submit'} className={'btn btn-primary'}>
+                                Save
+                            </button>
+                        </div>
                     </div>
-                    <div className={'form-group col-9'}>
-                        <button
-                            type={'button'}
-                            onClick={handleCancel} className={'btn btn-danger'}>
-                            Cancel
-                        </button>
-                        <button type={'submit'} className={'btn btn-primary'}>
-                            Save
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        </>
     );
 };
 
@@ -320,7 +314,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
         setDatetime(e.target.value);
     };
 
-    const handleFormSubmbit = (e: React.FormEvent<HTMLFormElement>): void => {
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         if (activePosition) {
             addEvent(
@@ -339,65 +333,59 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
     };
 
     return (
-        <div className='AddEvent'>
-            <h4>Add Event</h4>
-            <form onSubmit={handleFormSubmbit} >
-                <div className={'form-row'}>
-                    <div className={'form-group col-3'}>
+        <>
+            <div className={'pane-content-header'} style={{ top: 98 }}>
+                <h2>Add an Event</h2>
+            </div>
+            <div className={'pane-content-body'}>
+                <form onSubmit={handleFormSubmit} >
+                    <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__name'}>Name</label>
-                    </div>
-                    <div className={'form-group col-9'}>
                         <input
                             type={'text'}
                             id={'form-field__name'}
+                            className={'form-control'}
                             value={eventName}
+                            placeholder={'Untitled Event'}
                             autoFocus={true}
-                            placeholder={'Untitled Marker'}
-                            onChange={handleName}/>
+                            onChange={handleName} />
                     </div>
-                </div>
-                <div className="form-row">
-                    <div className={'form-group col-3'}>
+                    <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__description'}>
                             Description
                         </label>
-                    </div>
-                    <div className={'form-group col-9'}>
                         <ReactQuill
                             value={description}
                             onChange={setDescription}/>
                     </div>
-                </div>
-                <div className="form-row">
-                    <div className={'form-group col-3'}>
+                    <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__date'}>
                             Date
                         </label>
-                    </div>
-                    <div className={'form-group col-9'}>
                         <input
+                            className={'form-control'}
                             type={'datetime-local'}
                             id={'form-field__date'}
                             value={datetime}
                             onChange={handleDatetime}/>
                     </div>
-                </div>
-                <div className="form-row">
-                    <div className={'form-group col-3'}>
+                    <div className="form-row">
+                        <div className={'form-group col-3'}>
+                        </div>
+                        <div className={'form-group col-9'}>
+                            <button
+                                type={'button'}
+                                onClick={handleCancel} className={'btn btn-danger'}>
+                                Cancel
+                            </button>
+                            <button type={'submit'} className={'btn btn-primary'}>
+                                Save
+                            </button>
+                        </div>
                     </div>
-                    <div className={'form-group col-9'}>
-                        <button
-                            type={'button'}
-                            onClick={handleCancel} className={'btn btn-danger'}>
-                            Cancel
-                        </button>
-                        <button type={'submit'} className={'btn btn-primary'}>
-                            Save
-                        </button>
-                    </div>
-                </div>
-            </form>
-        </div>
+                </form>
+            </div>
+        </>
     );
 };
 
@@ -441,32 +429,44 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     };
 
     return (
-        <div>
-            <div>
-                <button onClick={handleBack}>
-                    <FontAwesomeIcon icon={faArrowLeft}/> Back
-                </button>
-                <button onClick={handleMenuToggle}>
-                    <FontAwesomeIcon icon={faEllipsisV}/>
+        <>
+            <div className={'pane-content-header'} style={{ top: 98 }}>
+                <button onClick={handleBack} className={'lt-button'}>
+                    <span className={'lt-icons lt-button__icon'}>
+                        <FontAwesomeIcon icon={faArrowLeft}/>
+                    </span>
+                    <span className={'lt-button__text'}>Back</span>
                 </button>
             </div>
-            {showMenu && (
-                <div>
-                    <ul>
-                        <li><a onClick={handleEdit}>
-                            Edit marker</a>
-                        </li>
-                        {/* TODO: Implement confirmation */}
-                        <li><a onClick={handleDelete}>Delete marker</a></li>
-                    </ul>
-                </div>
-            )}
-            <h3>{activeEventDetail && activeEventDetail.label}</h3>
-            {activeEventDetail && (
-                <div dangerouslySetInnerHTML={
-                    {__html: activeEventDetail.description}}/>
-            )}
-        </div>
+            <div className={'pane-content-body'}>
+                <button onClick={handleMenuToggle}
+                    className={'lt-icon-button lt-icon-button--transparent'}
+                    aria-label={showMenu ?
+                        'Hide more actions' : 'Show more actions'}>
+                    <span
+                        className={'lt-icons lt-icon-button__icon'}
+                        aria-hidden='true'>
+                        <FontAwesomeIcon icon={faEllipsisV}/>
+                    </span>
+                </button>
+                {showMenu && (
+                    <div>
+                        <ul>
+                            <li><a onClick={handleEdit}>
+                                Edit Event</a>
+                            </li>
+                            {/* TODO: Implement confirmation */}
+                            <li><a onClick={handleDelete}>Delete Event</a></li>
+                        </ul>
+                    </div>
+                )}
+                <h2>{activeEventDetail && activeEventDetail.label}</h2>
+                {activeEventDetail && (
+                    <div dangerouslySetInnerHTML={
+                        {__html: activeEventDetail.description}}/>
+                )}
+            </div>
+        </>
     );
 };
 
