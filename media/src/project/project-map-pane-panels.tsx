@@ -296,7 +296,8 @@ interface EventAddPanelProps {
     setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
     addEvent(
-        label: string, description: string, lat: number, lng: number): void;
+        label: string, description: string, lat: number, lng: number,
+        mediaUrl?: string): void;
     clearActivePosition(): void;
     setActiveTab(val: number): void;
 }
@@ -309,7 +310,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
     const [description, setDescription] = useState<string>('');
     const [datetime, setDatetime] = useState<string>('');
     const [fileUploadProgress, setFileUploadProgress] = useState<number>(-1);
-    const [fileS3Url, setFileS3Url] = useState<string | null>();
+    const [fileS3Url, setFileS3Url] = useState<string | undefined>();
     const [fileUploadError, setFileUploadError] = useState<boolean>(false);
 
     const handleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -325,7 +326,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
         if (activePosition) {
             addEvent(
                 eventName === '' ? 'Untitled Marker' : eventName,
-                description, activePosition[0], activePosition[1]);
+                description, activePosition[0], activePosition[1], fileS3Url);
             setShowAddEventForm(false);
             setActiveTab(1);
             clearActivePosition();
@@ -342,7 +343,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
         e.preventDefault();
         // Reset the form state prior to each upload
         setFileUploadProgress(-1);
-        setFileS3Url(null);
+        setFileS3Url(undefined);
         setFileUploadError(false);
 
         ((): void => {
@@ -363,7 +364,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
 
     const handleClearImage = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
-        setFileS3Url(null);
+        setFileS3Url(undefined);
     };
 
     return (
