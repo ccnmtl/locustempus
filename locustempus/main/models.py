@@ -46,11 +46,31 @@ class Layer(models.Model):
     )
 
 
+class MediaObject(models.Model):
+    url = models.URLField()
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        null=True
+    )
+    modified_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        null=True
+    )
+
+
 class Event(models.Model):
     label = models.TextField()
     layer = models.ForeignKey(Layer, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
     datetime = models.DateTimeField(blank=True, null=True)
+    media = models.ManyToManyField(MediaObject)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
