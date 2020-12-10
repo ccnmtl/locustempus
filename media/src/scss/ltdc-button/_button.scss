@@ -18,6 +18,32 @@
     }
 }
 
+.lt-button-back {
+    @extend .btn;
+    @include button-alt-typography;
+    // @include button-color
+    background-color: transparent;
+    border: 0;
+    padding: 0;
+    margin: 0;
+    &__icon {
+        margin-right: 8px;
+        width: 1rem;
+        height: 1rem;
+        padding: 0;
+        line-height: 1;
+        display: inline-block;
+    }
+    &__icon > * {
+        height: 1rem !important;
+        width: auto !important;
+    }
+    &__text {
+        padding: 0;
+        margin: 0;
+    }
+}
+
 .lt-icon-button {
     @extend .btn;
     width: 2.25rem;

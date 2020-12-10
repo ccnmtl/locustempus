@@ -157,7 +157,7 @@
     }
 }
 
-.section-project {
+.lt-pane-section {
     margin-bottom: 1rem;
     padding-bottom: 1rem;
     &__description {
@@ -176,5 +176,12 @@
     &__action {
         white-space: nowrap;
         margin-right: 0.5rem;
+    }
+    &__image {
+        display: block;
+        margin: 0.5rem 0 1rem 0;
+    }
+    &__image img {
+        width: 100%;
     }
 }
