@@ -572,7 +572,6 @@ export const ProjectMap: React.FC = () => {
         getData();
     }, []);
 
-    console.log(activeEvent);
     return (
         <>
             {isLoading && <LoadingModal />}
@@ -601,13 +600,12 @@ export const ProjectMap: React.FC = () => {
                             offsetTop={-30}
                             closeOnClick={false}
                             onClose={(): void => {setActiveEvent(null);}}>
-                            <div
-                                className={'mapboxgl-popup-image'}
-                                // Placeholder for uploded image, should be a conditional
-                                style={{
-                                    backgroundImage: 'url(' +
-                                        STATIC_URL + 'img/image-placeholder-infobox.jpg' + ')'
-                                }}></div>
+                            {activeEvent.media && activeEvent.media[0].url && (
+                                <div className={'mapboxgl-popup-image'}
+                                    style={{backgroundImage:
+                                        'url(' +  activeEvent.media[0].url + ')'}}>
+                                </div>
+                            )}
                             <h2>{activeEvent.label}</h2>
                             {!activeEventDetail && (
                                 <button
