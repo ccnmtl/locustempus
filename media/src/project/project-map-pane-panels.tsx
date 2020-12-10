@@ -12,6 +12,9 @@ import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
 
 
+// For uploaded image display on Event Detail pane
+const STATIC_URL = LocusTempus.staticUrl;
+
 interface ProjectCreateEditPanelProps {
     isNewProject: boolean;
     setIsNewProject(val: boolean): void;
@@ -431,39 +434,73 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     return (
         <>
             <div className={'pane-content-header'} style={{ top: 98 }}>
-                <button onClick={handleBack} className={'lt-button'}>
-                    <span className={'lt-icons lt-button__icon'}>
+                <button onClick={handleBack} className={'lt-button-back'}>
+                    <span className={'lt-icons lt-button-back__icon'}>
                         <FontAwesomeIcon icon={faArrowLeft}/>
                     </span>
-                    <span className={'lt-button__text'}>Back</span>
+                    <span className={'lt-button-back__text'}>Back</span>
                 </button>
             </div>
             <div className={'pane-content-body'}>
-                <button onClick={handleMenuToggle}
-                    className={'lt-icon-button lt-icon-button--transparent'}
-                    aria-label={showMenu ?
-                        'Hide more actions' : 'Show more actions'}>
-                    <span
-                        className={'lt-icons lt-icon-button__icon'}
-                        aria-hidden='true'>
-                        <FontAwesomeIcon icon={faEllipsisV}/>
-                    </span>
-                </button>
-                {showMenu && (
-                    <div>
-                        <ul>
-                            <li><a onClick={handleEdit}>
-                                Edit Event</a>
-                            </li>
-                            {/* TODO: Implement confirmation */}
-                            <li><a onClick={handleDelete}>Delete Event</a></li>
-                        </ul>
+                <div className='lt-pane-section__header'>
+                    <h2>{activeEventDetail && activeEventDetail.label}</h2>
+                    <div className={'lt-menu-overflow trailing'}>
+                        <button onClick={handleMenuToggle}
+                            className={'lt-icon-button lt-icon-button--transparent'}
+                            aria-label={showMenu ?
+                                'Hide more actions' : 'Show more actions'}>
+                            <span
+                                className={'lt-icons lt-icon-button__icon'}
+                                aria-hidden='true'>
+                                <FontAwesomeIcon icon={faEllipsisV}/>
+                            </span>
+                        </button>
+                        {showMenu && (
+                            <div className={'lt-menu lt-menu-overflow--expand'}>
+                                <ul className={'lt-list'} role='menu'>
+                                    <li className={'lt-list-item'} role='menuitem'>
+                                        <a href='#' onClick={handleEdit}
+                                            className={'lt-list-item__link'}>
+                                            <span
+                                                className={'lt-icons lt-list-item__icon'}
+                                                aria-hidden='true'>
+                                                <FontAwesomeIcon icon={faPencilAlt}/>
+                                            </span>
+                                            <span
+                                                className={'lt-list-item__primary-text'}>
+                                                Edit event marker
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li className={'lt-list-item'} role='menuitem'>
+                                        {/* TODO: Implement confirmation */}
+                                        <a href='#' onClick={handleDelete}
+                                            className={'lt-list-item__link'}>
+                                            <span
+                                                className={'lt-icons lt-list-item__icon'}
+                                                aria-hidden='true'>
+                                                <FontAwesomeIcon icon={faTrashAlt}/>
+                                            </span>
+                                            <span
+                                                className={'lt-list-item__primary-text'}>
+                                                Delete event marker
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
+                        )}
                     </div>
-                )}
-                <h2>{activeEventDetail && activeEventDetail.label}</h2>
+                </div>
                 {activeEventDetail && (
-                    <div dangerouslySetInnerHTML={
-                        {__html: activeEventDetail.description}}/>
+                    <>
+                        <figure className={'lt-pane-section__image'}>
+                            <img src={STATIC_URL + 'img/image-placeholder-infobox.jpg'} />
+                            <figcaption>Caption for the image</figcaption>
+                        </figure>
+                        <div className={'lt-pane-section__event-desc'} dangerouslySetInnerHTML={
+                            {__html: activeEventDetail.description}}/>
+                    </>
                 )}
             </div>
         </>
@@ -514,7 +551,7 @@ const Activity: React.FC<ActivityProps> = (
     if (activity) {
         return (
             <>
-                <div className='section-project__header'>
+                <div className='lt-pane-section__header'>
                     <h2>Activity</h2>
                     <div className={'lt-menu-overflow trailing'}>
                         <button onClick={toggleMenu}
@@ -704,7 +741,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
             <div className='pane-content-body'>
                 {activeTab === OVERVIEW && (
                     <div className='fade-load'>
-                        <section className={'section-project section-project__description'}>
+                        <section className={'lt-pane-section lt-pane-section__description'}>
                             <h2>Description</h2>
                             {description ? (
                                 <div dangerouslySetInnerHTML={{__html: description}}/>
