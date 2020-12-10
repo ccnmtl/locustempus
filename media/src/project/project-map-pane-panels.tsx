@@ -308,6 +308,9 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
     const [eventName, setEventName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [datetime, setDatetime] = useState<string>('');
+    const [fileUploadProgress, setFileUploadProgress] = useState<number>(-1);
+    const [fileS3Url, setFileS3Url] = useState<string | null>();
+    const [fileUploadError, setFileUploadError] = useState<boolean>(false);
 
     const handleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setEventName(e.target.value);
@@ -333,6 +336,34 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
         e.preventDefault();
         setShowAddEventForm(false);
         clearActivePosition();
+    };
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        e.preventDefault();
+        // Reset the form state prior to each upload
+        setFileUploadProgress(-1);
+        setFileS3Url(null);
+        setFileUploadError(false);
+
+        ((): void => {
+            /* eslint-disable @typescript-eslint/camelcase */
+            new S3Upload({
+                file_dom_selector: e.target.id,
+                s3_sign_put_url: '/sign_s3/',
+                s3_object_name: e.target.value,
+                onProgress: (percent): void => {setFileUploadProgress(Number(percent));},
+                onFinishS3Put: (url): void => {setFileS3Url(url);},
+                onError: (status): void => {
+                    setFileUploadError(true);
+                    console.error(status);
+                }
+            });
+        })();
+    };
+
+    const handleClearImage = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        setFileS3Url(null);
     };
 
     return (
@@ -371,6 +402,40 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                             id={'form-field__date'}
                             value={datetime}
                             onChange={handleDatetime}/>
+                    </div>
+                    <div className="form-row">
+                        <div className={'form-group col-3'}>
+                            <label htmlFor={'form-field__image'}>
+                                Image
+                            </label>
+                        </div>
+                        <div className={'form-group col-9'}>
+                            {!fileS3Url ? (
+                                <>
+                                    <input
+                                        type={'file'}
+                                        id={'form-field__image'}
+                                        value={datetime}
+                                        onChange={handleFileUpload}/>
+                                    {fileUploadProgress > -1 && fileUploadProgress < 100 && (
+                                        <div>File upload progress: {fileUploadProgress}%</div>
+                                    )}
+                                    {fileUploadError && (
+                                        <div>An error has occured with the file upload</div>
+                                    )}
+                                </>
+                            ) : (
+                                <>
+                                    <img className={'img-fluid'} src={fileS3Url} />
+                                    <button
+                                        type={'button'}
+                                        onClick={handleClearImage} className={'btn btn-danger'}>
+                                        Clear Image
+                                    </button>
+                                    {fileS3Url && (<input type={'hidden'} value={fileS3Url} />)}
+                                </>
+                            )}
+                        </div>
                     </div>
                     <div className="form-row">
                         <div className={'form-group col-3'}>
