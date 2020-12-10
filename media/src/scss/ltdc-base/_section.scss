@@ -156,3 +156,25 @@
         }
     }
 }
+
+.section-project {
+    margin-bottom: 1rem;
+    padding-bottom: 1rem;
+    &__description {
+        border-bottom: 1px solid #ccc;
+    }
+    &__header {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+    }
+    &__title {
+        font-size: 0.875rem !important;
+        padding: 0;
+        margin: 0 1rem 0 0 !important;
+    }
+    &__action {
+        white-space: nowrap;
+        margin-right: 0.5rem;
+    }
+}

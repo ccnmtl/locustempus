@@ -514,33 +514,53 @@ const Activity: React.FC<ActivityProps> = (
     if (activity) {
         return (
             <>
-                <div>
+                <div className='section-project__header'>
                     <h2>Activity</h2>
-                    <div className='overflow-menu'>
+                    <div className={'lt-menu-overflow trailing'}>
                         <button onClick={toggleMenu}
-                            className='overflow-toggle'>
-                            <FontAwesomeIcon icon={faEllipsisV}/>
+                            className={'lt-icon-button lt-icon-button--transparent'}
+                            aria-label={showMenu ?
+                                'Hide more actions' : 'Show more actions'}>
+                            <span
+                                className={'lt-icons lt-icon-button__icon'}
+                                aria-hidden='true'>
+                                <FontAwesomeIcon icon={faEllipsisV}/>
+                            </span>
                         </button>
                         {showMenu && (
-                            <ul className='overflow-menu-show'>
-                                <li>
-                                    <a onClick={
-                                        (): void => {setShowMenu(false); setShowEditForm(true);}}>
-                                        <span className='overflow-icon'>
-                                            <FontAwesomeIcon icon={faPencilAlt}/>
-                                        </span>
-                                        Edit activity
-                                    </a>
-                                </li>
-                                <li>
-                                    <a onClick={handleDelete}>
-                                        <span className='overflow-icon'>
-                                            <FontAwesomeIcon icon={faTrashAlt}/>
-                                        </span>
-                                        Delete activity
-                                    </a>
-                                </li>
-                            </ul>
+                            <div className={'lt-menu lt-menu-overflow--expand'}>
+                                <ul className={'lt-list'} role='menu'>
+                                    <li className={'lt-list-item'} role='menuitem'>
+                                        <a href='#' onClick={(): void => {
+                                            setShowMenu(false); setShowEditForm(true);}}
+                                        className={'lt-list-item__link'}>
+                                            <span
+                                                className={'lt-icons lt-list-item__icon'}
+                                                aria-hidden='true'>
+                                                <FontAwesomeIcon icon={faPencilAlt}/>
+                                            </span>
+                                            <span
+                                                className={'lt-list-item__primary-text'}>
+                                                Edit activity
+                                            </span>
+                                        </a>
+                                    </li>
+                                    <li className={'lt-list-item'} role='menuitem'>
+                                        <a href='#' onClick={handleDelete}
+                                            className={'lt-list-item__link'}>
+                                            <span
+                                                className={'lt-icons lt-list-item__icon'}
+                                                aria-hidden='true'>
+                                                <FontAwesomeIcon icon={faTrashAlt}/>
+                                            </span>
+                                            <span
+                                                className={'lt-list-item__primary-text'}>
+                                                Delete activity
+                                            </span>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         )}
                     </div>
                 </div>
@@ -577,11 +597,12 @@ const Activity: React.FC<ActivityProps> = (
     } else {
         return (
             <>
-                <h2>Create Activity</h2>
+                <h2>Activity</h2>
                 {showCreateForm ? (
                     <form onSubmit={handleCreateActivity}>
-                        <div className="form-group">
+                        <div className={'form-group pane-form-group'}>
                             <label htmlFor={'activity-form__instructions'}>
+                                Instructions
                             </label>
                             <ReactQuill
                                 value={instructions || ''}
@@ -604,12 +625,15 @@ const Activity: React.FC<ActivityProps> = (
                         </div>
                     </form>
                 ) : (
-                    <button
-                        type={'submit'}
-                        className={'btn btn-primary'}
-                        onClick={(): void => setShowCreateForm(true)}>
-                        Create Activity
-                    </button>
+                    <>
+                        <p>There is no activity assigned on this project.</p>
+                        <button
+                            type={'submit'}
+                            className={'btn btn-primary'}
+                            onClick={(): void => setShowCreateForm(true)}>
+                            Create Activity
+                        </button>
+                    </>
                 )}
             </>
         );
@@ -680,22 +704,23 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
             <div className='pane-content-body'>
                 {activeTab === OVERVIEW && (
                     <div className='fade-load'>
-                        <div>
-                            <h2>About This Project</h2>
-                            <div dangerouslySetInnerHTML={{__html: description}}/>
-                        </div>
-                        <div>
-                            <h2>Share This Project</h2>
-                        </div>
-                        <div>
-                            <h2>Clone This Project</h2>
-                        </div>
-                        <div>
+                        <section className={'section-project section-project__description'}>
+                            <h2>Description</h2>
+                            {description ? (
+                                <div dangerouslySetInnerHTML={{__html: description}}/>
+                            ) : (
+                                <div>
+                                    There is no description for this project.
+                                </div>
+                            )}
+                        </section>
+
+                        <section>
                             <Activity activity={activity}
                                 createActivity={createActivity}
                                 updateActivity={updateActivity}
                                 deleteActivity={deleteActivity}/>
-                        </div>
+                        </section>
                     </div>
                 )}
                 {activeTab === BASE && (
