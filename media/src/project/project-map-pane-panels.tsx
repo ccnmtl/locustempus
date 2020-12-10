@@ -531,9 +531,9 @@ const Activity: React.FC<ActivityProps> = (
                             <div className={'lt-menu lt-menu-overflow--expand'}>
                                 <ul className={'lt-list'} role='menu'>
                                     <li className={'lt-list-item'} role='menuitem'>
-                                        <a href='#' onClick={
-                                            (): void => {setShowMenu(false); setShowEditForm(true);}}
-                                            className={'lt-list-item__link'}>
+                                        <a href='#' onClick={(): void => {
+                                            setShowMenu(false); setShowEditForm(true);}}
+                                        className={'lt-list-item__link'}>
                                             <span
                                                 className={'lt-icons lt-list-item__icon'}
                                                 aria-hidden='true'>
@@ -626,13 +626,13 @@ const Activity: React.FC<ActivityProps> = (
                     </form>
                 ) : (
                     <>
-                    <p>There is no activity assigned on this project.</p>
-                    <button
-                        type={'submit'}
-                        className={'btn btn-primary'}
-                        onClick={(): void => setShowCreateForm(true)}>
-                        Create Activity
-                    </button>
+                        <p>There is no activity assigned on this project.</p>
+                        <button
+                            type={'submit'}
+                            className={'btn btn-primary'}
+                            onClick={(): void => setShowCreateForm(true)}>
+                            Create Activity
+                        </button>
                     </>
                 )}
             </>
@@ -714,7 +714,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 </div>
                             )}
                         </section>
-                        
+
                         <section>
                             <Activity activity={activity}
                                 createActivity={createActivity}
