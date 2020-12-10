@@ -67,6 +67,7 @@ class LocationSerializer(serializers.ModelSerializer):
 
 class MediaObjectSerializer(serializers.ModelSerializer):
     url = serializers.URLField()
+
     class Meta:
         model = MediaObject
         fields = ['url']
