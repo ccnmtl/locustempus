@@ -600,7 +600,7 @@ export const ProjectMap: React.FC = () => {
                             offsetTop={-30}
                             closeOnClick={false}
                             onClose={(): void => {setActiveEvent(null);}}>
-                            {activeEvent.media && activeEvent.media[0].url && (
+                            {activeEvent.media && activeEvent.media[0] && (
                                 <div className={'mapboxgl-popup-image'}
                                     style={{backgroundImage:
                                         'url(' +  activeEvent.media[0].url + ')'}}>
