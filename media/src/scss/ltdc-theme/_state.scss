@@ -5,6 +5,12 @@
 
 .leading {
     margin-left: 0;
+    margin-right: 0.5rem;
+}
+
+.all-transparent {
+    background-color: transparent !important;
+    border-color: transparent !important;
 }
 
 .focus-none {

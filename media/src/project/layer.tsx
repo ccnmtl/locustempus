@@ -109,16 +109,33 @@ export const Layer: React.FC<LayerProps> = (
                     {openLayerMenu && (
                         <div className={'lt-menu lt-menu-overflow--expand'}>
                             <ul className={'lt-list'} role='menu'>
-                                <li className={'lt-list-item'} role='menuitem'>
+                                <li className={'lt-list-item lt-menu-form'} role='menuitem'>
                                     <span
                                         className={'lt-icons lt-list-item__icon'}
                                         aria-hidden='true'>
                                         <FontAwesomeIcon icon={faPencilAlt}/>
                                     </span>
-                                    <span
-                                        className={'lt-list-item__primary-text'}>
-                                        Rename layer
-                                    </span>
+                                    <form onSubmit={handleUpdateLayer}
+                                        className={'d-flex flex-column'}>
+                                        <label
+                                            className={'lt-menu-form__label'}>
+                                            Rename layer:
+                                        </label>
+                                        <input id={`update-layer-title-${pk}`}
+                                            value={updatedLayerTitle}
+                                            onChange={handleUpdatedLayerTitle}
+                                            className={'form-control lt-menu-form__input-text'}
+                                            type="text"/>
+                                        <div className={'lt-menu-form__button-group'}>
+                                            <input type='button'
+                                                onClick={handleLayerMenu}
+                                                className={'lt-button all-transparent leading'}
+                                                value={'Cancel'} />
+                                            <input type='submit'
+                                                className={'lt-button'}
+                                                value={'Save'} />
+                                        </div>
+                                    </form>
                                 </li>
                                 <li className={'lt-list-item'} role='menuitem'>
                                     <a href='#' onClick={handleDeleteLayer}
@@ -135,18 +152,6 @@ export const Layer: React.FC<LayerProps> = (
                                     </a>
                                 </li>
                             </ul>
-                            <form onSubmit={handleUpdateLayer}>
-                                <label>Layer Title:</label>
-                                <div className="row mx-0"
-                                    style={{width: '20rem'}}>
-                                    <input id={`update-layer-title-${pk}`}
-                                        value={updatedLayerTitle}
-                                        onChange={handleUpdatedLayerTitle}
-                                        className="form-control col-8" type="text"/>
-                                    <input type='submit'
-                                        className='btn btn-primary col-4' value={'Edit Layer'}/>
-                                </div>
-                            </form>
                         </div>
                     )}
                 </div>

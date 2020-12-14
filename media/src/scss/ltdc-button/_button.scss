@@ -16,6 +16,10 @@
         padding: 0;
         margin: 0;
     }
+    &--transparent {
+        background-color: transparent;
+        border: 1px solid transparent;
+    }
 }
 
 .lt-button-back {
@@ -81,6 +85,5 @@
 .lt-button-group {
     &__action {
         white-space: nowrap;
-        margin-right: 0.5rem;
     }
 }
