@@ -196,11 +196,12 @@ interface EventEditPanelProps {
     setActiveEventEdit(d: LayerEventDatum | null): void;
     updateEvent(label: string, description: string,
                 lat: number, lng: number, pk: number, layerPk: number): void;
+    paneHeaderHeight: number;
 }
 
 export const EventEditPanel: React.FC<EventEditPanelProps> = (
     {
-        activeEventEdit, setActiveEventEdit, updateEvent
+        activeEventEdit, setActiveEventEdit, updateEvent, paneHeaderHeight
     }: EventEditPanelProps) => {
 
     const [
@@ -236,7 +237,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
 
     return (
         <>
-            <div className={'pane-content-header'} style={{ top: 98 }}>
+            <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
                 <h2>Edit Event Marker</h2>
             </div>
             <div className={'pane-content-body'}>
@@ -699,6 +700,7 @@ interface DefaultPanelProps {
     setActiveEventDetail(d: LayerEventDatum): void;
     activeEventEdit: LayerEventDatum | null;
     setActiveEventEdit(d: LayerEventDatum): void;
+    paneHeaderHeight: number;
 }
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
@@ -706,7 +708,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         activeTab, setActiveTab, addLayer, description, layers, events,
         activity, createActivity, updateActivity, deleteActivity, deleteLayer,
         updateLayer, setLayerVisibility, activeLayer, setActiveLayer,
-        activeEvent, setActiveEvent, setActiveEventDetail, activeEventEdit
+        activeEvent, setActiveEvent, setActiveEventDetail, activeEventEdit,
+        paneHeaderHeight
     }: DefaultPanelProps) => {
 
     const handleSetActiveTab = (
@@ -725,7 +728,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
     return (
         <>
-            <ul className='nav nav-tabs pane-content-tabs' style={{ top: 98 }}>
+            <ul className='nav nav-tabs pane-content-tabs' style={{ top: paneHeaderHeight }}>
                 {['Overview', 'Base'].map((el, idx) => {
                     return (
                         <li className='nav-item button' key={idx}>

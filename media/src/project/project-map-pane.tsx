@@ -1,4 +1,4 @@
-import React, { useState, ReactElement } from 'react';
+import React, { useState, useEffect, useRef, ReactElement } from 'react';
 import { LayerProps } from './layer';
 import { LayerEventData, LayerEventDatum, ActivityData } from './project-map';
 import { Position } from '@deck.gl/core/utils/positions';
@@ -59,11 +59,14 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
         activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent
     }: ProjectMapPaneProps) => {
 
+    const projectPaneHeader = useRef<HTMLDivElement>(null);
+
     const [activeTab, setActiveTab] = useState<number>(0);
     const [showProjectMenu, setShowProjectMenu] = useState<boolean>(false);
     const [showProjectEditPanel, setShowProjectEditPanel] =
         useState<boolean>(false);
     const [isNewProject, setIsNewProject] = useState<boolean>(newProjectFlag);
+    const [projectPaneHeaderHeight, setProjectPaneHeaderHeight] = useState<number>(0);
 
     // Clear the query string param
     // This is done in this component so it could make use of the isNewProject
@@ -72,6 +75,20 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     if (isNewProject) {
         window.history.replaceState({}, '', window.location.pathname);
     }
+
+    useEffect(() => {
+        if (projectPaneHeader.current) {
+            setProjectPaneHeaderHeight(projectPaneHeader.current.clientHeight);
+        }
+        const resize = (): void  => {
+            if (projectPaneHeader.current) {
+                setProjectPaneHeaderHeight(projectPaneHeader.current.clientHeight);
+            }
+        };
+        /* eslint-disable-next-line scanjs-rules/call_addEventListener */
+        window.addEventListener('resize', resize);
+        return (): void => window.removeEventListener('resize', resize);
+    });
 
     const toggleProjectMenu = (e: React.MouseEvent): void => {
         e.preventDefault();
@@ -133,7 +150,8 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
                 activeLayer={activeLayer}
                 activeEventEdit={activeEventEdit}
                 setActiveEventEdit={setActiveEventEdit}
-                updateEvent={updateEvent}/>
+                updateEvent={updateEvent}
+                paneHeaderHeight={projectPaneHeaderHeight}/>
         )} </>,
         3: <ProjectCreateEditPanel
             isNewProject={isNewProject}
@@ -166,13 +184,14 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             activeEventDetail={activeEventDetail}
             setActiveEventDetail={setActiveEventDetail}
             activeEventEdit={activeEventEdit}
-            setActiveEventEdit={setActiveEventEdit}/>
+            setActiveEventEdit={setActiveEventEdit}
+            paneHeaderHeight={projectPaneHeaderHeight}/>
     };
 
     return (
         <div id='project-map-pane' className='widget-pane'>
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
-                <header className='project-pane__header'>
+                <header ref={projectPaneHeader} className='project-pane__header'>
                     <h1>{title}</h1>
                     <div className={'lt-menu-overflow trailing'}>
                         <button onClick={toggleProjectMenu}
