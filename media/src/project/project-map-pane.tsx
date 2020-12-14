@@ -35,7 +35,7 @@ export interface ProjectMapPaneProps {
     setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
     addEvent(label: string,
-             description: string, lat: number, lng: number): void;
+             description: string, lat: number, lng: number, mediaUrl?: string): void;
     deleteEvent(pk: number, layerPk: number): void;
     clearActivePosition(): void;
     activeEvent: LayerEventDatum | null;

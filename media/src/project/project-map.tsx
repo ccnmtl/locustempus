@@ -33,6 +33,10 @@ const authedFetch = (url: string, method: string, data?: any): Promise<any> => {
     });
 };
 
+interface MediaObject {
+    url: string;
+}
+
 export interface LayerEventDatum {
     lngLat: Position;
     label: string;
@@ -45,6 +49,7 @@ export interface LayerEventDatum {
         polygon: string;
         lng_lat: Position;
     };
+    media?: MediaObject[];
 }
 
 export interface LayerEventData {
@@ -327,7 +332,12 @@ export const ProjectMap: React.FC = () => {
     }, [activePosition]);
 
     const addEvent = (
-        label: string, description: string, lat: number, lng: number): void => {
+        label: string, description: string, lat: number, lng: number,
+        mediaUrl?: string): void => {
+        let media = null;
+        if (mediaUrl) {
+            media = [{url: mediaUrl}];
+        }
         const data = {
             label: label,
             layer: activeLayer,
@@ -336,7 +346,8 @@ export const ProjectMap: React.FC = () => {
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
-            }
+            },
+            media: media
         };
         authedFetch('/api/event/', 'POST', JSON.stringify(data))
             .then((response) => {
@@ -589,13 +600,12 @@ export const ProjectMap: React.FC = () => {
                             offsetTop={-30}
                             closeOnClick={false}
                             onClose={(): void => {setActiveEvent(null);}}>
-                            <div
-                                className={'mapboxgl-popup-image'}
-                                // Placeholder for uploded image, should be a conditional
-                                style={{
-                                    backgroundImage: 'url(' +
-                                        STATIC_URL + 'img/image-placeholder-infobox.jpg' + ')'
-                                }}></div>
+                            {activeEvent.media && activeEvent.media[0] && (
+                                <div className={'mapboxgl-popup-image'}
+                                    style={{backgroundImage:
+                                        'url(' +  activeEvent.media[0].url + ')'}}>
+                                </div>
+                            )}
                             <h2>{activeEvent.label}</h2>
                             {!activeEventDetail && (
                                 <button

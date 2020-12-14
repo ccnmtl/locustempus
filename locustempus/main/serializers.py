@@ -1,7 +1,8 @@
 from django.contrib.gis.geos import Point
 from generic_relations.relations import GenericRelatedField
 from locustempus.main.models import (
-    Layer, Project, Response, Event, Location, Activity, ResponseOwner
+    Layer, Project, Response, Event, Location, Activity, ResponseOwner,
+    MediaObject
 )
 from rest_framework import serializers
 
@@ -64,13 +65,29 @@ class LocationSerializer(serializers.ModelSerializer):
         fields = ('point', 'polygon', 'lng_lat')
 
 
+class MediaObjectSerializer(serializers.ModelSerializer):
+    url = serializers.URLField()
+
+    class Meta:
+        model = MediaObject
+        fields = ['url']
+
+
 class EventSerializer(serializers.ModelSerializer):
     location = LocationSerializer()
+    media = MediaObjectSerializer(many=True, allow_null=True)
 
     def create(self, validated_data):
         location_data = validated_data.pop('location')
+        media_urls = validated_data.pop('media')
+
         event = Event.objects.create(**validated_data)
         Location.objects.create(event=event, **location_data)
+
+        if media_urls:
+            event.media.set(
+                [MediaObject.objects.create(url=m['url']) for m in media_urls])
+
         return event
 
     def update(self, instance, validated_data):
@@ -85,7 +102,9 @@ class EventSerializer(serializers.ModelSerializer):
     class Meta:
         model = Event
         fields = (
-            'pk', 'label', 'layer', 'description', 'datetime', 'location')
+            'pk', 'label', 'layer', 'description', 'datetime',
+            'location', 'media'
+        )
 
 
 class LayerSerializer(serializers.ModelSerializer):

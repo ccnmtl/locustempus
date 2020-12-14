@@ -1,4 +1,5 @@
 Django>=2.2.13,<3
+django-s3sign==0.1.4
 pytz==2020.4
 httplib2==0.18.1
 feedparser==6.0.0
