@@ -70,7 +70,7 @@ class Event(models.Model):
     layer = models.ForeignKey(Layer, on_delete=models.CASCADE)
     description = models.TextField(blank=True)
     datetime = models.DateTimeField(blank=True, null=True)
-    media = models.ManyToManyField(MediaObject)
+    media = models.ManyToManyField(MediaObject, blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
