@@ -563,15 +563,16 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                         )}
                     </div>
                 </div>
+                {activeEventDetail && activeEventDetail.media && activeEventDetail.media[0] && (
+                    <figure className={'lt-pane-section__image'}>
+                        <img src={activeEventDetail.media[0].url} />
+                        <figcaption>Caption for the image</figcaption>
+                    </figure>
+
+                )}
                 {activeEventDetail && (
-                    <>
-                        <figure className={'lt-pane-section__image'}>
-                            <img src={STATIC_URL + 'img/image-placeholder-infobox.jpg'} />
-                            <figcaption>Caption for the image</figcaption>
-                        </figure>
-                        <div className={'lt-pane-section__event-desc'} dangerouslySetInnerHTML={
-                            {__html: activeEventDetail.description}}/>
-                    </>
+                    <div className={'lt-pane-section__event-desc'} dangerouslySetInnerHTML={
+                        {__html: activeEventDetail.description}}/>
                 )}
             </div>
         </>
