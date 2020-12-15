@@ -25,13 +25,14 @@ interface ProjectCreateEditPanelProps {
     updateProject(title: string, description: string, baseMap: string): void;
     showDefaultMenu(): void;
     deleteProject(): void;
+    paneHeaderHeight: number;
 }
 
 export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
     {
         isNewProject, setIsNewProject, projectTitle, projectDescription,
         projectBaseMap, setBaseMap, updateProject, showDefaultMenu,
-        deleteProject
+        deleteProject, paneHeaderHeight
     }: ProjectCreateEditPanelProps) => {
 
     const [title, setTitle] = useState<string>(projectTitle);
@@ -76,7 +77,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
 
     return (
         <>
-            <div className={'pane-content-header'} style={{ top: 98 }}>
+            <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
                 <h2>{isNewProject ? 'Create Project' : 'Edit Project'}</h2>
             </div>
             <div className={'pane-content-body'}>
@@ -301,11 +302,13 @@ interface EventAddPanelProps {
         mediaUrl?: string): void;
     clearActivePosition(): void;
     setActiveTab(val: number): void;
+    paneHeaderHeight: number;
 }
 
 export const EventAddPanel: React.FC<EventAddPanelProps> = (
     { setShowAddEventForm, activePosition, addEvent,
-        clearActivePosition, setActiveTab}: EventAddPanelProps) => {
+        clearActivePosition, setActiveTab, paneHeaderHeight
+    }: EventAddPanelProps) => {
 
     const [eventName, setEventName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
@@ -370,7 +373,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
 
     return (
         <>
-            <div className={'pane-content-header'} style={{ top: 98 }}>
+            <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
                 <h2>Add an Event</h2>
             </div>
             <div className={'pane-content-body'}>
@@ -466,12 +469,13 @@ interface EventDetailPanelProps {
     activeEventEdit: LayerEventDatum | null;
     setActiveEventEdit(d: LayerEventDatum | null): void;
     deleteEvent(pk: number, layerPk: number): void;
+    paneHeaderHeight: number;
 }
 
 export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     {
         activeLayer, activeEventDetail, setActiveEventDetail,
-        setActiveEventEdit, deleteEvent
+        setActiveEventEdit, deleteEvent, paneHeaderHeight
     }: EventDetailPanelProps) => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
 
@@ -500,7 +504,7 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
 
     return (
         <>
-            <div className={'pane-content-header'} style={{ top: 98 }}>
+            <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
                 <button onClick={handleBack} className={'lt-button-back'}>
                     <span className={'lt-icons lt-button-back__icon'}>
                         <FontAwesomeIcon icon={faArrowLeft}/>

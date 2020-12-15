@@ -137,14 +137,16 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             activePosition={activePosition}
             addEvent={addEvent}
             clearActivePosition={clearActivePosition}
-            setActiveTab={setActiveTab}/>,
+            setActiveTab={setActiveTab}
+            paneHeaderHeight={projectPaneHeaderHeight}/>,
         1: <EventDetailPanel
             activeLayer={activeLayer}
             activeEventDetail={activeEventDetail}
             setActiveEventDetail={setActiveEventDetail}
             activeEventEdit={activeEventEdit}
             setActiveEventEdit={setActiveEventEdit}
-            deleteEvent={deleteEvent}/>,
+            deleteEvent={deleteEvent}
+            paneHeaderHeight={projectPaneHeaderHeight}/>,
         2: <> {activeEventEdit && (
             <EventEditPanel
                 activeLayer={activeLayer}
@@ -162,7 +164,8 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             setBaseMap={setBaseMap}
             updateProject={updateProject}
             deleteProject={deleteProject}
-            showDefaultMenu={showDefaultMenu}/>,
+            showDefaultMenu={showDefaultMenu}
+            paneHeaderHeight={projectPaneHeaderHeight}/>,
         4: <DefaultPanel
             activeTab={activeTab}
             setActiveTab={setActiveTab}
