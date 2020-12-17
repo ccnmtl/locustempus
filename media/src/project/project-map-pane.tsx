@@ -35,7 +35,7 @@ export interface ProjectMapPaneProps {
     setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
     addEvent(label: string,
-             description: string, lat: number, lng: number, mediaUrl?: string): void;
+             description: string, lat: number, lng: number, mediaUrl: string | null): void;
     deleteEvent(pk: number, layerPk: number): void;
     clearActivePosition(): void;
     activeEvent: LayerEventDatum | null;
@@ -45,7 +45,8 @@ export interface ProjectMapPaneProps {
     activeEventEdit: LayerEventDatum | null;
     setActiveEventEdit(d: LayerEventDatum): void;
     updateEvent(label: string, description: string,
-                lat: number, lng: number, pk: number, layerPk: number): void;
+                lat: number, lng: number, pk: number,
+                layerPk: number, mediaUrl: string | null): void;
 }
 
 export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
