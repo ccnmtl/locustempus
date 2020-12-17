@@ -12,9 +12,6 @@ import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
 
 
-// For uploaded image display on Event Detail pane
-const STATIC_URL = LocusTempus.staticUrl;
-
 interface ProjectCreateEditPanelProps {
     isNewProject: boolean;
     setIsNewProject(val: boolean): void;
@@ -196,7 +193,8 @@ interface EventEditPanelProps {
     activeEventEdit: LayerEventDatum;
     setActiveEventEdit(d: LayerEventDatum | null): void;
     updateEvent(label: string, description: string,
-                lat: number, lng: number, pk: number, layerPk: number): void;
+                lat: number, lng: number, pk: number,
+                layerPk: number, mediaUrl: string | null): void;
     paneHeaderHeight: number;
 }
 
@@ -214,6 +212,11 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
         datetime, setDatetime
     ] = useState<string>(activeEventEdit.datetime || '');
 
+    const [fileUploadProgress, setFileUploadProgress] = useState<number>(-1);
+    const [fileS3Url, setFileS3Url] = useState<string | null>(null);
+    const [fileUploadError, setFileUploadError] = useState<boolean>(false);
+    const [showImageForm, setShowImageForm] = useState<boolean>(false);
+
     const handleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setEventName(e.target.value);
     };
@@ -227,13 +230,47 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
         updateEvent(
             eventName, description, activeEventEdit.location.lng_lat[1],
             activeEventEdit.location.lng_lat[0],
-            activeEventEdit.pk, activeEventEdit.layer);
+            activeEventEdit.pk, activeEventEdit.layer, fileS3Url);
         setActiveEventEdit(null);
     };
 
     const handleCancel = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
         setActiveEventEdit(null);
+    };
+
+    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        e.preventDefault();
+        // Reset the form state prior to each upload
+        setFileUploadProgress(-1);
+        setFileS3Url(null);
+        setFileUploadError(false);
+
+        ((): void => {
+            /* eslint-disable @typescript-eslint/camelcase */
+            new S3Upload({
+                file_dom_selector: e.target.id,
+                s3_sign_put_url: '/sign_s3/',
+                s3_object_name: e.target.value,
+                onProgress: (percent): void => {setFileUploadProgress(Number(percent));},
+                onFinishS3Put: (url): void => {setFileS3Url(url);},
+                onError: (status): void => {
+                    setFileUploadError(true);
+                    console.error(status);
+                }
+            });
+        })();
+    };
+
+    const handleClearImage = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        setFileS3Url(null);
+    };
+
+    const handleCancelImageEdit = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        setFileS3Url(null);
+        setShowImageForm(false);
     };
 
     return (
@@ -274,6 +311,74 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                     </div>
                     <div className="form-row">
                         <div className={'form-group col-3'}>
+                            <label htmlFor={'form-field__image'}>
+                                Image
+                            </label>
+                        </div>
+                        <div className={'form-group col-9'}>
+                            {showImageForm ? (
+                                <>
+                                    {fileS3Url ? (
+                                        <>
+                                            <img className={'img-fluid'} src={fileS3Url} />
+                                            <button
+                                                type={'button'}
+                                                onClick={handleClearImage}
+                                                className={'btn btn-danger'}>
+                                                Clear Image
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <input
+                                            type={'file'}
+                                            id={'form-field__image'}
+                                            value={datetime}
+                                            onChange={handleFileUpload}/>
+                                    )}
+                                    {fileUploadProgress > -1 && fileUploadProgress < 100 && (
+                                        <div>File upload progress: {fileUploadProgress}%</div>
+                                    )}
+                                    {fileUploadError && (
+                                        <div>An error has occured with the file upload</div>
+                                    )}
+                                    <button
+                                        type={'button'}
+                                        onClick={handleCancelImageEdit}
+                                        className={'btn btn-primary'}>
+                                        Cancel Image Update
+                                    </button>
+                                </>
+                            ) : (
+                                <>
+                                    {activeEventEdit.media.length > 0 ? (
+                                        <>
+                                            <figure className={'lt-pane-section__image'}>
+                                                <img src={activeEventEdit.media[0].url} />
+                                                <figcaption>Caption for the image</figcaption>
+                                            </figure>
+                                            <button
+                                                type={'button'}
+                                                onClick={(): void => {setShowImageForm(true);}}
+                                                className={'btn btn-primary'}>
+                                                Update Image
+                                            </button>
+                                        </>
+                                    ) : (
+                                        <>
+                                            <button
+                                                type={'button'}
+                                                onClick={(): void => {setShowImageForm(true);}}
+                                                className={'btn btn-primary'}>
+                                                Add Image
+                                            </button>
+                                        </>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    </div>
+                    <div className="form-row">
+                        <div className={'form-group col-3'}>
                         </div>
                         <div className={'form-group col-9'}>
                             <button
@@ -299,7 +404,7 @@ interface EventAddPanelProps {
     activePosition: Position | null;
     addEvent(
         label: string, description: string, lat: number, lng: number,
-        mediaUrl?: string): void;
+        mediaUrl: string | null): void;
     clearActivePosition(): void;
     setActiveTab(val: number): void;
     paneHeaderHeight: number;
@@ -314,7 +419,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
     const [description, setDescription] = useState<string>('');
     const [datetime, setDatetime] = useState<string>('');
     const [fileUploadProgress, setFileUploadProgress] = useState<number>(-1);
-    const [fileS3Url, setFileS3Url] = useState<string | undefined>();
+    const [fileS3Url, setFileS3Url] = useState<string | null>(null);
     const [fileUploadError, setFileUploadError] = useState<boolean>(false);
 
     const handleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -347,7 +452,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
         e.preventDefault();
         // Reset the form state prior to each upload
         setFileUploadProgress(-1);
-        setFileS3Url(undefined);
+        setFileS3Url(null);
         setFileUploadError(false);
 
         ((): void => {
@@ -368,7 +473,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
 
     const handleClearImage = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
-        setFileS3Url(undefined);
+        setFileS3Url(null);
     };
 
     return (
@@ -437,7 +542,6 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                                         onClick={handleClearImage} className={'btn btn-danger'}>
                                         Clear Image
                                     </button>
-                                    {fileS3Url && (<input type={'hidden'} value={fileS3Url} />)}
                                 </>
                             )}
                         </div>
@@ -563,15 +667,16 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                         )}
                     </div>
                 </div>
+                {activeEventDetail && activeEventDetail.media.length > 0 && (
+                    <figure className={'lt-pane-section__image'}>
+                        <img src={activeEventDetail.media[0].url} />
+                        <figcaption>Caption for the image</figcaption>
+                    </figure>
+
+                )}
                 {activeEventDetail && (
-                    <>
-                        <figure className={'lt-pane-section__image'}>
-                            <img src={STATIC_URL + 'img/image-placeholder-infobox.jpg'} />
-                            <figcaption>Caption for the image</figcaption>
-                        </figure>
-                        <div className={'lt-pane-section__event-desc'} dangerouslySetInnerHTML={
-                            {__html: activeEventDetail.description}}/>
-                    </>
+                    <div className={'lt-pane-section__event-desc'} dangerouslySetInnerHTML={
+                        {__html: activeEventDetail.description}}/>
                 )}
             </div>
         </>

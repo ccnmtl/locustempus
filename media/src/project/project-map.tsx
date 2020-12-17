@@ -49,7 +49,7 @@ export interface LayerEventDatum {
         polygon: string;
         lng_lat: Position;
     };
-    media?: MediaObject[];
+    media: MediaObject[];
 }
 
 export interface LayerEventData {
@@ -333,21 +333,18 @@ export const ProjectMap: React.FC = () => {
 
     const addEvent = (
         label: string, description: string, lat: number, lng: number,
-        mediaUrl?: string): void => {
-        let media = null;
-        if (mediaUrl) {
-            media = [{url: mediaUrl}];
-        }
+        mediaUrl: string | null): void => {
+        // TODO: implement datetime
         const data = {
             label: label,
             layer: activeLayer,
-            description: '',
+            description: description,
             datetime: null,
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
             },
-            media: media
+            media: mediaUrl ? [{url: mediaUrl}] : null
         };
         authedFetch('/api/event/', 'POST', JSON.stringify(data))
             .then((response) => {
@@ -377,7 +374,8 @@ export const ProjectMap: React.FC = () => {
 
     const updateEvent = (
         label: string, description: string, lat: number, lng: number,
-        pk: number, layerPk: number): void => {
+        pk: number, layerPk: number, mediaUrl: string | null): void => {
+        // TODO: implement datetime update
         const obj = {
             label: label,
             description: description,
@@ -385,7 +383,8 @@ export const ProjectMap: React.FC = () => {
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
-            }
+            },
+            media: mediaUrl ? [{url: mediaUrl}] : null
         };
         authedFetch(`/api/event/${pk}/`, 'PUT', JSON.stringify(obj))
             .then((response) => {

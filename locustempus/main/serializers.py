@@ -97,6 +97,19 @@ class EventSerializer(serializers.ModelSerializer):
             get('description', instance.label)
         instance.datetime = validated_data.get('datetime', instance.datetime)
         instance.save()
+
+        # Update the location object
+        loc = validated_data.get('location')
+        point = loc.get('point') if loc else None
+        if point:
+            instance.location.point = point
+            instance.location.save()
+
+        # Update media urls
+        media_urls = validated_data.pop('media')
+        if media_urls:
+            instance.media.set(
+                [MediaObject.objects.create(url=m['url']) for m in media_urls])
         return instance
 
     class Meta:

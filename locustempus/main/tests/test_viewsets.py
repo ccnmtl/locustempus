@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.urls.base import reverse
-from locustempus.main.models import Response
+import json
+from locustempus.main.models import Response, Layer, Event
 from locustempus.main.permissions import (
     IsLoggedInCourse, IsLoggedInFaculty
 )
@@ -252,6 +253,150 @@ class LayerAPITest(CourseTestMixin, TestCase):
         layer = project.layers.first()
         response = self.client.delete(
             reverse('api-layer-detail', args=[layer.pk])
+        )
+        self.assertEqual(response.status_code, 204)
+
+
+class EventAPITest(CourseTestMixin, TestCase):
+    def setUp(self):
+        self.setup_course()
+        self.project = self.sandbox_course.projects.first()
+        self.layer = Layer.objects.create(
+            title='A Title', content_object=self.project)
+
+    def test_event_create(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        r1 = self.client.post(
+            reverse('api-event-list'),
+            json.dumps({
+                'label': 'An Event Label',
+                'layer': self.layer.pk,
+                'description': 'A short description.',
+                'location': {
+                    'point': {'lat': 45.1, 'lng': 45.1},
+                },
+                'media': None
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r1.status_code, 201)
+
+        r2 = self.client.post(
+            reverse('api-event-list'),
+            json.dumps({
+                'label': 'An Event Label',
+                'layer': self.layer.pk,
+                'description': 'A short description.',
+                'location': {
+                    'point': {'lat': 45.1, 'lng': 45.1},
+                },
+                'media': [{'url': 'https://some.bucket.example.com'}]
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r2.status_code, 201)
+
+    def test_event_read(self):
+        event = Event.objects.create(
+            label='An event label',
+            layer=self.layer,
+            description='A description',
+        )
+
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        response = self.client.get(
+            reverse(
+                'api-event-detail', args=[event.pk]
+            )
+        )
+        self.assertEqual(response.status_code, 200)
+
+    def test_event_update(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        r1_data = {
+            'label': 'An Event Label',
+            'layer': self.layer.pk,
+            'description': 'A short description.',
+            'location': {
+                'point': {'lat': 45.1, 'lng': 45.1},
+            },
+            'media': [{'url': 'https://some.bucket.example.com/img1.jpg'}]
+        }
+        r1 = self.client.post(
+            reverse('api-event-list'),
+            json.dumps(r1_data),
+            content_type='application/json'
+        )
+
+        r2_data = {
+            'label': 'A different Event Label',
+            'layer': self.layer.pk,
+            'description': 'A different short description.',
+            'location': {
+                'point': {'lat': 45.0, 'lng': 90.0},
+            },
+            'media': [{'url': 'https://some.bucket.example.com/img2.jpg'}]
+        }
+
+        r2 = self.client.put(
+            reverse(
+                'api-event-detail', args=[r1.json()['pk']]
+            ),
+            json.dumps(r2_data),
+            content_type='application/json'
+        )
+        ret_data = r2.json()
+        self.assertEqual(r2.status_code, 200)
+        # Checks that the custom serializers correct transform
+        # location and media
+        self.assertEqual(ret_data['description'], r2_data['description'])
+        self.assertEqual(ret_data['label'], r2_data['label'])
+        self.assertEqual(ret_data['media'], r2_data['media'])
+        # Test longitude update
+        self.assertEqual(
+            ret_data['location']['lng_lat'][0],
+            r2_data['location']['point']['lng']
+        )
+        # Test latitude update
+        self.assertEqual(
+            ret_data['location']['lng_lat'][1],
+            r2_data['location']['point']['lat']
+        )
+
+    def test_event_delete(self):
+        event = Event.objects.create(
+            label='An event label',
+            layer=self.layer,
+            description='A description',
+        )
+
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        response = self.client.delete(
+            reverse(
+                'api-event-detail', args=[event.pk]
+            )
         )
         self.assertEqual(response.status_code, 204)
 
