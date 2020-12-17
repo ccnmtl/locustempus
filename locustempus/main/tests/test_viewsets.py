@@ -329,30 +329,55 @@ class EventAPITest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
+        r1_data = {
+            'label': 'An Event Label',
+            'layer': self.layer.pk,
+            'description': 'A short description.',
+            'location': {
+                'point': {'lat': 45.1, 'lng': 45.1},
+            },
+            'media': [{'url': 'https://some.bucket.example.com/img1.jpg'}]
+        }
         r1 = self.client.post(
             reverse('api-event-list'),
-            json.dumps({
-                'label': 'An Event Label',
-                'layer': self.layer.pk,
-                'description': 'A short description.',
-                'location': {
-                    'point': {'lat': 45.1, 'lng': 45.1},
-                },
-                'media': None
-            }),
+            json.dumps(r1_data),
             content_type='application/json'
         )
-        data = r1.json()
-        data['description'] = 'A different description'
+
+        r2_data = {
+            'label': 'A different Event Label',
+            'layer': self.layer.pk,
+            'description': 'A different short description.',
+            'location': {
+                'point': {'lat': 45.0, 'lng': 90.0},
+            },
+            'media': [{'url': 'https://some.bucket.example.com/img2.jpg'}]
+        }
 
         r2 = self.client.put(
             reverse(
-                'api-event-detail', args=[data['pk']]
+                'api-event-detail', args=[r1.json()['pk']]
             ),
-            json.dumps(data),
+            json.dumps(r2_data),
             content_type='application/json'
         )
+        ret_data = r2.json()
         self.assertEqual(r2.status_code, 200)
+        # Checks that the custom serializers correct transform
+        # location and media
+        self.assertEqual(ret_data['description'], r2_data['description'])
+        self.assertEqual(ret_data['label'], r2_data['label'])
+        self.assertEqual(ret_data['media'], r2_data['media'])
+        # Test longitude update
+        self.assertEqual(
+            ret_data['location']['lng_lat'][0],
+            r2_data['location']['point']['lng']
+        )
+        # Test latitude update
+        self.assertEqual(
+            ret_data['location']['lng_lat'][1],
+            r2_data['location']['point']['lat']
+        )
 
     def test_event_delete(self):
         event = Event.objects.create(
