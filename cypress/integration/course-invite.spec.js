@@ -19,19 +19,19 @@ describe('Course Roster Invite', () => {
     });
     it('Adds a second UNI field', () => {
         cy.visit('/course/1/roster/invite/');
-        cy.get('#id_uni-1-invitee').should('not.be.visible');
+        cy.get('#id_uni-1-invitee').should('not.exist');
         cy.get('[data-cy=add-uni]').click();
         cy.get('#id_uni-1-invitee').should('be.visible');
     });
     it('Deletes a second UNI field', () => {
         cy.visit('/course/1/roster/invite/');
-        cy.get('#id_uni-1-invitee').should('not.be.visible');
+        cy.get('#id_uni-1-invitee').should('not.exist');
         cy.get('[data-cy=add-uni]').click();
         cy.get('#id_uni-1-invitee').should('be.visible');
         cy.get('[data-cy=uni-invite-form]').within(() => {
             cy.get('[data-cy=remove-uni]').last().click();
         });
-        cy.get('#id_uni-1-invitee').should('not.be.visible');
+        cy.get('#id_uni-1-invitee').should('not.exist');
     });
     it('Adds UNIs to a course', () => {
         cy.visit('/course/1/roster/invite/');
@@ -61,19 +61,19 @@ describe('Course Roster Invite', () => {
     });
     it('Adds a second guest user field', () => {
         cy.visit('/course/1/roster/invite/');
-        cy.get('#id_email-1-invitee').should('not.be.visible');
+        cy.get('#id_email-1-invitee').should('not.exist');
         cy.get('[data-cy=add-email]').click();
         cy.get('#id_email-1-invitee').should('be.visible');
     });
     it('Deletes a second email field', () => {
         cy.visit('/course/1/roster/invite/');
-        cy.get('#id_email-1-invitee').should('not.be.visible');
+        cy.get('#id_email-1-invitee').should('not.exist');
         cy.get('[data-cy=add-email]').click();
         cy.get('#id_email-1-invitee').should('be.visible');
         cy.get('[data-cy=email-invite-form]').within(() => {
             cy.get('[data-cy=remove-email]').last().click();
         });
-        cy.get('#id_uni-1-invitee').should('not.be.visible');
+        cy.get('#id_uni-1-invitee').should('not.exist');
     });
     it('Adds multiple guest users to a course', () => {
         let addr1 = 'bar@baz.com';
