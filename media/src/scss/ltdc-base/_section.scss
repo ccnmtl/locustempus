@@ -158,10 +158,10 @@
 }
 
 .lt-pane-section {
-    margin-bottom: 1rem;
     padding-bottom: 1rem;
     &__description {
         border-bottom: 1px solid #ccc;
+        padding-top: 1rem;
     }
     &__header {
         display: flex;

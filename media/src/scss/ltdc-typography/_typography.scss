@@ -48,9 +48,22 @@ h6 {
   @include font-size($font-size-base * 1.5);
 }
 
+.widget-pane section h2 {
+@extend %heading;
+  @include font-size($font-size-base * 1.375);
+  margin-top: 1.25rem;
+  margin-bottom: 0.75rem;
+}
+
 .widget-pane h3 {
 @extend %heading;
   @include font-size($font-size-base * 1.375);
+}
+
+.widget-pane section h3 {
+@extend %heading;
+  @include font-size($font-size-base * 1.125);
+  margin-top: 0.75rem;
 }
 
 .widget-pane h4 {

@@ -920,7 +920,6 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 {activeTab === OVERVIEW && (
                     <div className='fade-load'>
                         <section className={'lt-pane-section lt-pane-section__description'}>
-                            <h2>Description</h2>
                             {description ? (
                                 <div dangerouslySetInnerHTML={{__html: description}}/>
                             ) : (
