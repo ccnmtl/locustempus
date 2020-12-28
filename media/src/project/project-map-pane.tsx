@@ -10,6 +10,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
+import { faDotCircle } from '@fortawesome/free-solid-svg-icons';
 
 export interface ProjectMapPaneProps {
     title: string;
@@ -247,6 +248,16 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
                 <div className='pane-content'>
                     {PANEL[panelState]}
                 </div>
+            </div>
+            <div className={'widget-pane-toggle'}>
+                <button
+                    type="button"
+                    id="btn-pane-toggle"
+                    className={'btn'}
+                    aria-label="Collapse layers panel">
+                    <FontAwesomeIcon icon={faDotCircle}/>
+                    <span className={'txt-pane-toggle'}>Slider TBD</span>
+                </button>
             </div>
         </div>
     );
