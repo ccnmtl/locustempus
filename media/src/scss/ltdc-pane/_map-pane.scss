@@ -11,9 +11,9 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     z-index: 1;
     background-color: transparent;
-    /* transition-property: -webkit-transform,transform,opacity;
+    transition-property: -webkit-transform,transform,opacity;
     transition-duration: 0.2s;
-    transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);*/
+    transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);
     @include media-breakpoint-up(lg) {
         top: 0;
         width: 32rem;
@@ -23,10 +23,19 @@
 }
 
 .widget-pane-expanded {
+    -webkit-transform: translateX(0em);
+    transform: translateX(0rem);
 }
 
 .widget-pane-collapsed {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+    @include media-breakpoint-up(lg) {
+        -webkit-transform: translateX(-32rem);
+        transform: translateX(-32rem);
+    }
 }
+
 
 .widget-pane-content {
     position: absolute;
