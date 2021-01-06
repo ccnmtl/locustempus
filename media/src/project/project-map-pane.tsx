@@ -194,7 +194,8 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     };
 
     return (
-        <div id='project-map-pane' className='widget-pane'>
+        // Collapsible pane div begin here
+        <div id='project-map-pane' className='widget-pane widget-pane-expanded'>
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
                 <header ref={projectPaneHeader} className='project-pane__header'>
                     <h1>{title}</h1>
