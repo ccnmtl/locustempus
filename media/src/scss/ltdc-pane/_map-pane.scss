@@ -106,6 +106,14 @@
     box-shadow: 1px 3px 4px rgba(51, 153, 255, 0.5);
 }
 
+.widget-pane-collapsed #btn-pane-toggle {
+    color: #cc0000;
+}
+
+.widget-pane-expanded #btn-pane-toggle {
+    color: #00cc00;
+}
+
 .txt-pane-toggle {
     display: block;
     width: 6rem;
