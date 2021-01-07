@@ -69,6 +69,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
         useState<boolean>(false);
     const [isNewProject, setIsNewProject] = useState<boolean>(newProjectFlag);
     const [projectPaneHeaderHeight, setProjectPaneHeaderHeight] = useState<number>(0);
+    const [showPane, setShowPane] = useState<boolean>(true);
 
     // Clear the query string param
     // This is done in this component so it could make use of the isNewProject
@@ -112,6 +113,11 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     const handleDelete = (e: React.MouseEvent<HTMLAnchorElement>): void => {
         e.preventDefault();
         deleteProject();
+    };
+
+    const handleTogglePane = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        setShowPane(!showPane);
     };
 
     const DEFAULT_PANEL = 4;
@@ -195,7 +201,8 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
 
     return (
         // Collapsible pane div begin here
-        <div id='project-map-pane' className='widget-pane widget-pane-expanded'>
+        <div id='project-map-pane'
+            className={'widget-pane widget-pane-' + (showPane ? 'expanded' : 'collapsed') }>
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
                 <header ref={projectPaneHeader} className='project-pane__header'>
                     <h1>{title}</h1>
@@ -255,7 +262,8 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
                     type="button"
                     id="btn-pane-toggle"
                     className={'btn'}
-                    aria-label="Collapse layers panel">
+                    aria-label="Collapse layers panel"
+                    onClick={handleTogglePane}>
                     <FontAwesomeIcon icon={faDotCircle}/>
                     <span className={'txt-pane-toggle'}>Slider TBD</span>
                 </button>
