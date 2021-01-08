@@ -272,10 +272,10 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
                             <FontAwesomeIcon icon={faCaretLeft} size='lg'/>
                         ) : (
                             <FontAwesomeIcon icon={faCaretRight} size='lg'/>
-                        )}                       
+                        )}
                     </span>
                     <span className={'txt-pane-toggle'}>
-                        {showPane ? 'Close pane' : 'Expand pane'}                      
+                        {showPane ? 'Close pane' : 'Expand pane'}
                     </span>
                 </button>
             </div>
