@@ -10,7 +10,9 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
 import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
 import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { faDotCircle } from '@fortawesome/free-solid-svg-icons';
+import { faCaretLeft } from '@fortawesome/free-solid-svg-icons';
+import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
+
 
 export interface ProjectMapPaneProps {
     title: string;
@@ -260,12 +262,21 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             <div className={'widget-pane-toggle'}>
                 <button
                     type="button"
-                    id="btn-pane-toggle"
-                    className={'btn'}
+                    className={'lt-button-pane-toggle'}
                     aria-label="Collapse layers panel"
                     onClick={handleTogglePane}>
-                    <FontAwesomeIcon icon={faDotCircle}/>
-                    <span className={'txt-pane-toggle'}>Slider TBD</span>
+                    <span
+                        className={'lt-button-pane-toggle__icon'}
+                        aria-hidden='true'>
+                        {showPane ? (
+                            <FontAwesomeIcon icon={faCaretLeft} size='lg'/>
+                        ) : (
+                            <FontAwesomeIcon icon={faCaretRight} size='lg'/>
+                        )}                       
+                    </span>
+                    <span className={'txt-pane-toggle'}>
+                        {showPane ? 'Close pane' : 'Expand pane'}                      
+                    </span>
                 </button>
             </div>
         </div>
