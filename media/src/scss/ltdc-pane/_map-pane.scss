@@ -11,14 +11,28 @@
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     z-index: 1;
     background-color: transparent;
-    /* transition-property: -webkit-transform,transform,opacity;
+    transition-property: -webkit-transform,transform,opacity;
     transition-duration: 0.2s;
-    transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);*/
+    transition-timing-function: cubic-bezier(0.0,0.0,0.2,1);
     @include media-breakpoint-up(lg) {
         top: 0;
         width: 32rem;
         height: 100%;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+    }
+}
+
+.widget-pane-expanded {
+    -webkit-transform: translateX(0em);
+    transform: translateX(0rem);
+}
+
+.widget-pane-collapsed {
+    -webkit-transform: translateX(-100%);
+    transform: translateX(-100%);
+    @include media-breakpoint-up(lg) {
+        -webkit-transform: translateX(-32rem);
+        transform: translateX(-32rem);
     }
 }
 
@@ -50,56 +64,6 @@
     }
 }
 
-#btn-pane-toggle {
-    width: 2.5rem;
-    height: 100%;
-    padding: 0;
-    margin: 0;
-    line-height: 1;
-    font-size: 1.25rem;
-    color: #666;
-    background-color: #f8f5f4;
-    border: 0;
-    border-left: 1px solid #ddd;
-    border-radius: 0 0.25rem 0.25rem 0;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    /* offset-x | offset-y | blur-radius | color */
-    box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
-    @include media-breakpoint-up(lg) {
-        display: inline-block;
-        flex-direction: row;
-        width: 2.5rem;
-        height: 3.25rem;
-        padding: 0;
-        margin: 0;
-        line-height: 1;
-        font-size: 1.25rem;
-        color: #666;
-        background-color: #f8f5f4;
-        border: 0;
-        border-left: 1px solid #ddd;
-        border-radius: 0 0.25rem 0.25rem 0;
-        /* offset-x | offset-y | blur-radius | color */
-        box-shadow: 0px 1px 4px rgba(0, 0, 0, 0.3);
-    }
-}
-
-#btn-pane-toggle:hover {
-    color: #000;
-    background-color: #e5d9ca;
-}
-
-#btn-pane-toggle:focus {
-    color: #000;
-    background-color: #e5d9ca;
-    border-right: 1px solid #3399ff;
-    border-bottom: 1px solid #3399ff;
-    /* offset-x | offset-y | blur-radius | color */
-    box-shadow: 1px 3px 4px rgba(51, 153, 255, 0.5);
-}
-
 .txt-pane-toggle {
     display: block;
     width: 6rem;
@@ -117,7 +81,6 @@
         display: none !important;
     }
 }
-
 
 .project-pane__header {
     position: -webkit-sticky;
