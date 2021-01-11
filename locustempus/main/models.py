@@ -231,6 +231,12 @@ class Response(models.Model):
         null=True
     )
 
+    def owner_strings(self):
+        return [
+            owner.get_full_name() if owner.get_full_name() else owner.username
+            for owner in self.owners.all()
+        ]
+
 
 class ResponseOwner(models.Model):
     """
@@ -251,6 +257,11 @@ class ResponseOwner(models.Model):
 
     class Meta:
         unique_together = ('owner', 'activity')
+
+
+class Feedback(models.Model):
+    # Model to hold author feedback for collaborators
+    pass
 
 
 class GuestUserAffil(models.Model):

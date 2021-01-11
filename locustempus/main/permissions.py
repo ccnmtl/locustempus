@@ -66,7 +66,7 @@ class IsResponseOwnerOrFaculty(permissions.IsAuthenticated):
         if request.method not in permissions.SAFE_METHODS:
             try:
                 activity = Activity.objects.get(
-                    pk=request.POST.get('activity'))
+                    pk=request.data.get('activity'))
             except Activity.DoesNotExist:
                 return False
 

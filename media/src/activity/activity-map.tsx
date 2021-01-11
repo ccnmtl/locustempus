@@ -54,6 +54,8 @@ export interface ResponseData {
     pk: number;
     activity: number;
     layers: string[];
+    owners: string[];
+    modified_at: Date;
     reflection: string;
     status: ResponseStatus;
 }
@@ -100,12 +102,17 @@ export const ActivityMap: React.FC = () => {
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
     const projectPk = mapContainer && mapContainer.dataset.projectpk;
     const activityPk = mapContainer && mapContainer.dataset.activitypk;
+    let isFaculty = false;
+    if (mapContainer && mapContainer.dataset.isfaculty === 'True') {
+        isFaculty = true;
+    }
+
     const [projectTitle, setProjectTitle] = useState<string | null>(null);
     const [projectDescription, setProjectDescription] =
         useState<string | null>(null);
     const [projectBaseMap, setProjectBaseMap] = useState<string | null>(null);
     const [projectLayerData, setProjectLayerData] = useState<LayerProps[]>([]);
-    const [responseData, setResponseData] = useState<ResponseData | null>(null);
+    const [responseData, setResponseData] = useState<ResponseData[]>([]);
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
     const [ activeEvent, setActiveEvent] =
@@ -218,11 +225,13 @@ export const ActivityMap: React.FC = () => {
         setProjectMapboxLayers(mapLayers);
     };
 
-    const addLayer = (): void => {
-        if (responseData) {
+    const addLayer = (respPk: number | null = null): void => {
+        if (!isFaculty && (responseData.length == 1 || respPk)) {
+            const responseDatum = responseData[0];
+            const responsePk = respPk || responseDatum.pk;
             authedFetch('/api/layer/', 'POST', JSON.stringify(
                 {title: `Layer ${layerTitleCount}`,
-                    content_object: `/api/response/${responseData.pk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+                    content_object: `/api/response/${responsePk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
                 .then((response) => {
                     if (response.status === 201) {
                         return response.json();
@@ -260,10 +269,13 @@ export const ActivityMap: React.FC = () => {
                     if (updatedLayerData.length === 0) {
                         // addLayer has a stale closure, so the fetch
                         // is called here instead
-                        if (responseData) {
+                        // TODO: refactor addLayer so optional params can be passed in
+                        // to handle stale closure
+                        if (!isFaculty && responseData.length == 1) {
+                            const responseDatum = responseData[0]
                             authedFetch('/api/layer/', 'POST', JSON.stringify(
                                 {title: `Layer ${layerTitleCount}`,
-                                    content_object: `/api/response/${responseData.pk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+                                    content_object: `/api/response/${responseDatum.pk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
                                 .then((response) => {
                                     if (response.status === 201) {
                                         return response.json();
@@ -288,9 +300,10 @@ export const ActivityMap: React.FC = () => {
     };
 
     const updateLayer = (pk: number, title: string): void => {
-        if (responseData) {
+        if (!isFaculty && responseData.length == 1) {
+            const responseDatum = responseData[0];
             authedFetch(`/api/layer/${pk}/`, 'PUT', JSON.stringify(
-                {title: title, content_object: `/api/response/${responseData.pk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+                {title: title, content_object: `/api/response/${responseDatum.pk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
                 .then((response) => {
                     if (response.status === 200) {
                         return response.json();
@@ -446,29 +459,31 @@ export const ActivityMap: React.FC = () => {
     };
 
     const updateResponse = (reflection?: string, status?: ResponseStatus): void => {
-        const resp = responseData;
-        if (!reflection && !status) {
-            return;
-        }
-        if (resp) {
-            if (reflection) {
-                resp.reflection = reflection;
+        if (!isFaculty && responseData.length == 1) {
+            const responseDatum = responseData[0];
+            if (!reflection && !status) {
+                return;
             }
+            if (responseDatum) {
+                if (reflection) {
+                    responseDatum.reflection = reflection;
+                }
 
-            if (status) {
-                resp.status = status;
+                if (status) {
+                    responseDatum.status = status;
+                }
+                authedFetch(`/api/response/${responseDatum.pk}/`, 'PUT', JSON.stringify(responseDatum))
+                    .then((response) => {
+                        if (response.status === 200) {
+                            return response.json();
+                        } else {
+                            throw 'Response update failed.';
+                        }
+                    })
+                    .then((data: ResponseData) => {
+                        setResponseData([data]);
+                    });
             }
-            authedFetch(`/api/response/${resp.pk}/`, 'PUT', JSON.stringify(resp))
-                .then((response) => {
-                    if (response.status === 200) {
-                        return response.json();
-                    } else {
-                        throw 'Response update failed.';
-                    }
-                })
-                .then((data: ResponseData) => {
-                    setResponseData(data);
-                });
         }
     };
 
@@ -525,57 +540,70 @@ export const ActivityMap: React.FC = () => {
                 setActivity(await activityResponse.json());
             }
 
-            // If a contributor, get or create a response
             if (activityPk && CURRENT_USER) {
-                const resp = await fetch(
-                    `/api/response/?activity=${activityPk}`);
-                if (!resp.ok) {
-                    throw new Error('Project response request failed.');
-                }
-                // NB: The fetch returns a queryset, hence the list type
-                const respData: ResponseData[] = await resp.json();
-                if (respData.length > 0) {
-                    setResponseData(respData[0]);
-                    const layersRsps = await Promise.all(
-                        respData[0].layers.map((layer: string) => {
-                            return fetch(layer);
-                        })
-                    );
-                    // TODO: fix type
-                    const layers = await Promise.all(
-                        layersRsps.map((response: any) => { return response.json(); }) // eslint-disable-line @typescript-eslint/no-explicit-any, max-len
-                    );
-
-                    // Create an empty layer if none exist, otherwise
-                    // unpack the event data
-                    if (layers.length === 0) {
-                        addLayer();
-                        setLayerTitleCount((prev) => {return prev + 1;});
-                    } else {
-                        setLayerData(layers);
-                        setActiveLayer(layers[0].pk);
-
-                        const events = layers.reduce((acc, val) => {
-                            acc.set(val.pk, {visibility: true, events: val.event_set});
-                            return acc;
-                        }, new Map());
-                        updateEventData(events);
+                if (isFaculty) {
+                    // Get related responses
+                    const resp = await fetch(
+                        `/api/response/?activity=${activityPk}`);
+                    if (!resp.ok) {
+                        throw new Error('Project response request failed.');
                     }
+                    // NB: The fetch returns a queryset, hence the list type
+                    const respData: ResponseData[] = await resp.json();
+                    setResponseData(respData);
+
                 } else {
-                    authedFetch('/api/response/', 'POST', JSON.stringify(
-                        {activity: activityPk, status: 'DRAFT'}))
-                        .then((response) => {
-                            if (response.status === 200) {
-                                return response.json();
-                            } else {
-                                throw 'Event update failed.';
-                            }
-                        })
-                        .then((data: ResponseData) => {
-                            setResponseData(data);
-                            addLayer();
+                    // If a contributor, get or create a response
+                    const resp = await fetch(
+                        `/api/response/?activity=${activityPk}`);
+                    if (!resp.ok) {
+                        throw new Error('Project response request failed.');
+                    }
+                    // NB: The fetch returns a queryset, hence the list type
+                    const respData: ResponseData[] = await resp.json();
+                    if (respData.length > 0) {
+                        setResponseData(respData);
+                        const layersRsps = await Promise.all(
+                            respData[0].layers.map((layer: string) => {
+                                return fetch(layer);
+                            })
+                        );
+                        // TODO: fix type
+                        const layers = await Promise.all(
+                            layersRsps.map((response: any) => { return response.json(); }) // eslint-disable-line @typescript-eslint/no-explicit-any, max-len
+                        );
+
+                        // Create an empty layer if none exist, otherwise
+                        // unpack the event data
+                        if (layers.length === 0) {
+                            addLayer(respData[0].pk);
                             setLayerTitleCount((prev) => {return prev + 1;});
-                        });
+                        } else {
+                            setLayerData(layers);
+                            setActiveLayer(layers[0].pk);
+
+                            const events = layers.reduce((acc, val) => {
+                                acc.set(val.pk, {visibility: true, events: val.event_set});
+                                return acc;
+                            }, new Map());
+                            updateEventData(events);
+                        }
+                    } else {
+                        authedFetch('/api/response/', 'POST', JSON.stringify(
+                            {activity: activityPk, status: 'DRAFT'}))
+                            .then((response) => {
+                                if (response.status === 201) {
+                                    return response.json();
+                                } else {
+                                    throw 'Event update failed.';
+                                }
+                            })
+                            .then((data: ResponseData) => {
+                                setResponseData([data]);
+                                addLayer(data.pk);
+                                setLayerTitleCount((prev) => {return prev + 1;});
+                            });
+                    }
                 }
             }
 
@@ -653,6 +681,7 @@ export const ActivityMap: React.FC = () => {
                 <ProjectMapPane
                     title={projectTitle || 'Untitled'}
                     description={projectDescription || ''}
+                    isFaculty={isFaculty}
                     layers={layerData}
                     events={eventData}
                     activity={activity}
@@ -678,7 +707,7 @@ export const ActivityMap: React.FC = () => {
                     addEvent={addEvent}
                     deleteEvent={deleteEvent}
                     updateEvent={updateEvent}
-                    response={responseData}
+                    responseData={responseData}
                     updateResponse={updateResponse}/>
             )}
         </>

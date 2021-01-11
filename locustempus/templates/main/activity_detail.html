@@ -6,7 +6,7 @@ Activity: {{ activity.title }}
 {% endblock %}
 
 {% block content %}
-<div id="activity-map-container" data-maptoken="{{ token }}" data-activitypk="{{ activity.pk }}" data-projectpk="{{ project.pk }}"></div>
+<div id="activity-map-container" data-maptoken="{{ token }}" data-activitypk="{{ activity.pk }}" data-projectpk="{{ project.pk }}" data-isfaculty="{{ is_faculty }}"></div>
 {% endblock %}
 
 {% block js %}

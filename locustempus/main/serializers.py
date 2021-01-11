@@ -40,6 +40,8 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
     activity = serializers.PrimaryKeyRelatedField(
         queryset=Activity.objects.all())
 
+    owners = serializers.ReadOnlyField(source='owner_strings')
+
     def create(self, validated_data):
         a = validated_data.get('activity')
         r = Response.objects.create(activity=a)
@@ -49,9 +51,10 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Response
-        read_only_fields = ('layers', 'pk')
+        read_only_fields = ('layers', 'pk', 'owners', 'modified_at')
         fields = (
-            'pk', 'activity', 'layers', 'reflection', 'status'
+            'pk', 'activity', 'owners', 'layers', 'reflection', 'status',
+            'modified_at'
         )
 
 

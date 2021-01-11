@@ -7,7 +7,7 @@ import { ActivityData, BASE_MAPS, BASE_MAP_IMAGES,
     ResponseData, ResponseStatus} from './activity-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faArrowLeft, faEllipsisV, faCaretRight, faCaretDown
+    faArrowLeft, faEllipsisV, faCaretRight, faCaretDown, faEye, faEyeSlash, faLayerGroup
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
@@ -495,8 +495,9 @@ interface DefaultPanelProps {
     setActiveEventDetail(d: LayerEventDatum): void;
     activeEventEdit: LayerEventDatum | null;
     setActiveEventEdit(d: LayerEventDatum): void;
-    response: ResponseData | null;
+    responseData: ResponseData[];
     updateResponse(reflection?: string, status?: ResponseStatus): void;
+    isFaculty: boolean;
 }
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
@@ -504,17 +505,18 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         activeTab, setActiveTab, addLayer, description, layers, events,
         activity, deleteLayer, updateLayer, setLayerVisibility, activeLayer,
         setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
-        activeEventEdit, projectLayers, projectEvents, response, updateResponse
+        activeEventEdit, projectLayers, projectEvents, responseData, updateResponse, isFaculty
     }: DefaultPanelProps) => {
 
 
     const [reflection, setReflection] = useState<string>('');
 
     useEffect(() => {
-        if (response && response.reflection) {
-            setReflection(response.reflection);
+        // Only set a reflection if the user is not faculty/author
+        if (!isFaculty && responseData.length == 1 && responseData[0].reflection) {
+            setReflection(responseData[0].reflection);
         }
-    }, [response]);
+    }, [responseData]);
 
     const handleSetActiveTab = (
         e: React.MouseEvent<HTMLAnchorElement>): void => {
@@ -536,11 +538,12 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
     const OVERVIEW = 0;
     const BASE = 1;
     const RESPONSE = 2;
+    const responseTabTitle = isFaculty ? `Responses (${responseData.length})` : 'Response'
 
     return (
         <>
             <ul className='nav nav-tabs pane-content-tabs' style={{ top: 98 }}>
-                {['Overview', 'Base', 'Response'].map((el, idx) => {
+                {['Overview', 'Base', responseTabTitle].map((el, idx) => {
                     return (
                         <li className='nav-item button' key={idx}>
                             <a className={activeTab == idx ?
@@ -584,43 +587,73 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 )}
                 {activeTab == RESPONSE && (
                     <div className='fade-load'>
-                        <LayerSet
-                            layers={layers}
-                            events={events}
-                            addLayer={addLayer}
-                            deleteLayer={deleteLayer}
-                            updateLayer={updateLayer}
-                            setLayerVisibility={setLayerVisibility}
-                            activeLayer={activeLayer}
-                            setActiveLayer={setActiveLayer}
-                            setActiveEvent={setActiveEvent}
-                            activeEvent={activeEvent}
-                            setActiveEventDetail={setActiveEventDetail}
-                            activeEventEdit={activeEventEdit} />
-                        <div>
-                            <h2>Reflection</h2>
-                            <form onSubmit={handleSubmitResponse}>
-                                <div className="form-row">
-                                    <div className={'form-group col-12'}>
-                                        <ReactQuill
-                                            value={reflection}
-                                            onChange={setReflection}/>
-                                    </div>
+                        {isFaculty ? (
+                            <div>
+                                {/* Iterate over the response objects, render the list; render detail menu on click */}
+                                <div>There are {responseData.length} responses to this activity</div>
+                                <div>
+                                    {responseData.map((el, idx) => {
+                                        const modAt = (new Date(el.modified_at)).toLocaleString();
+                                        return (
+                                            <div className="row" key={idx}>
+                                                <div className="col-1">
+                                                    <FontAwesomeIcon icon={faEye}/>
+                                                </div>
+                                                <div className="col-10">
+                                                    <div>
+                                                        {el.owners.join(', ')}
+                                                    </div>
+                                                    <div>
+                                                        Submitted: {modAt}
+                                                    </div>
+                                                </div>
+                                                <div className="col-1">
+                                                    <FontAwesomeIcon icon={faLayerGroup}/>
+                                                </div>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
-                                <div className="form-row">
-                                    <div className={'form-group col-12'}>
-                                        <button
-                                            type={'submit'}
-                                            className={'btn btn-primary'}>
-                                            Submit response
-                                        </button>
-                                        <button onClick={handleReflectionSaveDraft}>
-                                            Save draft
-                                        </button>
+                            </div>
+                        ) : (<>
+                            <LayerSet
+                                layers={layers}
+                                events={events}
+                                addLayer={addLayer}
+                                deleteLayer={deleteLayer}
+                                updateLayer={updateLayer}
+                                setLayerVisibility={setLayerVisibility}
+                                activeLayer={activeLayer}
+                                setActiveLayer={setActiveLayer}
+                                setActiveEvent={setActiveEvent}
+                                activeEvent={activeEvent}
+                                setActiveEventDetail={setActiveEventDetail}
+                                activeEventEdit={activeEventEdit} />
+                            <div>
+                                <h2>Reflection</h2>
+                                <form onSubmit={handleSubmitResponse}>
+                                    <div className="form-row">
+                                        <div className={'form-group col-12'}>
+                                            <ReactQuill
+                                                value={reflection}
+                                                onChange={setReflection}/>
+                                        </div>
                                     </div>
-                                </div>
-                            </form>
-                        </div>
+                                    <div className="form-row">
+                                        <div className={'form-group col-12'}>
+                                            <button
+                                                type={'submit'}
+                                                className={'btn btn-primary'}>
+                                                Submit response
+                                            </button>
+                                            <button onClick={handleReflectionSaveDraft}>
+                                                Save draft
+                                            </button>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                        </>)}
                     </div>
                 )}
             </div>
