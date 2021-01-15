@@ -165,6 +165,7 @@
 
 .lt-file-button-upload::-webkit-file-upload-button {
     @include button-typography;
+    text-transform: none;
     color: #212529;
     // @include button-color
     background-color: #f0f0f0;
@@ -182,6 +183,7 @@
 
 .lt-file-button-upload::file-selector-button {
     @include button-typography;
+    text-transform: none;
     color: #212529;
     // @include button-color
     background-color: #f0f0f0;

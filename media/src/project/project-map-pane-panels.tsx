@@ -7,7 +7,7 @@ import { MediaEditor } from '../project-activity-components/layers/media-editor'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faLayerGroup, faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
-    faCaretRight, faCaretDown,
+    faCaretRight, faCaretDown, faExclamationCircle, faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
