@@ -18,3 +18,11 @@
     border-color: transparent;
     box-shadow: none;
 }
+
+.alert {
+    &--error {
+        padding-top: 0.5rem;
+        color: #b00020;
+        font-size: 0.8rem;
+    }
+}
