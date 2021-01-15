@@ -6,7 +6,7 @@ import {
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faLayerGroup, faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
-    faCaretRight, faCaretDown
+    faCaretRight, faCaretDown, faExclamationCircle, faCheckCircle
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
@@ -290,6 +290,70 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             autoFocus={true}
                             onChange={handleName} />
                     </div>
+                    {/* Edit image form */}
+                    <div className={'form-group pane-form-group'}>
+                        <label htmlFor={'form-field__image'}>Image</label>
+                        {showImageForm ? (
+                            <>
+                                {fileS3Url ? (
+                                    <>
+                                        <img className={'img-fluid'} src={fileS3Url} />
+                                        <button
+                                            type={'button'}
+                                            onClick={handleClearImage}
+                                            className={'btn btn-danger'}>
+                                            Clear Image
+                                        </button>
+                                    </>
+                                ) : (
+                                    <input
+                                        type={'file'}
+                                        id={'form-field__image'}
+                                        className={'lt-file-button-upload'}
+                                        value={datetime}
+                                        onChange={handleFileUpload}/>
+                                )}
+                                {fileUploadProgress > -1 && fileUploadProgress < 100 && (
+                                    <div>File upload progress: {fileUploadProgress}%</div>
+                                )}
+                                {fileUploadError && (
+                                    <div>An error has occured with the file upload</div>
+                                )}
+                                <button
+                                    type={'button'}
+                                    onClick={handleCancelImageEdit}
+                                    className={'btn btn-primary'}>
+                                    Cancel Image Update
+                                </button>
+                            </>
+                        ) : (
+                            <>
+                                {activeEventEdit.media.length > 0 ? (
+                                    <>
+                                        <figure className={'lt-pane-section__image'}>
+                                            <img src={activeEventEdit.media[0].url} />
+                                            <figcaption>Caption for the image</figcaption>
+                                        </figure>
+                                        <button
+                                            type={'button'}
+                                            onClick={(): void => {setShowImageForm(true);}}
+                                            className={'btn btn-primary'}>
+                                            Update Image
+                                        </button>
+                                    </>
+                                ) : (
+                                    <>
+                                        <button
+                                            type={'button'}
+                                            onClick={(): void => {setShowImageForm(true);}}
+                                            className={'btn btn-primary'}>
+                                            Add Image
+                                        </button>
+                                    </>
+                                )}
+                            </>
+                        )}
+                    </div>
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__description'}>
                             Description
@@ -308,74 +372,6 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             id={'form-field__date'}
                             value={datetime}
                             onChange={handleDatetime}/>
-                    </div>
-                    <div className="form-row">
-                        <div className={'form-group col-3'}>
-                            <label htmlFor={'form-field__image'}>
-                                Image
-                            </label>
-                        </div>
-                        <div className={'form-group col-9'}>
-                            {showImageForm ? (
-                                <>
-                                    {fileS3Url ? (
-                                        <>
-                                            <img className={'img-fluid'} src={fileS3Url} />
-                                            <button
-                                                type={'button'}
-                                                onClick={handleClearImage}
-                                                className={'btn btn-danger'}>
-                                                Clear Image
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <input
-                                            type={'file'}
-                                            id={'form-field__image'}
-                                            value={datetime}
-                                            onChange={handleFileUpload}/>
-                                    )}
-                                    {fileUploadProgress > -1 && fileUploadProgress < 100 && (
-                                        <div>File upload progress: {fileUploadProgress}%</div>
-                                    )}
-                                    {fileUploadError && (
-                                        <div>An error has occured with the file upload</div>
-                                    )}
-                                    <button
-                                        type={'button'}
-                                        onClick={handleCancelImageEdit}
-                                        className={'btn btn-primary'}>
-                                        Cancel Image Update
-                                    </button>
-                                </>
-                            ) : (
-                                <>
-                                    {activeEventEdit.media.length > 0 ? (
-                                        <>
-                                            <figure className={'lt-pane-section__image'}>
-                                                <img src={activeEventEdit.media[0].url} />
-                                                <figcaption>Caption for the image</figcaption>
-                                            </figure>
-                                            <button
-                                                type={'button'}
-                                                onClick={(): void => {setShowImageForm(true);}}
-                                                className={'btn btn-primary'}>
-                                                Update Image
-                                            </button>
-                                        </>
-                                    ) : (
-                                        <>
-                                            <button
-                                                type={'button'}
-                                                onClick={(): void => {setShowImageForm(true);}}
-                                                className={'btn btn-primary'}>
-                                                Add Image
-                                            </button>
-                                        </>
-                                    )}
-                                </>
-                            )}
-                        </div>
                     </div>
                     <div className="form-row">
                         <div className={'form-group col-3'}>
@@ -494,6 +490,78 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                             autoFocus={true}
                             onChange={handleName} />
                     </div>
+                    {/* Add image form */}
+                    <div className={'form-group pane-form-group'}>
+                        <label htmlFor={'form-field__image'}>Image</label>
+                        {!fileS3Url ? (
+                            <>
+                                <p>
+                                Reminder: Before uploading or sourcing an
+                                image, you must have permission to use it. Google provides an easy-to-use guide that helps find
+                                and choose appropriate images. See here for more information:
+                                <a target="about:blank" href="https://support.google.com/websearch/answer/29508?hl=en">Find free-to-use images</a>.
+                                </p>
+                                <div className={'row m-0'}>
+                                    <div className={'col-4 p-0 position-relative'}>
+                                        <div className={'lt-pane-section__imageplaceholder'} />
+                                        <div className={'upload-status'}>
+                                            {!fileUploadError && fileUploadProgress > -1 && fileUploadProgress < 100 && (
+                                                <>
+                                                    <div className={'upload-status--progress'} />
+                                                    <div className={'upload-status__percent'}>
+                                                        {fileUploadProgress}%
+                                                    </div>
+                                                </>
+                                            )}
+                                        {fileUploadError && (
+                                            <div className={'upload-status--error'}>
+                                                <FontAwesomeIcon icon={faExclamationCircle} size='2x'/>
+                                            </div>
+                                        )}
+                                        </div>
+                                    </div>
+                                    <div className={'col-8'}>
+                                        <input
+                                            type={'file'}
+                                            id={'form-field__image'}
+                                            className={'lt-file-button-upload'}
+                                            value={datetime}
+                                            onChange={handleFileUpload}/>
+                                        {fileUploadError && (
+                                            <div className={'alert--error'}>
+                                                There’s a problem with this image upload 
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </>
+                        ) : (
+                            <>
+                                <div className={'row m-0 fade-load'}>
+                                    <div className={'col-4 p-0 position-relative'}>
+                                        <div className={'lt-pane-section__thumbnail'}>
+                                            <img src={fileS3Url} />
+                                        </div>
+                                        <div className={'upload-status'}>
+                                            <div className={'upload-status--success'}>
+                                                <FontAwesomeIcon icon={faCheckCircle} size='2x'/>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div className={'col-8'}>
+                                        <button
+                                            type={'button'}
+                                            onClick={handleClearImage} className={'btn btn-danger'}>
+                                            Clear Image
+                                        </button>
+                                    </div>
+                                </div>
+                                <div>
+                                    Metadata form go here
+                                </div>
+                            </>
+                        )}
+                    </div>
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__description'}>
                             Description
@@ -512,39 +580,6 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                             id={'form-field__date'}
                             value={datetime}
                             onChange={handleDatetime}/>
-                    </div>
-                    <div className="form-row">
-                        <div className={'form-group col-3'}>
-                            <label htmlFor={'form-field__image'}>
-                                Image
-                            </label>
-                        </div>
-                        <div className={'form-group col-9'}>
-                            {!fileS3Url ? (
-                                <>
-                                    <input
-                                        type={'file'}
-                                        id={'form-field__image'}
-                                        value={datetime}
-                                        onChange={handleFileUpload}/>
-                                    {fileUploadProgress > -1 && fileUploadProgress < 100 && (
-                                        <div>File upload progress: {fileUploadProgress}%</div>
-                                    )}
-                                    {fileUploadError && (
-                                        <div>An error has occured with the file upload</div>
-                                    )}
-                                </>
-                            ) : (
-                                <>
-                                    <img className={'img-fluid'} src={fileS3Url} />
-                                    <button
-                                        type={'button'}
-                                        onClick={handleClearImage} className={'btn btn-danger'}>
-                                        Clear Image
-                                    </button>
-                                </>
-                            )}
-                        </div>
                     </div>
                     <div className="form-row">
                         <div className={'form-group col-3'}>

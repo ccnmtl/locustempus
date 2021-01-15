@@ -32,6 +32,60 @@
     }
 }
 
+.upload-status {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    display: block;
+    margin: 0;
+    padding: 0;
+    width: 3rem;
+    height: 3rem;
+    border: 0;
+    &--progress {
+        width: 3rem;
+        height: 3rem;
+        border: 6px solid #ccc;
+        border-radius: 50%;
+        border-top: 6px solid #333;
+        background-color: #fff;
+        -webkit-animation: spin 2s linear infinite; /* Safari */
+        animation: spin 0.5s linear infinite;
+    }
+    &--error {
+        width: 3rem;
+        height: 3rem;
+        color: #b00020;
+        text-align: center;
+        line-height: 4rem;
+    }
+    &--success {
+        width: 2rem;
+        height: 2rem;
+        border-radius: 50%;
+        color: #4caf50; /*28a745*/
+        background-color: #ffffff;
+        position: absolute;
+        bottom: 0.375rem;
+        right: 0.375rem;
+        text-align: center;
+        line-height: 2rem;
+    }
+    &__percent {
+        position: absolute;
+        top: 0;
+        left: 0;
+        text-align: center;
+        line-height: 3rem;
+        width: 3rem;
+        font-family: $heading-font-family;
+        font-weight: $heading-font-weight;
+        color: #000;
+        font-size: 0.8rem;
+    }
+}
+
+
 /* Safari */
 @-webkit-keyframes spin {
     0% { -webkit-transform: rotate(0deg); }
@@ -42,3 +96,5 @@
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+
