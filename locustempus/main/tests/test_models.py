@@ -51,3 +51,25 @@ class ResponseModelTest(TestCase):
         with self.assertRaises(IntegrityError):
             ResponseFactory.create(
                 activity=activity, owners=[student])
+
+    def test_submitted_by_on(self):
+        student: User = UserFactory.create(
+            first_name='Student',
+            last_name='One',
+            email='studentone@example.com'
+        )
+        course = RegistrarCourseFactory.create()
+        project = ProjectFactory.create(course=course)
+        activity = ActivityFactory.create(project=project)
+        response = ResponseFactory.create(
+            activity=activity, owners=[student])
+
+        # Assert that submitted_* are null
+        self.assertIsNone(response.submitted_at)
+
+        # Then submit the assignment
+        response.status = response.SUBMITTED
+        response.save()
+
+        # Check that the fields have updated
+        self.assertIsNot(response.submitted_at, None)

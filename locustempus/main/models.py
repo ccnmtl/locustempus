@@ -187,6 +187,10 @@ class Activity(models.Model):
 
 
 class Response(models.Model):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._old_status = self.status
+
     DRAFT = 'DRAFT'
     SUBMITTED = 'SUBMITTED'
     REVIEWED = 'REVIEWED'
@@ -216,6 +220,16 @@ class Response(models.Model):
         blank=True
     )
 
+    submitted_at = models.DateTimeField(
+        null=True
+    )
+    submitted_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        null=True
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
@@ -236,6 +250,14 @@ class Response(models.Model):
             owner.get_full_name() if owner.get_full_name() else owner.username
             for owner in self.owners.all()
         ]
+
+    def save(self, *args, **kwargs):
+        if self.status == self.SUBMITTED and \
+                self._old_status != self.SUBMITTED:
+            self.submitted_at = self.modified_at
+            self.submitted_by = self.modified_by
+
+        super().save(*args, **kwargs)
 
 
 class ResponseOwner(models.Model):
@@ -260,8 +282,29 @@ class ResponseOwner(models.Model):
 
 
 class Feedback(models.Model):
-    # Model to hold author feedback for collaborators
-    pass
+    feedback = models.TextField(
+        blank=True
+    )
+    response = models.OneToOneField(
+        Response,
+        on_delete=models.CASCADE,
+        related_name='feedback'
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    modified_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        null=True
+    )
+    modified_by = models.ForeignKey(
+        User,
+        on_delete=models.SET_NULL,
+        related_name='+',
+        null=True
+    )
 
 
 class GuestUserAffil(models.Model):
