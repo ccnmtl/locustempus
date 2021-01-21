@@ -3,10 +3,11 @@ import { Layer, LayerProps } from './layer';
 import {
     LayerEventData, LayerEventDatum, ActivityData,
     BASE_MAPS, BASE_MAP_IMAGES } from './project-map';
+import { MediaEditor } from '../project-activity-components/layers/media-editor';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faLayerGroup, faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
-    faCaretRight, faCaretDown, faExclamationCircle, faCheckCircle
+    faCaretRight, faCaretDown,
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
@@ -214,10 +215,13 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
         datetime, setDatetime
     ] = useState<string>(activeEventEdit.datetime || '');
 
-    const [fileUploadProgress, setFileUploadProgress] = useState<number>(-1);
     const [fileS3Url, setFileS3Url] = useState<string | null>(null);
-    const [fileUploadError, setFileUploadError] = useState<boolean>(false);
-    const [showImageForm, setShowImageForm] = useState<boolean>(false);
+
+    useEffect(() => {
+        if (activeEventEdit.media.length > 0) {
+            setFileS3Url(activeEventEdit.media[0].url);
+        }
+    }, [activeEventEdit]);
 
     const handleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setEventName(e.target.value);
@@ -241,40 +245,6 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
         setActiveEventEdit(null);
     };
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        e.preventDefault();
-        // Reset the form state prior to each upload
-        setFileUploadProgress(-1);
-        setFileS3Url(null);
-        setFileUploadError(false);
-
-        ((): void => {
-            /* eslint-disable @typescript-eslint/camelcase */
-            new S3Upload({
-                file_dom_selector: e.target.id,
-                s3_sign_put_url: '/sign_s3/',
-                s3_object_name: e.target.value,
-                onProgress: (percent): void => {setFileUploadProgress(Number(percent));},
-                onFinishS3Put: (url): void => {setFileS3Url(url);},
-                onError: (status): void => {
-                    setFileUploadError(true);
-                    console.error(status);
-                }
-            });
-        })();
-    };
-
-    const handleClearImage = (e: React.MouseEvent<HTMLButtonElement>): void => {
-        e.preventDefault();
-        setFileS3Url(null);
-    };
-
-    const handleCancelImageEdit = (e: React.MouseEvent<HTMLButtonElement>): void => {
-        e.preventDefault();
-        setFileS3Url(null);
-        setShowImageForm(false);
-    };
-
     return (
         <>
             <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
@@ -293,71 +263,13 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             onChange={handleName} />
                     </div>
                     <div className={'pane-form-divider'} />
+
                     {/* Edit image form */}
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__image'}>Image</label>
-                        {showImageForm ? (
-                            <>
-                                {fileS3Url ? (
-                                    <>
-                                        <img className={'img-fluid'} src={fileS3Url} />
-                                        <button
-                                            type={'button'}
-                                            onClick={handleClearImage}
-                                            className={'btn btn-danger'}>
-                                            Remove this image
-                                        </button>
-                                    </>
-                                ) : (
-                                    <input
-                                        type={'file'}
-                                        id={'form-field__image'}
-                                        className={'lt-file-button-upload'}
-                                        value={datetime}
-                                        accept={'image/*'}
-                                        onChange={handleFileUpload}/>
-                                )}
-                                {fileUploadProgress > -1 && fileUploadProgress < 100 && (
-                                    <div>File upload progress: {fileUploadProgress}%</div>
-                                )}
-                                {fileUploadError && (
-                                    <div>An error has occured with the file upload</div>
-                                )}
-                                <button
-                                    type={'button'}
-                                    onClick={handleCancelImageEdit}
-                                    className={'btn btn-primary'}>
-                                    Cancel Image Update
-                                </button>
-                            </>
-                        ) : (
-                            <>
-                                {activeEventEdit.media.length > 0 ? (
-                                    <>
-                                        <figure className={'lt-pane-section__image'}>
-                                            <img src={activeEventEdit.media[0].url} />
-                                            <figcaption>Caption for the image</figcaption>
-                                        </figure>
-                                        <button
-                                            type={'button'}
-                                            onClick={(): void => {setShowImageForm(true);}}
-                                            className={'btn btn-primary'}>
-                                            Update Image
-                                        </button>
-                                    </>
-                                ) : (
-                                    <>
-                                        <button
-                                            type={'button'}
-                                            onClick={(): void => {setShowImageForm(true);}}
-                                            className={'btn btn-primary'}>
-                                            Add Image
-                                        </button>
-                                    </>
-                                )}
-                            </>
-                        )}
                     </div>
+                    <MediaEditor fileS3Url={fileS3Url} setFileS3Url={setFileS3Url} />
+
                     <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__description'}>
@@ -420,9 +332,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
     const [eventName, setEventName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [datetime, setDatetime] = useState<string>('');
-    const [fileUploadProgress, setFileUploadProgress] = useState<number>(-1);
     const [fileS3Url, setFileS3Url] = useState<string | null>(null);
-    const [fileUploadError, setFileUploadError] = useState<boolean>(false);
 
     const handleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setEventName(e.target.value);
@@ -450,34 +360,6 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
         clearActivePosition();
     };
 
-    const handleFileUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        e.preventDefault();
-        // Reset the form state prior to each upload
-        setFileUploadProgress(-1);
-        setFileS3Url(null);
-        setFileUploadError(false);
-
-        ((): void => {
-            /* eslint-disable @typescript-eslint/camelcase */
-            new S3Upload({
-                file_dom_selector: e.target.id,
-                s3_sign_put_url: '/sign_s3/',
-                s3_object_name: e.target.value,
-                onProgress: (percent): void => {setFileUploadProgress(Number(percent));},
-                onFinishS3Put: (url): void => {setFileS3Url(url);},
-                onError: (status): void => {
-                    setFileUploadError(true);
-                    console.error(status);
-                }
-            });
-        })();
-    };
-
-    const handleClearImage = (e: React.MouseEvent<HTMLButtonElement>): void => {
-        e.preventDefault();
-        setFileS3Url(null);
-    };
-
     return (
         <>
             <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
@@ -500,97 +382,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                     {/* Add image form */}
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__image'}>Image</label>
-                        {!fileS3Url ? (
-                            <>
-                                <p>
-                                Reminder: Before uploading or sourcing an
-                                image, you must have permission to use it. Google provides an easy-to-use guide that helps find
-                                and choose appropriate images. See here for more information:
-                                <a target="about:blank" href="https://support.google.com/websearch/answer/29508?hl=en">Find free-to-use images</a>.
-                                </p>
-                                <div className={'row m-0'}>
-                                    <div className={'col-4 p-0 position-relative'}>
-                                        <div className={'lt-pane-section__imageplaceholder'} />
-                                        <div className={'upload-status'}>
-                                            {!fileUploadError && fileUploadProgress > -1 && fileUploadProgress < 100 && (
-                                                <>
-                                                    <div className={'upload-status--progress'} />
-                                                    <div className={'upload-status__percent'}>
-                                                        {fileUploadProgress}%
-                                                    </div>
-                                                </>
-                                            )}
-                                        {fileUploadError && (
-                                            <div className={'upload-status--error'}>
-                                                <FontAwesomeIcon icon={faExclamationCircle} size='2x'/>
-                                            </div>
-                                        )}
-                                        </div>
-                                    </div>
-                                    <div className={'col-8'}>
-                                        <input
-                                            type={'file'}
-                                            id={'form-field__image'}
-                                            className={'lt-file-button-upload'}
-                                            value={datetime}
-                                            accept={'image/*'}
-                                            onChange={handleFileUpload}/>
-                                        {fileUploadError && (
-                                            <div className={'alert--error'}>
-                                                There’s a problem with this image upload 
-                                            </div>
-                                        )}
-                                    </div>
-                                </div>
-                            </>
-                        ) : (
-                            <>
-                                <div className={'row m-0 mb-2 fade-load'}>
-                                    <div className={'col-4 p-0 position-relative'}>
-                                        <div className={'lt-pane-section__thumbnail'}>
-                                            <img src={fileS3Url} />
-                                        </div>
-                                        <div className={'upload-status'}>
-                                            <div className={'upload-status--success'}>
-                                                <FontAwesomeIcon icon={faCheckCircle} size='2x'/>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className={'col-8'}>
-                                        <button
-                                            onClick={handleClearImage}
-                                            type={'button'}
-                                            className={'lt-button'}>
-                                            <span className={'lt-icons lt-button__icon'}>
-                                                <FontAwesomeIcon icon={faTrashAlt}/>
-                                            </span>
-                                            <span className={'lt-button__text'}>
-                                                Remove this image
-                                            </span>
-                                        </button>
-                                    </div>
-                                </div>
-                                <div className={'pane-form-subgroup'}>
-                                    <div className={'form-group'}>
-                                        <label htmlFor={'form-field__caption'}>Caption</label>
-                                        <input
-                                            type={'text'}
-                                            id={'form-field__caption'}
-                                            className={'form-control'}
-                                            value={''}
-                                            autoFocus={true} />
-                                    </div>
-                                    <div className={'form-group'}>
-                                        <label htmlFor={'form-field__imgsrc'}>Source</label>
-                                        <input
-                                            type={'text'}
-                                            id={'form-field__imgsrc'}
-                                            className={'form-control'}
-                                            value={''} />
-                                    </div>
-                                </div>
-                            </>
-                        )}
+                        <MediaEditor fileS3Url={fileS3Url} setFileS3Url={setFileS3Url} />
                     </div>
                     <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group'}>
