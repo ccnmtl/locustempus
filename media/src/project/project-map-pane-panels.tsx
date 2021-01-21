@@ -89,6 +89,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             autoFocus={true}
                             onChange={handleTitle}/>
                     </div>
+                    <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__description'}>
                             About this project
@@ -97,6 +98,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             value={description}
                             onChange={setDescription}/>
                     </div>
+                    <div className={'pane-form-divider'} />
                     { showBaseMapMenu ? (
                         <div className={'form-group pane-form-group base-map-expanded'}>
                             <button onClick={toggleBaseMapMenu}
@@ -290,6 +292,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             autoFocus={true}
                             onChange={handleName} />
                     </div>
+                    <div className={'pane-form-divider'} />
                     {/* Edit image form */}
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__image'}>Image</label>
@@ -302,7 +305,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                                             type={'button'}
                                             onClick={handleClearImage}
                                             className={'btn btn-danger'}>
-                                            Clear Image
+                                            Remove this image
                                         </button>
                                     </>
                                 ) : (
@@ -311,6 +314,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                                         id={'form-field__image'}
                                         className={'lt-file-button-upload'}
                                         value={datetime}
+                                        accept={'image/*'}
                                         onChange={handleFileUpload}/>
                                 )}
                                 {fileUploadProgress > -1 && fileUploadProgress < 100 && (
@@ -354,6 +358,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             </>
                         )}
                     </div>
+                    <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__description'}>
                             Description
@@ -362,6 +367,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             value={description}
                             onChange={setDescription}/>
                     </div>
+                    <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__date'}>
                             Date
@@ -490,6 +496,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                             autoFocus={true}
                             onChange={handleName} />
                     </div>
+                    <div className={'pane-form-divider'} />
                     {/* Add image form */}
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__image'}>Image</label>
@@ -526,6 +533,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                                             id={'form-field__image'}
                                             className={'lt-file-button-upload'}
                                             value={datetime}
+                                            accept={'image/*'}
                                             onChange={handleFileUpload}/>
                                         {fileUploadError && (
                                             <div className={'alert--error'}>
@@ -537,7 +545,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                             </>
                         ) : (
                             <>
-                                <div className={'row m-0 fade-load'}>
+                                <div className={'row m-0 mb-2 fade-load'}>
                                     <div className={'col-4 p-0 position-relative'}>
                                         <div className={'lt-pane-section__thumbnail'}>
                                             <img src={fileS3Url} />
@@ -550,26 +558,51 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                                     </div>
                                     <div className={'col-8'}>
                                         <button
+                                            onClick={handleClearImage}
                                             type={'button'}
-                                            onClick={handleClearImage} className={'btn btn-danger'}>
-                                            Clear Image
+                                            className={'lt-button'}>
+                                            <span className={'lt-icons lt-button__icon'}>
+                                                <FontAwesomeIcon icon={faTrashAlt}/>
+                                            </span>
+                                            <span className={'lt-button__text'}>
+                                                Remove this image
+                                            </span>
                                         </button>
                                     </div>
                                 </div>
-                                <div>
-                                    Metadata form go here
+                                <div className={'pane-form-subgroup'}>
+                                    <div className={'form-group'}>
+                                        <label htmlFor={'form-field__caption'}>Caption</label>
+                                        <input
+                                            type={'text'}
+                                            id={'form-field__caption'}
+                                            className={'form-control'}
+                                            value={''}
+                                            autoFocus={true} />
+                                    </div>
+                                    <div className={'form-group'}>
+                                        <label htmlFor={'form-field__imgsrc'}>Source</label>
+                                        <input
+                                            type={'text'}
+                                            id={'form-field__imgsrc'}
+                                            className={'form-control'}
+                                            value={''} />
+                                    </div>
                                 </div>
                             </>
                         )}
                     </div>
+                    <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__description'}>
                             Description
                         </label>
                         <ReactQuill
+                            id={'form-field__description'}
                             value={description}
                             onChange={setDescription}/>
                     </div>
+                    <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__date'}>
                             Date
