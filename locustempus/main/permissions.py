@@ -96,3 +96,58 @@ class IsResponseOwnerOrFaculty(permissions.IsAuthenticated):
             return True
 
         return False
+
+
+class IsFeedbackFacultyOrStudentRecipient(permissions.IsAuthenticated):
+    """
+    =============================================
+    | User    | Create | Read | Update | Delete |
+    =============================================
+    | Faculty | X      | X    | X      | 0      |
+    | Student | 0      | X*   | 0      | 0      |
+    | Anon    | 0      | 0    | 0      | 0      |
+    =============================================
+    *Students should only be able to read Feedback associated with a response
+    that they own
+    """
+    def has_permission(self, request, view):
+        # Runs on GET / requests
+        user = request.user
+        if user.is_anonymous:
+            return False
+
+        # First try to get an activity from query string params, then
+        # from data in the reqest, else None
+        activity_pk = request.query_params.get(
+            'activity', request.data.get('activity', None))
+
+        if not activity_pk:
+            return False
+
+        activity = Activity.objects.get(pk=activity_pk)
+
+        course = activity.project.course
+        is_faculty = course.is_true_faculty(user)
+        is_course_member = course.is_true_member(user)
+
+        if request.method not in permissions.SAFE_METHODS:
+            return is_faculty
+        else:
+            return is_course_member
+
+    def has_object_permission(self, request, view, obj):
+        # Note that this will not run when the user is requesting a list
+        user = request.user
+
+        if request.method == 'DELETE':
+            return False
+
+        course = obj.response.activity.project.course
+        if course.is_true_faculty(user):
+            return True
+        elif course.is_true_member(user) and \
+                request.method in permissions.SAFE_METHODS and \
+                user in obj.response.owners.all():
+            return True
+
+        return False

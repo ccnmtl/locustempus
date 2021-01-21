@@ -4,7 +4,7 @@ from django.contrib.auth.models import User, Group
 import factory
 from random import randrange
 
-from locustempus.main.models import Project, Activity, Response
+from locustempus.main.models import Project, Activity, Response, Feedback
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -68,6 +68,12 @@ class ActivityFactory(factory.DjangoModelFactory):
     instructions = factory.Faker('paragraph')
 
 
+class FeedbackFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Feedback
+    feedback = factory.Faker('paragraph')
+
+
 class ResponseFactory(factory.DjangoModelFactory):
     class Meta:
         model = Response
@@ -81,6 +87,10 @@ class ResponseFactory(factory.DjangoModelFactory):
             for user in extracted:
                 self.owners.add(
                     user, through_defaults={'activity': self.activity})
+
+    @factory.post_generation
+    def create_feedback(obj, create, extracted, **kwargs):
+        FeedbackFactory(response=obj)
 
 
 class CourseTestMixin(object):
