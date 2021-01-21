@@ -21,7 +21,7 @@ const CURRENT_USER = LocusTempus.currentUser.id;
 
 // TODO: fix types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-const authedFetch = (url: string, method: string, data: any): Promise<any> => {
+export const authedFetch = (url: string, method: string, data: any): Promise<any> => {
     const csrf = (document.getElementById(
         'csrf-token') as HTMLElement).getAttribute('content') || '';
     return fetch(url,{
@@ -50,14 +50,20 @@ export enum ResponseStatus {
     REVIEWED = 'REVIEWED'
 }
 
+interface FeedbackData {
+    pk: number;
+    feedback: string;
+}
+
 export interface ResponseData {
     pk: number;
     activity: number;
     layers: string[];
     owners: string[];
-    modified_at: Date;
+    submitted_at: Date;
     reflection: string;
     status: ResponseStatus;
+    feedback: FeedbackData | null;
 }
 
 interface ViewportState {
@@ -360,16 +366,18 @@ export const ActivityMap: React.FC = () => {
     }, [activePosition]);
 
     const addEvent = (
-        label: string, description: string, lat: number, lng: number): void => {
+        label: string, description: string, lat: number,
+        lng: number, mediaUrl: string | null): void => {
         const data = {
             label: label,
             layer: activeLayer,
-            description: '',
+            description: description,
             datetime: null,
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
-            }
+            },
+            media: mediaUrl ? [{url: mediaUrl}] : null
         };
         authedFetch('/api/event/', 'POST', JSON.stringify(data))
             .then((response) => {
@@ -487,6 +495,57 @@ export const ActivityMap: React.FC = () => {
         }
     };
 
+    const createFeedback = (responsePk: number, feedback: string) => {
+        const obj = {
+            response: responsePk,
+            feedback: feedback
+        };
+        authedFetch('/api/feedback/', 'POST', JSON.stringify(obj))
+            .then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw 'Feedback update failed.';
+                }
+            })
+            .then((data: FeedbackData) => {
+                // Update the response object
+                setResponseData(
+                    responseData.map((response) => {
+                        if (response.pk == responsePk) {
+                            response.feedback = data;
+                        }
+                        return response;
+                    })
+                );
+            });
+    };
+
+    const updateFeedback = (pk: number, responsePk: number, feedback: string) => {
+        const obj = {
+            feedback: feedback
+        };
+        authedFetch(`/api/feedback/${pk}/`, 'PUT', JSON.stringify(obj))
+            .then((response) => {
+                if (response.status === 200) {
+                    return response.json();
+                } else {
+                    throw 'Feedback update failed.';
+                }
+            })
+            .then((data: FeedbackData) => {
+                // Update the response object
+                setResponseData(
+                    responseData.map((response) => {
+                        if (response.pk == responsePk) {
+                            response.feedback = data;
+                        }
+                        return response;
+                    })
+                );
+            });
+    };
+
     // TODO: figure out how to type this
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleDeckGlClick = (info: any, event: any): void => {
@@ -552,6 +611,26 @@ export const ActivityMap: React.FC = () => {
                     const respData: ResponseData[] = await resp.json();
                     setResponseData(respData);
 
+                    // Get layers from responses and put them on the map
+                    const responseLayers = [];
+                    for (const resp of respData) {
+                        const layerRequests = await Promise.all(
+                            resp.layers.map((layer: string) => {
+                                return fetch(layer);
+                            })
+                        );
+                        const layers = await Promise.all(
+                            layerRequests.map((response: any) => {
+                                return response.json();
+                            })
+                        );
+                        responseLayers.push(layers);
+
+                        // Then get events for each layer
+                        for (const layer of layers) {
+                            // TODO: Implement layers state variable
+                        }
+                    }
                 } else {
                     // If a contributor, get or create a response
                     const resp = await fetch(
@@ -708,7 +787,9 @@ export const ActivityMap: React.FC = () => {
                     deleteEvent={deleteEvent}
                     updateEvent={updateEvent}
                     responseData={responseData}
-                    updateResponse={updateResponse}/>
+                    updateResponse={updateResponse}
+                    createFeedback={createFeedback}
+                    updateFeedback={updateFeedback}/>
             )}
         </>
     );

@@ -27,7 +27,7 @@ export interface ProjectMapPaneProps {
     setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
     addEvent(label: string,
-             description: string, lat: number, lng: number): void;
+             description: string, lat: number, lng: number, mediaUrl: string | null): void;
     deleteEvent(pk: number, layerPk: number): void;
     clearActivePosition(): void;
     activeEvent: LayerEventDatum | null;
@@ -40,6 +40,8 @@ export interface ProjectMapPaneProps {
                 lat: number, lng: number, pk: number, layerPk: number): void;
     responseData: ResponseData[];
     updateResponse(reflection?: string, status?: ResponseStatus): void;
+    createFeedback(responsePk: number, feedback: string): void;
+    updateFeedback(pk: number, responsePk: number, feedback: string): void;
 }
 
 export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
@@ -50,7 +52,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
         addEvent, clearActivePosition, activeEvent, setActiveEvent,
         activeEventDetail, setActiveEventDetail, activeEventEdit,
         setActiveEventEdit, deleteEvent, updateEvent, projectLayers,
-        projectEvents, responseData, updateResponse
+        projectEvents, responseData, updateResponse, createFeedback, updateFeedback
     }: ProjectMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
@@ -116,6 +118,8 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             setActiveEventEdit={setActiveEventEdit}
             responseData={responseData}
             updateResponse={updateResponse}
+            createFeedback={createFeedback}
+            updateFeedback={updateFeedback}
             isFaculty={isFaculty}/>
     };
 

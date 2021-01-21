@@ -4,7 +4,7 @@ import {
 } from '../project-activity-components/layers/layer-set';
 import { LayerProps } from '../project-activity-components/layers/layer';
 import { ActivityData, BASE_MAPS, BASE_MAP_IMAGES,
-    ResponseData, ResponseStatus} from './activity-map';
+    ResponseData, ResponseStatus, authedFetch} from './activity-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowLeft, faEllipsisV, faCaretRight, faCaretDown, faEye, faEyeSlash, faLayerGroup
@@ -299,8 +299,8 @@ interface EventAddPanelProps {
     showAddEventForm: boolean;
     setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
-    addEvent(
-        label: string, description: string, lat: number, lng: number): void;
+    addEvent(label: string,
+             description: string, lat: number, lng: number, mediaUrl: string | null): void;
     clearActivePosition(): void;
     setActiveTab(val: number): void;
 }
@@ -326,7 +326,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
         if (activePosition) {
             addEvent(
                 eventName === '' ? 'Untitled Marker' : eventName,
-                description, activePosition[0], activePosition[1]);
+                description, activePosition[0], activePosition[1], null);
             setShowAddEventForm(false);
             setActiveTab(2);
             clearActivePosition();
@@ -497,6 +497,8 @@ interface DefaultPanelProps {
     setActiveEventEdit(d: LayerEventDatum): void;
     responseData: ResponseData[];
     updateResponse(reflection?: string, status?: ResponseStatus): void;
+    createFeedback(responsePk: number, feedback: string): void;
+    updateFeedback(pk: number, responsePk: number, feedback: string): void;
     isFaculty: boolean;
 }
 
@@ -505,7 +507,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         activeTab, setActiveTab, addLayer, description, layers, events,
         activity, deleteLayer, updateLayer, setLayerVisibility, activeLayer,
         setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
-        activeEventEdit, projectLayers, projectEvents, responseData, updateResponse, isFaculty
+        activeEventEdit, projectLayers, projectEvents, responseData,
+        updateResponse, createFeedback, updateFeedback, isFaculty
     }: DefaultPanelProps) => {
 
 
@@ -588,33 +591,10 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 {activeTab == RESPONSE && (
                     <div className='fade-load'>
                         {isFaculty ? (
-                            <div>
-                                {/* Iterate over the response objects, render the list; render detail menu on click */}
-                                <div>There are {responseData.length} responses to this activity</div>
-                                <div>
-                                    {responseData.map((el, idx) => {
-                                        const modAt = (new Date(el.modified_at)).toLocaleString();
-                                        return (
-                                            <div className="row" key={idx}>
-                                                <div className="col-1">
-                                                    <FontAwesomeIcon icon={faEye}/>
-                                                </div>
-                                                <div className="col-10">
-                                                    <div>
-                                                        {el.owners.join(', ')}
-                                                    </div>
-                                                    <div>
-                                                        Submitted: {modAt}
-                                                    </div>
-                                                </div>
-                                                <div className="col-1">
-                                                    <FontAwesomeIcon icon={faLayerGroup}/>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            </div>
+                            <FacultySubPanel
+                                responseData={responseData}
+                                createFeedback={createFeedback}
+                                updateFeedback={updateFeedback}/>
                         ) : (<>
                             <LayerSet
                                 layers={layers}
@@ -661,3 +641,122 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
     );
 };
 
+interface FacultySubPanelProps {
+    responseData: ResponseData[];
+    createFeedback(responsePk: number, feedback: string): void;
+    updateFeedback(pk: number, responsePk: number, feedback: string): void;
+}
+
+const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
+    responseData, createFeedback, updateFeedback
+}: FacultySubPanelProps) => {
+    const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);
+    const [feedback, setFeedback] = useState<string>('');
+
+    // Read the feedback off of the response object
+    // Write feedback to API, then either update responseData, or make another request to the API
+    useEffect(() => {
+        //console.log(activeResponse, activeResponse && activeResponse.feedback);
+        if (activeResponse && activeResponse.feedback) {
+            setFeedback(activeResponse.feedback.feedback ? activeResponse.feedback.feedback : '');
+        }
+    }, [activeResponse]);
+
+    const handleFeedbackSubmition = (e: React.FormEvent) => {
+        e.preventDefault()
+        if (activeResponse && activeResponse.feedback) {
+            if (activeResponse.feedback) {
+                updateFeedback(
+                    activeResponse.feedback.pk,
+                    activeResponse.pk,
+                    feedback
+                )
+            } else {
+                createFeedback(
+                    activeResponse.pk,
+                    feedback
+                )
+            }
+        }
+    };
+
+    const handleFeedbackCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+        setActiveResponse(null);
+    };
+
+    return (
+        <div>
+            {activeResponse ? (<>
+                <div>
+                    {/*<LayerSet
+                        layers={projectLayers}
+                        events={projectEvents}
+                        setLayerVisibility={setLayerVisibility}
+                        activeLayer={activeLayer}
+                        setActiveLayer={setActiveLayer}
+                        setActiveEvent={setActiveEvent}
+                        activeEvent={activeEvent}
+                        setActiveEventDetail={setActiveEventDetail}
+                        activeEventEdit={activeEventEdit} />*/}
+                    {console.log(activeResponse)}
+                    Layers go here
+                </div>
+                <div>
+                    <h2>Reflection</h2>
+                    <div dangerouslySetInnerHTML={{__html: activeResponse.reflection}}/>
+                </div>
+                <div>
+                    <h2>Feedback</h2>
+                    <form onSubmit={handleFeedbackSubmition}>
+                        <div className="form-row">
+                            <div className={'form-group col-12'}>
+                                <ReactQuill
+                                    value={feedback}
+                                    onChange={setFeedback}/>
+                            </div>
+                        </div>
+                        <div className="form-row">
+                            <div className={'form-group col-12'}>
+                                <button onClick={handleFeedbackCancel}>
+                                    Cancel
+                                </button>
+                                <button
+                                    type={'submit'}
+                                    className={'btn btn-primary'}>
+                                    Send
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </>) : (<>
+                <div>There are {responseData.length} responses to this activity</div>
+                <div>
+                    {responseData.map((el) => {
+                        const subAt = (new Date(el.submitted_at)).toLocaleString();
+                        return (
+                            <div className="row" key={el.pk}>
+                                <div className="col-1">
+                                    <FontAwesomeIcon icon={faEye}/>
+                                </div>
+                                <div className="col-10">
+                                    <div>
+                                        {el.owners.join(', ')}
+                                    </div>
+                                    <div>
+                                        Submitted: {subAt}
+                                    </div>
+                                </div>
+                                <div className="col-1">
+                                    <button onClick={(): void => {setActiveResponse(el);}}>
+                                        <FontAwesomeIcon icon={faLayerGroup}/>
+                                    </button>
+                                </div>
+                            </div>
+                        );
+                    })}
+                </div>
+            </>)}
+        </div>
+    );
+};
