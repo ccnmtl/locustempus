@@ -267,8 +267,8 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                     {/* Edit image form */}
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__image'}>Image</label>
+                        <MediaEditor fileS3Url={fileS3Url} setFileS3Url={setFileS3Url} />
                     </div>
-                    <MediaEditor fileS3Url={fileS3Url} setFileS3Url={setFileS3Url} />
 
                     <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group'}>
