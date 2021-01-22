@@ -15,10 +15,10 @@ if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
         'default': {
             'ENGINE': 'django.contrib.gis.db.backends.postgis',
             'NAME': 'locustempus',
-            'HOST': '',
-            'PORT': '',
+            'HOST': 'localhost',
+            'PORT': '5432',
             'USER': 'postgres',
-            'PASSWORD': '',
+            'PASSWORD': 'postgres',
             'ATOMIC_REQUESTS': True,
         }
     }
