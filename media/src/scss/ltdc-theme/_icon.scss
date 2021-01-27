@@ -5,3 +5,9 @@
     line-height: 1;
     display: inline-block;
 }
+
+.inactive {
+    filter: $cccccc;
+    -webkit-filter: $cccccc;
+    -moz-filter: $cccccc;
+}

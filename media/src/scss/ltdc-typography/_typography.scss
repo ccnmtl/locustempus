@@ -35,6 +35,15 @@ h6 {
   @include font-size($h6-font-size);
 }
 
+// Dashboard
+
+.nav-dashboard__h1 {
+    @extend %heading;
+  @include font-size($font-size-base * 1.75);
+  padding: 0;
+  margin: 0;
+}
+
 .widget-pane h1 {
 @extend %heading;
   @include font-size($font-size-base * 1.75);

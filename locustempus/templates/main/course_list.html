@@ -9,94 +9,93 @@ List Courses
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <h1>List Courses</h1>
+<div class="row nav-dashboard">
+    <div class="col">
+        <h1 class="nav-dashboard__h1">
+            {% if user.first_name %}
+                {{ user.first_name }}’s
+            {% else %}
+                {{ user.username }}’s
+            {% endif %}
+            Workspaces
+        </h1>
     </div>
-</div>
-<div class="row">
-    <div class="col-12">
-        <h2>Registrar Courses</h2>
-    </div>
-</div>
-{% if registrar_courses %}
-<div class="row">
-    <div class="col-12">
-        <table class="table table-hover course-roster__table tablesorter" data-cy="registrar-course-table">
-            <thead>
-                <tr>
-                    <th scope="col">Course Title</th>
-                    <th scope="col">Term</th>
-                    <th scope="col">Instructor</th>
-                    <th scope="col">Role</th>
-                    <th scope="col" class="sorter-false">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for course in registrar_courses %}
-                <tr>
-                    <td><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></td>
-                    <td>{{ course.info.termyear }}</td>
-                    <td>{% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</td>
-                    <td>
-                        {% if user in course.faculty %}Faculty{% else %}Student{% endif %}
-                    </td>
-                    <td>
-
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
-</div>
-{% endif %}
-
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex">
-            <h2>Sandbox Courses</h2>
-            <div class="ml-auto">
-                <a href="{% url 'course-create-view' %}" class="btn btn-sm btn-primary" data-cy="course-create-button">Create New Course</a>
-            </div>
+    <div class="col">
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn lt-button mr-1 lt-button--transparent">
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" class="active" /></span>
+                <span class='lt-button__text'>Grid</span>
+            </button>
+            <button type="button" class="btn lt-button lt-button--transparent">
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" class="inactive" /></span>
+                <span class='lt-button__text'>List</span>
+            </button>
         </div>
     </div>
 </div>
 
-{% if sandbox_courses %}
-<div class="row">
-    <div class="col-12">
-        <table class="table table-hover course-roster__table tablesorter" data-cy="sandbox-course-table">
-            <thead>
-                <tr>
-                    <th scope="col">Course Title</th>
-                    <th scope="col">Instructor</th>
-                    <th scope="col">Role</th>
-                    <th scope="col" class="sorter-false">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for course in sandbox_courses %}
-                <tr>
-                    <td><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></td>
-                    <td>{% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</td>
-                    <td>
-                        {% if user in course.faculty %}Faculty{% else %}Student{% endif %}
-                    </td>
-                    <td>
+            <div class="pt-3 px-3">
+    <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="btn lt-button">
+        <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
+        <span class='lt-button__text'>Create new workspace</span>
+    </a>
+            </div>
 
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-    </div>
+
+<div class="row m-0 dashboard-container">
+    {% comment %}Registrar Workspaces{% endcomment %}
+
+    {% if registrar_courses %}
+        {% for course in registrar_courses %}
+        <div class="col-md-6 col-xl-4 py-2">
+            <div class="lt-card">
+                <div class="lt-card__body">
+                    <h3 class="lt-card__title"><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
+                    <p class="lt-card__term">{{ course.info.termyear }}</p>
+                    <p class="lt-card_text">Authors: {% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</p>
+                    <p class="lt-card__text">Concatenated workspace description go here, if we decide to have a field for that</p> {# not hooked up #}
+                    <p class="lt-card__text">You’re {% if user in course.faculty %}an Author{% else %}a Contributor{% endif %}</p>
+                    <ul class="list-group list-group-horizontal-sm lt-card__list-group">
+                        <li class="list-group-item lt-card__list-group-item">0 Projects</li> {# not hooked up #}
+                        <li class="list-group-item lt-card__list-group-item">5 Contributors</li> {# not hooked up #}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+
+    {% comment %}Sandbox Workspaces{% endcomment %}
+
+    {% if sandbox_courses %}
+        {% for course in sandbox_courses %}
+        <div class="col-md-6 col-xl-4 py-2">
+            <div class="lt-card">
+                <div class="lt-card__body">
+                    <h3 class="lt-card__title"><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
+                    {% comment %}<p class="lt-card__term">Spring 2021</p>{% endcomment %}
+                    <p class="lt-card_text">Authors: {% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</p>
+                    <p class="lt-card__text">Concatenated workspace description go here, if we decide to have a field for that</p> {# not hooked up #}
+                    <p class="lt-card__text">You’re {% if user in course.faculty %}an Author{% else %}a Contributor{% endif %}</p>
+                    <ul class="list-group list-group-horizontal-sm lt-card__list-group">
+                        <li class="list-group-item lt-card__list-group-item">0 Projects</li> {# not hooked up #}
+                        <li class="list-group-item lt-card__list-group-item">5 Contributors</li> {# not hooked up #}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+    
+    {% if not registrar_courses and not sandbox_courses %}
+        <div class="col-md-6 col-xl-4 py-2">
+            <div class="alert alert-secondary" role="alert">
+              You are not a member of any Workspaces.
+            </div>
+        </div>
+    {% endif %}
+
 </div>
-{% else %}
-<div class="row">
-    <div class="col-12">
-        You are not a member of any sandbox courses.
-    </div>
-</div>
-{% endif %}
+
+
 {% endblock %}
