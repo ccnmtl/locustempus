@@ -44,3 +44,13 @@
         border-right: 1px solid transparent;
     }
 }
+
+.nav-dashboard__h1 {
+    padding: 0;
+    margin: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-width: 10rem;
+    max-width: 70rem;
+}

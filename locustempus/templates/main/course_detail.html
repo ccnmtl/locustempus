@@ -5,61 +5,117 @@
 {% endblock %}
 
 {% block content %}
-<h1>{{ object.title }}</h1>
-{% if is_faculty %}
-<ul>
-    <li><a href="{% url 'course-edit-view' object.pk %}">Edit Course</a></li>
-    <li><a href="{% url 'course-roster-view' object.pk %}">Edit Course Roster</a></li>
-</ul>
-{% endif %}
-
-<div class="row">
-    <div class="col-12">
-        <div class="d-flex">
-            <h2>Course Projects</h2>
-            <div class="ml-auto">
-                {% if is_faculty %}
-                <form action="{% url 'course-project-create' object.pk %}" method="post">
-                    {% csrf_token %}
-                    <button class="btn btn-sm btn-primary" data-cy="project-create-button">Create New Project</button>
-                </form>
-                {% endif %}
+<div class="row nav-dashboard">
+    <div class="col">
+        <h1 class="nav-dashboard__h1">
+            Workspaces &gt; {{ object.title }}
+        </h1>
+    </div>
+    <div class="col">
+        <div class="d-flex justify-content-end">
+            <button type="button" class="lt-button mr-1 lt-button--transparent">
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" class="active" /></span>
+                <span class='lt-button__text'>Grid</span>
+            </button>
+            <button type="button" class="lt-button lt-button--transparent">
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" class="inactive" /></span>
+                <span class='lt-button__text'>List</span>
+            </button>
+            {% if is_faculty %}
+            <div class="lt-menu-overflow">
+                <button type="button" class="lt-button mr-1 lt-button--transparent">
+                    <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-cog.svg" class="active" /></span>
+                    <span class='lt-button__text'>Manage</span>
+                </button>
+                <div class="lt-menu lt-menu-overflow--expand">
+                    <ul class="lt-list">
+                        <li class="lt-list-item">
+                            <a href="{% url 'course-edit-view' object.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                            <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-pencil.svg" class="active" /></span>
+                            <span class="lt-list-item__primary-text">Edit Workspace</span>
+                            </a>
+                        </li>
+                        <li class="lt-list-item">
+                            <a href="{% url 'course-roster-view' object.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                            <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-roster.svg" class="active" /></span>
+                            <span class="lt-list-item__primary-text">Manage Roster</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
 
-<div class="row">
-    <div class="col-12">
-        {% if projects %}
-        <table class="table table-hover course-roster__table tablesorter" data-cy="sandbox-course-table">
-            <thead>
-                <tr>
-                    <th scope="col">Project Title</th>
-                    <th scope="col" class="sorter-false">Action</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for project in projects %}
-                <tr>
-                    <td><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></td>
-                    <td>
-                        {% if user not in object.faculty and project.activity %}
-                            <a class="btn btn-sm btn-primary" data-cy="view-activity-button" href="{% url 'activity-detail' course.pk project.pk %}">View Activity</a>
-                        {% endif %}
-                        <a class="btn btn-sm btn-primary" href="{% url 'course-project-detail' course.pk project.pk %}">View</a>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        {% else %}
-        {% if is_faculty %}
-        <p>Create a project to get started.</p>
-        {% else %}
-        <p>No projects have been created for this course yet.</p>
-        {% endif %}
-        {% endif %}
-    </div>
+{% comment %}  Remove this when dropdown menu is implemented properly {% endcomment %}
+<div style="height: 3rem"></div>
+
+
+{% if is_faculty %}
+<div class="pt-3 px-3">
+    <form action="{% url 'course-project-create' object.pk %}" method="post">
+        {% csrf_token %}
+        <button class="btn lt-button" data-cy="project-create-button">
+            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
+            <span class='lt-button__text'>Create New Project</span>
+        </button>
+    </form>
 </div>
+{% endif %}
+
+<div class="row m-0 dashboard-container">
+    {% comment %}Projects cards{% endcomment %}
+    {% if projects %}
+        {% for project in projects %}
+        <div class="col-md-6 col-xl-4 py-2">
+            <div class="lt-card">
+                <div class="lt-card__body">
+                    <h3 class="lt-card__title"><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></h3>
+                    <p class="lt-card__term">Last update? Modified?</p>
+                    <p class="lt-card_text"></p>
+                    <p class="lt-card__text">Concatenated project description go here, if we decide to have a field for that</p> {# not hooked up #}
+                    <p class="lt-card__text"></p>
+                    <ul class="list-group list-group-horizontal-sm lt-card__list-group">
+                        <li class="list-group-item lt-card__list-group-item">Status?</li> {# not hooked up #}
+                        <li class="list-group-item lt-card__list-group-item">
+                        {% if user not in object.faculty and project.activity %}
+                            <a data-cy="view-activity-button" href="{% url 'activity-detail' course.pk project.pk %}">Activity</a>
+                        {% elif user in object.faculty and project.activity %}
+                            1 Activity
+                        {% elif not project.activity %}
+                            No Activity                       
+                        {% endif %}
+                        </li>
+                        {% if user not in object.faculty and project.activity %}
+                        <li class="list-group-item lt-card__list-group-item">Responses status</li> {# not hooked up #}
+                        {% endif %}
+                        {% if user in object.faculty and project.activity %}
+                        <li class="list-group-item lt-card__list-group-item">0/0 Responses</li> {# not hooked up #}
+                        {% endif %}
+                        <li class="list-group-item lt-card__list-group-item">What else?</li> {# not hooked up #}
+                    </ul>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% else %}
+        {% if is_faculty %}
+        <div class="col-md-6 col-xl-4 py-2">
+            <div class="alert alert-secondary" role="alert">
+              Create a project to get started.
+            </div>
+        </div>
+        {% else %}
+        <div class="col-md-6 col-xl-4 py-2">
+            <div class="alert alert-secondary" role="alert">
+              No projects have been created in this Workspace yet.
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+</div>
+
+
 {% endblock %}
