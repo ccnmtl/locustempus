@@ -16,6 +16,6 @@ describe('Course Creation', function() {
         cy.get('[data-cy=field-course-title]').type('A New Sandbox Course');
         cy.get('[data-cy=submit]').click();
         cy.url().should('match', /dashboard\/$/);
-        cy.get('[data-cy=sandbox-course-table]').contains('A New Sandbox Course');
+        cy.get('[data-cy=sandbox-course-cards]').contains('A New Sandbox Course');
     });
 });
