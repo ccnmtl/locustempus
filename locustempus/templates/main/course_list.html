@@ -47,7 +47,7 @@ List Courses
 
     {% if registrar_courses %}
         {% for course in registrar_courses %}
-        <div class="col-md-6 col-xl-4 py-2">
+        <div class="col-md-6 col-xl-4 py-2" data-cy="registrar-course-cards">
             <div class="lt-card">
                 <div class="lt-card__body">
                     <h3 class="lt-card__title"><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
@@ -69,7 +69,7 @@ List Courses
 
     {% if sandbox_courses %}
         {% for course in sandbox_courses %}
-        <div class="col-md-6 col-xl-4 py-2">
+        <div class="col-md-6 col-xl-4 py-2" data-cy="sandbox-course-cards">
             <div class="lt-card">
                 <div class="lt-card__body">
                     <h3 class="lt-card__title"><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
