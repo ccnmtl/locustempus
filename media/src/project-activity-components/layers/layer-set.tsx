@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 
+// TODO think about renaming these
 export interface LayerEventDatum {
     lngLat: Position;
     label: string;
@@ -18,6 +19,7 @@ export interface LayerEventDatum {
     };
 }
 
+// TODO think about renaming these
 export interface LayerEventData {
     visibility: boolean;
     events: LayerEventDatum[];

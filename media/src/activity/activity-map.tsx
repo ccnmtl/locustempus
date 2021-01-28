@@ -66,6 +66,13 @@ export interface ResponseData {
     feedback: FeedbackData | null;
 }
 
+export interface ResponseLayerEventData {
+    responsePk: number;
+    layerPk: number;
+    visibility: boolean;
+    event_set: LayerEventDatum[];
+}
+
 interface ViewportState {
     latitude: number;
     longitude: number;
@@ -117,16 +124,22 @@ export const ActivityMap: React.FC = () => {
     const [projectDescription, setProjectDescription] =
         useState<string | null>(null);
     const [projectBaseMap, setProjectBaseMap] = useState<string | null>(null);
+    // projectLayerData is a list of Layer objects which belong to the base
+    // project
     const [projectLayerData, setProjectLayerData] = useState<LayerProps[]>([]);
     const [responseData, setResponseData] = useState<ResponseData[]>([]);
+    // layerData is a list of Layer objects
     const [layerData, setLayerData] = useState<LayerProps[]>([]);
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
+
+    // Active event
     const [ activeEvent, setActiveEvent] =
         useState<LayerEventDatum | null>(null);
     const [ activeEventDetail, setActiveEventDetail ] =
         useState<LayerEventDatum | null>(null);
     const [activeEventEdit, setActiveEventEdit] =
         useState<LayerEventDatum | null>(null);
+
     const [activity, setActivity] = useState<ActivityData | null>(null);
 
     // Data structure to hold events, keyed by layer PK
@@ -138,6 +151,22 @@ export const ActivityMap: React.FC = () => {
         useState<IconLayer<LayerEventDatum>[]>([]);
     const [projectMapboxLayers, setProjectMapboxLayers] =
         useState<IconLayer<LayerEventDatum>[]>([]);
+
+    // Data structure to hold lists of ResponseEvents
+    // This maps response PK's to lists of layers, LayerProps might be the wrong type
+    const [responseLayers, setResponseLayers] =
+        useState<Map<number, LayerProps[]>>(new Map());
+    // This maps a response PK to a map of layer PK's to lists of events
+    const [responseEvents, setResponseEvents] =
+        useState<Map<number, Map<number, LayerEventData>>>(new Map());
+    const [responseEventsMapboxLayers, setResponseEventsMapboxLayers] =
+        useState<IconLayer<ResponseLayerEventData>[]>([]);
+
+    // Holds pks for Responses, and layers of responses that should be visible
+    const [visibleResponses, setVisibleResponses] =
+        useState<Map<number, boolean>>(new Map());
+    const [visibleResponseLayers, setVisibleResponseLayers] =
+        useState<Map<number, boolean>>(new Map());
 
     const [layerTitleCount, setLayerTitleCount] = useState<number>(1);
 
@@ -229,6 +258,54 @@ export const ActivityMap: React.FC = () => {
 
         setProjectEventData(events);
         setProjectMapboxLayers(mapLayers);
+    };
+
+    const updateResponseVisibility = (responsePk = -1): void => {
+        // if responsePk == -1, show all responses
+        const rMap = new Map(visibleResponses);
+        if (responsePk == -1) {
+            rMap.forEach((val, key, mmap) => {
+                mmap.set(key, true);
+            });
+        } else {
+            if (rMap.has(responsePk)) {
+                rMap.set(responsePk, !rMap.get(responsePk));
+            }
+        }
+
+        const responseMapLayers = [...responseLayers.entries()].reduce((acc: IconLayer<ResponseLayerEventData>[], entry) => {
+            const responsePk = entry[0];
+            const layers = entry[1];
+            const mapLayers = layers.reduce(
+                (layerAcc: IconLayer<ResponseLayerEventData>[], layerVal) => {
+                    if (rMap.get(responsePk)) {
+                        const layer = new IconLayer({
+                            id: 'response-layer-' + layerVal.pk,
+                            data: layerVal.event_set,
+                            pickable: true,
+                            iconAtlas: ICON_ATLAS,
+                            iconMapping: ICON_MAPPING,
+                            getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
+                            sizeScale: 15,
+                            getPosition: (d: LayerEventDatum): Position =>
+                                d.location.lng_lat,
+                            onClick: pickEventClickHandler,
+                            getSize: 5,
+                            getColor: [255, 0, 0],
+                        });
+                        layerAcc.push(layer);
+                    }
+                    return layerAcc;
+                }, []);
+            return acc.concat(mapLayers);
+        }, []);
+
+        setVisibleResponses(rMap);
+        setResponseEventsMapboxLayers(responseMapLayers);
+    };
+
+    const updateResponseLayerVisibility = (responsePk: number, layerPk: number): void => {
+        console.log('updateResponseLayerVisibility has been called');
     };
 
     const addLayer = (respPk: number | null = null): void => {
@@ -612,7 +689,14 @@ export const ActivityMap: React.FC = () => {
                     setResponseData(respData);
 
                     // Get layers from responses and put them on the map
-                    const responseLayers = [];
+                    const respLayers = new Map<number, LayerProps[]>();
+                    // TODO: think about this, is prob redundant in its current form
+                    const respEvents = new Map<number, Map<number, LayerEventData>>();
+                    
+                    // Create visibility maps
+                    const respVisibility = new Map();
+                    const layerVisibility = new Map();
+
                     for (const resp of respData) {
                         const layerRequests = await Promise.all(
                             resp.layers.map((layer: string) => {
@@ -624,13 +708,56 @@ export const ActivityMap: React.FC = () => {
                                 return response.json();
                             })
                         );
-                        responseLayers.push(layers);
+
+                        // Pack sets of layers, mapping response.pk to sets of layers
+                        respLayers.set(resp.pk, layers);
+                        // Set response visibility
+                        respVisibility.set(resp.pk, true);
 
                         // Then get events for each layer
                         for (const layer of layers) {
-                            // TODO: Implement layers state variable
+                            const eventMap = new Map<number, LayerEventData>();
+                            eventMap.set(layer.pk, layer.event_set);
+                            respEvents.set(resp.pk, eventMap);
+                            // Set event visibility
+                            layerVisibility.set(layer.pk, true);
+                            // TODO Move IconLayer creation here
                         }
                     }
+
+                    setResponseLayers(respLayers);
+                    setResponseEvents(respEvents);
+
+                    // Set visibility maps
+                    setVisibleResponses(respVisibility);
+                    setVisibleResponseLayers(layerVisibility);
+
+                    // Reduce over respEvents
+                    // eslint-disable-next-line max-len
+                    const responseMapLayers = [...respLayers.values()].reduce((acc: IconLayer<ResponseLayerEventData>[], layers) => {
+                        const mapLayers = layers.reduce(
+                            (layerAcc: IconLayer<ResponseLayerEventData>[], layerVal) => {
+                                const layer = new IconLayer({
+                                    id: 'response-layer-' + layerVal.pk,
+                                    data: layerVal.event_set,
+                                    pickable: true,
+                                    iconAtlas: ICON_ATLAS,
+                                    iconMapping: ICON_MAPPING,
+                                    getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
+                                    sizeScale: 15,
+                                    getPosition: (d: LayerEventDatum): Position =>
+                                        d.location.lng_lat,
+                                    onClick: pickEventClickHandler,
+                                    getSize: 5,
+                                    getColor: [255, 0, 0],
+                                });
+                                layerAcc.push(layer);
+                                return layerAcc;
+                            }, []);
+                        return acc.concat(mapLayers);
+                    }, []);
+
+                    setResponseEventsMapboxLayers(responseMapLayers);
                 } else {
                     // If a contributor, get or create a response
                     const resp = await fetch(
@@ -717,7 +844,7 @@ export const ActivityMap: React.FC = () => {
             {isLoading && <LoadingModal />}
             {projectBaseMap && (
                 <DeckGL
-                    layers={mapboxLayers.concat(projectMapboxLayers)}
+                    layers={isFaculty ? responseEventsMapboxLayers.concat(projectMapboxLayers) : mapboxLayers.concat(projectMapboxLayers)}
                     initialViewState={viewportState}
                     width={'100%'}
                     height={'100%'}
@@ -789,7 +916,9 @@ export const ActivityMap: React.FC = () => {
                     responseData={responseData}
                     updateResponse={updateResponse}
                     createFeedback={createFeedback}
-                    updateFeedback={updateFeedback}/>
+                    updateFeedback={updateFeedback}
+                    responseLayers={responseLayers}
+                    responseEvents={responseEvents}/>
             )}
         </>
     );

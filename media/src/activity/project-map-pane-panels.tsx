@@ -3,8 +3,10 @@ import {
     LayerSet, LayerEventData, LayerEventDatum
 } from '../project-activity-components/layers/layer-set';
 import { LayerProps } from '../project-activity-components/layers/layer';
-import { ActivityData, BASE_MAPS, BASE_MAP_IMAGES,
-    ResponseData, ResponseStatus, authedFetch} from './activity-map';
+import {
+    ActivityData, BASE_MAPS, BASE_MAP_IMAGES, ResponseData, ResponseStatus,
+    ResponseLayerEventData
+} from './activity-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowLeft, faEllipsisV, faCaretRight, faCaretDown, faEye, faEyeSlash, faLayerGroup
@@ -500,6 +502,8 @@ interface DefaultPanelProps {
     createFeedback(responsePk: number, feedback: string): void;
     updateFeedback(pk: number, responsePk: number, feedback: string): void;
     isFaculty: boolean;
+    responseLayers: Map<number, LayerProps[]>;
+    responseEvents: Map<number, Map<number, LayerEventData>>;
 }
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
@@ -508,7 +512,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         activity, deleteLayer, updateLayer, setLayerVisibility, activeLayer,
         setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
         activeEventEdit, projectLayers, projectEvents, responseData,
-        updateResponse, createFeedback, updateFeedback, isFaculty
+        updateResponse, createFeedback, updateFeedback, isFaculty,
+        responseLayers, responseEvents
     }: DefaultPanelProps) => {
 
 
@@ -594,7 +599,9 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             <FacultySubPanel
                                 responseData={responseData}
                                 createFeedback={createFeedback}
-                                updateFeedback={updateFeedback}/>
+                                updateFeedback={updateFeedback}
+                                responseLayers={responseLayers}
+                                responseEvents={responseEvents}/>
                         ) : (<>
                             <LayerSet
                                 layers={layers}
@@ -645,22 +652,25 @@ interface FacultySubPanelProps {
     responseData: ResponseData[];
     createFeedback(responsePk: number, feedback: string): void;
     updateFeedback(pk: number, responsePk: number, feedback: string): void;
+    responseLayers: Map<number, LayerProps[]>;
+    responseEvents: Map<number, Map<number, LayerEventData>>;
 }
 
 const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
-    responseData, createFeedback, updateFeedback
+    responseData, createFeedback, updateFeedback, responseLayers, responseEvents
 }: FacultySubPanelProps) => {
     const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);
     const [feedback, setFeedback] = useState<string>('');
 
-    // Read the feedback off of the response object
-    // Write feedback to API, then either update responseData, or make another request to the API
     useEffect(() => {
-        //console.log(activeResponse, activeResponse && activeResponse.feedback);
         if (activeResponse && activeResponse.feedback) {
             setFeedback(activeResponse.feedback.feedback ? activeResponse.feedback.feedback : '');
         }
     }, [activeResponse]);
+
+    useEffect(() => {
+        // Unpack responseEvents into a data type that works for LayerSet
+    }, [responseEvents]);
 
     const handleFeedbackSubmition = (e: React.FormEvent) => {
         e.preventDefault()

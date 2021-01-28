@@ -1,7 +1,9 @@
 import React, { useState, ReactElement } from 'react';
 import { LayerProps } from '../project-activity-components/layers/layer';
 import { LayerEventData, LayerEventDatum } from '../project-activity-components/layers/layer-set';
-import { ActivityData, ResponseData, ResponseStatus } from './activity-map';
+import {
+    ActivityData, ResponseData, ResponseStatus, ResponseLayerEventData
+} from './activity-map';
 import { Position } from '@deck.gl/core/utils/positions';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
@@ -42,6 +44,8 @@ export interface ProjectMapPaneProps {
     updateResponse(reflection?: string, status?: ResponseStatus): void;
     createFeedback(responsePk: number, feedback: string): void;
     updateFeedback(pk: number, responsePk: number, feedback: string): void;
+    responseLayers: Map<number, LayerProps[]>;
+    responseEvents: Map<number, Map<number, LayerEventData>>;
 }
 
 export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
@@ -52,7 +56,8 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
         addEvent, clearActivePosition, activeEvent, setActiveEvent,
         activeEventDetail, setActiveEventDetail, activeEventEdit,
         setActiveEventEdit, deleteEvent, updateEvent, projectLayers,
-        projectEvents, responseData, updateResponse, createFeedback, updateFeedback
+        projectEvents, responseData, updateResponse, createFeedback,
+        updateFeedback, responseLayers, responseEvents
     }: ProjectMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
@@ -120,7 +125,9 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             updateResponse={updateResponse}
             createFeedback={createFeedback}
             updateFeedback={updateFeedback}
-            isFaculty={isFaculty}/>
+            isFaculty={isFaculty}
+            responseLayers={responseLayers}
+            responseEvents={responseEvents}/>
     };
 
     return (

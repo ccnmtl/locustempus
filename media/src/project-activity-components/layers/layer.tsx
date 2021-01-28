@@ -6,10 +6,13 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 export interface LayerProps {
+    // TODO refactor these into thier own type
     title: string;
     pk: number;
-    activeLayer: number | null;
     layerEvents: LayerEventDatum[];
+    event_set: LayerEventDatum[];
+    // END
+    activeLayer: number | null;
     setActiveLayer(pk: number): void;
     deleteLayer?(pk: number): void;
     updateLayer?(pk: number, title: string): void;
