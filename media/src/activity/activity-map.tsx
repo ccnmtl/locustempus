@@ -68,14 +68,6 @@ export interface ResponseData {
     feedback: FeedbackData | null;
 }
 
-// TODO: You prob don't need this
-export interface ResponseLayerEventData {
-    responsePk: number;
-    layerPk: number;
-    visibility: boolean;
-    event_set: EventData[];
-}
-
 interface ViewportState {
     latitude: number;
     longitude: number;
@@ -127,7 +119,7 @@ export const ActivityMap: React.FC = () => {
     const [responseLayers, setResponseLayers] =
         useState<Map<number, LayerData[]>>(new Map());
     const [responseMapboxLayers, setResponseMapboxLayers] =
-        useState<IconLayer<ResponseLayerEventData>[]>([]);
+        useState<IconLayer<EventData>[]>([]);
 
     // Map to identify which layers should be visible
     const [layerVisibility, setLayerVisibility] =

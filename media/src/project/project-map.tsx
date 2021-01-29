@@ -275,7 +275,6 @@ export const ProjectMap: React.FC = () => {
                 }
             })
             .then((data) => {
-                // TODO: You need to update the serializer to get events on the layer object
                 const layers = new Map(layerData);
                 layers.set(data.pk, data);
                 setLayerData(layers);

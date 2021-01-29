@@ -5,8 +5,8 @@ import { BASE_MAPS, BASE_MAP_IMAGES } from '../project-activity-components/commo
 import { LayerData, EventData, LayerSet } from '../project-activity-components/layers/layer-set';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faLayerGroup, faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
-    faCaretRight, faCaretDown,
+    faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
+    faCaretRight, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';

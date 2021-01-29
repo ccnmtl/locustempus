@@ -598,7 +598,15 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 responseData={responseData}
                                 createFeedback={createFeedback}
                                 updateFeedback={updateFeedback}
-                                responseLayers={responseLayers}/>
+                                responseLayers={responseLayers}
+                                layerVisibility={layerVisibility}
+                                toggleLayerVisibility={toggleLayerVisibility}
+                                activeLayer={activeLayer}
+                                setActiveLayer={setActiveLayer}
+                                activeEvent={activeEvent}
+                                setActiveEvent={setActiveEvent}
+                                setActiveEventDetail={setActiveEventDetail}
+                                activeEventEdit={activeEventEdit}/>
                         ) : (<>
                             <LayerSet
                                 layers={layers}
@@ -650,17 +658,44 @@ interface FacultySubPanelProps {
     createFeedback(responsePk: number, feedback: string): void;
     updateFeedback(pk: number, responsePk: number, feedback: string): void;
     responseLayers: Map<number, LayerData[]>;
+    layerVisibility: Map<number, boolean>;
+    toggleLayerVisibility(pk: number): void;
+    activeLayer: number | null;
+    setActiveLayer(pk: number): void;
+    activeEvent: EventData | null;
+    setActiveEvent(d: EventData): void;
+    setActiveEventDetail(d: EventData): void;
+    activeEventEdit: EventData | null;
 }
 
 const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
-    responseData, createFeedback, updateFeedback, responseLayers
+    responseData, createFeedback, updateFeedback, responseLayers,
+    layerVisibility, toggleLayerVisibility, activeLayer, setActiveLayer,
+    activeEvent, setActiveEvent, setActiveEventDetail, activeEventEdit
 }: FacultySubPanelProps) => {
+
     const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);
+    const [activeResonseLayers, setActiveResponseLayers] =
+        useState<Map<number, LayerData>>(new Map());
     const [feedback, setFeedback] = useState<string>('');
 
     useEffect(() => {
+        // Populate feedback
         if (activeResponse && activeResponse.feedback) {
             setFeedback(activeResponse.feedback.feedback ? activeResponse.feedback.feedback : '');
+        }
+
+        // Create a map of just the layers beloning to the active response
+        if (activeResponse) {
+            const layers = responseLayers.get(activeResponse.pk);
+            if (layers) {
+                setActiveResponseLayers(
+                    layers.reduce((acc, val) => {
+                        acc.set(val.pk, val);
+                        return acc;
+                    }, new Map<number, LayerData>())
+                );
+            }
         }
     }, [activeResponse]);
 
@@ -683,25 +718,24 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     };
 
     const handleFeedbackCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
+        e.preventDefault();
         setActiveResponse(null);
     };
 
     return (
         <div>
-            {activeResponse ? (<>
+            {activeResponse && activeResonseLayers.size > 0 ? (<>
                 <div>
-                    {/*<LayerSet
-                        layers={projectLayers}
-                        events={projectEvents}
-                        setLayerVisibility={setLayerVisibility}
+                    <LayerSet
+                        layers={activeResonseLayers}
+                        toggleLayerVisibility={toggleLayerVisibility}
+                        layerVisibility={layerVisibility}
                         activeLayer={activeLayer}
                         setActiveLayer={setActiveLayer}
                         setActiveEvent={setActiveEvent}
                         activeEvent={activeEvent}
                         setActiveEventDetail={setActiveEventDetail}
-                        activeEventEdit={activeEventEdit} />*/}
-                    {console.log(activeResponse)}
-                    Layers go here
+                        activeEventEdit={activeEventEdit} />
                 </div>
                 <div>
                     <h2>Reflection</h2>
