@@ -75,7 +75,7 @@
                     <h3 class="lt-card__title"><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></h3>
                     <p class="lt-card__term">Last update? Modified?</p>
                     <p class="lt-card_text"></p>
-                    <p class="lt-card__text">Concatenated project description go here, if we decide to have a field for that</p> {# not hooked up #}
+                    <p class="lt-card__text">{{ project.description|striptags|truncatechars:100}}</p>
                     <p class="lt-card__text"></p>
                     <ul class="list-group list-group-horizontal-sm lt-card__list-group">
                         <li class="list-group-item lt-card__list-group-item">Status?</li> {# not hooked up #}
