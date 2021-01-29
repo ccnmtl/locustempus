@@ -67,7 +67,11 @@ class MediaObject(models.Model):
 
 class Event(models.Model):
     label = models.TextField()
-    layer = models.ForeignKey(Layer, on_delete=models.CASCADE)
+    layer = models.ForeignKey(
+        Layer,
+        related_name='events',
+        on_delete=models.CASCADE
+    )
     description = models.TextField(blank=True)
     datetime = models.DateTimeField(blank=True, null=True)
     media = models.ManyToManyField(MediaObject, blank=True)

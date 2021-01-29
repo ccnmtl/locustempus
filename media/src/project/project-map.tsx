@@ -10,10 +10,13 @@ import { Position } from '@deck.gl/core/utils/positions';
 import { PickInfo } from '@deck.gl/core/lib/deck';
 
 import { ProjectMapPane } from './project-map-pane';
-import { LayerProps } from './layer';
+import { LayerData, EventData } from '../project-activity-components/layers/layer-set';
 import { LoadingModal } from '../project-activity-components/loading-modal';
 
-const STATIC_URL = LocusTempus.staticUrl;
+import {
+    ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_COLOR,
+    ICON_COLOR_ACTIVE, BASE_MAPS, BASE_MAP_IMAGES
+} from '../project-activity-components/common';
 
 // TODO: fix types
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -27,9 +30,7 @@ const authedFetch = (url: string, method: string, data?: any): Promise<any> => {
             'Content-Type': 'application/json',
             'X-Requested-With': 'XMLHttpRequest',
             'X-CSRFToken': csrf
-        },
-        body: data,
-        credentials: 'same-origin'
+        }, body: data, credentials: 'same-origin'
     });
 };
 
@@ -74,24 +75,6 @@ interface ViewportState {
     transitionInterpolator?: FlyToInterpolator;
 }
 
-export const BASE_MAPS = new Map([
-    ['streets-v11', 'Street'],
-    ['outdoors-v11', 'Outdoors'],
-    ['light-v10', 'Light'],
-    ['dark-v10', 'Dark'],
-    ['satellite-v9', 'Satellite'],
-    ['satellite-streets-v11', 'Satellite-Street'],
-]);
-
-export const BASE_MAP_IMAGES = new Map([
-    ['streets-v11', STATIC_URL + 'img/map_thumbnails/streets.jpg'],
-    ['outdoors-v11', STATIC_URL + 'img/map_thumbnails/outdoors.jpg'],
-    ['light-v10', STATIC_URL + 'img/map_thumbnails/light.jpg'],
-    ['dark-v10', STATIC_URL + 'img/map_thumbnails/dark.jpg'],
-    ['satellite-v9', STATIC_URL + 'img/map_thumbnails/satellite.jpg'],
-    ['satellite-streets-v11', STATIC_URL + 'img/map_thumbnails/satellite-streets.jpg'],
-]);
-
 export const ProjectMap: React.FC = () => {
     const [viewportState, setViewportState] = useState<ViewportState>({
         latitude: 40.8075395,
@@ -113,21 +96,24 @@ export const ProjectMap: React.FC = () => {
     const [projectDescription, setProjectDescription] =
         useState<string | null>(null);
     const [projectBaseMap, setProjectBaseMap] = useState<string | null>(null);
-    const [layerData, setLayerData] = useState<LayerProps[]>([]);
+    const [layerData, setLayerData] = useState<Map<number, LayerData>>(new Map());
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
+
+    // The selected event on the map
     const [ activeEvent, setActiveEvent] =
-        useState<LayerEventDatum | null>(null);
+        useState<EventData | null>(null);
+    // The even rendered in the detail pane
     const [ activeEventDetail, setActiveEventDetail ] =
-        useState<LayerEventDatum | null>(null);
+        useState<EventData | null>(null);
+    // The event to be edited in the edit pane
     const [activeEventEdit, setActiveEventEdit] =
-        useState<LayerEventDatum | null>(null);
+        useState<EventData | null>(null);
     const [activity, setActivity] = useState<ActivityData | null>(null);
 
-    // Data structure to hold events, keyed by layer PK
-    const [eventData, setEventData] =
-        useState<Map<number, LayerEventData>>(new Map());
     const [mapboxLayers, setMapboxLayers] =
-        useState<IconLayer<LayerEventDatum>[]>([]);
+        useState<IconLayer<LayerData>[]>([]);
+
+    const [layerVisibility, setLayerVisibility] = useState<Map<number, boolean>>(new Map());
 
     const [layerTitleCount, setLayerTitleCount] = useState<number>(1);
 
@@ -135,11 +121,6 @@ export const ProjectMap: React.FC = () => {
     const [activePosition, setActivePosition] = useState<Position | null>(null);
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    const ICON_ATLAS = STATIC_URL + 'img/icon-map-marker.png';
-    const ICON_MAPPING = {
-        marker: {x: 0, y: 0, width: 384, height: 512, anchorY: 512, mask: true}
-    };
 
     const clearActivePosition = (): void => {
         setActivePosition(null);
@@ -163,33 +144,33 @@ export const ProjectMap: React.FC = () => {
         return true;
     };
 
-    const updateEventData = (events: Map<number, LayerEventData>): void => {
-        const mapLayers = [...events.keys()].reduce(
-            (acc: IconLayer<LayerEventDatum>[], val: number) => {
-                const data = events.get(val);
-                if (data && data.visibility) {
-                    const layer = new IconLayer({
+    const updateMapboxLayers = (layers: Map<number, LayerData>, setterFunc = setMapboxLayers, layerVisMap = layerVisibility): void => {
+        const mapLayers = [...layers.entries()].reduce(
+            (acc: IconLayer<LayerData>[], val: [number, LayerData]) => {
+                const layerPk = val[0];
+                const layer = val[1]
+                if (layer && (layerVisMap.get(layer.pk) || false)) {
+                    const MBLayer = new IconLayer({
                         id: 'icon-layer-' + val,
-                        data: data.events,
+                        data: layer.events,
                         pickable: true,
                         iconAtlas: ICON_ATLAS,
                         iconMapping: ICON_MAPPING,
                         getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
-                        sizeScale: 15,
+                        sizeScale: ICON_SCALE,
                         getPosition: (d): Position => d.location.lng_lat,
                         onClick: pickEventClickHandler,
-                        getSize: 3,
-                        getColor: [204, 51, 51],
+                        getSize: ICON_SIZE,
+                        getColor: ICON_COLOR,
                     });
-                    return [...acc, layer];
+                    return [...acc, MBLayer];
                 } else {
                     return acc;
                 }
             },
             []);
 
-        setEventData(events);
-        setMapboxLayers(mapLayers);
+        setterFunc(mapLayers);
     };
 
     const updateProject = (
@@ -238,8 +219,12 @@ export const ProjectMap: React.FC = () => {
                     throw 'Layer creation failed.';
                 }
             })
-            .then((data) => {
-                setLayerData([...layerData, data]);
+            .then((data: LayerData) => {
+                const layers = new Map(layerData);
+                console.log('Yo Nick, data.events should be an empty list', data);
+                layers.set(data.pk, data);
+                setLayerData(layers);
+
                 setActiveLayer(data.pk);
                 setLayerTitleCount((prev) => {return prev + 1;});
             });
@@ -251,17 +236,11 @@ export const ProjectMap: React.FC = () => {
                 if (response.status !== 204) {
                     throw 'Layer deletion failed.';
                 } else {
-                    const updatedLayerData = layerData.filter((el) => {
-                        return el.pk !== pk;
-                    });
+                    const updatedLayerData = new Map(layerData);
+                    updatedLayerData.delete(pk);
                     setLayerData(updatedLayerData);
 
-                    // remove from eventData and mapboxLayers
-                    const updatedEventData = new Map(eventData);
-                    updatedEventData.delete(pk);
-                    updateEventData(updatedEventData);
-
-                    if (updatedLayerData.length === 0) {
+                    if (updatedLayerData.size === 0) {
                         // addLayer has a stale closure, so the fetch
                         // is called here instead
                         authedFetch('/api/layer/', 'POST', JSON.stringify(
@@ -275,7 +254,7 @@ export const ProjectMap: React.FC = () => {
                                 }
                             })
                             .then((data) => {
-                                setLayerData([data]);
+                                setLayerData(new Map([data.pk, data]));
                                 setActiveLayer(data.pk);
                                 setLayerTitleCount(
                                     (prev) => {return prev + 1;});
@@ -296,25 +275,17 @@ export const ProjectMap: React.FC = () => {
                 }
             })
             .then((data) => {
-                const layer = layerData.filter((el) => {
-                    return el.pk !== pk;
-                });
-                setLayerData([...layer, data]);
+                // TODO: You need to update the serializer to get events on the layer object
+                const layers = new Map(layerData);
+                layers.set(data.pk, data);
+                setLayerData(layers);
             });
     };
 
-    const setLayerVisibility = (pk: number): void => {
-        const updatedEvents = new Map(eventData);
-        const layerEvents = updatedEvents.get(pk);
-
-        if (layerEvents) {
-            updatedEvents.set(pk, {
-                visibility: !layerEvents.visibility,
-                events: layerEvents.events
-            });
-
-            updateEventData(updatedEvents);
-        }
+    const toggleLayerVisibility = (pk: number): void => {
+        const layerVis = new Map(layerVisibility);
+        layerVis.set(pk, !layerVisibility.get(pk));
+        setLayerVisibility(layerVis);
     };
 
     const goToNewEvent = useCallback(() => {
@@ -354,20 +325,23 @@ export const ProjectMap: React.FC = () => {
                     throw 'Event creation failed.';
                 }
             })
-            .then((data: LayerEventDatum) => {
+            .then((data: EventData) => {
                 if (activeLayer) {
-                    const updatedEvents = new Map(eventData);
-                    const layerEvents: LayerEventData =
-                        updatedEvents.get(activeLayer) || {visibility: true, events: []}; // eslint-disable-line max-len
+                    const updatedLayers = new Map(layerData);
+                    const layer = layerData.get(activeLayer);
 
-                    updatedEvents.set(activeLayer, {
-                        visibility: layerEvents.visibility,
-                        events: layerEvents.events.concat(data)
-                    });
+                    if (layer) {
+                        const updatedLayer = {
+                            ...layer,
+                            events: [...layer.events].concat(data)
+                        };
+                        updatedLayers.set(activeLayer, updatedLayer);
 
-                    updateEventData(updatedEvents);
-                    setActiveEvent(data);
-                    goToNewEvent();
+                        updateMapboxLayers(updatedLayers);
+                        setActiveEventDetail(data);
+                        setActiveEvent(data);
+                        goToNewEvent();
+                    }
                 }
             });
     };
@@ -394,22 +368,23 @@ export const ProjectMap: React.FC = () => {
                     throw 'Event update failed.';
                 }
             })
-            .then((data: LayerEventDatum) => {
-                // Revomve the event from eventData and mapboxLayers
-                const updatedEventData = new Map(eventData);
-                const layerEventObj = updatedEventData.get(layerPk);
-                if (layerEventObj && layerEventObj.events) {
-                    updatedEventData.set(layerPk, {
-                        visibility: layerEventObj.visibility,
-                        events: layerEventObj.events.map((el) => {
-                            return el.pk !== data.pk ? el : data;
+            .then((data: EventData) => {
+                const updatedLayers = new Map(layerData);
+                const layer = layerData.get(layerPk);
+
+                if (layer) {
+                    const updatedLayer = {
+                        ...layer,
+                        events: [...layer.events].map((event) => {
+                            return event.pk == data.pk ? data : event
                         })
-                    });
+                    };
+                    updatedLayers.set(layerPk, updatedLayer) 
+
+                    updateMapboxLayers(updatedLayers);
+                    setActiveEventDetail(data);
+                    setActiveEvent(data);
                 }
-                updateEventData(updatedEventData);
-                // Update the data for the active event
-                setActiveEventDetail(data);
-                setActiveEvent(data);
             });
     };
 
@@ -419,18 +394,21 @@ export const ProjectMap: React.FC = () => {
                 if (response.status !== 204) {
                     throw 'Event deletion failed.';
                 } else {
-                    // Remove the event from eventData and mapboxLayers
-                    const updatedEventData = new Map(eventData);
-                    const layerEventObj = updatedEventData.get(layerPk);
-                    if (layerEventObj && layerEventObj.events) {
-                        updatedEventData.set(layerPk, {
-                            visibility: layerEventObj.visibility,
-                            events: layerEventObj.events.filter((el) => {
-                                return el.pk !== pk; })
-                        });
+                    const updatedLayers = new Map(layerData);
+                    const layer = layerData.get(layerPk);
+
+                    if (layer) {
+                        const updatedLayer = {
+                            ...layer,
+                            events: [...layer.events].filter((event) => {
+                                return event.pk != pk
+                            })
+                        };
+                        updatedLayers.set(layerPk, updatedLayer) 
+
+                        setActiveEvent(null);
+                        updateMapboxLayers(updatedLayers);
                     }
-                    setActiveEvent(null);
-                    updateEventData(updatedEventData);
                 }
             });
     };
@@ -509,10 +487,10 @@ export const ProjectMap: React.FC = () => {
                 iconAtlas: ICON_ATLAS,
                 iconMapping: ICON_MAPPING,
                 getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
-                sizeScale: 15,
+                sizeScale: ICON_SCALE,
                 getPosition: (d): Position => d.position,
-                getSize: 3,
-                getColor: [0, 51, 255],
+                getSize: ICON_SIZE,
+                getColor: ICON_COLOR_ACTIVE,
             }));
             setMapboxLayers(updatedLayers);
         }
@@ -529,6 +507,7 @@ export const ProjectMap: React.FC = () => {
             setProjectTitle(projectData.title);
             setProjectDescription(projectData.description);
             setProjectBaseMap(projectData.base_map);
+            const layerVis = new Map<number, boolean>();
 
             // Fetch the layers
             const layersRsps = await Promise.all(
@@ -537,8 +516,7 @@ export const ProjectMap: React.FC = () => {
                 })
             );
 
-            // TODO: fix type
-            const layers = await Promise.all(
+            const layers: LayerData[] = await Promise.all(
                 layersRsps.map((response: any) => { return response.json(); }) // eslint-disable-line @typescript-eslint/no-explicit-any, max-len
             );
 
@@ -548,14 +526,18 @@ export const ProjectMap: React.FC = () => {
                 addLayer();
                 setLayerTitleCount((prev) => {return prev + 1;});
             } else {
-                setLayerData(layers);
-                setActiveLayer(layers[0].pk);
+                const layerMap = layers.reduce((acc, val) => {
+                    // Set the layer visibility while we're here
+                    layerVis.set(val.pk, true);
 
-                const events = layers.reduce((acc, val) => {
-                    acc.set(val.pk, {visibility: true, events: val.event_set});
+                    acc.set(val.pk, val);
                     return acc;
-                }, new Map());
-                updateEventData(events);
+                }, new Map())
+                setLayerData(layerMap);
+
+                updateMapboxLayers(layerMap, setMapboxLayers, layerVis);
+                setActiveLayer(layers[0].pk);
+                setLayerVisibility(layerVis);
             }
 
             // Get Activity info
@@ -633,7 +615,6 @@ export const ProjectMap: React.FC = () => {
                     updateProject={updateProject}
                     deleteProject={deleteProject}
                     layers={layerData}
-                    events={eventData}
                     activity={activity}
                     createActivity={createActivity}
                     updateActivity={updateActivity}
@@ -643,7 +624,8 @@ export const ProjectMap: React.FC = () => {
                     addLayer={addLayer}
                     deleteLayer={deleteLayer}
                     updateLayer={updateLayer}
-                    setLayerVisibility={setLayerVisibility}
+                    layerVisibility={layerVisibility}
+                    toggleLayerVisibility={toggleLayerVisibility}
                     showAddEventForm={showAddEventForm}
                     setShowAddEventForm={setShowAddEventForm}
                     activePosition={activePosition}

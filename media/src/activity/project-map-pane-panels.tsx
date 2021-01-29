@@ -1,18 +1,18 @@
 import React, { useState, useEffect } from 'react';
 import {
-    LayerSet, LayerEventData, LayerEventDatum
+    LayerSet, LayerData, EventData
 } from '../project-activity-components/layers/layer-set';
-import { LayerProps } from '../project-activity-components/layers/layer';
 import {
-    ActivityData, BASE_MAPS, BASE_MAP_IMAGES, ResponseData, ResponseStatus,
-    ResponseLayerEventData
+    ActivityData, ResponseData, ResponseStatus,
 } from './activity-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faArrowLeft, faEllipsisV, faCaretRight, faCaretDown, faEye, faEyeSlash, faLayerGroup
+    faArrowLeft, faEllipsisV, faCaretRight, faCaretDown, faEye, faLayerGroup
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
+
+import { BASE_MAPS, BASE_MAP_IMAGES } from '../project-activity-components/common';
 
 
 interface ProjectCreateEditPanelProps {
@@ -192,8 +192,8 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
 
 interface EventEditPanelProps {
     activeLayer: number | null;
-    activeEventEdit: LayerEventDatum;
-    setActiveEventEdit(d: LayerEventDatum | null): void;
+    activeEventEdit: EventData;
+    setActiveEventEdit(d: EventData | null): void;
     updateEvent(label: string, description: string,
                 lat: number, lng: number, pk: number, layerPk: number): void;
 }
@@ -406,9 +406,9 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
 
 interface EventDetailPanelProps {
     activeLayer: number | null;
-    activeEventDetail: LayerEventDatum | null;
-    setActiveEventDetail(d: LayerEventDatum | null): void;
-    setActiveEventEdit(d: LayerEventDatum | null): void;
+    activeEventDetail: EventData | null;
+    setActiveEventDetail(d: EventData | null): void;
+    setActiveEventEdit(d: EventData | null): void;
     deleteEvent(pk: number, layerPk: number): void;
     isProjectLayer(pk: number): boolean;
 }
@@ -481,39 +481,37 @@ interface DefaultPanelProps {
     setActiveTab(idx: number): void;
     addLayer(): void;
     description: string;
-    layers: LayerProps[];
-    events: Map<number, LayerEventData>;
-    projectLayers: LayerProps[];
-    projectEvents: Map<number, LayerEventData>;
+    layers: Map<number, LayerData>;
+    projectLayers:  Map<number, LayerData>;
     activity: ActivityData | null;
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
-    setLayerVisibility(pk: number): void;
+    layerVisibility: Map<number, boolean>;
+    toggleLayerVisibility(pk: number): void;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;
-    activeEvent: LayerEventDatum | null;
-    setActiveEvent(d: LayerEventDatum): void;
-    activeEventDetail: LayerEventDatum | null;
-    setActiveEventDetail(d: LayerEventDatum): void;
-    activeEventEdit: LayerEventDatum | null;
-    setActiveEventEdit(d: LayerEventDatum): void;
+    activeEvent: EventData | null;
+    setActiveEvent(d: EventData): void;
+    activeEventDetail: EventData | null;
+    setActiveEventDetail(d: EventData): void;
+    activeEventEdit: EventData | null;
+    setActiveEventEdit(d: EventData): void;
     responseData: ResponseData[];
     updateResponse(reflection?: string, status?: ResponseStatus): void;
     createFeedback(responsePk: number, feedback: string): void;
     updateFeedback(pk: number, responsePk: number, feedback: string): void;
     isFaculty: boolean;
-    responseLayers: Map<number, LayerProps[]>;
-    responseEvents: Map<number, Map<number, LayerEventData>>;
+    responseLayers: Map<number, LayerData[]>;
 }
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
     {
-        activeTab, setActiveTab, addLayer, description, layers, events,
-        activity, deleteLayer, updateLayer, setLayerVisibility, activeLayer,
-        setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
-        activeEventEdit, projectLayers, projectEvents, responseData,
+        activeTab, setActiveTab, addLayer, description, layers, activity,
+        deleteLayer, updateLayer, layerVisibility, toggleLayerVisibility,
+        activeLayer, setActiveLayer, activeEvent, setActiveEvent,
+        setActiveEventDetail, activeEventEdit, projectLayers, responseData,
         updateResponse, createFeedback, updateFeedback, isFaculty,
-        responseLayers, responseEvents
+        responseLayers,
     }: DefaultPanelProps) => {
 
 
@@ -546,7 +544,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
     const OVERVIEW = 0;
     const BASE = 1;
     const RESPONSE = 2;
-    const responseTabTitle = isFaculty ? `Responses (${responseData.length})` : 'Response'
+    const responseTabTitle = isFaculty ? `Responses (${responseData.length})` : 'Response';
 
     return (
         <>
@@ -583,8 +581,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                     <div className='fade-load'>
                         <LayerSet
                             layers={projectLayers}
-                            events={projectEvents}
-                            setLayerVisibility={setLayerVisibility}
+                            toggleLayerVisibility={toggleLayerVisibility}
+                            layerVisibility={layerVisibility}
                             activeLayer={activeLayer}
                             setActiveLayer={setActiveLayer}
                             setActiveEvent={setActiveEvent}
@@ -600,16 +598,15 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 responseData={responseData}
                                 createFeedback={createFeedback}
                                 updateFeedback={updateFeedback}
-                                responseLayers={responseLayers}
-                                responseEvents={responseEvents}/>
+                                responseLayers={responseLayers}/>
                         ) : (<>
                             <LayerSet
                                 layers={layers}
-                                events={events}
                                 addLayer={addLayer}
                                 deleteLayer={deleteLayer}
                                 updateLayer={updateLayer}
-                                setLayerVisibility={setLayerVisibility}
+                                layerVisibility={layerVisibility}
+                                toggleLayerVisibility={toggleLayerVisibility}
                                 activeLayer={activeLayer}
                                 setActiveLayer={setActiveLayer}
                                 setActiveEvent={setActiveEvent}
@@ -652,12 +649,11 @@ interface FacultySubPanelProps {
     responseData: ResponseData[];
     createFeedback(responsePk: number, feedback: string): void;
     updateFeedback(pk: number, responsePk: number, feedback: string): void;
-    responseLayers: Map<number, LayerProps[]>;
-    responseEvents: Map<number, Map<number, LayerEventData>>;
+    responseLayers: Map<number, LayerData[]>;
 }
 
 const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
-    responseData, createFeedback, updateFeedback, responseLayers, responseEvents
+    responseData, createFeedback, updateFeedback, responseLayers
 }: FacultySubPanelProps) => {
     const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);
     const [feedback, setFeedback] = useState<string>('');
@@ -668,24 +664,20 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
         }
     }, [activeResponse]);
 
-    useEffect(() => {
-        // Unpack responseEvents into a data type that works for LayerSet
-    }, [responseEvents]);
-
     const handleFeedbackSubmition = (e: React.FormEvent) => {
-        e.preventDefault()
+        e.preventDefault();
         if (activeResponse && activeResponse.feedback) {
             if (activeResponse.feedback) {
                 updateFeedback(
                     activeResponse.feedback.pk,
                     activeResponse.pk,
                     feedback
-                )
+                );
             } else {
                 createFeedback(
                     activeResponse.pk,
                     feedback
-                )
+                );
             }
         }
     };

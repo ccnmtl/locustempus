@@ -1,8 +1,7 @@
 import React, { useState, ReactElement } from 'react';
-import { LayerProps } from '../project-activity-components/layers/layer';
-import { LayerEventData, LayerEventDatum } from '../project-activity-components/layers/layer-set';
+import { LayerData, EventData } from '../project-activity-components/layers/layer-set';
 import {
-    ActivityData, ResponseData, ResponseStatus, ResponseLayerEventData
+    ActivityData, ResponseData, ResponseStatus
 } from './activity-map';
 import { Position } from '@deck.gl/core/utils/positions';
 import {
@@ -13,17 +12,16 @@ export interface ProjectMapPaneProps {
     title: string;
     description: string;
     isFaculty: boolean;
-    layers: LayerProps[];
-    events: Map<number, LayerEventData>;
-    projectLayers: LayerProps[];
-    projectEvents: Map<number, LayerEventData>;
+    layers: Map<number, LayerData>;
+    projectLayers:  Map<number, LayerData>;
     activity: ActivityData | null;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;
     addLayer(): void;
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
-    setLayerVisibility(pk: number): void;
+    layerVisibility: Map<number, boolean>;
+    toggleLayerVisibility(pk: number): void;
     isProjectLayer(pk: number): boolean;
     showAddEventForm: boolean;
     setShowAddEventForm(val: boolean): void;
@@ -32,32 +30,31 @@ export interface ProjectMapPaneProps {
              description: string, lat: number, lng: number, mediaUrl: string | null): void;
     deleteEvent(pk: number, layerPk: number): void;
     clearActivePosition(): void;
-    activeEvent: LayerEventDatum | null;
-    setActiveEvent(d: LayerEventDatum): void;
-    activeEventDetail: LayerEventDatum | null;
-    setActiveEventDetail(d: LayerEventDatum): void;
-    activeEventEdit: LayerEventDatum | null;
-    setActiveEventEdit(d: LayerEventDatum): void;
+    activeEvent: EventData | null;
+    setActiveEvent(d: EventData): void;
+    activeEventDetail: EventData | null;
+    setActiveEventDetail(d: EventData): void;
+    activeEventEdit: EventData | null;
+    setActiveEventEdit(d: EventData): void;
     updateEvent(label: string, description: string,
                 lat: number, lng: number, pk: number, layerPk: number): void;
     responseData: ResponseData[];
     updateResponse(reflection?: string, status?: ResponseStatus): void;
     createFeedback(responsePk: number, feedback: string): void;
     updateFeedback(pk: number, responsePk: number, feedback: string): void;
-    responseLayers: Map<number, LayerProps[]>;
-    responseEvents: Map<number, Map<number, LayerEventData>>;
+    responseLayers: Map<number, LayerData[]>;
 }
 
 export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     {
-        title, description, isFaculty, layers, events, activity, activeLayer,
-        setActiveLayer, addLayer, deleteLayer, updateLayer, setLayerVisibility,
-        isProjectLayer, showAddEventForm, setShowAddEventForm, activePosition,
-        addEvent, clearActivePosition, activeEvent, setActiveEvent,
-        activeEventDetail, setActiveEventDetail, activeEventEdit,
-        setActiveEventEdit, deleteEvent, updateEvent, projectLayers,
-        projectEvents, responseData, updateResponse, createFeedback,
-        updateFeedback, responseLayers, responseEvents
+        title, description, isFaculty, layers, activity, activeLayer,
+        setActiveLayer, addLayer, deleteLayer, updateLayer,layerVisibility,
+        toggleLayerVisibility, isProjectLayer, showAddEventForm,
+        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
+        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
+        activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent,
+        projectLayers, responseData, updateResponse, createFeedback,
+        updateFeedback, responseLayers
     }: ProjectMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
@@ -106,13 +103,12 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             addLayer={addLayer}
             description={description}
             layers={layers}
-            events={events}
             projectLayers={projectLayers}
-            projectEvents={projectEvents}
             activity={activity}
             deleteLayer={deleteLayer}
             updateLayer={updateLayer}
-            setLayerVisibility={setLayerVisibility}
+            toggleLayerVisibility={toggleLayerVisibility}
+            layerVisibility={layerVisibility}
             activeLayer={activeLayer}
             setActiveLayer={setActiveLayer}
             activeEvent={activeEvent}
@@ -126,8 +122,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             createFeedback={createFeedback}
             updateFeedback={updateFeedback}
             isFaculty={isFaculty}
-            responseLayers={responseLayers}
-            responseEvents={responseEvents}/>
+            responseLayers={responseLayers}/>
     };
 
     return (

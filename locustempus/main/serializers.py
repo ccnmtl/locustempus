@@ -134,7 +134,7 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class LayerSerializer(serializers.ModelSerializer):
-    event_set = EventSerializer(many=True, read_only=True)
+    events = EventSerializer(many=True, read_only=True)
     content_object = GenericRelatedField({
         Project: serializers.HyperlinkedRelatedField(
             queryset=Project.objects.all(),
@@ -149,5 +149,5 @@ class LayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Layer
         fields = (
-            'title', 'pk', 'content_object', 'event_set'
+            'title', 'pk', 'content_object', 'events'
         )
