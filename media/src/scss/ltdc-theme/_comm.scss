@@ -1,0 +1,29 @@
+.lt-alert {
+    margin: auto;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 0;
+    border-radius: 0.25rem;
+    @extend .elevation-1; 
+    &--top {
+        background-color: #333333;
+        color: #efefef;
+        min-width: 30rem;
+        position: fixed;
+        top: 5rem;
+        left: 50%;
+        transform: translate(-50%, 0);
+        z-index: 1040;
+        animation: opacity-fade-out 1s forwards;
+        animation-delay: 3s;
+    }
+}
+
+@keyframes opacity-fade-out {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
