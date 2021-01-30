@@ -7,11 +7,9 @@ import {
     ProjectCreateEditPanel
 } from './project-map-pane-panels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { faCaretLeft } from '@fortawesome/free-solid-svg-icons';
-import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import {
+    faEllipsisV, faTrashAlt, faPencilAlt, faCaretLeft, faCaretRight
+} from '@fortawesome/free-solid-svg-icons';
 
 
 export interface ProjectMapPaneProps {

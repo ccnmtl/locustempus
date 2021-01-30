@@ -1,4 +1,4 @@
-import React, { useState, ReactElement } from 'react';
+import React, { useState, ReactElement, useEffect, useRef } from 'react';
 import { LayerData, EventData } from '../project-activity-components/layers/layer-set';
 import {
     ActivityData, ResponseData, ResponseStatus
@@ -7,6 +7,8 @@ import { Position } from '@deck.gl/core/utils/positions';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
 } from './project-map-pane-panels';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
 export interface ProjectMapPaneProps {
     title: string;
@@ -59,6 +61,28 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
 
     const [activeTab, setActiveTab] = useState<number>(0);
 
+    const projectPaneHeader = useRef<HTMLDivElement>(null);
+    const [projectPaneHeaderHeight, setProjectPaneHeaderHeight] = useState<number>(0);
+    const [showPane, setShowPane] = useState<boolean>(true);
+
+    useEffect(() => {
+        if (projectPaneHeader.current) {
+            setProjectPaneHeaderHeight(projectPaneHeader.current.clientHeight);
+        }
+        const resize = (): void  => {
+            if (projectPaneHeader.current) {
+                setProjectPaneHeaderHeight(projectPaneHeader.current.clientHeight);
+            }
+        };
+        /* eslint-disable-next-line scanjs-rules/call_addEventListener */
+        window.addEventListener('resize', resize);
+        return (): void => window.removeEventListener('resize', resize);
+    });
+
+    const handleTogglePane = (e: React.MouseEvent<HTMLButtonElement>): void => {
+        e.preventDefault();
+        setShowPane(!showPane);
+    };
 
     const DEFAULT_PANEL = 3;
     const EVENT_EDIT_PANEL = 2;
@@ -122,18 +146,40 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             createFeedback={createFeedback}
             updateFeedback={updateFeedback}
             isFaculty={isFaculty}
-            responseLayers={responseLayers}/>
+            responseLayers={responseLayers}
+            paneHeaderHeight={projectPaneHeaderHeight}/>
     };
 
     return (
-        <div id='project-map-pane' className='widget-pane'>
+        <div id='project-map-pane'
+            className={'widget-pane widget-pane-' + (showPane ? 'expanded' : 'collapsed') }>
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
-                <header className='d-flex flex-row project-pane__header'>
+                <header ref={projectPaneHeader} className='project-pane__header'>
                     <h1>{title}</h1>
                 </header>
                 <div className='pane-content'>
                     {PANEL[panelState]}
                 </div>
+            </div>
+            <div className={'widget-pane-toggle'}>
+                <button
+                    type="button"
+                    className={'lt-button-pane-toggle'}
+                    aria-label="Collapse layers panel"
+                    onClick={handleTogglePane}>
+                    <span
+                        className={'lt-button-pane-toggle__icon'}
+                        aria-hidden='true'>
+                        {showPane ? (
+                            <FontAwesomeIcon icon={faCaretLeft} size='lg'/>
+                        ) : (
+                            <FontAwesomeIcon icon={faCaretRight} size='lg'/>
+                        )}
+                    </span>
+                    <span className={'txt-pane-toggle'}>
+                        {showPane ? 'Close pane' : 'Expand pane'}
+                    </span>
+                </button>
             </div>
         </div>
     );

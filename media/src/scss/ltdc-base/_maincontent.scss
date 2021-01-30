@@ -6,7 +6,7 @@ main {
     &--homepage {
         padding-top: 0;
     }
-    &--project {
+    &--project, &--activity {
         position: absolute;
         top: 4rem;
         bottom: 0;
