@@ -1,16 +1,41 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Course Edit Form
+Edit {{ object.title }}
 {% endblock %}
 
 {% block content %}
-<h1>Course Edit Form</h1>
-<p>Edit a courses.</p>
-<form action="." method="post">
-    {% csrf_token %}
-    {{ form }}
-    <input type="submit" value="Submit">
-</form>
-<a href="{% url 'course-delete-view' course.pk %}">Delete Course</a>
+<div class="row nav-dashboard">
+    <div class="col">
+        <h1 class="nav-dashboard__h1">
+            Edit Workspace &mdash; {{ object.title }}
+        </h1>
+    </div>
+</div>
+
+<div class="dashboard-container">
+    <form action="." method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">Title:</label>
+           <input type="text" name="title" id="id_title" value="{{ object.title }}" required="required" class="form-control {% if form.title.errors %}is-invalid{% endif %}" />
+        </div>
+        <div class="form-group">
+            <label for="id_description">Description:</label>  {# not hooked up #}
+            <textarea name="description" cols="40" rows="3" class="form-control" maxlength="200" placeholder="A brief summary of your workspace. NOT HOOKED UP YET" id="id_description"></textarea>
+        </div>
+        <div class="row">
+            <div class="col-md-1 pr-0">
+                <button type="submit" class="btn btn-primary">Save</button>
+            </div>
+            <div class="col-md-1 pr-0">
+                 <a class="btn btn-block btn-secondary" href="/course/{{ course.pk }}/">Cancel</a>
+            </div>
+        </div>
+    </form>
+    
+<h2 class="mt-5">Delete Workspace</h2>
+
+    <a href="{% url 'course-delete-view' course.pk %}">Delete Course</a>
+</div>
 {% endblock %}

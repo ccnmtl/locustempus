@@ -5,7 +5,7 @@
 {% block mainclass %}course{% endblock %}
 
 {% block title %}
-List Courses
+Workspaces
 {% endblock %}
 
 {% block content %}
@@ -42,7 +42,7 @@ List Courses
             </div>
 
 
-<div class="row m-0 dashboard-container">
+<div class="row dashboard-container">
     {% comment %}Registrar Workspaces{% endcomment %}
 
     {% if registrar_courses %}
@@ -69,7 +69,7 @@ List Courses
 
     {% if sandbox_courses %}
         {% for course in sandbox_courses %}
-        <div class="col-md-6 col-xl-4 py-2" data-cy="sandbox-course-cards">
+        <div class="col-md-6 col-xl-4 py-2" data-cy="sandbox-workspace-cards">
             <div class="lt-card">
                 <div class="lt-card__body">
                     <h3 class="lt-card__title"><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
