@@ -25,7 +25,7 @@
             <div class="lt-menu-overflow">
                 <button type="button" class="lt-button mr-1 lt-button--transparent">
                     <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-cog.svg" class="active" /></span>
-                    <span class='lt-button__text'>Manage</span>
+                    <span class='lt-button__text'>Manage</span>  {# dropdown not hooked up #}
                 </button>
                 <div class="lt-menu lt-menu-overflow--expand">
                     <ul class="lt-list">
@@ -39,6 +39,12 @@
                             <a href="{% url 'course-roster-view' object.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
                             <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-roster.svg" class="active" /></span>
                             <span class="lt-list-item__primary-text">Manage Roster</span>
+                            </a>
+                        </li>
+                        <li class="lt-list-item border-top">
+                            <a href="{% url 'course-delete-view' course.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                            <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-trash.svg" class="active" /></span>
+                            <span class="lt-list-item__primary-text">Delete Workspace</span>
                             </a>
                         </li>
                     </ul>
@@ -65,7 +71,7 @@
 </div>
 {% endif %}
 
-<div class="row m-0 dashboard-container">
+<div class="row dashboard-container">
     {% comment %}Projects cards{% endcomment %}
     {% if projects %}
         {% for project in projects %}

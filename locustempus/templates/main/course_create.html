@@ -2,36 +2,53 @@
 {% load widget_tweaks %}
 
 {% block title %}
-Course Create Form
+Create New Workspace
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <h1>Create A Sandbox Course</h1>
-        <p>Create a sandbox course and create a new project to get started.</p>
+<div class="row nav-dashboard">
+    <div class="col">
+        <h1 class="nav-dashboard__h1">
+            Workspaces &gt; Create New Workspace
+        </h1>
     </div>
 </div>
-<div class="row">
-    <div class="col-12">
-        <form action="." method="post">
-            {% csrf_token %}
-            {{ form.non_field_errors }}
-            <div class="form-group">
-                <label for="{{ form.title.id_for_label }}">Title:</label>
-                {% if form.title.errors %}
-                    {{ form.title|add_class:"form-control is-invalid"|attr:"data-cy:course-title" }}
-                    <div class="invalid-feedback">
-                        {% for error in form.title.errors %}
-                            {{ error }}
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    {{ form.title|add_class:"form-control"|attr:"data-cy:field-course-title" }}
-                {% endif %}
+
+<div class="dashboard-container">
+
+<p>Create a sandbox course and create a new project to get started.</p>
+
+
+    <form action="." method="post">
+        {% csrf_token %}
+        {{ form.non_field_errors }}
+        <div class="form-group">
+            <label for="{{ form.title.id_for_label }}">Title:</label>
+            {% if form.title.errors %}
+                {{ form.title|add_class:"form-control is-invalid"|attr:"data-cy:workspace-title" }}
+                <div class="invalid-feedback">
+                    {% for error in form.title.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% else %}
+                {{ form.title|add_class:"form-control"|attr:"data-cy:field-workspace-title" }}
+            {% endif %}
+        </div>
+        <div class="form-group">
+            <label for="id_description">Description:</label>  {# not hooked up #}
+            <textarea name="description" cols="40" rows="3" class="form-control" maxlength="200" placeholder="A brief summary of your workspace. NOT HOOKED UP YET" id="id_description"></textarea>
+        </div>
+        <div class="row">
+            <div class="col-md-2 pr-0">
+                <button type="submit" class="btn btn-primary" data-cy="save-workspace">Save Workspace</button>
             </div>
-            <input type="submit" class="btn btn-primary" value="Submit" data-cy="submit">
-        </form>
-    </div>
+            <div class="col-md-2 pr-0">
+                 <a class="btn btn-block btn-secondary" href="/dashboard/">Cancel</a>
+            </div>
+        </div>
+    </form>
+
 </div>
+
 {% endblock %}
