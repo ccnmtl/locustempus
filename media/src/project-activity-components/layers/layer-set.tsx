@@ -32,11 +32,11 @@ export interface LayerData {
 // Add LayerVisibility map
 interface LayerSetProps {
     layers: Map<number, LayerData>;
-    layerVisibility: Map<number, boolean>;
     addLayer?(): void;
     deleteLayer?(pk: number): void;
     updateLayer?(pk: number, title: string): void;
-    toggleLayerVisibility(pk: number): void;
+    layerVisibility?: Map<number, boolean>;
+    toggleLayerVisibility?(pk: number): void;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;
     activeEvent: EventData | null;
@@ -85,7 +85,7 @@ export const LayerSet: React.FC<LayerSetProps> = (
                             key={idx}
                             activeLayer={activeLayer}
                             setActiveLayer={setActiveLayer}
-                            layerVisibility={layerVisibility.get(layer.pk) || false}
+                            layerVisibility={layerVisibility}
                             toggleLayerVisibility={toggleLayerVisibility}
                             activeEvent={activeEvent}
                             setActiveEvent={setActiveEvent}

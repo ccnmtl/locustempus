@@ -24,6 +24,7 @@ export interface ProjectMapPaneProps {
     updateLayer(pk: number, title: string): void;
     layerVisibility: Map<number, boolean>;
     toggleLayerVisibility(pk: number): void;
+    toggleResponseVisibility(pk: number): void;
     isProjectLayer(pk: number): boolean;
     showAddEventForm: boolean;
     setShowAddEventForm(val: boolean): void;
@@ -51,12 +52,12 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     {
         title, description, isFaculty, layers, activity, activeLayer,
         setActiveLayer, addLayer, deleteLayer, updateLayer,layerVisibility,
-        toggleLayerVisibility, isProjectLayer, showAddEventForm,
-        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
-        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
-        activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent,
-        projectLayers, responseData, updateResponse, createFeedback,
-        updateFeedback, responseLayers
+        toggleLayerVisibility, toggleResponseVisibility, isProjectLayer,
+        showAddEventForm, setShowAddEventForm, activePosition, addEvent,
+        clearActivePosition, activeEvent, setActiveEvent, activeEventDetail,
+        setActiveEventDetail, activeEventEdit, setActiveEventEdit, deleteEvent,
+        updateEvent, projectLayers, responseData, updateResponse,
+        createFeedback, updateFeedback, responseLayers
     }: ProjectMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
@@ -132,6 +133,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             deleteLayer={deleteLayer}
             updateLayer={updateLayer}
             toggleLayerVisibility={toggleLayerVisibility}
+            toggleResponseVisibility={toggleResponseVisibility}
             layerVisibility={layerVisibility}
             activeLayer={activeLayer}
             setActiveLayer={setActiveLayer}

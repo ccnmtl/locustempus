@@ -199,7 +199,7 @@ export const ActivityMap: React.FC = () => {
         setterFunc(mapLayers);
     };
 
-    const updateResponseVisibility = (responsePk = -1): void => {
+    const toggleResponseVisibility = (responsePk = -1): void => {
         // if responsePk == -1, show all responses
         const layerVis = new Map(layerVisibility);
         if (responsePk == -1) {
@@ -240,10 +240,6 @@ export const ActivityMap: React.FC = () => {
 
         setResponseMapboxLayers(responseMapLayers);
         setLayerVisibility(layerVis);
-    };
-
-    const updateResponseLayerVisibility = (responsePk: number, layerPk: number): void => {
-        console.log('updateResponseLayerVisibility has been called');
     };
 
     const addLayer = (respPk: number | null = null): void => {
@@ -345,9 +341,18 @@ export const ActivityMap: React.FC = () => {
     };
 
     const toggleLayerVisibility = (pk: number): void => {
+        // Find which map holds the passed in layer pk
         const layerVis = new Map(layerVisibility);
         layerVis.set(pk, !layerVisibility.get(pk));
         setLayerVisibility(layerVis);
+
+        if (layerData.has(pk)) {
+            updateMapboxLayers(layerData, setMapboxLayers, layerVis)
+        } else if (projectLayerData.has(pk)) {
+            updateMapboxLayers(projectLayerData, setProjectMapboxLayers, layerVis)
+        } else {
+            throw new Error('The layer can not be found.')
+        }
     };
 
     const goToNewEvent = useCallback(() => {
@@ -813,6 +818,7 @@ export const ActivityMap: React.FC = () => {
                     updateLayer={updateLayer}
                     layerVisibility={layerVisibility}
                     toggleLayerVisibility={toggleLayerVisibility}
+                    toggleResponseVisibility={toggleResponseVisibility}
                     projectLayers={projectLayerData}
                     isProjectLayer={isProjectLayer}
                     showAddEventForm={showAddEventForm}

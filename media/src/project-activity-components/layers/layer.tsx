@@ -12,8 +12,8 @@ export interface LayerProps {
     setActiveLayer(pk: number): void;
     deleteLayer?(pk: number): void;
     updateLayer?(pk: number, title: string): void;
-    layerVisibility: boolean;
-    toggleLayerVisibility(pk: number): void;
+    layerVisibility?: Map<number, boolean>;
+    toggleLayerVisibility?(pk: number): void;
     activeEvent: EventData | null;
     setActiveEvent(d: EventData): void;
     setActiveEventDetail(d: EventData | null): void;
@@ -64,7 +64,9 @@ export const Layer: React.FC<LayerProps> = (
     };
 
     const handleLayerVisibility = (): void => {
-        toggleLayerVisibility(layer.pk);
+        if (toggleLayerVisibility) {
+            toggleLayerVisibility(layer.pk);
+        }
     };
 
     return (
@@ -77,16 +79,18 @@ export const Layer: React.FC<LayerProps> = (
                 <h2 className="lt-list-group__title order-2">{layer.title}</h2>
                 {/* Layer show-hide and expand-collapse */}
                 <div className="lt-list-group__action leading order-1">
-                    <button
-                        onClick={handleLayerVisibility}
-                        className={'lt-icon-button lt-icon-button--transparent'}
-                        aria-label={layerVisibility ? 'Hide layer' : 'Show layer'}>
-                        <span className={'lt-icons lt-icon-button__icon'}
-                            aria-hidden='true'>
-                            <FontAwesomeIcon
-                                icon={layerVisibility ? faEye : faEyeSlash}/>
-                        </span>
-                    </button>
+                    {layerVisibility && (
+                        <button
+                            onClick={handleLayerVisibility}
+                            className={'lt-icon-button lt-icon-button--transparent'}
+                            aria-label={layerVisibility ? 'Hide layer' : 'Show layer'}>
+                            <span className={'lt-icons lt-icon-button__icon'}
+                                aria-hidden='true'>
+                                <FontAwesomeIcon
+                                    icon={layerVisibility.get(layer.pk) ? faEye : faEyeSlash}/>
+                            </span>
+                        </button>
+                    )}
                     <button
                         onClick={handleLayerCollapse}
                         className={'lt-icon-button lt-icon-button--transparent'}
@@ -98,49 +102,49 @@ export const Layer: React.FC<LayerProps> = (
                         </span>
                     </button>
                 </div>
-                <div className={'lt-menu-overflow trailing order-3'}>
-                    <button onClick={handleLayerMenu}
-                        className={'lt-icon-button lt-icon-button--transparent'}
-                        aria-label={openLayerMenu ?
-                            'Hide more actions' : 'Show more actions'}>
-                        <span
-                            className={'lt-icons lt-icon-button__icon'}
-                            aria-hidden='true'>
-                            <FontAwesomeIcon icon={faEllipsisV}/>
-                        </span>
-                    </button>
-                    {openLayerMenu && (
-                        <div className={'lt-menu lt-menu-overflow--expand'}>
-                            <ul className={'lt-list'} role='menu'>
-                                <li className={'lt-list-item lt-menu-form'} role='menuitem'>
-                                    <span
-                                        className={'lt-icons lt-list-item__icon'}
-                                        aria-hidden='true'>
-                                        <FontAwesomeIcon icon={faPencilAlt}/>
-                                    </span>
-                                    <form onSubmit={handleUpdateLayer}
-                                        className={'d-flex flex-column'}>
-                                        <label
-                                            className={'lt-menu-form__label'}>
-                                            Rename layer:
-                                        </label>
-                                        <input id={`update-layer-title-${layer.pk}`}
-                                            value={updatedLayerTitle}
-                                            onChange={handleUpdatedLayerTitle}
-                                            className={'form-control lt-menu-form__input-text'}
-                                            type="text"/>
-                                        <div className={'lt-menu-form__button-group'}>
-                                            <input type='button'
-                                                onClick={handleLayerMenu}
-                                                className={'lt-button all-transparent leading'}
-                                                value={'Cancel'} />
-                                            <input type='submit'
-                                                className={'lt-button'}
-                                                value={'Save'} />
-                                        </div>
-                                    </form>
-                                </li>
-                                {deleteLayer && (
+                {updateLayer && deleteLayer && (
+                    <div className={'lt-menu-overflow trailing order-3'}>
+                        <button onClick={handleLayerMenu}
+                            className={'lt-icon-button lt-icon-button--transparent'}
+                            aria-label={openLayerMenu ?
+                                'Hide more actions' : 'Show more actions'}>
+                            <span
+                                className={'lt-icons lt-icon-button__icon'}
+                                aria-hidden='true'>
+                                <FontAwesomeIcon icon={faEllipsisV}/>
+                            </span>
+                        </button>
+                        {openLayerMenu && (
+                            <div className={'lt-menu lt-menu-overflow--expand'}>
+                                <ul className={'lt-list'} role='menu'>
+                                    <li className={'lt-list-item lt-menu-form'} role='menuitem'>
+                                        <span
+                                            className={'lt-icons lt-list-item__icon'}
+                                            aria-hidden='true'>
+                                            <FontAwesomeIcon icon={faPencilAlt}/>
+                                        </span>
+                                        <form onSubmit={handleUpdateLayer}
+                                            className={'d-flex flex-column'}>
+                                            <label
+                                                className={'lt-menu-form__label'}>
+                                                Rename layer:
+                                            </label>
+                                            <input id={`update-layer-title-${layer.pk}`}
+                                                value={updatedLayerTitle}
+                                                onChange={handleUpdatedLayerTitle}
+                                                className={'form-control lt-menu-form__input-text'}
+                                                type="text"/>
+                                            <div className={'lt-menu-form__button-group'}>
+                                                <input type='button'
+                                                    onClick={handleLayerMenu}
+                                                    className={'lt-button all-transparent leading'}
+                                                    value={'Cancel'} />
+                                                <input type='submit'
+                                                    className={'lt-button'}
+                                                    value={'Save'} />
+                                            </div>
+                                        </form>
+                                    </li>
                                     <li className={'lt-list-item'} role='menuitem'>
                                         <a href='#' onClick={handleDeleteLayer}
                                             className={'lt-list-item__link'}>
@@ -155,11 +159,11 @@ export const Layer: React.FC<LayerProps> = (
                                             </span>
                                         </a>
                                     </li>
-                                )}
-                            </ul>
-                        </div>
-                    )}
-                </div>
+                                </ul>
+                            </div>
+                        )}
+                    </div>
+                ) }
             </div>
             { !isLayerCollapsed && (
                 <>
