@@ -15,7 +15,7 @@ import { LoadingModal } from '../project-activity-components/loading-modal';
 
 import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_COLOR,
-    ICON_COLOR_ACTIVE, BASE_MAPS, BASE_MAP_IMAGES
+    ICON_COLOR_ACTIVE
 } from '../project-activity-components/common';
 
 // TODO: fix types
@@ -144,11 +144,12 @@ export const ProjectMap: React.FC = () => {
         return true;
     };
 
-    const updateMapboxLayers = (layers: Map<number, LayerData>, setterFunc = setMapboxLayers, layerVisMap = layerVisibility): void => {
+    const updateMapboxLayers = (
+        layers: Map<number, LayerData>, setterFunc = setMapboxLayers,
+        layerVisMap = layerVisibility): void => {
         const mapLayers = [...layers.entries()].reduce(
             (acc: IconLayer<LayerData>[], val: [number, LayerData]) => {
-                const layerPk = val[0];
-                const layer = val[1]
+                const layer = val[1];
                 if (layer && (layerVisMap.get(layer.pk) || false)) {
                     const MBLayer = new IconLayer({
                         id: 'icon-layer-' + val,
@@ -156,7 +157,7 @@ export const ProjectMap: React.FC = () => {
                         pickable: true,
                         iconAtlas: ICON_ATLAS,
                         iconMapping: ICON_MAPPING,
-                        getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
+                        getIcon: (): string => 'marker',
                         sizeScale: ICON_SCALE,
                         getPosition: (d): Position => d.location.lng_lat,
                         onClick: pickEventClickHandler,
@@ -176,7 +177,7 @@ export const ProjectMap: React.FC = () => {
     const updateProject = (
         title: string, description: string, baseMap: string): void => {
         authedFetch(`/api/project/${projectPk}/`, 'PUT', JSON.stringify(
-            {title: title, description: description, base_map: baseMap})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+            {title: title, description: description, base_map: baseMap}))
             .then((response) => {
                 if (response.status === 200) {
                     return response.json();
@@ -211,7 +212,7 @@ export const ProjectMap: React.FC = () => {
     const addLayer = (): void => {
         authedFetch('/api/layer/', 'POST', JSON.stringify(
             {title: `Layer ${layerTitleCount}`,
-                content_object: `/api/project/${projectPk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+                content_object: `/api/project/${projectPk}/`}))
             .then((response) => {
                 if (response.status === 201) {
                     return response.json();
@@ -221,7 +222,6 @@ export const ProjectMap: React.FC = () => {
             })
             .then((data: LayerData) => {
                 const layers = new Map(layerData);
-                console.log('Yo Nick, data.events should be an empty list', data);
                 layers.set(data.pk, data);
                 setLayerData(layers);
 
@@ -245,7 +245,7 @@ export const ProjectMap: React.FC = () => {
                         // is called here instead
                         authedFetch('/api/layer/', 'POST', JSON.stringify(
                             {title: `Layer ${layerTitleCount}`,
-                                content_object: `/api/project/${projectPk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+                                content_object: `/api/project/${projectPk}/`}))
                             .then((response) => {
                                 if (response.status === 201) {
                                     return response.json();
@@ -266,7 +266,7 @@ export const ProjectMap: React.FC = () => {
 
     const updateLayer = (pk: number, title: string): void => {
         authedFetch(`/api/layer/${pk}/`, 'PUT', JSON.stringify(
-            {title: title, content_object: `/api/project/${projectPk}/`})) // eslint-disable-line @typescript-eslint/camelcase, max-len
+            {title: title, content_object: `/api/project/${projectPk}/`}))
             .then((response) => {
                 if (response.status === 200) {
                     return response.json();
@@ -375,10 +375,10 @@ export const ProjectMap: React.FC = () => {
                     const updatedLayer = {
                         ...layer,
                         events: [...layer.events].map((event) => {
-                            return event.pk == data.pk ? data : event
+                            return event.pk == data.pk ? data : event;
                         })
                     };
-                    updatedLayers.set(layerPk, updatedLayer) 
+                    updatedLayers.set(layerPk, updatedLayer);
 
                     updateMapboxLayers(updatedLayers);
                     setActiveEventDetail(data);
@@ -400,10 +400,10 @@ export const ProjectMap: React.FC = () => {
                         const updatedLayer = {
                             ...layer,
                             events: [...layer.events].filter((event) => {
-                                return event.pk != pk
+                                return event.pk != pk;
                             })
                         };
-                        updatedLayers.set(layerPk, updatedLayer) 
+                        updatedLayers.set(layerPk, updatedLayer);
 
                         setActiveEvent(null);
                         updateMapboxLayers(updatedLayers);
@@ -531,7 +531,7 @@ export const ProjectMap: React.FC = () => {
 
                     acc.set(val.pk, val);
                     return acc;
-                }, new Map())
+                }, new Map());
                 setLayerData(layerMap);
 
                 updateMapboxLayers(layerMap, setMapboxLayers, layerVis);
