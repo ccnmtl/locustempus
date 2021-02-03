@@ -527,6 +527,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
         }
     }, [activeResponse]);
 
+    // TODO fix spelling!
     const handleFeedbackSubmition = (e: React.FormEvent) => {
         e.preventDefault();
         if (activeResponse && activeResponse.feedback) {

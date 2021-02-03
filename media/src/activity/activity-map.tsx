@@ -110,10 +110,12 @@ export const ActivityMap: React.FC = () => {
         useState<IconLayer<EventData>[]>([]);
 
     // layerData holds Layers created by the student when responding
+    // TODO: rename this to better reflect what it does
     const [layerData, setLayerData] = useState<Map<number, LayerData>>(new Map());
     const [mapboxLayers, setMapboxLayers] =
         useState<IconLayer<EventData>[]>([]);
 
+    // TODO: ditto here, rename to disambiguate this from the above layers
     // responseLayers are used in the faculty view, it holds the layers belonging to
     // student responses
     const [responseLayers, setResponseLayers] =
@@ -143,6 +145,7 @@ export const ActivityMap: React.FC = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
+    // TODO: update this to common settings
     const ICON_ATLAS = STATIC_URL + 'img/icon-map-marker.png';
     const ICON_MAPPING = {
         marker: {x: 0, y: 0, width: 384, height: 512, anchorY: 512, mask: true}
@@ -170,6 +173,7 @@ export const ActivityMap: React.FC = () => {
         return true;
     };
 
+    // TODO: move this to a common func
     const updateMapboxLayers = (layers: Map<number, LayerData>, setterFunc = setMapboxLayers, layerVisMap = layerVisibility): void => {
         const mapLayers = [...layers.entries()].reduce(
             (acc: IconLayer<LayerData>[], val: [number, LayerData]) => {
@@ -212,6 +216,7 @@ export const ActivityMap: React.FC = () => {
             }
         }
 
+        // TODO: use the common func for this
         const responseMapLayers = [...responseLayers.entries()].reduce((acc: IconLayer<EventData>[], entry) => {
             const responsePk = entry[0];
             const layers = entry[1];
@@ -590,6 +595,7 @@ export const ActivityMap: React.FC = () => {
     };
 
     useEffect(() => {
+        // TODO: Refactor this to rededuce complexity
         const getData = async(): Promise<void> => {
             // Fetch the Project data
             const projectResponse = await fetch(`/api/project/${projectPk}/`);
@@ -629,8 +635,11 @@ export const ActivityMap: React.FC = () => {
                     const respMapLayers: IconLayer<LayerData>[] = []
                     
                     for (const resp of respData) {
+                        // TODO: see if you can make this more efficient
                         const layerRequests = await Promise.all(
                             resp.layers.map((layer: string) => {
+                                // TODO: figure out this is working, it shouldn't
+                                // update to authedFetch
                                 return fetch(layer);
                             })
                         );
