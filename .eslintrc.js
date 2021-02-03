@@ -6,7 +6,6 @@ module.exports = {
         "cypress/globals": true,
         "es6": true
     },
-    "parser": "@typescript-eslint/parser",
     "plugins": [
         "security",
         "scanjs-rules",
@@ -17,8 +16,6 @@ module.exports = {
     "extends": [
         "eslint:recommended",
         "plugin:security/recommended",
-        "plugin:@typescript-eslint/eslint-recommended",
-        "plugin:@typescript-eslint/recommended",
         "plugin:react/recommended"
     ],
     "rules": {
@@ -102,9 +99,19 @@ module.exports = {
         'security/detect-unsafe-regex': 1
     },
     "overrides": [{
-        "files": ["*.tsx"],
+        "files": ["*.{ts,tsx}"],
         "rules": {
             "max-len": [2, {"code": 100, "tabWidth": 4, "ignoreUrls": true}],
-        }
+        },
+        "parser": "@typescript-eslint/parser",
+        "parserOptions": {
+            tsconfigRootDir: __dirname,
+            project: ['./tsconfig.json'],
+        },
+        "extends": [
+            "plugin:@typescript-eslint/eslint-recommended",
+            "plugin:@typescript-eslint/recommended",
+            "plugin:@typescript-eslint/recommended-requiring-type-checking",
+        ],
     }]
 };
