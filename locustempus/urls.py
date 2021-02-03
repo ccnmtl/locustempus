@@ -19,6 +19,7 @@ router = routers.DefaultRouter()
 router.register(r'project', viewsets.ProjectApiView, basename='api-project')
 router.register(r'activity', viewsets.ActivityApiView, basename='api-activity')
 router.register(r'response', viewsets.ResponseApiView, basename='api-response')
+router.register(r'feedback', viewsets.FeedbackAPIView, basename='api-feedback')
 router.register(r'layer', viewsets.LayerApiView, basename='api-layer')
 router.register(r'event', viewsets.EventApiView, basename='api-event')
 

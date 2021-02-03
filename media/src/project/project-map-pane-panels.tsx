@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { Layer, LayerProps } from './layer';
-import {
-    LayerEventData, LayerEventDatum, ActivityData,
-    BASE_MAPS, BASE_MAP_IMAGES } from './project-map';
 import { MediaEditor } from '../project-activity-components/layers/media-editor';
+import { ActivityData } from './project-map';
+import { BASE_MAPS, BASE_MAP_IMAGES } from '../project-activity-components/common';
+import { LayerData, EventData, LayerSet } from '../project-activity-components/layers/layer-set';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faLayerGroup, faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
-    faCaretRight, faCaretDown,
+    faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
+    faCaretRight, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 import ReactQuill from 'react-quill';
@@ -193,8 +192,8 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
 
 interface EventEditPanelProps {
     activeLayer: number | null;
-    activeEventEdit: LayerEventDatum;
-    setActiveEventEdit(d: LayerEventDatum | null): void;
+    activeEventEdit: EventData;
+    setActiveEventEdit(d: EventData | null): void;
     updateEvent(label: string, description: string,
                 lat: number, lng: number, pk: number,
                 layerPk: number, mediaUrl: string | null): void;
@@ -428,10 +427,10 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
 
 interface EventDetailPanelProps {
     activeLayer: number | null;
-    activeEventDetail: LayerEventDatum | null;
-    setActiveEventDetail(d: LayerEventDatum | null): void;
-    activeEventEdit: LayerEventDatum | null;
-    setActiveEventEdit(d: LayerEventDatum | null): void;
+    activeEventDetail: EventData | null;
+    setActiveEventDetail(d: EventData | null): void;
+    activeEventEdit: EventData | null;
+    setActiveEventEdit(d: EventData | null): void;
     deleteEvent(pk: number, layerPk: number): void;
     paneHeaderHeight: number;
 }
@@ -718,44 +717,39 @@ interface DefaultPanelProps {
     setActiveTab(idx: number): void;
     addLayer(): void;
     description: string;
-    layers: LayerProps[];
-    events: Map<number, LayerEventData>;
+    layers: Map<number, LayerData>;
+    layerVisibility: Map<number, boolean>;
     activity: ActivityData | null;
     updateActivity(instructions: string, pk: number): void;
     deleteActivity(pk: number): void;
     createActivity(instructions: string): void;
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
-    setLayerVisibility(pk: number): void;
+    toggleLayerVisibility(pk: number): void;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;
-    activeEvent: LayerEventDatum | null;
-    setActiveEvent(d: LayerEventDatum): void;
-    activeEventDetail: LayerEventDatum | null;
-    setActiveEventDetail(d: LayerEventDatum): void;
-    activeEventEdit: LayerEventDatum | null;
-    setActiveEventEdit(d: LayerEventDatum): void;
+    activeEvent: EventData | null;
+    setActiveEvent(d: EventData): void;
+    activeEventDetail: EventData | null;
+    setActiveEventDetail(d: EventData): void;
+    activeEventEdit: EventData | null;
+    setActiveEventEdit(d: EventData): void;
     paneHeaderHeight: number;
 }
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
     {
-        activeTab, setActiveTab, addLayer, description, layers, events,
-        activity, createActivity, updateActivity, deleteActivity, deleteLayer,
-        updateLayer, setLayerVisibility, activeLayer, setActiveLayer,
-        activeEvent, setActiveEvent, setActiveEventDetail, activeEventEdit,
-        paneHeaderHeight
+        activeTab, setActiveTab, addLayer, description, layers, activity,
+        createActivity, updateActivity, deleteActivity, deleteLayer,
+        updateLayer, layerVisibility, toggleLayerVisibility, activeLayer,
+        setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
+        activeEventEdit, paneHeaderHeight
     }: DefaultPanelProps) => {
 
     const handleSetActiveTab = (
         e: React.MouseEvent<HTMLAnchorElement>): void => {
         e.preventDefault();
         setActiveTab(Number(e.currentTarget.dataset.activeTab));
-    };
-
-    const handleCreateLayer = (e: React.FormEvent<HTMLFormElement>): void => {
-        e.preventDefault();
-        addLayer();
     };
 
     const OVERVIEW = 0;
@@ -798,49 +792,19 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                     </div>
                 )}
                 {activeTab === BASE && (
-                    <>
-                        <div className='fade-load'>
-                            <div className={'d-flex justify-content-end'}>
-                                <form onSubmit={handleCreateLayer}>
-                                    <button type='submit' className={'lt-button'}>
-                                        <span className={'lt-icons lt-button__icon'}>
-                                            <FontAwesomeIcon icon={faLayerGroup}/>
-                                        </span>
-                                        <span className={'lt-button__text'}>Add layer</span>
-                                    </button>
-                                </form>
-                            </div>
-                            {layers && layers.map(
-                                (layer, idx) => {
-                                    let layerEvents: LayerEventDatum[] = [];
-                                    const data = events.get(layer.pk);
-                                    if (data && data.events) {
-                                        layerEvents = data.events;
-                                    }
-
-                                    let layerVisibility = true;
-                                    if (data && data.visibility) {
-                                        layerVisibility = data.visibility;
-                                    }
-
-                                    return (
-                                        <Layer {...layer}
-                                            deleteLayer={deleteLayer}
-                                            updateLayer={updateLayer}
-                                            key={idx}
-                                            activeLayer={activeLayer}
-                                            setActiveLayer={setActiveLayer}
-                                            layerEvents={layerEvents}
-                                            layerVisibility={layerVisibility}
-                                            setLayerVisibility={setLayerVisibility}
-                                            activeEvent={activeEvent}
-                                            setActiveEvent={setActiveEvent}
-                                            setActiveEventDetail={setActiveEventDetail}
-                                            activeEventEdit={activeEventEdit}/>
-                                    );
-                                })}
-                        </div>
-                    </>
+                    <LayerSet
+                        layers={layers}
+                        layerVisibility={layerVisibility}
+                        addLayer={addLayer}
+                        deleteLayer={deleteLayer}
+                        updateLayer={updateLayer}
+                        toggleLayerVisibility={toggleLayerVisibility}
+                        activeLayer={activeLayer}
+                        setActiveLayer={setActiveLayer}
+                        activeEvent={activeEvent}
+                        setActiveEvent={setActiveEvent}
+                        setActiveEventDetail={setActiveEventDetail}
+                        activeEventEdit={activeEventEdit}/>
                 )}
             </div>
         </>

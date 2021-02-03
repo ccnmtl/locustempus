@@ -66,7 +66,7 @@ class IsResponseOwnerOrFaculty(permissions.IsAuthenticated):
         if request.method not in permissions.SAFE_METHODS:
             try:
                 activity = Activity.objects.get(
-                    pk=request.POST.get('activity'))
+                    pk=request.data.get('activity'))
             except Activity.DoesNotExist:
                 return False
 
@@ -93,6 +93,62 @@ class IsResponseOwnerOrFaculty(permissions.IsAuthenticated):
             return True
 
         if user in obj.owners.all():
+            return True
+
+        return False
+
+
+class IsFeedbackFacultyOrStudentRecipient(permissions.IsAuthenticated):
+    """
+    =============================================
+    | User    | Create | Read | Update | Delete |
+    =============================================
+    | Faculty | X      | X    | X      | 0      |
+    | Student | 0      | X*   | 0      | 0      |
+    | Anon    | 0      | 0    | 0      | 0      |
+    =============================================
+    *Students should only be able to read Feedback associated with a response
+    that they own
+    """
+    def has_permission(self, request, view):
+        # Runs on GET / requests
+        user = request.user
+        if user.is_anonymous:
+            return False
+
+        # First try to get an activity from query string params, then
+        # from data in the reqest, else None
+        activity_pk = request.query_params.get(
+            'activity', request.data.get('activity', None))
+
+        if not activity_pk:
+            return False
+
+        try:
+            activity = Activity.objects.get(pk=activity_pk)
+        except Activity.DoesNotExist:
+            return False
+
+        course = activity.project.course
+
+        if request.method not in permissions.SAFE_METHODS:
+            return course.is_true_faculty(user)
+        else:
+            return course.is_true_member(user)
+
+    def has_object_permission(self, request, view, obj):
+        # Note that this will not run when the user is requesting a list
+        user = request.user
+
+        if request.method == 'DELETE':
+            return False
+
+        course = obj.response.activity.project.course
+        if course.is_true_faculty(user):
+            return True
+        elif course.is_true_member(user) and \
+                request.method in permissions.SAFE_METHODS and \
+                user in obj.response.owners.all():
             return True
 
         return False
