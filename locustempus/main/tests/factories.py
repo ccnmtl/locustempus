@@ -71,7 +71,7 @@ class ActivityFactory(factory.DjangoModelFactory):
 class FeedbackFactory(factory.DjangoModelFactory):
     class Meta:
         model = Feedback
-    feedback = factory.Faker('paragraph')
+    body = factory.Faker('paragraph')
 
 
 class ResponseFactory(factory.DjangoModelFactory):

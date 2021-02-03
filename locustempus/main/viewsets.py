@@ -75,7 +75,7 @@ class ResponseApiView(ModelViewSet):
 
             # If a user is not faculty nor a student in the course, then return
             # an empty queryset
-            return Activity.objects.none()
+            return Response.objects.none()
         else:
             # Handles the case if no activity is specified in the querystring
             return Response.objects.filter(
@@ -86,7 +86,6 @@ class ResponseApiView(ModelViewSet):
 class FeedbackAPIView(ModelViewSet):
     """Retrieves feedback"""
     serializer_class = FeedbackSerializer
-    queryset = Feedback.objects.all()
     permission_classes = [IsFeedbackFacultyOrStudentRecipient]
 
     def get_queryset(self):

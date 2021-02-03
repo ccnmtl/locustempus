@@ -286,7 +286,7 @@ class ResponseOwner(models.Model):
 
 
 class Feedback(models.Model):
-    feedback = models.TextField(
+    body = models.TextField(
         blank=True
     )
     response = models.OneToOneField(

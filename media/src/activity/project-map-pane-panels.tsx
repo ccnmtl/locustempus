@@ -510,7 +510,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     useEffect(() => {
         // Populate feedback
         if (activeResponse && activeResponse.feedback) {
-            setFeedback(activeResponse.feedback.feedback ? activeResponse.feedback.feedback : '');
+            setFeedback(activeResponse.feedback.body ? activeResponse.feedback.body : '');
         }
 
         // Create a map of just the layers beloning to the active response

@@ -249,6 +249,17 @@ class IsFeedbackFacultyOrStudentRecipientTest(CourseTestMixin, TestCase):
         req.user = self.student
         self.assertTrue(perm.has_permission(req, None))
 
+        # Student in another course
+        schoolmate = UserFactory.create(
+            first_name='Student',
+            last_name='Two',
+            email='studenttwo@example.com'
+        )
+        self.registrar_course.group.user_set.add(
+            schoolmate)
+        req.user = schoolmate
+        self.assertFalse(perm.has_permission(req, None))
+
     def test_has_permissions_obj_get(self):
         """Tests GET permissions"""
         perm = IsFeedbackFacultyOrStudentRecipient()
@@ -283,7 +294,7 @@ class IsFeedbackFacultyOrStudentRecipientTest(CourseTestMixin, TestCase):
             last_name='Two',
             email='studenttwo@example.com'
         )
-        self.registrar_course.group.user_set.add(
+        self.sandbox_course.group.user_set.add(
             classmate)
         req.user = classmate
         self.assertFalse(

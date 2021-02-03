@@ -17,8 +17,7 @@ const STATIC_URL = LocusTempus.staticUrl;
 const CURRENT_USER = LocusTempus.currentUser.id;
 
 import {
-    ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_COLOR,
-    ICON_COLOR_ACTIVE, BASE_MAPS, BASE_MAP_IMAGES
+    ICON_SCALE, ICON_SIZE, ICON_COLOR, ICON_COLOR_ACTIVE
 } from '../project-activity-components/common';
 
 // TODO: fix types
@@ -54,7 +53,7 @@ export enum ResponseStatus {
 
 interface FeedbackData {
     pk: number;
-    feedback: string;
+    body: string;
 }
 
 export interface ResponseData {

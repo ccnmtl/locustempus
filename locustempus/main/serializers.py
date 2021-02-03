@@ -35,7 +35,7 @@ class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         read_only_fields = ('pk',)
-        fields = ('pk', 'feedback')
+        fields = ('pk', 'body')
 
 
 class ResponseSerializer(serializers.HyperlinkedModelSerializer):

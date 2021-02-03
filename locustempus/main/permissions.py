@@ -124,16 +124,17 @@ class IsFeedbackFacultyOrStudentRecipient(permissions.IsAuthenticated):
         if not activity_pk:
             return False
 
-        activity = Activity.objects.get(pk=activity_pk)
+        try:
+            activity = Activity.objects.get(pk=activity_pk)
+        except Activity.DoesNotExist:
+            return False
 
         course = activity.project.course
-        is_faculty = course.is_true_faculty(user)
-        is_course_member = course.is_true_member(user)
 
         if request.method not in permissions.SAFE_METHODS:
-            return is_faculty
+            return course.is_true_faculty(user)
         else:
-            return is_course_member
+            return course.is_true_member(user)
 
     def has_object_permission(self, request, view, obj):
         # Note that this will not run when the user is requesting a list
