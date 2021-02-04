@@ -39,3 +39,7 @@ export interface ProjectData {
     layers: string[];
     activity?: number;
 }
+
+export interface DeckGLClickEvent extends MouseEvent {
+    tapCount?: number
+}

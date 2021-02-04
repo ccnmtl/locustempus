@@ -19,7 +19,7 @@ const STATIC_URL = LocusTempus.staticUrl;
 const CURRENT_USER = LocusTempus.currentUser.id;
 
 import {
-    ICON_SCALE, ICON_SIZE, ICON_COLOR, ICON_COLOR_ACTIVE, ProjectData
+    ICON_SCALE, ICON_SIZE, ICON_COLOR, ICON_COLOR_ACTIVE, ProjectData, DeckGLClickEvent
 } from '../project-activity-components/common';
 
 export interface ActivityData {
@@ -157,19 +157,20 @@ export const ActivityMap: React.FC = () => {
     };
 
     // TODO: move this to a common func
-    const updateMapboxLayers = (layers: Map<number, LayerData>, setterFunc = setMapboxLayers, layerVisMap = layerVisibility): void => {
+    const updateMapboxLayers = (
+        layers: Map<number, LayerData>, setterFunc = setMapboxLayers,
+        layerVisMap = layerVisibility): void => {
         const mapLayers = [...layers.entries()].reduce(
             (acc: IconLayer<LayerData>[], val: [number, LayerData]) => {
-                const layerPk = val[0];
-                const layer = val[1]
+                const layer = val[1];
                 if (layer && (layerVisMap.get(layer.pk) || false)) {
                     const MBLayer = new IconLayer({
-                        id: 'icon-layer-' + val,
+                        id: `icon-layer-${layer.pk}`,
                         data: layer.events,
                         pickable: true,
                         iconAtlas: ICON_ATLAS,
                         iconMapping: ICON_MAPPING,
-                        getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
+                        getIcon: (): string => 'marker',
                         sizeScale: ICON_SCALE,
                         getPosition: (d): Position => d.location.lng_lat,
                         onClick: pickEventClickHandler,
@@ -200,31 +201,32 @@ export const ActivityMap: React.FC = () => {
         }
 
         // TODO: use the common func for this
-        const responseMapLayers = [...responseLayers.entries()].reduce((acc: IconLayer<EventData>[], entry) => {
-            const responsePk = entry[0];
-            const layers = entry[1];
-            const mapLayers = layers.reduce(
-                (layerAcc: IconLayer<EventData>[], layerVal) => {
-                    if (layerVis.get(responsePk)) {
-                        const layer = new IconLayer({
-                            id: 'response-layer-' + layerVal.pk,
-                            data: layerVal.events,
-                            pickable: true,
-                            iconAtlas: ICON_ATLAS,
-                            iconMapping: ICON_MAPPING,
-                            getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
-                            sizeScale: ICON_SCALE,
-                            getPosition: (d): Position => d.location.lng_lat,
-                            onClick: pickEventClickHandler,
-                            getSize: ICON_SIZE,
-                            getColor: ICON_COLOR,
-                        });
-                        layerAcc.push(layer);
-                    }
-                    return layerAcc;
-                }, []);
-            return acc.concat(mapLayers);
-        }, []);
+        const responseMapLayers = [...responseLayers.entries()].reduce(
+            (acc: IconLayer<EventData>[], entry) => {
+                const responsePk = entry[0];
+                const layers = entry[1];
+                const mapLayers = layers.reduce(
+                    (layerAcc: IconLayer<EventData>[], layerVal) => {
+                        if (layerVis.get(responsePk)) {
+                            const layer = new IconLayer({
+                                id: `response-layer-${layerVal.pk}`,
+                                data: layerVal.events,
+                                pickable: true,
+                                iconAtlas: ICON_ATLAS,
+                                iconMapping: ICON_MAPPING,
+                                getIcon: (): string => 'marker',
+                                sizeScale: ICON_SCALE,
+                                getPosition: (d): Position => d.location.lng_lat,
+                                onClick: pickEventClickHandler,
+                                getSize: ICON_SIZE,
+                                getColor: ICON_COLOR,
+                            });
+                            layerAcc.push(layer);
+                        }
+                        return layerAcc;
+                    }, []);
+                return acc.concat(mapLayers);
+            }, []);
 
         setResponseMapboxLayers(responseMapLayers);
         setLayerVisibility(layerVis);
@@ -287,12 +289,12 @@ export const ActivityMap: React.FC = () => {
     };
 
     const updateLayer = (pk: number, title: string): void => {
-        const updatedLayer = {
+        const obj = {
             title: title,
             content_object: `/api/response/${responseData[0].pk}/`
         };
         if (!isFaculty && responseData.length == 1) {
-            void put<LayerData>(`/api/layer/${pk}/`, updateLayer)
+            void put<LayerData>(`/api/layer/${pk}/`, obj)
                 .then((data) => {
                     const layers = new Map(layerData);
                     layers.set(data.pk, data);
@@ -484,9 +486,7 @@ export const ActivityMap: React.FC = () => {
             });
     };
 
-    // TODO: figure out how to type this
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleDeckGlClick = (info: any, event: any): void => {
+    function handleDeckGlClick(info: EventData, event: DeckGLClickEvent): void {
         // Create on single click, make sure that new event
         // is not created when user intends to pick an existing event
         if (event.tapCount === 1) {
@@ -514,13 +514,18 @@ export const ActivityMap: React.FC = () => {
             }));
             setMapboxLayers(updatedLayers);
         }
-    };
+    }
 
     useEffect(() => {
         // TODO: Refactor this to rededuce complexity
         const getData = async(): Promise<void> => {
             // Fetch the Project data
-            const projectData = await get<ProjectData>(`/api/project/${projectPk}/`);
+            let projectData: ProjectData;
+            if (projectPk) {
+                projectData = await get<ProjectData>(`/api/project/${projectPk}/`);
+            } else {
+                throw new Error('Project PK can not be found');
+            }
 
             setProjectTitle(projectData.title);
             setProjectDescription(projectData.description);

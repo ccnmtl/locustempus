@@ -15,7 +15,7 @@ import { LoadingModal } from '../project-activity-components/loading-modal';
 
 import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_COLOR,
-    ICON_COLOR_ACTIVE, ProjectData
+    ICON_COLOR_ACTIVE, ProjectData, DeckGLClickEvent
 } from '../project-activity-components/common';
 
 import {get, put, post, del } from '../utils';
@@ -388,9 +388,7 @@ export const ProjectMap: React.FC = () => {
         void del(`/api/activity/${id}/`);
     };
 
-    // TODO: figure out how to type this
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const handleDeckGlClick = (info: any, event: any): void => {
+    const handleDeckGlClick = (info: EventData, event: DeckGLClickEvent): void => {
         // Create on single click, make sure that new event
         // is not created when user intends to pick an existing event
         if (event.tapCount === 1) {
