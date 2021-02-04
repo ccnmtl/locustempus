@@ -115,14 +115,14 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                                             <li className='basemap__item' key={idx}>
                                                 <input
                                                     name="basemapselection"
-                                                    id={'base-map-' + idx}
+                                                    id={`base-map-${idx}`}
                                                     type={'radio'}
                                                     value={val}
                                                     onChange={handleBaseMap}
                                                     checked={
                                                         val === projectBaseMap}
                                                 />
-                                                <label htmlFor={'base-map-' + idx}
+                                                <label htmlFor={`base-map-${idx}`}
                                                     className={'basemap__label'}>
                                                     <span className='basemap__name'>{BASE_MAPS.get(val)}</span> {/* eslint-disable-line max-len */}
                                                     <img

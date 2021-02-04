@@ -1,5 +1,5 @@
 APP=locustempus
-JS_FILES=media/src/js media/src/project
+JS_FILES=media/src
 
 all: jenkins mypy js-typecheck cypress-test
 .PHONY: all

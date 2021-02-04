@@ -30,3 +30,12 @@ export const BASE_MAP_IMAGES = new Map([
     ['satellite-v9', STATIC_URL + 'img/map_thumbnails/satellite.jpg'],
     ['satellite-streets-v11', STATIC_URL + 'img/map_thumbnails/satellite-streets.jpg'],
 ]);
+
+// Shared Types
+export interface ProjectData {
+    title: string;
+    description: string;
+    base_map: string;
+    layers: string[];
+    activity?: number;
+}
