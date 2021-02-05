@@ -40,6 +40,13 @@ export interface ProjectData {
     activity?: number;
 }
 
+export interface ActivityData {
+    title: string;
+    pk: number;
+    description: string;
+    instructions: string;
+}
+
 export interface DeckGLClickEvent extends MouseEvent {
     tapCount?: number
 }

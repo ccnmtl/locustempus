@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef, ReactElement } from 'react';
-import { ActivityData } from './project-map';
+import { ActivityData } from '../project-activity-components/common';
 import { EventData, LayerData } from '../project-activity-components/layers/layer-set';
 import { Position } from '@deck.gl/core/utils/positions';
 import {
-    EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
-    ProjectCreateEditPanel
+    DefaultPanel, ProjectCreateEditPanel
 } from './project-map-pane-panels';
+import {
+    EventAddPanel, EventEditPanel, EventDetailPanel
+} from '../project-activity-components/panels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEllipsisV, faTrashAlt, faPencilAlt, faCaretLeft, faCaretRight

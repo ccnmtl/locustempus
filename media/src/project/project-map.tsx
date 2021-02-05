@@ -15,17 +15,10 @@ import { LoadingModal } from '../project-activity-components/loading-modal';
 
 import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_COLOR,
-    ICON_COLOR_ACTIVE, ProjectData, DeckGLClickEvent
+    ICON_COLOR_ACTIVE, ProjectData, ActivityData, DeckGLClickEvent
 } from '../project-activity-components/common';
 
 import {get, put, post, del } from '../utils';
-
-export interface ActivityData {
-    title: string;
-    pk: number;
-    description: string;
-    instructions: string;
-}
 
 interface ViewportState {
     latitude: number;
