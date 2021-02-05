@@ -331,7 +331,7 @@ interface DefaultPanelProps {
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
     {
-        activeTab, setActiveTab, addLayer, description, layers, activity,
+        activeTab, setActiveTab, addLayer, layers, activity,
         deleteLayer, updateLayer, layerVisibility, toggleLayerVisibility,
         toggleResponseVisibility, activeLayer, setActiveLayer, activeEvent,
         setActiveEvent, setActiveEventDetail, activeEventEdit, projectLayers,
@@ -497,9 +497,8 @@ interface FacultySubPanelProps {
 
 const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     responseData, createFeedback, updateFeedback, responseLayers,
-    layerVisibility, toggleLayerVisibility, toggleResponseVisibility,
-    activeLayer, setActiveLayer, activeEvent, setActiveEvent,
-    setActiveEventDetail, activeEventEdit
+    toggleResponseVisibility, activeLayer, setActiveLayer, activeEvent,
+    setActiveEvent, setActiveEventDetail, activeEventEdit
 }: FacultySubPanelProps) => {
 
     const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);

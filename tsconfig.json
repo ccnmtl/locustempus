@@ -18,11 +18,9 @@
     "downlevelIteration": true
   },
   "include": [
-    "media/src/*",
-    "media/src/js/**/*"
+    "media/src"
   ],
   "exclude": [
-    "node_modules",
-    "media/tests"
+    "node_modules"
   ]
 }
