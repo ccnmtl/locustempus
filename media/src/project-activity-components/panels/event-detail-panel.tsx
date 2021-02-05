@@ -46,6 +46,9 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
         setActiveEventEdit(activeEventDetail);
     };
 
+    const isMenuVisible = isProjectLayer === undefined ||
+        (activeLayer && !isProjectLayer(activeLayer));
+
     return (
         <>
             <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
@@ -60,7 +63,7 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 <div className='lt-pane-section__header'>
                     <h2>{activeEventDetail && activeEventDetail.label}</h2>
                     <div className={'lt-menu-overflow trailing'}>
-                        {isProjectLayer && activeLayer && !isProjectLayer(activeLayer) && (
+                        {isMenuVisible && (
                             <button onClick={handleMenuToggle}
                                 className={'lt-icon-button lt-icon-button--transparent'}
                                 aria-label={showMenu ?

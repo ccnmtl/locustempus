@@ -15,6 +15,7 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
 
     const [fileUploadProgress, setFileUploadProgress] = useState<number>(-1);
     const [fileUploadError, setFileUploadError] = useState<boolean>(false);
+    const [fileUploadSuccess, setFileUploadSuccess] = useState<boolean>(false);
 
     const handleClearImage = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
@@ -27,6 +28,7 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
         setFileUploadProgress(-1);
         setFileS3Url(null);
         setFileUploadError(false);
+        setFileUploadSuccess(false);
 
         ((): void => {
             new S3Upload({
@@ -34,7 +36,10 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
                 s3_sign_put_url: '/sign_s3/',
                 s3_object_name: e.target.value,
                 onProgress: (percent): void => {setFileUploadProgress(Number(percent));},
-                onFinishS3Put: (url): void => {setFileS3Url(url);},
+                onFinishS3Put: (url): void => {
+                    setFileUploadSuccess(true);
+                    setFileS3Url(url);
+                },
                 onError: (status): void => {
                     setFileUploadError(true);
                     console.error(status);
@@ -101,9 +106,11 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
                                 <img src={fileS3Url} />
                             </div>
                             <div className={'upload-status'}>
-                                <div className={'upload-status--success'}>
-                                    <FontAwesomeIcon icon={faCheckCircle} size='2x'/>
-                                </div>
+                                {fileUploadSuccess && (
+                                    <div className={'upload-status--success'}>
+                                        <FontAwesomeIcon icon={faCheckCircle} size='2x'/>
+                                    </div>
+                                )}
                             </div>
                         </div>
                         <div className={'col-8'}>
