@@ -9,7 +9,7 @@ import { IconLayer } from '@deck.gl/layers';
 import { Position } from '@deck.gl/core/utils/positions';
 import { PickInfo } from '@deck.gl/core/lib/deck';
 
-import { ProjectMapPane } from './project-map-pane';
+import { ActivityMapPane } from './activity-map-pane';
 import { LayerData, EventData } from '../project-activity-components/layers/layer-set';
 import { LoadingModal } from '../project-activity-components/loading-modal';
 
@@ -706,7 +706,7 @@ export const ActivityMap: React.FC = () => {
                 </DeckGL>
             )}
             {projectTitle && (
-                <ProjectMapPane
+                <ActivityMapPane
                     title={projectTitle || 'Untitled'}
                     description={projectDescription || ''}
                     isFaculty={isFaculty}
