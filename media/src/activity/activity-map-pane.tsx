@@ -6,11 +6,11 @@ import {
 import { Position } from '@deck.gl/core/utils/positions';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
-} from './project-map-pane-panels';
+} from './activity-map-pane-panels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
-export interface ProjectMapPaneProps {
+export interface ActivityMapPaneProps {
     title: string;
     description: string;
     isFaculty: boolean;
@@ -48,7 +48,7 @@ export interface ProjectMapPaneProps {
     responseLayers: Map<number, LayerData[]>;
 }
 
-export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
+export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
     {
         title, description, isFaculty, layers, activity, activeLayer,
         setActiveLayer, addLayer, deleteLayer, updateLayer,layerVisibility,
@@ -58,7 +58,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
         setActiveEventDetail, activeEventEdit, setActiveEventEdit, deleteEvent,
         updateEvent, projectLayers, responseData, updateResponse,
         createFeedback, updateFeedback, responseLayers
-    }: ProjectMapPaneProps) => {
+    }: ActivityMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
 
