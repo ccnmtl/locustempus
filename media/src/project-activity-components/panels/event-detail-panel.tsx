@@ -12,13 +12,14 @@ interface EventDetailPanelProps {
     activeEventEdit: EventData | null;
     setActiveEventEdit(d: EventData | null): void;
     deleteEvent(pk: number, layerPk: number): void;
+    isProjectLayer?(pk: number): boolean;
     paneHeaderHeight: number;
 }
 
 export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     {
         activeLayer, activeEventDetail, setActiveEventDetail,
-        setActiveEventEdit, deleteEvent, paneHeaderHeight
+        setActiveEventEdit, deleteEvent, isProjectLayer, paneHeaderHeight
     }: EventDetailPanelProps) => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
 
@@ -59,16 +60,18 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 <div className='lt-pane-section__header'>
                     <h2>{activeEventDetail && activeEventDetail.label}</h2>
                     <div className={'lt-menu-overflow trailing'}>
-                        <button onClick={handleMenuToggle}
-                            className={'lt-icon-button lt-icon-button--transparent'}
-                            aria-label={showMenu ?
-                                'Hide more actions' : 'Show more actions'}>
-                            <span
-                                className={'lt-icons lt-icon-button__icon'}
-                                aria-hidden='true'>
-                                <FontAwesomeIcon icon={faEllipsisV}/>
-                            </span>
-                        </button>
+                        {isProjectLayer && activeLayer && !isProjectLayer(activeLayer) && (
+                            <button onClick={handleMenuToggle}
+                                className={'lt-icon-button lt-icon-button--transparent'}
+                                aria-label={showMenu ?
+                                    'Hide more actions' : 'Show more actions'}>
+                                <span
+                                    className={'lt-icons lt-icon-button__icon'}
+                                    aria-hidden='true'>
+                                    <FontAwesomeIcon icon={faEllipsisV}/>
+                                </span>
+                            </button>
+                        )}
                         {showMenu && (
                             <div className={'lt-menu lt-menu-overflow--expand'}>
                                 <ul className={'lt-list'} role='menu'>

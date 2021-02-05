@@ -4,9 +4,10 @@ import {
     ActivityData, ResponseData, ResponseStatus
 } from './activity-map';
 import { Position } from '@deck.gl/core/utils/positions';
+import { DefaultPanel } from './activity-map-pane-panels';
 import {
-    EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
-} from './activity-map-pane-panels';
+    EventAddPanel, EventEditPanel, EventDetailPanel
+} from '../project-activity-components/panels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
 
@@ -107,20 +108,24 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
             activePosition={activePosition}
             addEvent={addEvent}
             clearActivePosition={clearActivePosition}
-            setActiveTab={setActiveTab}/>,
+            setActiveTab={setActiveTab}
+            paneHeaderHeight={projectPaneHeaderHeight}/>,
         1: <EventDetailPanel
             activeLayer={activeLayer}
             activeEventDetail={activeEventDetail}
             setActiveEventDetail={setActiveEventDetail}
+            activeEventEdit={activeEventEdit}
             setActiveEventEdit={setActiveEventEdit}
             deleteEvent={deleteEvent}
-            isProjectLayer={isProjectLayer}/>,
+            isProjectLayer={isProjectLayer}
+            paneHeaderHeight={projectPaneHeaderHeight}/>,
         2: <> {activeEventEdit && (
             <EventEditPanel
                 activeLayer={activeLayer}
                 activeEventEdit={activeEventEdit}
                 setActiveEventEdit={setActiveEventEdit}
-                updateEvent={updateEvent}/>
+                updateEvent={updateEvent}
+                paneHeaderHeight={projectPaneHeaderHeight}/>
         )} </>,
         3: <DefaultPanel
             activeTab={activeTab}
