@@ -104,7 +104,7 @@ export const ProjectMap: React.FC = () => {
     const [activity, setActivity] = useState<ActivityData | null>(null);
 
     const [mapboxLayers, setMapboxLayers] =
-        useState<IconLayer<LayerData>[]>([]);
+        useState<IconLayer<EventData>[]>([]);
 
     const [layerVisibility, setLayerVisibility] = useState<Map<number, boolean>>(new Map());
 
@@ -125,13 +125,13 @@ export const ProjectMap: React.FC = () => {
     };
 
     const pickEventClickHandler = (
-        info: PickInfo<LayerEventDatum>): boolean => {
+        info: PickInfo<EventData>): boolean => {
         // Clear the 'Add Event Form' and 'Add Event Pin'
         setShowAddEventForm(false);
         clearActivePosition();
 
         // Set the active event
-        setActiveEvent(info.object as LayerEventDatum);
+        setActiveEvent(info.object);
 
         // Returning true prevents event from bubling to map canvas
         return true;
@@ -141,10 +141,10 @@ export const ProjectMap: React.FC = () => {
         layers: Map<number, LayerData>, setterFunc = setMapboxLayers,
         layerVisMap = layerVisibility): void => {
         const mapLayers = [...layers.entries()].reduce(
-            (acc: IconLayer<LayerData>[], val: [number, LayerData]) => {
+            (acc: IconLayer<EventData>[], val: [number, LayerData]) => {
                 const layer = val[1];
                 if (layer && (layerVisMap.get(layer.pk) || false)) {
-                    const MBLayer = new IconLayer({
+                    const MBLayer = new IconLayer<EventData>({
                         id: `icon-layer-${layer.pk}`,
                         data: layer.events,
                         pickable: true,
@@ -152,7 +152,7 @@ export const ProjectMap: React.FC = () => {
                         iconMapping: ICON_MAPPING,
                         getIcon: (): string => 'marker',
                         sizeScale: ICON_SCALE,
-                        getPosition: (d): Position => d.location.lng_lat,
+                        getPosition: (d) => d.location.lng_lat,
                         onClick: pickEventClickHandler,
                         getSize: ICON_SIZE,
                         getColor: ICON_COLOR,
@@ -388,7 +388,10 @@ export const ProjectMap: React.FC = () => {
         void del(`/api/activity/${id}/`);
     };
 
-    const handleDeckGlClick = (info: EventData, event: DeckGLClickEvent): void => {
+    function handleDeckGlClick<D>(info: PickInfo<D>, event: DeckGLClickEvent): void {
+        // Cast to provide type def for coordinate
+        const infoPrime = info as PickInfo<D> & {coordinate: [number, number]};
+
         // Create on single click, make sure that new event
         // is not created when user intends to pick an existing event
         if (event.tapCount === 1) {
@@ -397,26 +400,29 @@ export const ProjectMap: React.FC = () => {
             setActiveEventDetail(null);
             setActiveEventEdit(null);
             setShowAddEventForm(true);
-            setActivePosition([info.lngLat[1], info.lngLat[0]]);
+            setActivePosition([infoPrime.coordinate[1], infoPrime.coordinate[0]]);
             let updatedLayers = mapboxLayers.filter((el) => {
                 return el.id !== 'active-position';
             });
-            updatedLayers = updatedLayers.concat(new IconLayer({
+            // The click data needs to be packed this way so that the type
+            // of mapboxLayers remains homogenous
+            const mockData = {} as EventData;
+            mockData.lngLat = [infoPrime.coordinate[0], infoPrime.coordinate[1]];
+            updatedLayers = updatedLayers.concat(new IconLayer<EventData>({
                 id: 'active-position',
-                data: [
-                    {position: [info.lngLat[0], info.lngLat[1]] as Position}],
+                data: [mockData],
                 pickable: true,
                 iconAtlas: ICON_ATLAS,
                 iconMapping: ICON_MAPPING,
-                getIcon: (d): string => 'marker', // eslint-disable-line @typescript-eslint/no-unused-vars, max-len
+                getIcon: () => 'marker',
                 sizeScale: ICON_SCALE,
-                getPosition: (d): Position => d.position,
+                getPosition: (d) => d.lngLat,
                 getSize: ICON_SIZE,
                 getColor: ICON_COLOR_ACTIVE,
             }));
             setMapboxLayers(updatedLayers);
         }
-    };
+    }
 
     useEffect(() => {
         const getData = async(): Promise<void> => {
