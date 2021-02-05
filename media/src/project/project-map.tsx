@@ -20,30 +20,6 @@ import {
 
 import {get, put, post, del } from '../utils';
 
-interface MediaObject {
-    url: string;
-}
-
-export interface LayerEventDatum {
-    lngLat: Position;
-    label: string;
-    layer: number;
-    pk: number;
-    description: string;
-    datetime: string;
-    location: {
-        point: string;
-        polygon: string;
-        lng_lat: Position;
-    };
-    media: MediaObject[];
-}
-
-export interface LayerEventData {
-    visibility: boolean;
-    events: LayerEventDatum[];
-}
-
 export interface ActivityData {
     title: string;
     pk: number;
@@ -78,11 +54,6 @@ export const ProjectMap: React.FC = () => {
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
     const coursePk = pathList[pathList.length - 4];
-    // TODO Refactor Title, Description, ect to a ProjectData type
-    const [projectTitle, setProjectTitle] = useState<string | null>(null);
-    const [projectDescription, setProjectDescription] =
-        useState<string | null>(null);
-    const [projectBaseMap, setProjectBaseMap] = useState<string | null>(null);
     const [projectData, setProjectData] = useState<ProjectData>({
         title: 'Untitled',
         description: '',
@@ -124,8 +95,13 @@ export const ProjectMap: React.FC = () => {
         });
     };
 
-    const pickEventClickHandler = (
-        info: PickInfo<EventData>): boolean => {
+    const setBaseMap = (baseMap: string) => {
+        const obj = projectData;
+        obj.base_map = baseMap;
+        setProjectData(obj);
+    };
+
+    const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
         // Clear the 'Add Event Form' and 'Add Event Pin'
         setShowAddEventForm(false);
         clearActivePosition();
@@ -169,12 +145,13 @@ export const ProjectMap: React.FC = () => {
 
     const updateProject = (
         title: string, description: string, baseMap: string): void => {
-        const data = {title: title, description: description, base_map: baseMap};
+        const data = projectData;
+        data.title = title;
+        data.description = description;
+        data.base_map = baseMap;
         void put(`/api/project/${projectPk}/`, data)
             .then(() => {
-                setProjectTitle(title);
-                setProjectDescription(description);
-                setProjectBaseMap(baseMap);
+                setProjectData(data);
             });
     };
 
@@ -435,7 +412,7 @@ export const ProjectMap: React.FC = () => {
             // Fetch the layers
             const layers: LayerData[] = [];
             for (const layerUrl of projData.layers) {
-                layers.concat(await get<LayerData>(layerUrl));
+                layers.push(await get<LayerData>(layerUrl));
             }
 
             // Create an empty layer if none exist, otherwise
@@ -474,7 +451,7 @@ export const ProjectMap: React.FC = () => {
     return (
         <>
             {isLoading && <LoadingModal />}
-            {projectBaseMap && (
+            {projectData.base_map && (
                 <DeckGL
                     layers={mapboxLayers}
                     initialViewState={viewportState}
@@ -489,7 +466,7 @@ export const ProjectMap: React.FC = () => {
                         width={'100%'}
                         height={'100%'}
                         preventStyleDiffing={true}
-                        mapStyle={'mapbox://styles/mapbox/' + projectBaseMap}
+                        mapStyle={'mapbox://styles/mapbox/' + projectData.base_map}
                         mapboxApiAccessToken={TOKEN}
                         onLoad={(): void => { setIsLoading(false); }}/>
                     {activeEvent && (
@@ -523,12 +500,12 @@ export const ProjectMap: React.FC = () => {
                     </div>
                 </DeckGL>
             )}
-            {projectTitle && (
+            {projectData.title && (
                 <ProjectMapPane
-                    title={projectTitle || 'Untitled'}
-                    description={projectDescription || ''}
-                    baseMap={projectBaseMap || ''}
-                    setBaseMap={setProjectBaseMap}
+                    title={projectData.title || 'Untitled'}
+                    description={projectData.description || ''}
+                    baseMap={projectData.base_map || ''}
+                    setBaseMap={setBaseMap}
                     newProjectFlag={newProjectFlag}
                     updateProject={updateProject}
                     deleteProject={deleteProject}

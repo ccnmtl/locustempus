@@ -362,7 +362,7 @@ export const ActivityMap: React.FC = () => {
                     if (layer) {
                         const updatedLayer = {
                             ...layer,
-                            events: [...layer.events].concat(data)
+                            events: [...layer.events, data]
                         };
                         updatedLayers.set(activeLayer, updatedLayer);
 
@@ -562,7 +562,7 @@ export const ActivityMap: React.FC = () => {
                     for (const resp of respData) {
                         const layers: LayerData[] = [];
                         for (const layerUrl of resp.layers) {
-                            layers.concat(await get<LayerData>(layerUrl));
+                            layers.push(await get<LayerData>(layerUrl));
                         }
 
                         // Pack sets of layers, mapping response.pk to sets of layers
@@ -597,7 +597,7 @@ export const ActivityMap: React.FC = () => {
                     if (respData.length > 0) {
                         const layers: LayerData[] = [];
                         for (const layerUrl of respData[0].layers) {
-                            layers.concat(await get<LayerData>(layerUrl));
+                            layers.push(await get<LayerData>(layerUrl));
                         }
 
                         // Create an empty layer if none exist, otherwise
@@ -613,7 +613,7 @@ export const ActivityMap: React.FC = () => {
                                 return acc;
                             }, new Map());
                             setLayerData(lyrs);
-                            updateMapboxLayers(lyrs);
+                            updateMapboxLayers(lyrs, setMapboxLayers, layerVis);
                             setActiveLayer(layers[0].pk);
                         }
                     } else {
@@ -634,7 +634,7 @@ export const ActivityMap: React.FC = () => {
             // Fetch the Project layers
             const layers: LayerData[] = [];
             for (const layerUrl of projectData.layers) {
-                layers.concat(await get<LayerData>(layerUrl));
+                layers.push(await get<LayerData>(layerUrl));
             }
 
             if (layers.length > 0) {
