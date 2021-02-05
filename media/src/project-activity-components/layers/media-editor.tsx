@@ -29,7 +29,6 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
         setFileUploadError(false);
 
         ((): void => {
-            /* eslint-disable @typescript-eslint/camelcase */
             new S3Upload({
                 file_dom_selector: e.target.id,
                 s3_sign_put_url: '/sign_s3/',

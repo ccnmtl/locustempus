@@ -1,17 +1,17 @@
 import React, { useState, useEffect, useRef, ReactElement } from 'react';
-import { LayerProps } from './layer';
-import { LayerEventData, LayerEventDatum, ActivityData } from './project-map';
+import { ActivityData } from '../project-activity-components/common';
+import { EventData, LayerData } from '../project-activity-components/layers/layer-set';
 import { Position } from '@deck.gl/core/utils/positions';
 import {
-    EventAddPanel, EventEditPanel, EventDetailPanel, DefaultPanel,
-    ProjectCreateEditPanel
+    DefaultPanel, ProjectCreateEditPanel
 } from './project-map-pane-panels';
+import {
+    EventAddPanel, EventEditPanel, EventDetailPanel
+} from '../project-activity-components/panels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEllipsisV } from '@fortawesome/free-solid-svg-icons';
-import { faTrashAlt } from '@fortawesome/free-solid-svg-icons';
-import { faPencilAlt } from '@fortawesome/free-solid-svg-icons';
-import { faCaretLeft } from '@fortawesome/free-solid-svg-icons';
-import { faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import {
+    faEllipsisV, faTrashAlt, faPencilAlt, faCaretLeft, faCaretRight
+} from '@fortawesome/free-solid-svg-icons';
 
 
 export interface ProjectMapPaneProps {
@@ -22,8 +22,8 @@ export interface ProjectMapPaneProps {
     newProjectFlag: boolean;
     updateProject(title: string, description: string, baseMap: string): void;
     deleteProject(): void;
-    layers: LayerProps[];
-    events: Map<number, LayerEventData>;
+    layers: Map<number, LayerData>;
+    layerVisibility: Map<number, boolean>;
     activity: ActivityData | null;
     createActivity(instructions: string): void;
     updateActivity(instructions: string, pk: number): void;
@@ -33,7 +33,7 @@ export interface ProjectMapPaneProps {
     addLayer(): void;
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
-    setLayerVisibility(pk: number): void;
+    toggleLayerVisibility(pk: number): void;
     showAddEventForm: boolean;
     setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
@@ -41,12 +41,12 @@ export interface ProjectMapPaneProps {
              description: string, lat: number, lng: number, mediaUrl: string | null): void;
     deleteEvent(pk: number, layerPk: number): void;
     clearActivePosition(): void;
-    activeEvent: LayerEventDatum | null;
-    setActiveEvent(d: LayerEventDatum): void;
-    activeEventDetail: LayerEventDatum | null;
-    setActiveEventDetail(d: LayerEventDatum): void;
-    activeEventEdit: LayerEventDatum | null;
-    setActiveEventEdit(d: LayerEventDatum): void;
+    activeEvent: EventData | null;
+    setActiveEvent(d: EventData): void;
+    activeEventDetail: EventData | null;
+    setActiveEventDetail(d: EventData): void;
+    activeEventEdit: EventData | null;
+    setActiveEventEdit(d: EventData): void;
     updateEvent(label: string, description: string,
                 lat: number, lng: number, pk: number,
                 layerPk: number, mediaUrl: string | null): void;
@@ -55,9 +55,9 @@ export interface ProjectMapPaneProps {
 export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     {
         title, description, baseMap, setBaseMap, newProjectFlag, updateProject,
-        deleteProject, layers, events, activity, createActivity,
+        deleteProject, layers, layerVisibility, activity, createActivity,
         updateActivity, deleteActivity, activeLayer, setActiveLayer, addLayer,
-        deleteLayer, updateLayer, setLayerVisibility, showAddEventForm,
+        deleteLayer, updateLayer, toggleLayerVisibility, showAddEventForm,
         setShowAddEventForm, activePosition, addEvent, clearActivePosition,
         activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
         activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent
@@ -182,14 +182,14 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             addLayer={addLayer}
             description={description}
             layers={layers}
-            events={events}
+            layerVisibility={layerVisibility}
             activity={activity}
             createActivity={createActivity}
             updateActivity={updateActivity}
             deleteActivity={deleteActivity}
             deleteLayer={deleteLayer}
             updateLayer={updateLayer}
-            setLayerVisibility={setLayerVisibility}
+            toggleLayerVisibility={toggleLayerVisibility}
             activeLayer={activeLayer}
             setActiveLayer={setActiveLayer}
             activeEvent={activeEvent}

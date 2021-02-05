@@ -1,10 +1,14 @@
 import React  from 'react';
-import { Layer, LayerProps } from './layer';
+import { Layer } from './layer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { Position } from '@deck.gl/core/utils/positions';
 
-export interface LayerEventDatum {
+interface MediaObject {
+    url: string;
+}
+
+export interface EventData {
     lngLat: Position;
     label: string;
     layer: number;
@@ -16,34 +20,39 @@ export interface LayerEventDatum {
         polygon: string;
         lng_lat: Position;
     };
+    media: MediaObject[];
 }
 
-export interface LayerEventData {
-    visibility: boolean;
-    events: LayerEventDatum[];
+export interface LayerData {
+    pk: number;
+    title: string;
+    events: EventData[];
 }
 
+// Add LayerVisibility map
 interface LayerSetProps {
-    layers: LayerProps[];
-    events: Map<number, LayerEventData>;
+    layers: Map<number, LayerData>;
     addLayer?(): void;
     deleteLayer?(pk: number): void;
     updateLayer?(pk: number, title: string): void;
-    setLayerVisibility(pk: number): void;
+    layerVisibility?: Map<number, boolean>;
+    toggleLayerVisibility?(pk: number): void;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;
-    activeEvent: LayerEventDatum | null;
-    setActiveEvent(d: LayerEventDatum): void;
-    setActiveEventDetail(d: LayerEventDatum): void;
-    activeEventEdit: LayerEventDatum | null;
+    activeEvent: EventData | null;
+    setActiveEvent(d: EventData): void;
+    setActiveEventDetail(d: EventData): void;
+    activeEventEdit: EventData | null;
 }
 
 export const LayerSet: React.FC<LayerSetProps> = (
     {
-        layers, events, addLayer, deleteLayer, updateLayer, activeLayer,
-        setActiveLayer, setLayerVisibility, activeEvent, setActiveEvent,
+        layers, layerVisibility, addLayer, deleteLayer, updateLayer, activeLayer,
+        setActiveLayer, toggleLayerVisibility, activeEvent, setActiveEvent,
         setActiveEventDetail, activeEventEdit
     }: LayerSetProps) => {
+
+    const layerList = [...layers.values()];
 
     const handleCreateLayer = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
@@ -53,43 +62,37 @@ export const LayerSet: React.FC<LayerSetProps> = (
     };
 
     return (
-        <>
+        <div className='fade-load'>
             {addLayer && (
-                <form onSubmit={handleCreateLayer}>
-                    <button type='submit'>
-                        <FontAwesomeIcon icon={faLayerGroup}/>Add Layer
-                    </button>
-                </form>
+                <div className={'d-flex justify-content-end'}>
+                    <form onSubmit={handleCreateLayer}>
+                        <button type='submit' className={'lt-button'}>
+                            <span className={'lt-icons lt-button__icon'}>
+                                <FontAwesomeIcon icon={faLayerGroup}/>
+                            </span>
+                            <span className={'lt-button__text'}>Add layer</span>
+                        </button>
+                    </form>
+                </div>
             )}
-            {layers && layers.map(
+            {layerList && layerList.map(
                 (layer, idx) => {
-                    let layerEvents: LayerEventDatum[] = [];
-                    const data = events.get(layer.pk);
-                    if (data && data.events) {
-                        layerEvents = data.events;
-                    }
-
-                    let layerVisibility = true;
-                    if (data && data.visibility) {
-                        layerVisibility = data.visibility;
-                    }
-
                     return (
-                        <Layer {...layer}
+                        <Layer
+                            layer={layer}
                             deleteLayer={deleteLayer}
                             updateLayer={updateLayer}
                             key={idx}
                             activeLayer={activeLayer}
                             setActiveLayer={setActiveLayer}
-                            layerEvents={layerEvents}
                             layerVisibility={layerVisibility}
-                            setLayerVisibility={setLayerVisibility}
+                            toggleLayerVisibility={toggleLayerVisibility}
                             activeEvent={activeEvent}
                             setActiveEvent={setActiveEvent}
                             setActiveEventDetail={setActiveEventDetail}
                             activeEventEdit={activeEventEdit}/>
                     );
                 })}
-        </>
+        </div>
     );
 };

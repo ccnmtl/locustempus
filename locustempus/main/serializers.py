@@ -2,7 +2,7 @@ from django.contrib.gis.geos import Point
 from generic_relations.relations import GenericRelatedField
 from locustempus.main.models import (
     Layer, Project, Response, Event, Location, Activity, ResponseOwner,
-    MediaObject
+    MediaObject, Feedback
 )
 from rest_framework import serializers
 
@@ -31,6 +31,13 @@ class ActivitySerializer(serializers.ModelSerializer):
         )
 
 
+class FeedbackSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Feedback
+        read_only_fields = ('pk',)
+        fields = ('pk', 'body')
+
+
 class ResponseSerializer(serializers.HyperlinkedModelSerializer):
     layers = serializers.HyperlinkedRelatedField(
         read_only=True,
@@ -39,6 +46,10 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
     )
     activity = serializers.PrimaryKeyRelatedField(
         queryset=Activity.objects.all())
+
+    owners = serializers.ReadOnlyField(source='owner_strings')
+
+    feedback = FeedbackSerializer(read_only=True)
 
     def create(self, validated_data):
         a = validated_data.get('activity')
@@ -49,9 +60,11 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Response
-        read_only_fields = ('layers', 'pk')
+        read_only_fields = (
+            'layers', 'pk', 'owners', 'submitted_at', 'feedback')
         fields = (
-            'pk', 'activity', 'layers', 'reflection', 'status'
+            'pk', 'activity', 'owners', 'layers', 'reflection', 'status',
+            'submitted_at', 'feedback'
         )
 
 
@@ -121,7 +134,7 @@ class EventSerializer(serializers.ModelSerializer):
 
 
 class LayerSerializer(serializers.ModelSerializer):
-    event_set = EventSerializer(many=True, read_only=True)
+    events = EventSerializer(many=True, read_only=True)
     content_object = GenericRelatedField({
         Project: serializers.HyperlinkedRelatedField(
             queryset=Project.objects.all(),
@@ -136,5 +149,5 @@ class LayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Layer
         fields = (
-            'title', 'pk', 'content_object', 'event_set'
+            'title', 'pk', 'content_object', 'events'
         )
