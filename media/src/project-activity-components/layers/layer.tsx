@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EventData, LayerData } from './layer-set';
+import { EventData, LayerData } from '../common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEye, faEyeSlash, faAngleDown, faAngleRight, faEllipsisV, faMapMarker,

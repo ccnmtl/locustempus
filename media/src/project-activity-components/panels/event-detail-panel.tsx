@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EventData } from '../layers/layer-set';
+import { EventData } from '../common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
@@ -115,7 +115,12 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 {activeEventDetail && activeEventDetail.media.length > 0 && (
                     <figure className={'lt-pane-section__image'}>
                         <img src={activeEventDetail.media[0].url} />
-                        <figcaption>Caption for the image</figcaption>
+                        <figcaption>
+                            {activeEventDetail.media[0].caption}<br/>
+                            <small>
+                                Source: {activeEventDetail.media[0].caption}
+                            </small>
+                        </figcaption>
                     </figure>
 
                 )}

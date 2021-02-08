@@ -10,12 +10,12 @@ import { Position } from '@deck.gl/core/utils/positions';
 import { PickInfo } from '@deck.gl/core/lib/deck';
 
 import { ProjectMapPane } from './project-map-pane';
-import { LayerData, EventData } from '../project-activity-components/layers/layer-set';
 import { LoadingModal } from '../project-activity-components/loading-modal';
 
 import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_COLOR,
-    ICON_COLOR_ACTIVE, ProjectData, ActivityData, DeckGLClickEvent
+    ICON_COLOR_ACTIVE, ProjectData, ActivityData, LayerData, EventData,
+    MediaObject, DeckGLClickEvent
 } from '../project-activity-components/common';
 
 import {get, put, post, del } from '../utils';
@@ -237,7 +237,7 @@ export const ProjectMap: React.FC = () => {
 
     const addEvent = (
         label: string, description: string, lat: number, lng: number,
-        mediaUrl: string | null): void => {
+        mediaObj: MediaObject | null): void => {
         // TODO: implement datetime
         const data = {
             label: label,
@@ -248,7 +248,7 @@ export const ProjectMap: React.FC = () => {
                 point: {lat: lat, lng: lng},
                 polygon: null
             },
-            media: mediaUrl ? [{url: mediaUrl}] : null
+            media: mediaObj ? [mediaObj] : null
         };
         void post<EventData>('/api/event/', data)
             .then((data) => {
@@ -274,7 +274,7 @@ export const ProjectMap: React.FC = () => {
 
     const updateEvent = (
         label: string, description: string, lat: number, lng: number,
-        pk: number, layerPk: number, mediaUrl: string | null): void => {
+        pk: number, layerPk: number, mediaObj: MediaObject | null): void => {
         // TODO: implement datetime update
         const obj = {
             label: label,
@@ -284,7 +284,7 @@ export const ProjectMap: React.FC = () => {
                 point: {lat: lat, lng: lng},
                 polygon: null
             },
-            media: mediaUrl ? [{url: mediaUrl}] : null
+            media: mediaObj ? [mediaObj] : null
         };
         void put<EventData>(`/api/event/${pk}/`, obj)
             .then((data) => {

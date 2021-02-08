@@ -351,7 +351,11 @@ class EventAPITest(CourseTestMixin, TestCase):
             'location': {
                 'point': {'lat': 45.0, 'lng': 90.0},
             },
-            'media': [{'url': 'https://some.bucket.example.com/img2.jpg'}]
+            'media': [{
+                'url': 'https://some.bucket.example.com/img2.jpg',
+                'caption': '',
+                'source': ''
+            }]
         }
 
         r2 = self.client.put(

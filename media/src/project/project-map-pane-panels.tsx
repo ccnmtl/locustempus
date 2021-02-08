@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { ActivityData } from '../project-activity-components/common';
+import { LayerData, EventData, ActivityData } from '../project-activity-components/common';
 import { BASE_MAPS, BASE_MAP_IMAGES } from '../project-activity-components/common';
-import { LayerData, EventData, LayerSet } from '../project-activity-components/layers/layer-set';
+import { LayerSet } from '../project-activity-components/layers/layer-set';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEllipsisV, faPencilAlt, faTrashAlt, faCaretRight, faCaretDown
