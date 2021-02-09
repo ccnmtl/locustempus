@@ -40,7 +40,7 @@ scandir==1.10.0  # ipython
 ipython==7.8.0
 coverage==5.4
 pyasn1==0.4.8
-cryptography<3.3.3  # pyOpenSSL
+cryptography<=3.2.1  # pyOpenSSL
 pyOpenSSL==20.0.1
 ndg-httpsclient==0.5.1
 urllib3==1.26.3  # requests
