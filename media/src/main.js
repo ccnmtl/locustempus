@@ -1,6 +1,7 @@
 window.jQuery = window.$ = require('jquery');
 require('tablesorter');
 
+import 'bootstrap';
 import './scss/main.scss';
 import './js/course-roster-invite.js';
 import './js/registration-form.js';

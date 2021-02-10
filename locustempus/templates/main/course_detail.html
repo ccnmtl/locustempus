@@ -13,21 +13,13 @@
     </div>
     <div class="col">
         <div class="d-flex justify-content-end">
-            <button type="button" class="lt-button mr-1 lt-button--transparent">
-                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" class="active" /></span>
-                <span class='lt-button__text'>Grid</span>
-            </button>
-            <button type="button" class="lt-button lt-button--transparent">
-                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" class="inactive" /></span>
-                <span class='lt-button__text'>List</span>
-            </button>
             {% if is_faculty %}
-            <div class="lt-menu-overflow">
-                <button type="button" class="lt-button mr-1 lt-button--transparent">
+            <div class="lt-menu-overflow btn-group">
+                <button type="button" class="lt-button mr-1 lt-button--transparent dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
                     <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-cog.svg" class="active" /></span>
-                    <span class='lt-button__text'>Manage</span>  {# dropdown not hooked up #}
+                    <span class='lt-button__text'>Manage</span>
                 </button>
-                <div class="lt-menu lt-menu-overflow--expand">
+                <div class="lt-menu lt-menu-overflow--bootstrap dropdown-menu">
                     <ul class="lt-list">
                         <li class="lt-list-item">
                             <a href="{% url 'course-edit-view' object.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
@@ -51,13 +43,17 @@
                 </div>
             </div>
             {% endif %}
+            <button type="button" class="lt-button mr-1 lt-button--transparent">
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" class="active" /></span>
+                <span class='lt-button__text'>Grid</span>
+            </button>
+            <button type="button" class="lt-button lt-button--transparent">
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" class="inactive" /></span>
+                <span class='lt-button__text'>List</span>
+            </button>
         </div>
     </div>
 </div>
-
-{% comment %}  Remove this when dropdown menu is implemented properly {% endcomment %}
-<div style="height: 3rem"></div>
-
 
 {% if is_faculty %}
 <div class="pt-3 px-3">

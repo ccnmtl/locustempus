@@ -6,7 +6,6 @@
     -webkit-border-radius: 4px;
     border-radius: 4px;
     }
-
 .lt-menu-overflow {
     position: relative;
     &--expand {
@@ -26,6 +25,20 @@
         /*padding: .5rem 0;
         margin: .125rem 0 0;
     */
+    }
+    &--bootstrap {
+        position: absolute;
+        font-size: .875rem;
+        line-height: 20px;
+        min-width: 10rem;
+        z-index: 1000;
+        display: none;
+        color: #212529;
+        text-align: left;
+        list-style: none;
+        background-clip: padding-box;
+        padding: 0;
+        margin: 0;
     }
 }
 
