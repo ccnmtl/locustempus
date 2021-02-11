@@ -136,7 +136,7 @@ export const ActivityMap: React.FC = () => {
 
     const clearActivePosition = (): void => {
         setActivePosition(null);
-        setMapboxLayers((prev) => {
+        setProjectMapboxLayers((prev) => {
             return prev.filter((el) => {
                 return el.id !== 'active-position';
             });
@@ -540,7 +540,9 @@ export const ActivityMap: React.FC = () => {
             setActiveEventEdit(null);
             setShowAddEventForm(true);
             setActivePosition([infoPrime.coordinate[1], infoPrime.coordinate[0]]);
-            let updatedLayers = mapboxLayers.filter((el) => {
+            // This pin gets added to the projectMapboxLayers list because its
+            // used on both the faculty and student view.
+            let updatedLayers = projectMapboxLayers.filter((el) => {
                 return el.id !== 'active-position';
             });
             // The click data needs to be packed this way so that the type
@@ -559,7 +561,7 @@ export const ActivityMap: React.FC = () => {
                 getSize: ICON_SIZE,
                 getColor: ICON_COLOR_ACTIVE,
             }));
-            setMapboxLayers(updatedLayers);
+            setProjectMapboxLayers(updatedLayers);
         }
     }
 
