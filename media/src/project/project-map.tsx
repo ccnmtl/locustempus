@@ -142,9 +142,9 @@ export const ProjectMap: React.FC = () => {
         data.title = title;
         data.description = description;
         data.base_map = baseMap;
-        void put(`/api/project/${projectPk}/`, data)
-            .then(() => {
-                setProjectData(data);
+        void put<ProjectData>(`/api/project/${projectPk}/`, data)
+            .then((d) => {
+                setProjectData(d);
             });
     };
 
