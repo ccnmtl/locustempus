@@ -14,12 +14,11 @@ import { LoadingModal } from '../project-activity-components/loading-modal';
 
 import {get, put, post, del } from '../utils';
 
-const STATIC_URL = LocusTempus.staticUrl;
 const CURRENT_USER = LocusTempus.currentUser.id;
 
 import {
-    ICON_SCALE, ICON_SIZE, ICON_COLOR, ICON_COLOR_ACTIVE, ProjectData,
-    LayerData, EventData, MediaObject, DeckGLClickEvent
+    ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_COLOR,
+    ICON_COLOR_ACTIVE, ProjectData, DeckGLClickEvent
 } from '../project-activity-components/common';
 
 export interface ActivityData {
@@ -127,12 +126,6 @@ export const ActivityMap: React.FC = () => {
     const [activePosition, setActivePosition] = useState<Position | null>(null);
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
-
-    // TODO: update this to common settings
-    const ICON_ATLAS = STATIC_URL + 'img/icon-map-marker.png';
-    const ICON_MAPPING = {
-        marker: {x: 0, y: 0, width: 384, height: 512, anchorY: 512, mask: true}
-    };
 
     const clearActivePosition = (): void => {
         setActivePosition(null);
