@@ -87,6 +87,13 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
         setShowPane(!showPane);
     };
 
+    let editMenuVis = false;
+    if ((isFaculty && activeLayer && isProjectLayer(activeLayer)) ||
+        (!isFaculty && activeLayer && !isProjectLayer(activeLayer))) {
+        editMenuVis = true;
+    }
+
+
     const DEFAULT_PANEL = 3;
     const EVENT_EDIT_PANEL = 2;
     const EVENT_DETAIL_PANEL = 1;
@@ -118,7 +125,7 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
             activeEventEdit={activeEventEdit}
             setActiveEventEdit={setActiveEventEdit}
             deleteEvent={deleteEvent}
-            isProjectLayer={isProjectLayer}
+            showEditMenu={editMenuVis}
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         2: <> {activeEventEdit && (
             <EventEditPanel
