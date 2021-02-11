@@ -60,19 +60,51 @@
         <nav class="navbar py-0 pl-0">
             <a href="/" class="navbar-brand py-0"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo-bgdark.svg" alt="Locus Tempus logo"></a>
             {% block usernav %}
+            <div class="user-nav">
                 {% if request.user.is_anonymous %}
-                <a href="/accounts/login/?next=/" class="user-auth--login">Log in</a>
-                {% else %}
-                <a href="/dashboard/">Dashboard</a>
-                <a href="/accounts/logout/?next=/" class="user-auth--logout">
-                {% if user.first_name %}
-                  Hi, {{ user.first_name }}!
-                {% else %}
-                  Hi, {{ user.username }}!
-                {% endif %}
-                Log out
+                <a href="/accounts/login/?next=/" class="lt-button lt-button--transparent">
+                    <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-signin.svg" class="user-nav__icon" /></span>
+                    <span class='lt-button__text'>Sign in</span>
                 </a>
+                {% else %}
+                <div class="lt-menu-overflow btn-group">
+                    <button type="button" class="lt-button lt-button--transparent dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+                        <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-user.svg" class="user-nav__icon" /></span>
+                        <span class='lt-button__text'>
+                        {% if user.first_name %}
+                          Hello, {{ user.first_name }}!
+                        {% else %}
+                          Hello, {{ user.username }}!
+                        {% endif %}
+                        </span>
+                    </button>
+                    <div class="lt-menu lt-menu-overflow--bootstrap dropdown-menu">
+                        <ul class="lt-list">
+                            <li class="lt-list-item">
+                                <a href="/dashboard/" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                                <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-grid.svg" /></span>
+                                <span class="lt-list-item__primary-text">Your Workspaces</span>
+                                </a>
+                            </li>
+                            {% if user.is_superuser %}
+                            <li class="lt-list-item">
+                                <a href="#" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                                <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-impersonate.svg" /></span>
+                                <span class="lt-list-item__primary-text">Impersonate</span>
+                                </a>
+                            </li>
+                            {% endif %}
+                            <li class="lt-list-item border-top">
+                                <a href="/accounts/logout/?next=/" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                                <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-sign-out.svg" /></span>
+                                <span class="lt-list-item__primary-text"><b>Sign out</b></span>
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
                 {% endif %}
+            </div>
             {% endblock %}
         </nav>
     </header>

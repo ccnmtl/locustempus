@@ -2,45 +2,6 @@
 //     .btn
 //
 
-%user-auth {
-        @extend .btn;
-        background-image: url('/media/img/icon-user.svg');
-        background-repeat: no-repeat;
-        background-position: 0.5rem center;
-        background-size: 1.25rem;
-        padding-left: 2.25rem;
-        color: $white;
-        font-size: $font-size-base;
-}
-
-%user-auth-homepage {
-        @extend .btn;
-        background-size: 1.75rem;
-        padding-left: 2.75rem;
-        font-size: 1.25rem;
-        transition: all 0.4s ease-in-out;
-        -webkit-transition: all 0.5s ease-in-out;
-        -moz-transition: all 0.5s ease-in-out;
-}
-
-.user-auth {
-    .header--homepage &--login {
-        @extend %user-auth;
-        @extend %user-auth-homepage;
-    }
-    .header--homepage &--logout {
-        @extend %user-auth;
-        @extend %user-auth-homepage;
-    }
-    .header--homepage.shrink &--login,
-    &--login {
-        @extend %user-auth;
-    }
-    .header--homepage.shrink &--logout,
-    &--logout {
-        @extend %user-auth;
-    }
-}
 
 .overflow-toggle {
     @extend .btn;

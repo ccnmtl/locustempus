@@ -153,11 +153,6 @@
 }
 
 
-
-
-
-
-
 .lt-file-button-upload {
     cursor: pointer;
     display: block;
@@ -197,12 +192,56 @@
     cursor: pointer;
 }
 
-// input[type=file]::-webkit-file-upload-button:hover {
-//   background-color: #81ecec;
-//   border: 1px solid #00cec9;
-// }
-// 
-// input[type=file]::file-selector-button:hover {
-//   background-color: #81ecec;
-//   border: 1px solid #00cec9;
-// }
+
+/* Log in/out button */
+
+%user-auth {
+    color: $white;
+    font-size: $font-size-base;
+    text-transform: none !important;
+}
+
+%user-auth-homepage {
+    font-size: 1.25rem;
+    text-transform: none !important;
+    transition: all 0.4s linear;
+    -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+}
+
+.header--homepage .user-nav .lt-button__text {
+    font-size: 1.25rem;
+    text-transform: none !important;
+    transition: all 0.4s linear;
+    -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+}
+
+.header--homepage .user-nav .dropdown-toggle .lt-icons {
+    width: 1.75rem;
+    height: 1.75rem;
+    transition: all 0.4s linear;
+    -webkit-transition: all 0.5s linear;
+    -moz-transition: all 0.5s linear;
+}
+
+.header--homepage.shrink .user-nav .lt-button__text,
+.user-nav .lt-button__text {
+    color: $white;
+    font-size: $font-size-base;
+    text-transform: none !important;
+}
+.header--homepage.shrink .user-nav .dropdown-toggle .lt-icons,
+.lt-icons {
+    width: 1.25rem;
+    height: 1.25rem;
+}
+
+.user-nav__icon {
+    -webkit-filter: $ffffff;
+    filter: $ffffff;
+}
+
+.user-nav .dropdown-toggle::after {
+    border-top-color: #fff !important;
+}
