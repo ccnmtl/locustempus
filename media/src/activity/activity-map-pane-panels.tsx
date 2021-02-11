@@ -118,6 +118,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                     <div className='fade-load'>
                         <LayerSet
                             layers={projectLayers}
+                            addLayer={isFaculty ? addLayer : undefined}
+                            deleteLayer={isFaculty ? deleteLayer : undefined}
                             toggleLayerVisibility={toggleLayerVisibility}
                             layerVisibility={layerVisibility}
                             activeLayer={activeLayer}

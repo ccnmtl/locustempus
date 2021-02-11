@@ -233,7 +233,21 @@ export const ActivityMap: React.FC = () => {
     };
 
     const addLayer = (respPk: number | null = null): void => {
-        if (!isFaculty && (responseData.length == 1 || respPk)) {
+        if (isFaculty && projectPk) {
+            const newLayer = {
+                title: `Layer ${layerTitleCount}`,
+                content_object: `/api/project/${projectPk}/`
+            };
+            void post<LayerData>('/api/layer/', newLayer)
+                .then((data) => {
+                    const layers = new Map(projectLayerData);
+                    layers.set(data.pk, data);
+                    setProjectLayerData(layers);
+
+                    setActiveLayer(data.pk);
+                    setLayerTitleCount((prev) => {return prev + 1;});
+                });
+        } else if (!isFaculty && (responseData.length == 1 || respPk)) {
             const responsePk = respPk || responseData[0].pk;
             const newLayer = {
                 title: `Layer ${layerTitleCount}`,
@@ -250,7 +264,9 @@ export const ActivityMap: React.FC = () => {
                 });
         } else {
             throw new Error(
-                'Layer creation failed because no Locus Tempus response object has been set.');
+                'Layer creation failed because no Locus Tempus ' +
+                'project or response object has been set.'
+            );
         }
     };
 
@@ -266,7 +282,19 @@ export const ActivityMap: React.FC = () => {
                     // is called here instead
                     // TODO: refactor addLayer so optional params can be passed in
                     // to handle stale closure
-                    if (!isFaculty && responseData.length == 1) {
+                    if (isFaculty && projectPk) {
+                        const newLayer = {
+                            title: `Layer ${layerTitleCount}`,
+                            content_object: `/api/project/${projectPk}/`
+                        };
+                        void post<LayerData>('/api/layer/', newLayer)
+                            .then((data) => {
+                                setProjectLayerData(new Map([[data.pk, data]]));
+                                setActiveLayer(data.pk);
+                                setLayerTitleCount(
+                                    (prev) => {return prev + 1;});
+                            });
+                    } else if (!isFaculty && responseData.length == 1) {
                         const responsePk = responseData[0].pk;
                         const newLayer = {
                             title: `Layer ${layerTitleCount}`,
@@ -289,11 +317,22 @@ export const ActivityMap: React.FC = () => {
     };
 
     const updateLayer = (pk: number, title: string): void => {
-        const obj = {
-            title: title,
-            content_object: `/api/response/${responseData[0].pk}/`
-        };
-        if (!isFaculty && responseData.length == 1) {
+        if (isFaculty && projectPk) {
+            const obj = {
+                title: title,
+                content_object: `/api/project/${projectPk}/`
+            };
+            void put<LayerData>(`/api/layer/${pk}/`, obj)
+                .then((data) => {
+                    const layers = new Map(projectLayerData);
+                    layers.set(data.pk, data);
+                    setProjectLayerData(layers);
+                });
+        } else if (!isFaculty && responseData.length == 1) {
+            const obj = {
+                title: title,
+                content_object: `/api/response/${responseData[0].pk}/`
+            };
             void put<LayerData>(`/api/layer/${pk}/`, obj)
                 .then((data) => {
                     const layers = new Map(layerData);
@@ -301,8 +340,8 @@ export const ActivityMap: React.FC = () => {
                     setLayerData(layers);
                 });
         } else {
-            throw new Error('Layer update failed because no Locus Tempus Response ' +
-                'object has been set');
+            throw new Error('Layer update failed because no Locus Tempus project or ' +
+                'response object has been set');
         }
     };
 
@@ -356,7 +395,7 @@ export const ActivityMap: React.FC = () => {
         void post<EventData>('/api/event/', data)
             .then((data) => {
                 if (activeLayer) {
-                    const updatedLayers = new Map(layerData);
+                    const updatedLayers = new Map(isFaculty ? projectLayerData : layerData);
                     const layer = layerData.get(activeLayer);
 
                     if (layer) {
@@ -366,7 +405,8 @@ export const ActivityMap: React.FC = () => {
                         };
                         updatedLayers.set(activeLayer, updatedLayer);
 
-                        updateMapboxLayers(updatedLayers);
+                        const setterFunc = isFaculty ? setProjectMapboxLayers : setMapboxLayers;
+                        updateMapboxLayers(updatedLayers, setterFunc, layerVisibility);
                         setActiveEventDetail(data);
                         setActiveEvent(data);
                         goToNewEvent();
