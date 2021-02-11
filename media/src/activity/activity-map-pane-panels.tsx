@@ -211,8 +211,8 @@ interface FacultySubPanelProps {
 
 const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     responseData, createFeedback, updateFeedback, responseLayers,
-    toggleResponseVisibility, activeLayer, setActiveLayer, activeEvent,
-    setActiveEvent, setActiveEventDetail, activeEventEdit
+    toggleResponseVisibility, activeEvent, setActiveEvent,
+    setActiveEventDetail, activeEventEdit
 }: FacultySubPanelProps) => {
 
     const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);
