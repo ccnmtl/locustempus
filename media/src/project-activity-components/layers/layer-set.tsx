@@ -2,32 +2,7 @@ import React  from 'react';
 import { Layer } from './layer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
-import { Position } from '@deck.gl/core/utils/positions';
-
-interface MediaObject {
-    url: string;
-}
-
-export interface EventData {
-    lngLat: Position;
-    label: string;
-    layer: number;
-    pk: number;
-    description: string;
-    datetime: string;
-    location: {
-        point: string;
-        polygon: string;
-        lng_lat: Position;
-    };
-    media: MediaObject[];
-}
-
-export interface LayerData {
-    pk: number;
-    title: string;
-    events: EventData[];
-}
+import {LayerData, EventData } from '../common';
 
 // Add LayerVisibility map
 interface LayerSetProps {

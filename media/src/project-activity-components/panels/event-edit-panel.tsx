@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { MediaEditor } from '../layers/media-editor';
-import { EventData } from '../layers/layer-set';
+import { EventData, MediaObject } from '../common';
 import ReactQuill from 'react-quill';
 
 
@@ -10,7 +10,7 @@ interface EventEditPanelProps {
     setActiveEventEdit(d: EventData | null): void;
     updateEvent(label: string, description: string,
                 lat: number, lng: number, pk: number,
-                layerPk: number, mediaUrl: string | null): void;
+                layerPk: number, mediaObj: MediaObject | null): void;
     paneHeaderHeight: number;
 }
 
@@ -29,6 +29,8 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
     ] = useState<string>(activeEventEdit.datetime || '');
 
     const [fileS3Url, setFileS3Url] = useState<string | null>(null);
+    const [source, setSource] = useState<string>('');
+    const [caption, setCaption] = useState<string>('');
 
     useEffect(() => {
         if (activeEventEdit.media.length > 0) {
@@ -46,10 +48,12 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
+        const media = fileS3Url ? {
+            url: fileS3Url, source: source, caption: caption} : null;
         updateEvent(
             eventName, description, activeEventEdit.location.lng_lat[1],
             activeEventEdit.location.lng_lat[0],
-            activeEventEdit.pk, activeEventEdit.layer, fileS3Url);
+            activeEventEdit.pk, activeEventEdit.layer, media);
         setActiveEventEdit(null);
     };
 
@@ -64,7 +68,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                 <h2>Edit Event Marker</h2>
             </div>
             <div className={'pane-content-body'}>
-                <form onSubmit={handleFormSubmit} >
+                <form onSubmit={handleFormSubmit}>
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__name'}>Name</label>
                         <input
@@ -80,7 +84,13 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                     {/* Edit image form */}
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__image'}>Image</label>
-                        <MediaEditor fileS3Url={fileS3Url} setFileS3Url={setFileS3Url} />
+                        <MediaEditor
+                            fileS3Url={fileS3Url}
+                            setFileS3Url={setFileS3Url}
+                            source={source}
+                            setSource={setSource}
+                            caption={caption}
+                            setCaption={setCaption}/>
                     </div>
 
                     <div className={'pane-form-divider'} />

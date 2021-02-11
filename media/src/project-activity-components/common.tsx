@@ -1,4 +1,5 @@
 /* A place to set shared settings */
+import { Position } from '@deck.gl/core/utils/positions';
 export const STATIC_URL = LocusTempus.staticUrl;
 
 export const ICON_ATLAS = STATIC_URL + 'img/icon-map-marker.png';
@@ -45,6 +46,33 @@ export interface ActivityData {
     pk: number;
     description: string;
     instructions: string;
+}
+
+export interface MediaObject {
+    url: string;
+    source?: string;
+    caption?: string;
+}
+
+export interface EventData {
+    lngLat: Position;
+    label: string;
+    layer: number;
+    pk: number;
+    description: string;
+    datetime: string;
+    location: {
+        point: string;
+        polygon: string;
+        lng_lat: Position;
+    };
+    media: MediaObject[];
+}
+
+export interface LayerData {
+    pk: number;
+    title: string;
+    events: EventData[];
 }
 
 export interface DeckGLClickEvent extends MouseEvent {

@@ -10,7 +10,6 @@ import { Position } from '@deck.gl/core/utils/positions';
 import { PickInfo } from '@deck.gl/core/lib/deck';
 
 import { ActivityMapPane } from './activity-map-pane';
-import { LayerData, EventData } from '../project-activity-components/layers/layer-set';
 import { LoadingModal } from '../project-activity-components/loading-modal';
 
 import {get, put, post, del } from '../utils';
@@ -19,7 +18,8 @@ const STATIC_URL = LocusTempus.staticUrl;
 const CURRENT_USER = LocusTempus.currentUser.id;
 
 import {
-    ICON_SCALE, ICON_SIZE, ICON_COLOR, ICON_COLOR_ACTIVE, ProjectData, DeckGLClickEvent
+    ICON_SCALE, ICON_SIZE, ICON_COLOR, ICON_COLOR_ACTIVE, ProjectData,
+    LayerData, EventData, MediaObject, DeckGLClickEvent
 } from '../project-activity-components/common';
 
 export interface ActivityData {
@@ -341,7 +341,7 @@ export const ActivityMap: React.FC = () => {
 
     const addEvent = (
         label: string, description: string, lat: number,
-        lng: number, mediaUrl: string | null): void => {
+        lng: number, mediaObj: MediaObject | null): void => {
         const data = {
             label: label,
             layer: activeLayer,
@@ -351,7 +351,7 @@ export const ActivityMap: React.FC = () => {
                 point: {lat: lat, lng: lng},
                 polygon: null
             },
-            media: mediaUrl ? [{url: mediaUrl}] : null
+            media: mediaObj ? [mediaObj] : null
         };
         void post<EventData>('/api/event/', data)
             .then((data) => {
@@ -377,7 +377,7 @@ export const ActivityMap: React.FC = () => {
 
     const updateEvent = (
         label: string, description: string, lat: number, lng: number,
-        pk: number, layerPk: number): void => {
+        pk: number, layerPk: number, mediaObj: MediaObject | null): void => {
         const obj = {
             label: label,
             description: description,
@@ -385,7 +385,8 @@ export const ActivityMap: React.FC = () => {
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
-            }
+            },
+            media: mediaObj ? [mediaObj] : null
         };
         void put<EventData>(`/api/event/${pk}/`, obj)
             .then((data: EventData) => {

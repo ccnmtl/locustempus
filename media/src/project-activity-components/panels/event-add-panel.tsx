@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Position } from '@deck.gl/core/utils/positions';
 import { MediaEditor } from '../layers/media-editor';
+import { MediaObject } from '../common';
 import ReactQuill from 'react-quill';
 
 interface EventAddPanelProps {
@@ -9,7 +10,7 @@ interface EventAddPanelProps {
     activePosition: Position | null;
     addEvent(
         label: string, description: string, lat: number, lng: number,
-        mediaUrl: string | null): void;
+        mediaObj: MediaObject | null): void;
     clearActivePosition(): void;
     setActiveTab(val: number): void;
     paneHeaderHeight: number;
@@ -24,6 +25,8 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
     const [description, setDescription] = useState<string>('');
     const [datetime, setDatetime] = useState<string>('');
     const [fileS3Url, setFileS3Url] = useState<string | null>(null);
+    const [source, setSource] = useState<string>('');
+    const [caption, setCaption] = useState<string>('');
 
     const handleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setEventName(e.target.value);
@@ -36,9 +39,11 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         if (activePosition) {
+            const media = fileS3Url ? {
+                url: fileS3Url, source: source, caption: caption} : null;
             addEvent(
                 eventName === '' ? 'Untitled Marker' : eventName,
-                description, activePosition[0], activePosition[1], fileS3Url);
+                description, activePosition[0], activePosition[1], media);
             setShowAddEventForm(false);
             // TODO pass in the active tab this should return to
             setActiveTab(1);
@@ -74,7 +79,13 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                     {/* Add image form */}
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__image'}>Image</label>
-                        <MediaEditor fileS3Url={fileS3Url} setFileS3Url={setFileS3Url} />
+                        <MediaEditor
+                            fileS3Url={fileS3Url}
+                            setFileS3Url={setFileS3Url}
+                            source={source}
+                            setSource={setSource}
+                            caption={caption}
+                            setCaption={setCaption}/>
                     </div>
                     <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group'}>

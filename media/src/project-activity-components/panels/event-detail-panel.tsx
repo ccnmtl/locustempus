@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { EventData } from '../layers/layer-set';
+import { EventData } from '../common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
@@ -46,6 +46,9 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
         setActiveEventEdit(activeEventDetail);
     };
 
+    const isMenuVisible = isProjectLayer === undefined ||
+        (activeLayer && !isProjectLayer(activeLayer));
+
     return (
         <>
             <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
@@ -60,7 +63,7 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 <div className='lt-pane-section__header'>
                     <h2>{activeEventDetail && activeEventDetail.label}</h2>
                     <div className={'lt-menu-overflow trailing'}>
-                        {isProjectLayer && activeLayer && !isProjectLayer(activeLayer) && (
+                        {isMenuVisible && (
                             <button onClick={handleMenuToggle}
                                 className={'lt-icon-button lt-icon-button--transparent'}
                                 aria-label={showMenu ?
@@ -112,7 +115,12 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 {activeEventDetail && activeEventDetail.media.length > 0 && (
                     <figure className={'lt-pane-section__image'}>
                         <img src={activeEventDetail.media[0].url} />
-                        <figcaption>Caption for the image</figcaption>
+                        <figcaption>
+                            {activeEventDetail.media[0].caption}<br/>
+                            <small>
+                                Source: {activeEventDetail.media[0].caption}
+                            </small>
+                        </figcaption>
                     </figure>
 
                 )}

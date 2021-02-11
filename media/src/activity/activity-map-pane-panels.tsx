@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import {
-    LayerSet, LayerData, EventData
-} from '../project-activity-components/layers/layer-set';
+import { LayerSet } from '../project-activity-components/layers/layer-set';
+import { LayerData, EventData } from '../project-activity-components/common';
 import {
     ActivityData, ResponseData, ResponseStatus,
 } from './activity-map';

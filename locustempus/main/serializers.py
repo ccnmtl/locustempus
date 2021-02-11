@@ -83,7 +83,7 @@ class MediaObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MediaObject
-        fields = ['url']
+        fields = ['url', 'source', 'caption']
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -92,14 +92,15 @@ class EventSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         location_data = validated_data.pop('location')
-        media_urls = validated_data.pop('media')
+
+        media_lst = validated_data.pop('media')
 
         event = Event.objects.create(**validated_data)
         Location.objects.create(event=event, **location_data)
 
-        if media_urls:
+        if media_lst:
             event.media.set(
-                [MediaObject.objects.create(url=m['url']) for m in media_urls])
+                [MediaObject.objects.create(**m) for m in media_lst])
 
         return event
 
@@ -119,10 +120,21 @@ class EventSerializer(serializers.ModelSerializer):
             instance.location.save()
 
         # Update media urls
-        media_urls = validated_data.pop('media')
-        if media_urls:
-            instance.media.set(
-                [MediaObject.objects.create(url=m['url']) for m in media_urls])
+        media_lst = validated_data.pop('media')
+        if media_lst:
+            current_media = instance.media.first()
+            updated_media = media_lst[0]
+            if current_media:
+                current_media.url = updated_media.get('url', current_media.url)
+                current_media.caption = updated_media.get(
+                    'caption', current_media.caption)
+                current_media.source = updated_media.get(
+                    'source', current_media.source)
+                current_media.save()
+            else:
+                instance.media.set(
+                    [MediaObject.objects.create(**m) for m in media_lst])
+
         return instance
 
     class Meta:

@@ -1,8 +1,8 @@
 import React, { useState, ReactElement, useEffect, useRef } from 'react';
-import { LayerData, EventData } from '../project-activity-components/layers/layer-set';
 import {
     ActivityData, ResponseData, ResponseStatus
 } from './activity-map';
+import { LayerData, EventData, MediaObject } from '../project-activity-components/common';
 import { Position } from '@deck.gl/core/utils/positions';
 import { DefaultPanel } from './activity-map-pane-panels';
 import {
@@ -31,7 +31,7 @@ export interface ActivityMapPaneProps {
     setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
     addEvent(label: string,
-             description: string, lat: number, lng: number, mediaUrl: string | null): void;
+             description: string, lat: number, lng: number, mediaObj: MediaObject | null): void;
     deleteEvent(pk: number, layerPk: number): void;
     clearActivePosition(): void;
     activeEvent: EventData | null;
@@ -40,8 +40,9 @@ export interface ActivityMapPaneProps {
     setActiveEventDetail(d: EventData): void;
     activeEventEdit: EventData | null;
     setActiveEventEdit(d: EventData): void;
-    updateEvent(label: string, description: string,
-                lat: number, lng: number, pk: number, layerPk: number): void;
+    updateEvent(
+        label: string, description: string, lat: number, lng: number, pk: number,
+        layerPk: number, mediaObj: MediaObject | null): void;
     responseData: ResponseData[];
     updateResponse(reflection?: string, status?: ResponseStatus): void;
     createFeedback(responsePk: number, feedback: string): void;

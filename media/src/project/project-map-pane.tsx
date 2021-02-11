@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useRef, ReactElement } from 'react';
-import { ActivityData } from '../project-activity-components/common';
-import { EventData, LayerData } from '../project-activity-components/layers/layer-set';
+import {
+    ActivityData, EventData, LayerData, MediaObject
+} from '../project-activity-components/common';
 import { Position } from '@deck.gl/core/utils/positions';
 import {
     DefaultPanel, ProjectCreateEditPanel
@@ -38,7 +39,7 @@ export interface ProjectMapPaneProps {
     setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
     addEvent(label: string,
-             description: string, lat: number, lng: number, mediaUrl: string | null): void;
+             description: string, lat: number, lng: number, mediaObj: MediaObject | null): void;
     deleteEvent(pk: number, layerPk: number): void;
     clearActivePosition(): void;
     activeEvent: EventData | null;
@@ -49,7 +50,7 @@ export interface ProjectMapPaneProps {
     setActiveEventEdit(d: EventData): void;
     updateEvent(label: string, description: string,
                 lat: number, lng: number, pk: number,
-                layerPk: number, mediaUrl: string | null): void;
+                layerPk: number, mediaObj: MediaObject | null): void;
 }
 
 export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
