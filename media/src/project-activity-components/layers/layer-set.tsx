@@ -12,8 +12,8 @@ interface LayerSetProps {
     updateLayer?(pk: number, title: string): void;
     layerVisibility?: Map<number, boolean>;
     toggleLayerVisibility?(pk: number): void;
-    activeLayer: number | null;
-    setActiveLayer(pk: number): void;
+    activeLayer?: number | null;
+    setActiveLayer?(pk: number): void;
     activeEvent: EventData | null;
     setActiveEvent(d: EventData): void;
     setActiveEventDetail(d: EventData): void;

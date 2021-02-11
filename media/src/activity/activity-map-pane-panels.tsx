@@ -122,8 +122,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             deleteLayer={isFaculty ? deleteLayer : undefined}
                             toggleLayerVisibility={toggleLayerVisibility}
                             layerVisibility={layerVisibility}
-                            activeLayer={activeLayer}
-                            setActiveLayer={setActiveLayer}
+                            activeLayer={isFaculty ? activeLayer : undefined}
+                            setActiveLayer={isFaculty ? setActiveLayer : undefined}
                             setActiveEvent={setActiveEvent}
                             activeEvent={activeEvent}
                             setActiveEventDetail={setActiveEventDetail}
@@ -270,8 +270,6 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 <div>
                     <LayerSet
                         layers={activeResonseLayers}
-                        activeLayer={activeLayer}
-                        setActiveLayer={setActiveLayer}
                         setActiveEvent={setActiveEvent}
                         activeEvent={activeEvent}
                         setActiveEventDetail={setActiveEventDetail}

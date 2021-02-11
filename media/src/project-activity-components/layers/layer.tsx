@@ -8,8 +8,8 @@ import {
 
 export interface LayerProps {
     layer: LayerData;
-    activeLayer: number | null;
-    setActiveLayer(pk: number): void;
+    activeLayer?: number | null;
+    setActiveLayer?(pk: number): void;
     deleteLayer?(pk: number): void;
     updateLayer?(pk: number, title: string): void;
     layerVisibility?: Map<number, boolean>;
@@ -50,7 +50,9 @@ export const Layer: React.FC<LayerProps> = (
     };
 
     const handleSetActiveLayer = (): void => {
-        setActiveLayer(layer.pk);
+        if (setActiveLayer) {
+            setActiveLayer(layer.pk);
+        }
     };
 
     const isActiveLayer = layer.pk == activeLayer;
