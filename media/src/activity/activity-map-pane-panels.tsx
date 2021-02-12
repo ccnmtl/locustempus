@@ -118,10 +118,12 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                     <div className='fade-load'>
                         <LayerSet
                             layers={projectLayers}
+                            addLayer={isFaculty ? addLayer : undefined}
+                            deleteLayer={isFaculty ? deleteLayer : undefined}
                             toggleLayerVisibility={toggleLayerVisibility}
                             layerVisibility={layerVisibility}
-                            activeLayer={activeLayer}
-                            setActiveLayer={setActiveLayer}
+                            activeLayer={isFaculty ? activeLayer : undefined}
+                            setActiveLayer={isFaculty ? setActiveLayer : undefined}
                             setActiveEvent={setActiveEvent}
                             activeEvent={activeEvent}
                             setActiveEventDetail={setActiveEventDetail}
@@ -209,8 +211,8 @@ interface FacultySubPanelProps {
 
 const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     responseData, createFeedback, updateFeedback, responseLayers,
-    toggleResponseVisibility, activeLayer, setActiveLayer, activeEvent,
-    setActiveEvent, setActiveEventDetail, activeEventEdit
+    toggleResponseVisibility, activeEvent, setActiveEvent,
+    setActiveEventDetail, activeEventEdit
 }: FacultySubPanelProps) => {
 
     const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);
@@ -268,8 +270,6 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 <div>
                     <LayerSet
                         layers={activeResonseLayers}
-                        activeLayer={activeLayer}
-                        setActiveLayer={setActiveLayer}
                         setActiveEvent={setActiveEvent}
                         activeEvent={activeEvent}
                         setActiveEventDetail={setActiveEventDetail}

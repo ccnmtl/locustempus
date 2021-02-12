@@ -142,9 +142,9 @@ export const ProjectMap: React.FC = () => {
         data.title = title;
         data.description = description;
         data.base_map = baseMap;
-        void put(`/api/project/${projectPk}/`, data)
-            .then(() => {
-                setProjectData(data);
+        void put<ProjectData>(`/api/project/${projectPk}/`, data)
+            .then((d) => {
+                setProjectData(d);
             });
     };
 
@@ -429,12 +429,8 @@ export const ProjectMap: React.FC = () => {
             }
 
             // Get Activity info
-            if (projectData.activity) {
-                const activityResponse = await fetch(`/api/activity/${projectData.activity}`);
-                if (!activityResponse.ok) {
-                    throw new Error('Activity data not loaded.');
-                }
-                setActivity(await activityResponse.json());
+            if (projData.activity) {
+                setActivity(await get<ActivityData>(`/api/activity/${projData.activity}`));
             }
         };
 

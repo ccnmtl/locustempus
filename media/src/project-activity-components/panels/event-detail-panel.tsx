@@ -12,14 +12,14 @@ interface EventDetailPanelProps {
     activeEventEdit: EventData | null;
     setActiveEventEdit(d: EventData | null): void;
     deleteEvent(pk: number, layerPk: number): void;
-    isProjectLayer?(pk: number): boolean;
+    showEditMenu: boolean;
     paneHeaderHeight: number;
 }
 
 export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     {
         activeLayer, activeEventDetail, setActiveEventDetail,
-        setActiveEventEdit, deleteEvent, isProjectLayer, paneHeaderHeight
+        setActiveEventEdit, deleteEvent, paneHeaderHeight, showEditMenu
     }: EventDetailPanelProps) => {
     const [showMenu, setShowMenu] = useState<boolean>(false);
 
@@ -46,9 +46,6 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
         setActiveEventEdit(activeEventDetail);
     };
 
-    const isMenuVisible = isProjectLayer === undefined ||
-        (activeLayer && !isProjectLayer(activeLayer));
-
     return (
         <>
             <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
@@ -63,7 +60,7 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 <div className='lt-pane-section__header'>
                     <h2>{activeEventDetail && activeEventDetail.label}</h2>
                     <div className={'lt-menu-overflow trailing'}>
-                        {isMenuVisible && (
+                        {showEditMenu && (
                             <button onClick={handleMenuToggle}
                                 className={'lt-icon-button lt-icon-button--transparent'}
                                 aria-label={showMenu ?

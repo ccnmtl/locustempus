@@ -157,6 +157,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             activeEventEdit={activeEventEdit}
             setActiveEventEdit={setActiveEventEdit}
             deleteEvent={deleteEvent}
+            showEditMenu={true}
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         2: <> {activeEventEdit && (
             <EventEditPanel

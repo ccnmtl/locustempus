@@ -14,12 +14,12 @@ import { LoadingModal } from '../project-activity-components/loading-modal';
 
 import {get, put, post, del } from '../utils';
 
-const STATIC_URL = LocusTempus.staticUrl;
 const CURRENT_USER = LocusTempus.currentUser.id;
 
 import {
-    ICON_SCALE, ICON_SIZE, ICON_COLOR, ICON_COLOR_ACTIVE, ProjectData,
-    LayerData, EventData, MediaObject, DeckGLClickEvent
+    ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_COLOR,
+    ICON_COLOR_ACTIVE, ProjectData, DeckGLClickEvent, LayerData, EventData,
+    MediaObject
 } from '../project-activity-components/common';
 
 export interface ActivityData {
@@ -128,15 +128,9 @@ export const ActivityMap: React.FC = () => {
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
 
-    // TODO: update this to common settings
-    const ICON_ATLAS = STATIC_URL + 'img/icon-map-marker.png';
-    const ICON_MAPPING = {
-        marker: {x: 0, y: 0, width: 384, height: 512, anchorY: 512, mask: true}
-    };
-
     const clearActivePosition = (): void => {
         setActivePosition(null);
-        setMapboxLayers((prev) => {
+        setProjectMapboxLayers((prev) => {
             return prev.filter((el) => {
                 return el.id !== 'active-position';
             });
@@ -233,7 +227,21 @@ export const ActivityMap: React.FC = () => {
     };
 
     const addLayer = (respPk: number | null = null): void => {
-        if (!isFaculty && (responseData.length == 1 || respPk)) {
+        if (isFaculty && projectPk) {
+            const newLayer = {
+                title: `Layer ${layerTitleCount}`,
+                content_object: `/api/project/${projectPk}/`
+            };
+            void post<LayerData>('/api/layer/', newLayer)
+                .then((data) => {
+                    const layers = new Map(projectLayerData);
+                    layers.set(data.pk, data);
+                    setProjectLayerData(layers);
+
+                    setActiveLayer(data.pk);
+                    setLayerTitleCount((prev) => {return prev + 1;});
+                });
+        } else if (!isFaculty && (responseData.length == 1 || respPk)) {
             const responsePk = respPk || responseData[0].pk;
             const newLayer = {
                 title: `Layer ${layerTitleCount}`,
@@ -250,7 +258,9 @@ export const ActivityMap: React.FC = () => {
                 });
         } else {
             throw new Error(
-                'Layer creation failed because no Locus Tempus response object has been set.');
+                'Layer creation failed because no Locus Tempus ' +
+                'project or response object has been set.'
+            );
         }
     };
 
@@ -266,7 +276,19 @@ export const ActivityMap: React.FC = () => {
                     // is called here instead
                     // TODO: refactor addLayer so optional params can be passed in
                     // to handle stale closure
-                    if (!isFaculty && responseData.length == 1) {
+                    if (isFaculty && projectPk) {
+                        const newLayer = {
+                            title: `Layer ${layerTitleCount}`,
+                            content_object: `/api/project/${projectPk}/`
+                        };
+                        void post<LayerData>('/api/layer/', newLayer)
+                            .then((data) => {
+                                setProjectLayerData(new Map([[data.pk, data]]));
+                                setActiveLayer(data.pk);
+                                setLayerTitleCount(
+                                    (prev) => {return prev + 1;});
+                            });
+                    } else if (!isFaculty && responseData.length == 1) {
                         const responsePk = responseData[0].pk;
                         const newLayer = {
                             title: `Layer ${layerTitleCount}`,
@@ -289,11 +311,22 @@ export const ActivityMap: React.FC = () => {
     };
 
     const updateLayer = (pk: number, title: string): void => {
-        const obj = {
-            title: title,
-            content_object: `/api/response/${responseData[0].pk}/`
-        };
-        if (!isFaculty && responseData.length == 1) {
+        if (isFaculty && projectPk) {
+            const obj = {
+                title: title,
+                content_object: `/api/project/${projectPk}/`
+            };
+            void put<LayerData>(`/api/layer/${pk}/`, obj)
+                .then((data) => {
+                    const layers = new Map(projectLayerData);
+                    layers.set(data.pk, data);
+                    setProjectLayerData(layers);
+                });
+        } else if (!isFaculty && responseData.length == 1) {
+            const obj = {
+                title: title,
+                content_object: `/api/response/${responseData[0].pk}/`
+            };
             void put<LayerData>(`/api/layer/${pk}/`, obj)
                 .then((data) => {
                     const layers = new Map(layerData);
@@ -301,8 +334,8 @@ export const ActivityMap: React.FC = () => {
                     setLayerData(layers);
                 });
         } else {
-            throw new Error('Layer update failed because no Locus Tempus Response ' +
-                'object has been set');
+            throw new Error('Layer update failed because no Locus Tempus project or ' +
+                'response object has been set');
         }
     };
 
@@ -356,7 +389,7 @@ export const ActivityMap: React.FC = () => {
         void post<EventData>('/api/event/', data)
             .then((data) => {
                 if (activeLayer) {
-                    const updatedLayers = new Map(layerData);
+                    const updatedLayers = new Map(isFaculty ? projectLayerData : layerData);
                     const layer = layerData.get(activeLayer);
 
                     if (layer) {
@@ -366,7 +399,8 @@ export const ActivityMap: React.FC = () => {
                         };
                         updatedLayers.set(activeLayer, updatedLayer);
 
-                        updateMapboxLayers(updatedLayers);
+                        const setterFunc = isFaculty ? setProjectMapboxLayers : setMapboxLayers;
+                        updateMapboxLayers(updatedLayers, setterFunc, layerVisibility);
                         setActiveEventDetail(data);
                         setActiveEvent(data);
                         goToNewEvent();
@@ -500,7 +534,9 @@ export const ActivityMap: React.FC = () => {
             setActiveEventEdit(null);
             setShowAddEventForm(true);
             setActivePosition([infoPrime.coordinate[1], infoPrime.coordinate[0]]);
-            let updatedLayers = mapboxLayers.filter((el) => {
+            // This pin gets added to the projectMapboxLayers list because its
+            // used on both the faculty and student view.
+            let updatedLayers = projectMapboxLayers.filter((el) => {
                 return el.id !== 'active-position';
             });
             // The click data needs to be packed this way so that the type
@@ -519,7 +555,7 @@ export const ActivityMap: React.FC = () => {
                 getSize: ICON_SIZE,
                 getColor: ICON_COLOR_ACTIVE,
             }));
-            setMapboxLayers(updatedLayers);
+            setProjectMapboxLayers(updatedLayers);
         }
     }
 
