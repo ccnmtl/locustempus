@@ -18,6 +18,8 @@ export interface ActivityMapPaneProps {
     layers: Map<number, LayerData>;
     projectLayers:  Map<number, LayerData>;
     activity: ActivityData | null;
+    updateActivity(instructions: string, pk: number): void;
+    deleteActivity(pk: number): void;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;
     addLayer(): void;
@@ -52,14 +54,15 @@ export interface ActivityMapPaneProps {
 
 export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
     {
-        title, description, isFaculty, layers, activity, activeLayer,
-        setActiveLayer, addLayer, deleteLayer, updateLayer,layerVisibility,
-        toggleLayerVisibility, toggleResponseVisibility, isProjectLayer,
-        showAddEventForm, setShowAddEventForm, activePosition, addEvent,
-        clearActivePosition, activeEvent, setActiveEvent, activeEventDetail,
-        setActiveEventDetail, activeEventEdit, setActiveEventEdit, deleteEvent,
-        updateEvent, projectLayers, responseData, updateResponse,
-        createFeedback, updateFeedback, responseLayers
+        title, description, isFaculty, layers, activity, updateActivity,
+        deleteActivity, activeLayer, setActiveLayer, addLayer, deleteLayer,
+        updateLayer,layerVisibility, toggleLayerVisibility,
+        toggleResponseVisibility, isProjectLayer, showAddEventForm,
+        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
+        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
+        activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent,
+        projectLayers, responseData, updateResponse, createFeedback,
+        updateFeedback, responseLayers
     }: ActivityMapPaneProps) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
@@ -143,6 +146,8 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
             layers={layers}
             projectLayers={projectLayers}
             activity={activity}
+            updateActivity={updateActivity}
+            deleteActivity={deleteActivity}
             deleteLayer={deleteLayer}
             updateLayer={updateLayer}
             toggleLayerVisibility={toggleLayerVisibility}

@@ -340,6 +340,7 @@ export const ProjectMap: React.FC = () => {
         void post<ActivityData>('/api/activity/', data)
             .then((data) => {
                 setActivity(data);
+                window.location.reload();
             });
     };
 

@@ -226,6 +226,24 @@ export const ActivityMap: React.FC = () => {
         setLayerVisibility(layerVis);
     };
 
+    const updateActivity = (instructions: string, pk: number): void => {
+        const data = {
+            project: projectPk,
+            instructions: instructions
+        };
+        void put<ActivityData>(`/api/activity/${pk}/`, data)
+            .then((data) => {
+                setActivity(data);
+            });
+    };
+
+    const deleteActivity = (id: number): void => {
+        void del(`/api/activity/${id}/`)
+            .then(() => {
+                window.location.reload();
+            });
+    };
+
     const addLayer = (respPk: number | null = null): void => {
         if (isFaculty && projectPk) {
             const newLayer = {
@@ -749,6 +767,8 @@ export const ActivityMap: React.FC = () => {
                     isFaculty={isFaculty}
                     layers={layerData}
                     activity={activity}
+                    updateActivity={updateActivity}
+                    deleteActivity={deleteActivity}
                     activeLayer={activeLayer}
                     setActiveLayer={setActiveLayer}
                     addLayer={addLayer}
