@@ -10,7 +10,6 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import PermissionDenied
 from django.db import connections
 from django.http import (
     HttpRequest, HttpResponse, HttpResponseRedirect, Http404
@@ -27,9 +26,9 @@ from django.views.generic.edit import (
 from lti_provider.models import LTICourseContext
 
 from locustempus.main.forms import (
-    InviteUNIFormset, InviteEmailFormset, ActivityProjectForm
+    InviteUNIFormset, InviteEmailFormset
 )
-from locustempus.main.models import Activity, GuestUserAffil, Project
+from locustempus.main.models import GuestUserAffil, Project
 from locustempus.main.management.commands.integrationserver import (
     reset_test_models
 )

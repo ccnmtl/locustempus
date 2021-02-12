@@ -5,7 +5,7 @@ import { Activity } from '../project-activity-components/panels/activity';
 import { LayerSet } from '../project-activity-components/layers/layer-set';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faEllipsisV, faPencilAlt, faTrashAlt, faCaretRight, faCaretDown
+    faCaretRight, faCaretDown
 } from '@fortawesome/free-solid-svg-icons';
 import ReactQuill from 'react-quill';
 
