@@ -1,0 +1,26 @@
+.create-prompt {
+    width: 100%;
+    position: relative;
+    border: none;
+    margin-top: 3rem;
+    &__decor {
+        margin: 0 auto;
+        height: 16rem;
+        width: 16rem;
+    }
+    &__content {
+        width: 100%;
+        text-align: center;
+    }
+    &__alert {
+        margin: 0 auto;
+        width: 35rem;
+        text-align: center;
+    }
+    &__instructions {
+        width: 100%;
+        text-align: center;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+}

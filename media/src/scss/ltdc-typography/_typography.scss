@@ -126,3 +126,13 @@ h6 {
     font-size: 0.875rem;
 }
 
+// Prompt
+
+.create-prompt__alert {
+@extend %heading;
+  @include font-size($font-size-base * 1.75);
+}
+
+.create-prompt__instructions {
+  @include font-size($font-size-base * 1.5);
+}

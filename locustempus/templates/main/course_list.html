@@ -34,13 +34,14 @@ Workspaces
     </div>
 </div>
 
-            <div class="pt-3 px-3">
+{% if registrar_courses or sandbox_courses %}
+<div class="pt-3 px-3">
     <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="btn lt-button">
         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
         <span class='lt-button__text'>Create new workspace</span>
     </a>
-            </div>
-
+</div>
+{% endif %}
 
 <div class="row dashboard-container">
     {% comment %}Registrar Workspaces{% endcomment %}
@@ -88,9 +89,21 @@ Workspaces
     {% endif %}
     
     {% if not registrar_courses and not sandbox_courses %}
-        <div class="col-md-6 col-xl-4 py-2">
-            <div class="alert alert-secondary" role="alert">
-              You are not a member of any Workspaces.
+        <div class="create-prompt">
+            <div class="create-prompt__decor">
+                <img src="{{STATIC_URL}}img/prompt-workspace.svg" />
+            </div>
+            <div class="create-prompt__content">
+                <div class="create-prompt__alert" role="alert">
+                  You don’t have any Workspaces
+                </div>
+                <p class="create-prompt__instructions">
+                You can start by creating one
+                </p>
+                <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="btn lt-button">
+                    <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
+                    <span class='lt-button__text'>Create new workspace</span>
+                </a>
             </div>
         </div>
     {% endif %}
