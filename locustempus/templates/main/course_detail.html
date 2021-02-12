@@ -55,7 +55,7 @@
     </div>
 </div>
 
-{% if is_faculty %}
+{% if is_faculty and projects %}
 <div class="pt-3 px-3">
     <form action="{% url 'course-project-create' object.pk %}" method="post">
         {% csrf_token %}
@@ -104,15 +104,35 @@
         {% endfor %}
     {% else %}
         {% if is_faculty %}
-        <div class="col-md-6 col-xl-4 py-2">
-            <div class="alert alert-secondary" role="alert">
-              Create a project to get started.
+        <div class="create-prompt">
+            <div class="create-prompt__decor">
+                <img src="{{STATIC_URL}}img/prompt-project.svg" />
+            </div>
+            <div class="create-prompt__content">
+                <div class="create-prompt__alert" role="alert">
+                  There are no Projects in this Workspace
+                </div>
+                <p class="create-prompt__instructions">
+                You can start by creating one
+                </p>
+            <form action="{% url 'course-project-create' object.pk %}" method="post">
+                {% csrf_token %}
+                <button class="btn lt-button" data-cy="project-create-button">
+                    <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
+                    <span class='lt-button__text'>Create New Project</span>
+                </button>
+            </form>
             </div>
         </div>
         {% else %}
-        <div class="col-md-6 col-xl-4 py-2">
-            <div class="alert alert-secondary" role="alert">
-              No projects have been created in this Workspace yet.
+        <div class="create-prompt">
+            <div class="create-prompt__decor">
+                <img src="{{STATIC_URL}}img/prompt-project.svg" />
+            </div>
+            <div class="create-prompt__content">
+                <div class="create-prompt__alert" role="alert">
+                  There are no shared Projects in this Workspace
+                </div>
             </div>
         </div>
         {% endif %}
