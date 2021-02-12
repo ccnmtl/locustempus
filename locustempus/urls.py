@@ -81,18 +81,6 @@ urlpatterns = [
     url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/delete/$',
         views.ProjectDeleteView.as_view(),
         name='course-project-delete'),
-    url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/activity/create/$',
-        views.ActivityCreateView.as_view(),
-        name='activity-create'),
-    url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/activity/$',
-        views.ActivityDetailView.as_view(),
-        name='activity-detail'),
-    url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/activity/update/$',
-        views.ActivityUpdateView.as_view(),
-        name='activity-update'),
-    url(r'^course/(?P<pk>\d+)/project/(?P<project_pk>\d+)/activity/delete/$',
-        views.ActivityDeleteView.as_view(),
-        name='activity-delete'),
 ]
 
 
