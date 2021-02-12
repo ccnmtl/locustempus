@@ -80,10 +80,7 @@ export const ActivityMap: React.FC = () => {
         isFaculty = true;
     }
 
-    const [projectTitle, setProjectTitle] = useState<string | null>(null);
-    const [projectDescription, setProjectDescription] =
-        useState<string | null>(null);
-    const [projectBaseMap, setProjectBaseMap] = useState<string | null>(null);
+    const [projectData, setProjectData] = useState<ProjectData | null>(null);
     const [responseData, setResponseData] = useState<ResponseData[]>([]);
 
     /* Layers */
@@ -127,6 +124,46 @@ export const ActivityMap: React.FC = () => {
     const [activePosition, setActivePosition] = useState<Position | null>(null);
 
     const [isLoading, setIsLoading] = useState<boolean>(true);
+
+    // Project handling functions
+    const setBaseMap = (baseMap: string) => {
+        if (projectData) {
+            setProjectData({...projectData, base_map: baseMap});
+        }
+    };
+
+    const updateProject = (
+        title: string, description: string, baseMap: string): void => {
+        if (projectData) {
+            const data = projectData;
+            data.title = title;
+            data.description = description;
+            data.base_map = baseMap;
+            void put<ProjectData>(`/api/project/${projectData.pk}/`, data)
+                .then((d) => {
+                    setProjectData(d);
+                });
+        }
+    };
+
+    const deleteProject = (): void => {
+        if (projectData) {
+            const csrf = (document.getElementById(
+                'csrf-token') as HTMLElement).getAttribute('content') || '';
+            const form = document.createElement('form');
+            form.style.visibility = 'hidden';
+            form.method = 'POST';
+            form.action = `/course/${projectData.course.pk}/project/${projectData.pk}/delete/`;
+
+            const csrfField = document.createElement('input');
+            csrfField.name = 'csrfmiddlewaretoken';
+            csrfField.value = csrf;
+            form.appendChild(csrfField);
+            document.body.appendChild(form);
+
+            form.submit();
+        }
+    };
 
     const clearActivePosition = (): void => {
         setActivePosition(null);
@@ -581,20 +618,17 @@ export const ActivityMap: React.FC = () => {
         // TODO: Refactor this to rededuce complexity
         const getData = async(): Promise<void> => {
             // Fetch the Project data
-            let projectData: ProjectData;
+            let projData: ProjectData;
             if (projectPk) {
-                projectData = await get<ProjectData>(`/api/project/${projectPk}/`);
+                projData = await get<ProjectData>(`/api/project/${projectPk}/`);
             } else {
                 throw new Error('Project PK can not be found');
             }
 
-            setProjectTitle(projectData.title);
-            setProjectDescription(projectData.description);
-            setProjectBaseMap(projectData.base_map);
-
+            setProjectData(projData);
             // Get Activity info
-            if (projectData.activity) {
-                const activityResponse = await fetch(`/api/activity/${projectData.activity}`);
+            if (projData.activity) {
+                const activityResponse = await fetch(`/api/activity/${projData.activity}`);
                 if (!activityResponse.ok) {
                     throw new Error('Activity data not loaded.');
                 }
@@ -688,7 +722,7 @@ export const ActivityMap: React.FC = () => {
 
             // Fetch the Project layers
             const layers: LayerData[] = [];
-            for (const layerUrl of projectData.layers) {
+            for (const layerUrl of projData.layers) {
                 layers.push(await get<LayerData>(layerUrl));
             }
 
@@ -711,7 +745,7 @@ export const ActivityMap: React.FC = () => {
     return (
         <>
             {isLoading && <LoadingModal />}
-            {projectBaseMap && (
+            {projectData && (
                 <DeckGL
                     layers={isFaculty ? responseMapboxLayers.concat(projectMapboxLayers) : mapboxLayers.concat(projectMapboxLayers)} // eslint-disable-line max-len
                     initialViewState={viewportState}
@@ -726,7 +760,7 @@ export const ActivityMap: React.FC = () => {
                         width={'100%'}
                         height={'100%'}
                         preventStyleDiffing={true}
-                        mapStyle={'mapbox://styles/mapbox/' + projectBaseMap}
+                        mapStyle={'mapbox://styles/mapbox/' + projectData.base_map}
                         mapboxApiAccessToken={TOKEN}
                         onLoad={(): void => { setIsLoading(false); }}/>
                     {activeEvent && (
@@ -760,10 +794,14 @@ export const ActivityMap: React.FC = () => {
                     </div>
                 </DeckGL>
             )}
-            {projectTitle && (
+            {projectData && (
                 <ActivityMapPane
-                    title={projectTitle || 'Untitled'}
-                    description={projectDescription || ''}
+                    title={projectData.title}
+                    description={(() => projectData.description)()}
+                    baseMap={projectData.base_map}
+                    setBaseMap={setBaseMap}
+                    updateProject={updateProject}
+                    deleteProject={deleteProject}
                     isFaculty={isFaculty}
                     layers={layerData}
                     activity={activity}

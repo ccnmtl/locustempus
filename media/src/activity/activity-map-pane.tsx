@@ -6,14 +6,20 @@ import { LayerData, EventData, MediaObject } from '../project-activity-component
 import { Position } from '@deck.gl/core/utils/positions';
 import { DefaultPanel } from './activity-map-pane-panels';
 import {
-    EventAddPanel, EventEditPanel, EventDetailPanel
+    EventAddPanel, EventEditPanel, EventDetailPanel, ProjectCreateEditPanel
 } from '../project-activity-components/panels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faCaretLeft, faCaretRight } from '@fortawesome/free-solid-svg-icons';
+import {
+    faCaretLeft, faCaretRight, faEllipsisV, faTrashAlt, faPencilAlt
+} from '@fortawesome/free-solid-svg-icons';
 
 export interface ActivityMapPaneProps {
     title: string;
     description: string;
+    baseMap: string;
+    setBaseMap(baseMap: string): void;
+    updateProject(title: string, description: string, baseMap: string): void;
+    deleteProject(): void;
     isFaculty: boolean;
     layers: Map<number, LayerData>;
     projectLayers:  Map<number, LayerData>;
@@ -54,8 +60,9 @@ export interface ActivityMapPaneProps {
 
 export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
     {
-        title, description, isFaculty, layers, activity, updateActivity,
-        deleteActivity, activeLayer, setActiveLayer, addLayer, deleteLayer,
+        title, description, isFaculty, baseMap, setBaseMap, updateProject,
+        deleteProject, layers, activity, updateActivity, deleteActivity,
+        activeLayer, setActiveLayer, addLayer, deleteLayer,
         updateLayer,layerVisibility, toggleLayerVisibility,
         toggleResponseVisibility, isProjectLayer, showAddEventForm,
         setShowAddEventForm, activePosition, addEvent, clearActivePosition,
@@ -70,6 +77,9 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
     const projectPaneHeader = useRef<HTMLDivElement>(null);
     const [projectPaneHeaderHeight, setProjectPaneHeaderHeight] = useState<number>(0);
     const [showPane, setShowPane] = useState<boolean>(true);
+    const [showProjectMenu, setShowProjectMenu] = useState<boolean>(false);
+    const [showProjectEditPanel, setShowProjectEditPanel] =
+        useState<boolean>(false);
 
     useEffect(() => {
         if (projectPaneHeader.current) {
@@ -85,6 +95,28 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
         return (): void => window.removeEventListener('resize', resize);
     });
 
+    const toggleProjectMenu = (e: React.MouseEvent): void => {
+        e.preventDefault();
+        setShowProjectMenu((prev) => {return !prev;});
+    };
+
+    const handleEdit = (e: React.MouseEvent<HTMLAnchorElement>): void => {
+        e.preventDefault();
+        setShowProjectEditPanel(true);
+        setShowProjectMenu(false);
+    };
+
+    const handleDelete = (e: React.MouseEvent<HTMLAnchorElement>): void => {
+        e.preventDefault();
+        deleteProject();
+    };
+
+    const showDefaultMenu = (): void => {
+        setActiveTab(0);
+        setShowProjectMenu(false);
+        setShowProjectEditPanel(false);
+    };
+
     const handleTogglePane = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
         setShowPane(!showPane);
@@ -97,13 +129,16 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
     }
 
 
-    const DEFAULT_PANEL = 3;
+    const DEFAULT_PANEL = 4;
+    const PROJECT_EDIT_PANEL = 3;
     const EVENT_EDIT_PANEL = 2;
     const EVENT_DETAIL_PANEL = 1;
     const EVENT_ADD_PANEL = 0;
 
     let panelState = DEFAULT_PANEL;
-    if (activeEventEdit) {
+    if (showProjectEditPanel) {
+        panelState = PROJECT_EDIT_PANEL;
+    } else if (activeEventEdit) {
         panelState = EVENT_EDIT_PANEL;
     } else if (activeEventDetail) {
         panelState = EVENT_DETAIL_PANEL;
@@ -138,7 +173,17 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
                 updateEvent={updateEvent}
                 paneHeaderHeight={projectPaneHeaderHeight}/>
         )} </>,
-        3: <DefaultPanel
+        3: <ProjectCreateEditPanel
+            isNewProject={false}
+            projectTitle={title}
+            projectDescription={description}
+            projectBaseMap={baseMap}
+            setBaseMap={setBaseMap}
+            updateProject={updateProject}
+            deleteProject={deleteProject}
+            showDefaultMenu={showDefaultMenu}
+            paneHeaderHeight={projectPaneHeaderHeight}/>,
+        4: <DefaultPanel
             activeTab={activeTab}
             setActiveTab={setActiveTab}
             addLayer={addLayer}
@@ -176,6 +221,54 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
                 <header ref={projectPaneHeader} className='project-pane__header'>
                     <h1>{title}</h1>
+                    {isFaculty && (
+                        <div className={'lt-menu-overflow trailing'}>
+                            <button onClick={toggleProjectMenu}
+                                className={'lt-icon-button lt-icon-button--transparent'}
+                                aria-label={showProjectMenu ?
+                                    'Hide more actions' : 'Show more actions'}>
+                                <span
+                                    className={'lt-icons lt-icon-button__icon'}
+                                    aria-hidden='true'>
+                                    <FontAwesomeIcon icon={faEllipsisV}/>
+                                </span>
+                            </button>
+                            {showProjectMenu && (
+                                <div className={'lt-menu lt-menu-overflow--expand'}>
+                                    <ul className={'lt-list'} role='menu'>
+                                        <li className={'lt-list-item'} role='menuitem'>
+                                            <a href='#' onClick={handleEdit}
+                                                className={'lt-list-item__link'}>
+                                                <span
+                                                    className={'lt-icons lt-list-item__icon'}
+                                                    aria-hidden='true'>
+                                                    <FontAwesomeIcon icon={faPencilAlt}/>
+                                                </span>
+                                                <span
+                                                    className={'lt-list-item__primary-text'}>
+                                                    Edit project
+                                                </span>
+                                            </a>
+                                        </li>
+                                        <li className={'lt-list-item'} role='menuitem'>
+                                            <a href='#' onClick={handleDelete}
+                                                className={'lt-list-item__link'}>
+                                                <span
+                                                    className={'lt-icons lt-list-item__icon'}
+                                                    aria-hidden='true'>
+                                                    <FontAwesomeIcon icon={faTrashAlt}/>
+                                                </span>
+                                                <span
+                                                    className={'lt-list-item__primary-text'}>
+                                                    Delete project
+                                                </span>
+                                            </a>
+                                        </li>
+                                    </ul>
+                                </div>
+                            )}
+                        </div>
+                    )}
                 </header>
                 <div className='pane-content'>
                     {PANEL[panelState]}

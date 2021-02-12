@@ -46,13 +46,13 @@ interface DefaultPanelProps {
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
     {
-        activeTab, setActiveTab, addLayer, layers, activity, updateActivity,
-        deleteActivity, deleteLayer, updateLayer, layerVisibility,
-        toggleLayerVisibility, toggleResponseVisibility, activeLayer,
-        setActiveLayer, activeEvent, setActiveEvent, setActiveEventDetail,
-        activeEventEdit, projectLayers, responseData, updateResponse,
-        createFeedback, updateFeedback, isFaculty, responseLayers,
-        paneHeaderHeight
+        activeTab, setActiveTab, addLayer, layers, description, activity,
+        updateActivity, deleteActivity, deleteLayer, updateLayer,
+        layerVisibility, toggleLayerVisibility, toggleResponseVisibility,
+        activeLayer, setActiveLayer, activeEvent, setActiveEvent,
+        setActiveEventDetail, activeEventEdit, projectLayers, responseData,
+        updateResponse, createFeedback, updateFeedback, isFaculty,
+        responseLayers, paneHeaderHeight
     }: DefaultPanelProps) => {
 
 
@@ -110,7 +110,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                     <div className='fade-load'>
                         <div>
                             <h2>Activity Description</h2>
-                            <div dangerouslySetInnerHTML={{__html: activity.description}}/>
+                            <div dangerouslySetInnerHTML={{__html: description}}/>
                         </div>
                         <section>
                             <Activity

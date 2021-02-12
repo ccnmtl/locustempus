@@ -3,11 +3,9 @@ import {
     ActivityData, EventData, LayerData, MediaObject
 } from '../project-activity-components/common';
 import { Position } from '@deck.gl/core/utils/positions';
+import { DefaultPanel } from './project-map-pane-panels';
 import {
-    DefaultPanel, ProjectCreateEditPanel
-} from './project-map-pane-panels';
-import {
-    EventAddPanel, EventEditPanel, EventDetailPanel
+    EventAddPanel, EventEditPanel, EventDetailPanel, ProjectCreateEditPanel
 } from '../project-activity-components/panels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
