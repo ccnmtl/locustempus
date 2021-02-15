@@ -2,24 +2,26 @@
 {% load is_course_faculty %}
 
 {% block title %}
-{{ object.title }}: Invite Users
+{{ object.title }}: Roster
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-12">
-        <h1>{{ object.title }}: Course Roster</h1>
+<div class="row nav-dashboard">
+    <div class="col">
+        <h1 class="nav-dashboard__h1">
+            <a href="/dashboard/">Workspaces</a> &gt; <a href="{% url 'course-detail-view' object.pk %}">{{ object.title }}</a> &gt; Roster
+        </h1>
     </div>
 </div>
 
-<div class="row course-roster__subhead">
-    <div class="col-12">
-        <div class="d-flex">
-            <a href="{% url 'course-detail-view' object.pk %}">Back to View Course</a>
-            <a href="{% url 'course-roster-invite-user' object.pk %}" class="btn btn-sm btn-primary ml-auto">Invite Users</a>
-        </div>
-    </div>
+<div class="pt-3 px-3">
+    <a href="{% url 'course-roster-invite-user' object.pk %}" type="button" class="btn lt-button">
+        <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/add-user.svg" /></span>
+        <span class='lt-button__text'>Invite Contributor</span>
+    </a>
 </div>
+
+
 
 {% if object.members %}
 <table class="table table-hover course-roster__table tablesorter" data-cy="uni-roster-table">
