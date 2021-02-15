@@ -115,33 +115,28 @@
         {% comment %}Confirmation message box{% endcomment %}
         {% block messages %}
             {% if messages %}
+            <div class="lt-alert lt-alert--top alert alert-dismissible fade show" role="status">
+                <div class="lt-alert__text">
                     {% for message in messages %}
                         {% if message.level == DEFAULT_MESSAGE_LEVELS.DEBUG %}
-                            <div class="lt-alert lt-alert--top">
-                                {{ message|safe }}
-                            </div>
+                            {{ message|safe }}
                         {% elif message.level == DEFAULT_MESSAGE_LEVELS.INFO %}
-                            <div class="lt-alert lt-alert--top">
-                                {{ message|safe }}
-                            </div>
+                            {{ message|safe }}
                         {% elif message.level == DEFAULT_MESSAGE_LEVELS.SUCCESS %}
-                            <div class="lt-alert lt-alert--top">
-                                {{ message|safe }}
-                            </div>
+                            {{ message|safe }}
                         {% elif message.level == DEFAULT_MESSAGE_LEVELS.WARNING %}
-                            <div class="lt-alert lt-alert--top">
-                                {{ message|safe }}
-                            </div>
+                            {{ message|safe }}
                         {% elif message.level == DEFAULT_MESSAGE_LEVELS.ERROR %}
-                            <div class="lt-alert lt-alert--top">
-                                {{ message|safe }}
-                            </div>
+                            {{ message|safe }}
                         {% else %} {# for any other message type passed in #}
-                            <div class="lt-alert lt-alert--top">
-                                {{ message|safe }}
-                            </div>
+                            {{ message|safe }}
                         {% endif %}
                     {% endfor %}
+                </div>
+                <button class="close lt-icon-button lt-button--transparent" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
             {% endif %}
         {% endblock %}
 
