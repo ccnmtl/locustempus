@@ -33,18 +33,24 @@ export const BASE_MAP_IMAGES = new Map([
 ]);
 
 // Shared Types
+export interface CourseData {
+    pk: number;
+    title: string;
+}
+
 export interface ProjectData {
+    pk: number;
     title: string;
     description: string;
     base_map: string;
     layers: string[];
+    coursePk: number;
     activity?: number;
+    course: CourseData;
 }
 
 export interface ActivityData {
-    title: string;
     pk: number;
-    description: string;
     instructions: string;
 }
 

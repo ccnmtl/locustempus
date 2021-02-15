@@ -83,7 +83,7 @@
                         <li class="list-group-item lt-card__list-group-item">Status?</li> {# not hooked up #}
                         <li class="list-group-item lt-card__list-group-item">
                         {% if user not in object.faculty and project.activity %}
-                            <a data-cy="view-activity-button" href="{% url 'activity-detail' course.pk project.pk %}">Activity</a>
+                            <a data-cy="view-activity-button" href="{% url 'course-project-detail' course.pk project.pk %}">Activity</a>
                         {% elif user in object.faculty and project.activity %}
                             1 Activity
                         {% elif not project.activity %}

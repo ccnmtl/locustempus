@@ -33,10 +33,6 @@ class CourseRosterInviteEmailForm(forms.Form):
         return email
 
 
-class ActivityProjectForm(forms.Form):
-    instructions = forms.CharField(max_length=256)
-
-
 InviteUNIFormset = formset_factory(
     CourseRosterInviteUNIForm, extra=1)
 InviteEmailFormset = formset_factory(

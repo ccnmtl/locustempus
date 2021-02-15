@@ -1,19 +1,32 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{{ project.title }}
+{% if project.activity %}Activity: {% endif %}{{ project.title }}
 {% endblock %}
 
+
 {% block content %}
-<div id="project-map-container" data-basemap="{{ project.base_map }}" data-maptoken="{{ token }}" data-newproject="{{ is_new_project }}"></div>
+    {% if project.activity %}
+        <div id="activity-map-container" data-maptoken="{{ token }}" data-activitypk="{{ project.activity.pk }}" data-projectpk="{{ project.pk }}" data-isfaculty="{{ is_faculty }}"></div>
+    {% else %}
+        <div id="project-map-container" data-basemap="{{ project.base_map }}" data-maptoken="{{ token }}" data-newproject="{{ is_new_project }}"></div>
+    {% endif %}
 {% endblock %}
 
 {% block js %}
-<script src="{{STATIC_URL}}build/project.js"></script>
+    {% if project.activity %}
+        <script src="{{STATIC_URL}}build/activity.js"></script>
+    {% else %}
+        <script src="{{STATIC_URL}}build/project.js"></script>
+    {% endif %}
 {% endblock %}
 
 {% block css %}
-<link href="{{STATIC_URL}}build/project.css" rel="stylesheet">
+    {% if project.activity %}
+        <link href="{{STATIC_URL}}build/activity.css" rel="stylesheet">
+    {% else %}
+        <link href="{{STATIC_URL}}build/project.css" rel="stylesheet">
+    {% endif %}
 {% endblock %}
 
 {# Clear the footer blocks #}

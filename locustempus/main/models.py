@@ -183,14 +183,6 @@ class Activity(models.Model):
         null=True
     )
 
-    @property
-    def title(self):
-        return self.project.title
-
-    @property
-    def description(self):
-        return self.project.description
-
 
 class Response(models.Model):
     def __init__(self, *args, **kwargs):

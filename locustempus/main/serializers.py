@@ -1,3 +1,4 @@
+from courseaffils.models import Course
 from django.contrib.gis.geos import Point
 from generic_relations.relations import GenericRelatedField
 from locustempus.main.models import (
@@ -7,7 +8,15 @@ from locustempus.main.models import (
 from rest_framework import serializers
 
 
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Course
+        read_only_fields = ('title', 'pk')
+        fields = ('title', 'pk')
+
+
 class ProjectSerializer(serializers.ModelSerializer):
+    course = CourseSerializer(read_only=True)
     layers = serializers.HyperlinkedRelatedField(
         read_only=True,
         many=True,
@@ -16,18 +25,19 @@ class ProjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Project
-        read_only_fields = ('activity',)
+        read_only_fields = ('activity', 'pk', 'course')
         fields = (
-            'title', 'description', 'base_map', 'layers', 'activity'
+            'title', 'description', 'base_map', 'layers', 'activity', 'pk',
+            'course'
         )
 
 
 class ActivitySerializer(serializers.ModelSerializer):
     class Meta:
         model = Activity
-        read_only_fields = ('title', 'pk', 'description')
+        read_only_fields = ('pk',)
         fields = (
-            'title', 'pk', 'project', 'description', 'instructions'
+            'pk', 'project', 'instructions'
         )
 
 

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LayerSet } from '../project-activity-components/layers/layer-set';
+import { Activity } from '../project-activity-components/panels/activity';
 import { LayerData, EventData } from '../project-activity-components/common';
 import {
     ActivityData, ResponseData, ResponseStatus,
@@ -19,6 +20,8 @@ interface DefaultPanelProps {
     layers: Map<number, LayerData>;
     projectLayers:  Map<number, LayerData>;
     activity: ActivityData | null;
+    updateActivity(instructions: string, pk: number): void;
+    deleteActivity(pk: number): void;
     deleteLayer(pk: number): void;
     updateLayer(pk: number, title: string): void;
     layerVisibility: Map<number, boolean>;
@@ -43,12 +46,13 @@ interface DefaultPanelProps {
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
     {
-        activeTab, setActiveTab, addLayer, layers, activity,
-        deleteLayer, updateLayer, layerVisibility, toggleLayerVisibility,
-        toggleResponseVisibility, activeLayer, setActiveLayer, activeEvent,
-        setActiveEvent, setActiveEventDetail, activeEventEdit, projectLayers,
-        responseData, updateResponse, createFeedback, updateFeedback,
-        isFaculty, responseLayers, paneHeaderHeight
+        activeTab, setActiveTab, addLayer, layers, description, activity,
+        updateActivity, deleteActivity, deleteLayer, updateLayer,
+        layerVisibility, toggleLayerVisibility, toggleResponseVisibility,
+        activeLayer, setActiveLayer, activeEvent, setActiveEvent,
+        setActiveEventDetail, activeEventEdit, projectLayers, responseData,
+        updateResponse, createFeedback, updateFeedback, isFaculty,
+        responseLayers, paneHeaderHeight
     }: DefaultPanelProps) => {
 
 
@@ -106,12 +110,15 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                     <div className='fade-load'>
                         <div>
                             <h2>Activity Description</h2>
-                            <div dangerouslySetInnerHTML={{__html: activity.description}}/>
+                            <div dangerouslySetInnerHTML={{__html: description}}/>
                         </div>
-                        <div>
-                            <h2>Activity Instructions</h2>
-                            <div dangerouslySetInnerHTML={{__html: activity.instructions}}/>
-                        </div>
+                        <section>
+                            <Activity
+                                activity={activity}
+                                isFaculty={isFaculty}
+                                updateActivity={updateActivity}
+                                deleteActivity={deleteActivity}/>
+                        </section>
                     </div>
                 )}
                 {activeTab === BASE && (

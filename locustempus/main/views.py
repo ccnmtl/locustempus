@@ -10,7 +10,6 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.shortcuts import get_current_site
-from django.core.exceptions import PermissionDenied
 from django.db import connections
 from django.http import (
     HttpRequest, HttpResponse, HttpResponseRedirect, Http404
@@ -27,9 +26,9 @@ from django.views.generic.edit import (
 from lti_provider.models import LTICourseContext
 
 from locustempus.main.forms import (
-    InviteUNIFormset, InviteEmailFormset, ActivityProjectForm
+    InviteUNIFormset, InviteEmailFormset
 )
-from locustempus.main.models import Activity, GuestUserAffil, Project
+from locustempus.main.models import GuestUserAffil, Project
 from locustempus.main.management.commands.integrationserver import (
     reset_test_models
 )
@@ -620,103 +619,6 @@ class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
         return reverse(
             'course-detail-view',
             kwargs={'pk': self.kwargs.get('pk')})
-
-
-class ActivityCreateView(LoggedInFacultyMixin, View):
-    form_class = ActivityProjectForm
-    template_name = 'main/activity_create.html'
-
-    def get(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        form = self.form_class()
-        ctx = {
-            'form': form,
-            'page_type': 'activity'
-        }
-        return render(request, self.template_name, ctx)
-
-    def post(self, request: HttpRequest, *args, **kwargs) -> HttpResponse:
-        form = self.form_class(request.POST)
-        project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
-        if form.is_valid():
-            activity = Activity(
-                project=project,
-                instructions=form.cleaned_data['instructions']
-            )
-            activity.save()
-            return HttpResponseRedirect(
-                reverse('course-detail-view', args=[kwargs.get('pk')]))
-
-        return render(request, self.template_name, {'form': form})
-
-
-class ActivityDetailView(LoggedInCourseMixin, View):
-    template_name = 'main/activity_detail.html'
-
-    def get(self, request, *args, **kwargs):
-        project = get_object_or_404(Project, pk=kwargs.get('project_pk'))
-        try:
-            ctx = {
-                'activity': project.activity,
-                'token': getattr(settings, 'MAPBOX_TOKEN', '123abc'),
-                'project': project,
-                'is_faculty': project.course.is_true_faculty(request.user),
-                'page_type': 'activity',
-            }
-            return render(
-                request, self.template_name, ctx)
-        except Activity.DoesNotExist:
-            raise Http404("This project does not have an activity")
-
-
-class ActivityUpdateView(LoggedInFacultyMixin, UpdateView):
-    project = Activity
-    fields = ['instructions']
-    template_name = 'main/activity_update.html'
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['page_type'] = 'activity'
-        return ctx
-
-    def get_object(self, queryset=None):
-        project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
-        return project.activity
-
-    def get_success_url(self):
-        messages.add_message(
-            self.request, messages.SUCCESS,
-            '<strong>{}</strong> has been updated.'.format(self.object.title)
-        )
-        return reverse(
-            'activity-detail',
-            kwargs={
-                'pk': self.kwargs.get('pk'),
-                'project_pk': self.kwargs.get('project_pk'),
-            })
-
-
-class ActivityDeleteView(LoggedInFacultyMixin, DeleteView):
-    model = Activity
-    template_name = 'main/activity_delete.html'
-
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        ctx['page_type'] = 'activity'
-        return ctx
-
-    def get_object(self, queryset=None):
-        project = get_object_or_404(Project, pk=self.kwargs.get('project_pk'))
-        if project.activity.responses.count():
-            raise PermissionDenied
-
-        return project.activity
-
-    def get_success_url(self):
-        messages.add_message(
-            self.request, messages.SUCCESS,
-            '<strong>{}</strong> has been deleted.'.format(self.object.title)
-        )
-        return reverse('course-detail-view', args=[self.kwargs.get('pk')])
 
 
 class SignS3View(LoggedInCourseMixin, BaseSignS3View):

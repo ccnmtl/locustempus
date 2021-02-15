@@ -47,12 +47,7 @@ export const ProjectMap: React.FC = () => {
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
     const coursePk = pathList[pathList.length - 4];
-    const [projectData, setProjectData] = useState<ProjectData>({
-        title: 'Untitled',
-        description: '',
-        base_map: '',
-        layers: []
-    });
+    const [projectData, setProjectData] = useState<ProjectData | null>(null);
     const [layerData, setLayerData] = useState<Map<number, LayerData>>(new Map());
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
 
@@ -89,9 +84,9 @@ export const ProjectMap: React.FC = () => {
     };
 
     const setBaseMap = (baseMap: string) => {
-        const obj = projectData;
-        obj.base_map = baseMap;
-        setProjectData(obj);
+        if (projectData) {
+            setProjectData({...projectData, base_map: baseMap});
+        }
     };
 
     const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
@@ -138,14 +133,16 @@ export const ProjectMap: React.FC = () => {
 
     const updateProject = (
         title: string, description: string, baseMap: string): void => {
-        const data = projectData;
-        data.title = title;
-        data.description = description;
-        data.base_map = baseMap;
-        void put<ProjectData>(`/api/project/${projectPk}/`, data)
-            .then((d) => {
-                setProjectData(d);
-            });
+        if (projectData) {
+            const data = projectData;
+            data.title = title;
+            data.description = description;
+            data.base_map = baseMap;
+            void put<ProjectData>(`/api/project/${projectPk}/`, data)
+                .then((d) => {
+                    setProjectData(d);
+                });
+        }
     };
 
     const deleteProject = (): void => {
@@ -340,6 +337,7 @@ export const ProjectMap: React.FC = () => {
         void post<ActivityData>('/api/activity/', data)
             .then((data) => {
                 setActivity(data);
+                window.location.reload();
             });
     };
 
@@ -440,7 +438,7 @@ export const ProjectMap: React.FC = () => {
     return (
         <>
             {isLoading && <LoadingModal />}
-            {projectData.base_map && (
+            {projectData && (
                 <DeckGL
                     layers={mapboxLayers}
                     initialViewState={viewportState}
@@ -489,7 +487,7 @@ export const ProjectMap: React.FC = () => {
                     </div>
                 </DeckGL>
             )}
-            {projectData.title && (
+            {projectData && (
                 <ProjectMapPane
                     title={projectData.title || 'Untitled'}
                     description={projectData.description || ''}
