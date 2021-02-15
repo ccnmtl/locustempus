@@ -37,7 +37,7 @@ class ActivitySerializer(serializers.ModelSerializer):
         model = Activity
         read_only_fields = ('pk',)
         fields = (
-            'pk', 'instructions'
+            'pk', 'project', 'instructions'
         )
 
 
