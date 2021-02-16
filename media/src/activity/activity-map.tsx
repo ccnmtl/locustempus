@@ -293,6 +293,10 @@ export const ActivityMap: React.FC = () => {
                     layers.set(data.pk, data);
                     setProjectLayerData(layers);
 
+                    const layerVis = new Map(layerVisibility);
+                    layerVis.set(data.pk, true);
+                    setLayerVisibility(layerVis);
+
                     setActiveLayer(data.pk);
                     setLayerTitleCount((prev) => {return prev + 1;});
                 });
@@ -307,6 +311,10 @@ export const ActivityMap: React.FC = () => {
                     const layers = new Map(layerData);
                     layers.set(data.pk, data);
                     setLayerData(layers);
+
+                    const layerVis = new Map(layerVisibility);
+                    layerVis.set(data.pk, true);
+                    setLayerVisibility(layerVis);
 
                     setActiveLayer(data.pk);
                     setLayerTitleCount((prev) => {return prev + 1;});
@@ -325,6 +333,10 @@ export const ActivityMap: React.FC = () => {
                 const updatedLayerData = new Map(layerData);
                 updatedLayerData.delete(pk);
                 setLayerData(updatedLayerData);
+
+                const layerVis = new Map(layerVisibility);
+                layerVis.delete(pk);
+                setLayerVisibility(layerVis);
 
                 if (updatedLayerData.size === 0) {
                     // addLayer has a stale closure, so the fetch
