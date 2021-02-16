@@ -326,15 +326,17 @@ export const ActivityMap: React.FC = () => {
     const deleteLayer = (pk: number): void => {
         void del(`/api/layer/${pk}/`)
             .then(() => {
-                const updatedLayerData = new Map(layerData);
-                updatedLayerData.delete(pk);
-                setLayerData(updatedLayerData);
+                // Determine if the related layer is a project layer
+                const isProjLayer = isProjectLayer(pk);
+                const updatedLayers = new Map(isProjLayer ? projectLayerData : layerData);
+                const setLayerDataFunc = isProjLayer ? setProjectLayerData : setLayerData;
+                updatedLayers.delete(pk);
+                setLayerDataFunc(updatedLayers);
 
-                const layerVis = new Map(layerVisibility);
-                layerVis.delete(pk);
-                setLayerVisibility(layerVis);
+                const setMapLayersFunc = isProjLayer ? setProjectMapboxLayers : setMapboxLayers;
+                updateMapboxLayers(updatedLayers, setMapLayersFunc, layerVisibility);
 
-                if (updatedLayerData.size === 0) {
+                if (updatedLayers.size === 0) {
                     // addLayer has a stale closure, so the fetch
                     // is called here instead
                     // TODO: refactor addLayer so optional params can be passed in
@@ -365,7 +367,11 @@ export const ActivityMap: React.FC = () => {
                             'Layer creation failed because no Locus Tempus Response ' +
                             'object has been set.');
                     }
+                } else {
+                    // Set the first layer to be the active layer
+                    setActiveLayer([...updatedLayers.values()][0].pk);
                 }
+
             });
     };
 
@@ -452,7 +458,7 @@ export const ActivityMap: React.FC = () => {
             .then((data) => {
                 if (activeLayer) {
                     const updatedLayers = new Map(isFaculty ? projectLayerData : layerData);
-                    const layer = layerData.get(activeLayer);
+                    const layer = updatedLayers.get(activeLayer);
 
                     if (layer) {
                         const updatedLayer = {
@@ -470,6 +476,8 @@ export const ActivityMap: React.FC = () => {
                         setActiveEventDetail(data);
                         setActiveEvent(data);
                         goToNewEvent();
+                    } else {
+                        throw new Error('Add Event failed: the active layer failed to be located');
                     }
                 }
             });

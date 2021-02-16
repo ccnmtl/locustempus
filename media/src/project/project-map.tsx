@@ -202,6 +202,9 @@ export const ProjectMap: React.FC = () => {
                             setLayerData(new Map([[data.pk, data]]));
                             setActiveLayer(data.pk);
                         });
+                } else {
+                    // Set the first layer to be the active layer
+                    setActiveLayer([...updatedLayerData.values()][0].pk);
                 }
             });
     };
