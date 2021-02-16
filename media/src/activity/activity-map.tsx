@@ -118,8 +118,6 @@ export const ActivityMap: React.FC = () => {
 
     const [activity, setActivity] = useState<ActivityData | null>(null);
 
-    const [layerTitleCount, setLayerTitleCount] = useState<number>(1);
-
     const [showAddEventForm, setShowAddEventForm] = useState<boolean>(false);
     const [activePosition, setActivePosition] = useState<Position | null>(null);
 
@@ -284,7 +282,7 @@ export const ActivityMap: React.FC = () => {
     const addLayer = (respPk: number | null = null): void => {
         if (isFaculty && projectPk) {
             const newLayer = {
-                title: `Layer ${layerTitleCount}`,
+                title: 'Untitled Layer',
                 content_object: `/api/project/${projectPk}/`
             };
             void post<LayerData>('/api/layer/', newLayer)
@@ -298,12 +296,11 @@ export const ActivityMap: React.FC = () => {
                     setLayerVisibility(layerVis);
 
                     setActiveLayer(data.pk);
-                    setLayerTitleCount((prev) => {return prev + 1;});
                 });
         } else if (!isFaculty && (responseData.length == 1 || respPk)) {
             const responsePk = respPk || responseData[0].pk;
             const newLayer = {
-                title: `Layer ${layerTitleCount}`,
+                title: 'Untitled Layer',
                 content_object: `/api/response/${responsePk}/`
             };
             void post<LayerData>('/api/layer/', newLayer)
@@ -317,7 +314,6 @@ export const ActivityMap: React.FC = () => {
                     setLayerVisibility(layerVis);
 
                     setActiveLayer(data.pk);
-                    setLayerTitleCount((prev) => {return prev + 1;});
                 });
         } else {
             throw new Error(
@@ -345,28 +341,24 @@ export const ActivityMap: React.FC = () => {
                     // to handle stale closure
                     if (isFaculty && projectPk) {
                         const newLayer = {
-                            title: `Layer ${layerTitleCount}`,
+                            title: 'Untitled Layer',
                             content_object: `/api/project/${projectPk}/`
                         };
                         void post<LayerData>('/api/layer/', newLayer)
                             .then((data) => {
                                 setProjectLayerData(new Map([[data.pk, data]]));
                                 setActiveLayer(data.pk);
-                                setLayerTitleCount(
-                                    (prev) => {return prev + 1;});
                             });
                     } else if (!isFaculty && responseData.length == 1) {
                         const responsePk = responseData[0].pk;
                         const newLayer = {
-                            title: `Layer ${layerTitleCount}`,
+                            title: 'Unititled Layer',
                             content_object: `/api/response/${responsePk}/`
                         };
                         void post<LayerData>('/api/layer/', newLayer)
                             .then((data) => {
                                 setLayerData(new Map([[data.pk, data]]));
                                 setActiveLayer(data.pk);
-                                setLayerTitleCount(
-                                    (prev) => {return prev + 1;});
                             });
                     } else {
                         throw new Error(
@@ -754,7 +746,6 @@ export const ActivityMap: React.FC = () => {
                         // unpack the event data
                         if (layers.length === 0) {
                             addLayer(respData[0].pk);
-                            setLayerTitleCount((prev) => {return prev + 1;});
                         } else {
                             const lyrs = layers.reduce((acc, val) => {
                                 acc.set(val.pk, val);
@@ -776,7 +767,6 @@ export const ActivityMap: React.FC = () => {
                                 setResponseData([data]);
                                 addLayer(data.pk);
                                 setActiveLayer(data.pk);
-                                setLayerTitleCount((prev) => {return prev + 1;});
                             });
                     }
                 }

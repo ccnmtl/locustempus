@@ -67,8 +67,6 @@ export const ProjectMap: React.FC = () => {
 
     const [layerVisibility, setLayerVisibility] = useState<Map<number, boolean>>(new Map());
 
-    const [layerTitleCount, setLayerTitleCount] = useState<number>(1);
-
     const [showAddEventForm, setShowAddEventForm] = useState<boolean>(false);
     const [activePosition, setActivePosition] = useState<Position | null>(null);
 
@@ -164,7 +162,7 @@ export const ProjectMap: React.FC = () => {
 
     const addLayer = (): void => {
         const data = {
-            title: `Layer ${layerTitleCount}`,
+            title: 'Untitled Layer',
             content_object: `/api/project/${projectPk}/`
         };
         void post<LayerData>('/api/layer/', data)
@@ -178,7 +176,6 @@ export const ProjectMap: React.FC = () => {
                 setLayerVisibility(layerVis);
 
                 setActiveLayer(data.pk);
-                setLayerTitleCount((prev) => {return prev + 1;});
             });
     };
 
@@ -197,14 +194,13 @@ export const ProjectMap: React.FC = () => {
                     // addLayer has a stale closure, so the fetch
                     // is called here instead
                     const newLayer = {
-                        title: `Layer ${layerTitleCount}`,
+                        title: 'Untitled Layer',
                         content_object: `/api/project/${projectPk}/`
                     };
                     void post<LayerData>('/api/layer/', newLayer)
                         .then((data) => {
                             setLayerData(new Map([[data.pk, data]]));
                             setActiveLayer(data.pk);
-                            setLayerTitleCount((prev) => {return prev + 1;});
                         });
                 }
             });
@@ -423,7 +419,6 @@ export const ProjectMap: React.FC = () => {
             // unpack the event data
             if (layers.length === 0) {
                 addLayer();
-                setLayerTitleCount((prev) => {return prev + 1;});
             } else {
                 const layerMap = layers.reduce((acc, val) => {
                     // Set the layer visibility while we're here
