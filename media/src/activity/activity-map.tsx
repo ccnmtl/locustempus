@@ -430,6 +430,9 @@ export const ActivityMap: React.FC = () => {
     const addEvent = (
         label: string, description: string, lat: number,
         lng: number, mediaObj: MediaObject | null): void => {
+        if (!activeLayer) {
+            throw new Error('Add Event failed: no active layer is defined');
+        }
         const data = {
             label: label,
             layer: activeLayer,
@@ -454,8 +457,12 @@ export const ActivityMap: React.FC = () => {
                         };
                         updatedLayers.set(activeLayer, updatedLayer);
 
-                        const setterFunc = isFaculty ? setProjectMapboxLayers : setMapboxLayers;
-                        updateMapboxLayers(updatedLayers, setterFunc, layerVisibility);
+                        const setLayerDataFunc = isFaculty ? setProjectLayerData : setLayerData;
+                        setLayerDataFunc(updatedLayers);
+
+                        const setMapboxLayerFunc = isFaculty ?
+                            setProjectMapboxLayers : setMapboxLayers;
+                        updateMapboxLayers(updatedLayers, setMapboxLayerFunc, layerVisibility);
                         setActiveEventDetail(data);
                         setActiveEvent(data);
                         goToNewEvent();
@@ -479,8 +486,11 @@ export const ActivityMap: React.FC = () => {
         };
         void put<EventData>(`/api/event/${pk}/`, obj)
             .then((data: EventData) => {
-                const updatedLayers = new Map(layerData);
-                const layer = layerData.get(layerPk);
+                // Determine if the related layer is a project layer
+                const isProjLayer = isProjectLayer(data.layer);
+                const layerDataToUpdate = isProjLayer ? projectLayerData : layerData;
+                const updatedLayers = new Map(layerDataToUpdate);
+                const layer = layerDataToUpdate.get(layerPk);
 
                 if (layer) {
                     const updatedLayer = {
@@ -491,9 +501,17 @@ export const ActivityMap: React.FC = () => {
                     };
                     updatedLayers.set(layerPk, updatedLayer);
 
-                    updateMapboxLayers(updatedLayers);
+                    const setLayerDataFunc = isProjLayer ? setProjectLayerData : setLayerData;
+                    setLayerDataFunc(updatedLayers);
+
+                    const setMapboxLayerFunc = isProjLayer ?
+                        setProjectMapboxLayers : setMapboxLayers;
+                    updateMapboxLayers(updatedLayers, setMapboxLayerFunc, layerVisibility);
                     setActiveEventDetail(data);
                     setActiveEvent(data);
+                } else {
+                    throw new Error(
+                        'Update Event failed: the layer associated with this event does not exist');
                 }
             });
     };
@@ -501,8 +519,11 @@ export const ActivityMap: React.FC = () => {
     const deleteEvent = (pk: number, layerPk: number): void => {
         void del(`/api/event/${pk}/`)
             .then(() => {
-                const updatedLayers = new Map(layerData);
-                const layer = layerData.get(layerPk);
+                // Determine if the related layer is a project layer
+                const isProjLayer = isProjectLayer(layerPk);
+                const layerDataToUpdate = isProjLayer ? projectLayerData : layerData;
+                const updatedLayers = new Map(layerDataToUpdate);
+                const layer = layerDataToUpdate.get(layerPk);
 
                 if (layer) {
                     const updatedLayer = {
@@ -513,8 +534,13 @@ export const ActivityMap: React.FC = () => {
                     };
                     updatedLayers.set(layerPk, updatedLayer);
 
+                    const setLayerDataFunc = isProjLayer ? setProjectLayerData : setLayerData;
+                    setLayerDataFunc(updatedLayers);
+
+                    const setMapboxLayerFunc = isProjLayer ?
+                        setProjectMapboxLayers : setMapboxLayers;
+                    updateMapboxLayers(updatedLayers, setMapboxLayerFunc, layerVisibility);
                     setActiveEvent(null);
-                    updateMapboxLayers(updatedLayers);
                 }
             });
     };
@@ -637,6 +663,30 @@ export const ActivityMap: React.FC = () => {
 
             const layerVis = new Map<number, boolean>();
 
+            // Fetch the Project layers
+            const layers: LayerData[] = [];
+            for (const layerUrl of projData.layers) {
+                layers.push(await get<LayerData>(layerUrl));
+            }
+
+            if (layers.length > 0) {
+                const projLayers = layers.reduce((acc, val) => {
+                    // Set the layer visibility while we're here
+                    layerVis.set(val.pk, true);
+                    acc.set(val.pk, val);
+                    return acc;
+                }, new Map());
+                setProjectLayerData(projLayers);
+                updateMapboxLayers(projLayers, setProjectMapboxLayers, layerVis);
+                setLayerVisibility(layerVis);
+
+                // Sets the active layer for faculty while we have the layers
+                // in hand. An active layer for student responses will be set below
+                if (isFaculty) {
+                    setActiveLayer(layers[0].pk);
+                }
+            }
+
             if (activityPk && CURRENT_USER) {
                 // Get related responses
                 // The fetch returns a queryset, hence the list type
@@ -681,7 +731,6 @@ export const ActivityMap: React.FC = () => {
 
                     setResponseLayers(respLayers);
                     setResponseMapboxLayers(respMapLayers);
-
                 } else {
                     if (respData.length > 0) {
                         const layers: LayerData[] = [];
@@ -714,28 +763,11 @@ export const ActivityMap: React.FC = () => {
                             .then((data) => {
                                 setResponseData([data]);
                                 addLayer(data.pk);
+                                setActiveLayer(data.pk);
                                 setLayerTitleCount((prev) => {return prev + 1;});
                             });
                     }
                 }
-            }
-
-            // Fetch the Project layers
-            const layers: LayerData[] = [];
-            for (const layerUrl of projData.layers) {
-                layers.push(await get<LayerData>(layerUrl));
-            }
-
-            if (layers.length > 0) {
-                const projLayers = layers.reduce((acc, val) => {
-                    // Set the layer visibility while we're here
-                    layerVis.set(val.pk, true);
-                    acc.set(val.pk, val);
-                    return acc;
-                }, new Map());
-                setProjectLayerData(projLayers);
-                updateMapboxLayers(projLayers, setProjectMapboxLayers, layerVis);
-                setLayerVisibility(layerVis);
             }
         };
 

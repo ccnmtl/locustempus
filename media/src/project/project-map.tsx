@@ -235,7 +235,9 @@ export const ProjectMap: React.FC = () => {
     const addEvent = (
         label: string, description: string, lat: number, lng: number,
         mediaObj: MediaObject | null): void => {
-        // TODO: implement datetime
+        if (!activeLayer) {
+            throw new Error('Add Event failed: no active layer is defined');
+        }
         const data = {
             label: label,
             layer: activeLayer,
@@ -260,6 +262,7 @@ export const ProjectMap: React.FC = () => {
                         };
                         updatedLayers.set(activeLayer, updatedLayer);
 
+                        setLayerData(updatedLayers);
                         updateMapboxLayers(updatedLayers);
                         setActiveEventDetail(data);
                         setActiveEvent(data);
@@ -297,6 +300,7 @@ export const ProjectMap: React.FC = () => {
                     };
                     updatedLayers.set(layerPk, updatedLayer);
 
+                    setLayerData(updatedLayers);
                     updateMapboxLayers(updatedLayers);
                     setActiveEventDetail(data);
                     setActiveEvent(data);
@@ -319,6 +323,7 @@ export const ProjectMap: React.FC = () => {
                     };
                     updatedLayers.set(layerPk, updatedLayer);
 
+                    setLayerData(updatedLayers);
                     setActiveEvent(null);
                     updateMapboxLayers(updatedLayers);
                 }
