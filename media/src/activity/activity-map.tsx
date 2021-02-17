@@ -354,7 +354,7 @@ export const ActivityMap: React.FC = () => {
                     } else if (!isFaculty && responseData.length == 1) {
                         const responsePk = responseData[0].pk;
                         const newLayer = {
-                            title: 'Unititled Layer',
+                            title: 'Untitled Layer',
                             content_object: `/api/response/${responsePk}/`
                         };
                         void post<LayerData>('/api/layer/', newLayer)
