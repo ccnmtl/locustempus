@@ -67,8 +67,6 @@ export const ProjectMap: React.FC = () => {
 
     const [layerVisibility, setLayerVisibility] = useState<Map<number, boolean>>(new Map());
 
-    const [layerTitleCount, setLayerTitleCount] = useState<number>(1);
-
     const [showAddEventForm, setShowAddEventForm] = useState<boolean>(false);
     const [activePosition, setActivePosition] = useState<Position | null>(null);
 
@@ -164,7 +162,7 @@ export const ProjectMap: React.FC = () => {
 
     const addLayer = (): void => {
         const data = {
-            title: `Layer ${layerTitleCount}`,
+            title: 'Untitled Layer',
             content_object: `/api/project/${projectPk}/`
         };
         void post<LayerData>('/api/layer/', data)
@@ -173,8 +171,11 @@ export const ProjectMap: React.FC = () => {
                 layers.set(data.pk, data);
                 setLayerData(layers);
 
+                const layerVis = new Map(layerVisibility);
+                layerVis.set(data.pk, true);
+                setLayerVisibility(layerVis);
+
                 setActiveLayer(data.pk);
-                setLayerTitleCount((prev) => {return prev + 1;});
             });
     };
 
@@ -185,19 +186,25 @@ export const ProjectMap: React.FC = () => {
                 updatedLayerData.delete(pk);
                 setLayerData(updatedLayerData);
 
+                const layerVis = new Map(layerVisibility);
+                layerVis.delete(pk);
+                setLayerVisibility(layerVis);
+
                 if (updatedLayerData.size === 0) {
                     // addLayer has a stale closure, so the fetch
                     // is called here instead
                     const newLayer = {
-                        title: `Layer ${layerTitleCount}`,
+                        title: 'Untitled Layer',
                         content_object: `/api/project/${projectPk}/`
                     };
                     void post<LayerData>('/api/layer/', newLayer)
                         .then((data) => {
                             setLayerData(new Map([[data.pk, data]]));
                             setActiveLayer(data.pk);
-                            setLayerTitleCount((prev) => {return prev + 1;});
                         });
+                } else {
+                    // Set the first layer to be the active layer
+                    setActiveLayer([...updatedLayerData.values()][0].pk);
                 }
             });
     };
@@ -235,7 +242,9 @@ export const ProjectMap: React.FC = () => {
     const addEvent = (
         label: string, description: string, lat: number, lng: number,
         mediaObj: MediaObject | null): void => {
-        // TODO: implement datetime
+        if (!activeLayer) {
+            throw new Error('Add Event failed: no active layer is defined');
+        }
         const data = {
             label: label,
             layer: activeLayer,
@@ -260,6 +269,7 @@ export const ProjectMap: React.FC = () => {
                         };
                         updatedLayers.set(activeLayer, updatedLayer);
 
+                        setLayerData(updatedLayers);
                         updateMapboxLayers(updatedLayers);
                         setActiveEventDetail(data);
                         setActiveEvent(data);
@@ -297,6 +307,7 @@ export const ProjectMap: React.FC = () => {
                     };
                     updatedLayers.set(layerPk, updatedLayer);
 
+                    setLayerData(updatedLayers);
                     updateMapboxLayers(updatedLayers);
                     setActiveEventDetail(data);
                     setActiveEvent(data);
@@ -319,6 +330,7 @@ export const ProjectMap: React.FC = () => {
                     };
                     updatedLayers.set(layerPk, updatedLayer);
 
+                    setLayerData(updatedLayers);
                     setActiveEvent(null);
                     updateMapboxLayers(updatedLayers);
                 }
@@ -410,7 +422,6 @@ export const ProjectMap: React.FC = () => {
             // unpack the event data
             if (layers.length === 0) {
                 addLayer();
-                setLayerTitleCount((prev) => {return prev + 1;});
             } else {
                 const layerMap = layers.reduce((acc, val) => {
                     // Set the layer visibility while we're here

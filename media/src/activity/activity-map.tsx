@@ -118,8 +118,6 @@ export const ActivityMap: React.FC = () => {
 
     const [activity, setActivity] = useState<ActivityData | null>(null);
 
-    const [layerTitleCount, setLayerTitleCount] = useState<number>(1);
-
     const [showAddEventForm, setShowAddEventForm] = useState<boolean>(false);
     const [activePosition, setActivePosition] = useState<Position | null>(null);
 
@@ -284,7 +282,7 @@ export const ActivityMap: React.FC = () => {
     const addLayer = (respPk: number | null = null): void => {
         if (isFaculty && projectPk) {
             const newLayer = {
-                title: `Layer ${layerTitleCount}`,
+                title: 'Untitled Layer',
                 content_object: `/api/project/${projectPk}/`
             };
             void post<LayerData>('/api/layer/', newLayer)
@@ -293,13 +291,16 @@ export const ActivityMap: React.FC = () => {
                     layers.set(data.pk, data);
                     setProjectLayerData(layers);
 
+                    const layerVis = new Map(layerVisibility);
+                    layerVis.set(data.pk, true);
+                    setLayerVisibility(layerVis);
+
                     setActiveLayer(data.pk);
-                    setLayerTitleCount((prev) => {return prev + 1;});
                 });
         } else if (!isFaculty && (responseData.length == 1 || respPk)) {
             const responsePk = respPk || responseData[0].pk;
             const newLayer = {
-                title: `Layer ${layerTitleCount}`,
+                title: 'Untitled Layer',
                 content_object: `/api/response/${responsePk}/`
             };
             void post<LayerData>('/api/layer/', newLayer)
@@ -308,8 +309,11 @@ export const ActivityMap: React.FC = () => {
                     layers.set(data.pk, data);
                     setLayerData(layers);
 
+                    const layerVis = new Map(layerVisibility);
+                    layerVis.set(data.pk, true);
+                    setLayerVisibility(layerVis);
+
                     setActiveLayer(data.pk);
-                    setLayerTitleCount((prev) => {return prev + 1;});
                 });
         } else {
             throw new Error(
@@ -322,46 +326,52 @@ export const ActivityMap: React.FC = () => {
     const deleteLayer = (pk: number): void => {
         void del(`/api/layer/${pk}/`)
             .then(() => {
-                const updatedLayerData = new Map(layerData);
-                updatedLayerData.delete(pk);
-                setLayerData(updatedLayerData);
+                // Determine if the related layer is a project layer
+                const isProjLayer = isProjectLayer(pk);
+                const updatedLayers = new Map(isProjLayer ? projectLayerData : layerData);
+                const setLayerDataFunc = isProjLayer ? setProjectLayerData : setLayerData;
+                updatedLayers.delete(pk);
+                setLayerDataFunc(updatedLayers);
 
-                if (updatedLayerData.size === 0) {
+                const setMapLayersFunc = isProjLayer ? setProjectMapboxLayers : setMapboxLayers;
+                updateMapboxLayers(updatedLayers, setMapLayersFunc, layerVisibility);
+
+                if (updatedLayers.size === 0) {
                     // addLayer has a stale closure, so the fetch
                     // is called here instead
                     // TODO: refactor addLayer so optional params can be passed in
                     // to handle stale closure
                     if (isFaculty && projectPk) {
                         const newLayer = {
-                            title: `Layer ${layerTitleCount}`,
+                            title: 'Untitled Layer',
                             content_object: `/api/project/${projectPk}/`
                         };
                         void post<LayerData>('/api/layer/', newLayer)
                             .then((data) => {
                                 setProjectLayerData(new Map([[data.pk, data]]));
                                 setActiveLayer(data.pk);
-                                setLayerTitleCount(
-                                    (prev) => {return prev + 1;});
                             });
                     } else if (!isFaculty && responseData.length == 1) {
                         const responsePk = responseData[0].pk;
                         const newLayer = {
-                            title: `Layer ${layerTitleCount}`,
+                            title: 'Untitled Layer',
                             content_object: `/api/response/${responsePk}/`
                         };
                         void post<LayerData>('/api/layer/', newLayer)
                             .then((data) => {
                                 setLayerData(new Map([[data.pk, data]]));
                                 setActiveLayer(data.pk);
-                                setLayerTitleCount(
-                                    (prev) => {return prev + 1;});
                             });
                     } else {
                         throw new Error(
                             'Layer creation failed because no Locus Tempus Response ' +
                             'object has been set.');
                     }
+                } else {
+                    // Set the first layer to be the active layer
+                    setActiveLayer([...updatedLayers.values()][0].pk);
                 }
+
             });
     };
 
@@ -430,6 +440,9 @@ export const ActivityMap: React.FC = () => {
     const addEvent = (
         label: string, description: string, lat: number,
         lng: number, mediaObj: MediaObject | null): void => {
+        if (!activeLayer) {
+            throw new Error('Add Event failed: no active layer is defined');
+        }
         const data = {
             label: label,
             layer: activeLayer,
@@ -445,7 +458,7 @@ export const ActivityMap: React.FC = () => {
             .then((data) => {
                 if (activeLayer) {
                     const updatedLayers = new Map(isFaculty ? projectLayerData : layerData);
-                    const layer = layerData.get(activeLayer);
+                    const layer = updatedLayers.get(activeLayer);
 
                     if (layer) {
                         const updatedLayer = {
@@ -454,11 +467,17 @@ export const ActivityMap: React.FC = () => {
                         };
                         updatedLayers.set(activeLayer, updatedLayer);
 
-                        const setterFunc = isFaculty ? setProjectMapboxLayers : setMapboxLayers;
-                        updateMapboxLayers(updatedLayers, setterFunc, layerVisibility);
+                        const setLayerDataFunc = isFaculty ? setProjectLayerData : setLayerData;
+                        setLayerDataFunc(updatedLayers);
+
+                        const setMapboxLayerFunc = isFaculty ?
+                            setProjectMapboxLayers : setMapboxLayers;
+                        updateMapboxLayers(updatedLayers, setMapboxLayerFunc, layerVisibility);
                         setActiveEventDetail(data);
                         setActiveEvent(data);
                         goToNewEvent();
+                    } else {
+                        throw new Error('Add Event failed: the active layer failed to be located');
                     }
                 }
             });
@@ -479,8 +498,11 @@ export const ActivityMap: React.FC = () => {
         };
         void put<EventData>(`/api/event/${pk}/`, obj)
             .then((data: EventData) => {
-                const updatedLayers = new Map(layerData);
-                const layer = layerData.get(layerPk);
+                // Determine if the related layer is a project layer
+                const isProjLayer = isProjectLayer(data.layer);
+                const layerDataToUpdate = isProjLayer ? projectLayerData : layerData;
+                const updatedLayers = new Map(layerDataToUpdate);
+                const layer = layerDataToUpdate.get(layerPk);
 
                 if (layer) {
                     const updatedLayer = {
@@ -491,9 +513,17 @@ export const ActivityMap: React.FC = () => {
                     };
                     updatedLayers.set(layerPk, updatedLayer);
 
-                    updateMapboxLayers(updatedLayers);
+                    const setLayerDataFunc = isProjLayer ? setProjectLayerData : setLayerData;
+                    setLayerDataFunc(updatedLayers);
+
+                    const setMapboxLayerFunc = isProjLayer ?
+                        setProjectMapboxLayers : setMapboxLayers;
+                    updateMapboxLayers(updatedLayers, setMapboxLayerFunc, layerVisibility);
                     setActiveEventDetail(data);
                     setActiveEvent(data);
+                } else {
+                    throw new Error(
+                        'Update Event failed: the layer associated with this event does not exist');
                 }
             });
     };
@@ -501,8 +531,11 @@ export const ActivityMap: React.FC = () => {
     const deleteEvent = (pk: number, layerPk: number): void => {
         void del(`/api/event/${pk}/`)
             .then(() => {
-                const updatedLayers = new Map(layerData);
-                const layer = layerData.get(layerPk);
+                // Determine if the related layer is a project layer
+                const isProjLayer = isProjectLayer(layerPk);
+                const layerDataToUpdate = isProjLayer ? projectLayerData : layerData;
+                const updatedLayers = new Map(layerDataToUpdate);
+                const layer = layerDataToUpdate.get(layerPk);
 
                 if (layer) {
                     const updatedLayer = {
@@ -513,8 +546,13 @@ export const ActivityMap: React.FC = () => {
                     };
                     updatedLayers.set(layerPk, updatedLayer);
 
+                    const setLayerDataFunc = isProjLayer ? setProjectLayerData : setLayerData;
+                    setLayerDataFunc(updatedLayers);
+
+                    const setMapboxLayerFunc = isProjLayer ?
+                        setProjectMapboxLayers : setMapboxLayers;
+                    updateMapboxLayers(updatedLayers, setMapboxLayerFunc, layerVisibility);
                     setActiveEvent(null);
-                    updateMapboxLayers(updatedLayers);
                 }
             });
     };
@@ -637,6 +675,30 @@ export const ActivityMap: React.FC = () => {
 
             const layerVis = new Map<number, boolean>();
 
+            // Fetch the Project layers
+            const layers: LayerData[] = [];
+            for (const layerUrl of projData.layers) {
+                layers.push(await get<LayerData>(layerUrl));
+            }
+
+            if (layers.length > 0) {
+                const projLayers = layers.reduce((acc, val) => {
+                    // Set the layer visibility while we're here
+                    layerVis.set(val.pk, true);
+                    acc.set(val.pk, val);
+                    return acc;
+                }, new Map());
+                setProjectLayerData(projLayers);
+                updateMapboxLayers(projLayers, setProjectMapboxLayers, layerVis);
+                setLayerVisibility(layerVis);
+
+                // Sets the active layer for faculty while we have the layers
+                // in hand. An active layer for student responses will be set below
+                if (isFaculty) {
+                    setActiveLayer(layers[0].pk);
+                }
+            }
+
             if (activityPk && CURRENT_USER) {
                 // Get related responses
                 // The fetch returns a queryset, hence the list type
@@ -681,7 +743,6 @@ export const ActivityMap: React.FC = () => {
 
                     setResponseLayers(respLayers);
                     setResponseMapboxLayers(respMapLayers);
-
                 } else {
                     if (respData.length > 0) {
                         const layers: LayerData[] = [];
@@ -693,7 +754,6 @@ export const ActivityMap: React.FC = () => {
                         // unpack the event data
                         if (layers.length === 0) {
                             addLayer(respData[0].pk);
-                            setLayerTitleCount((prev) => {return prev + 1;});
                         } else {
                             const lyrs = layers.reduce((acc, val) => {
                                 acc.set(val.pk, val);
@@ -714,28 +774,10 @@ export const ActivityMap: React.FC = () => {
                             .then((data) => {
                                 setResponseData([data]);
                                 addLayer(data.pk);
-                                setLayerTitleCount((prev) => {return prev + 1;});
+                                setActiveLayer(data.pk);
                             });
                     }
                 }
-            }
-
-            // Fetch the Project layers
-            const layers: LayerData[] = [];
-            for (const layerUrl of projData.layers) {
-                layers.push(await get<LayerData>(layerUrl));
-            }
-
-            if (layers.length > 0) {
-                const projLayers = layers.reduce((acc, val) => {
-                    // Set the layer visibility while we're here
-                    layerVis.set(val.pk, true);
-                    acc.set(val.pk, val);
-                    return acc;
-                }, new Map());
-                setProjectLayerData(projLayers);
-                updateMapboxLayers(projLayers, setProjectMapboxLayers, layerVis);
-                setLayerVisibility(layerVis);
             }
         };
 

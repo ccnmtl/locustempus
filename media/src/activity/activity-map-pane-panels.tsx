@@ -126,6 +126,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                         <LayerSet
                             layers={projectLayers}
                             addLayer={isFaculty ? addLayer : undefined}
+                            updateLayer={isFaculty ? updateLayer : undefined}
                             deleteLayer={isFaculty ? deleteLayer : undefined}
                             toggleLayerVisibility={toggleLayerVisibility}
                             layerVisibility={layerVisibility}

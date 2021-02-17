@@ -65,7 +65,8 @@ class ResponseApiView(ModelViewSet):
 
             course = activity.project.course
             if course.is_true_faculty(user):
-                return Response.objects.filter(activity=activity)
+                return Response.objects.filter(activity=activity)\
+                    .exclude(status=Response.DRAFT)
 
             if course.is_true_member(user):
                 return Response.objects.filter(

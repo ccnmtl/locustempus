@@ -443,15 +443,28 @@ class ResponseAPITest(CourseTestMixin, TestCase):
         )
 
         self.assertEqual(r2.status_code, 200)
-        self.assertEqual(len(r2.data), 1)
+        self.assertEqual(len(r2.data), 0)
+
+        # Now 'submit' the student response
+        self.sandbox_course_response.status = \
+            self.sandbox_course_response.SUBMITTED
+        self.sandbox_course_response.save()
+        r3 = self.client.get(
+            reverse('api-response-list') + '?activity={}'.format(
+                self.sandbox_course_activity.pk
+            )
+        )
+
+        self.assertEqual(r3.status_code, 200)
+        self.assertEqual(len(r3.data), 1)
 
         # GET
-        r3 = self.client.get(
+        r4 = self.client.get(
             reverse(
                 'api-response-detail', args=[self.sandbox_course_response.pk]
             )
         )
-        self.assertEqual(r3.status_code, 404)
+        self.assertEqual(r4.status_code, 404)
 
     def test_get_queryset_student(self):
         """
