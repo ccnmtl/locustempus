@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { EventData, LayerData } from '../common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -29,6 +29,23 @@ export const Layer: React.FC<LayerProps> = (
     const [updatedLayerTitle, setUpdatedLayerTitle] = useState<string>(layer.title);
     const [openLayerMenu, setOpenLayerMenu] = useState<boolean>(false);
     const [isLayerCollapsed, setIsLayerCollapsed] = useState<boolean>(false);
+    const menuRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        if (openLayerMenu) {
+            const closeMenu = (e: MouseEvent): void => {
+                if (e.target instanceof Element && menuRef.current &&
+                        !menuRef.current.contains(e.target)) {
+                    setOpenLayerMenu(false);
+                }
+            };
+            /* eslint-disable-next-line scanjs-rules/call_addEventListener */
+            document.addEventListener('click', closeMenu);
+            return () => {
+                document.removeEventListener('click', closeMenu);
+            };
+        }
+    }, [openLayerMenu]);
 
     const handleUpdatedLayerTitle = (
         e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -105,7 +122,7 @@ export const Layer: React.FC<LayerProps> = (
                     </button>
                 </div>
                 {updateLayer && deleteLayer && (
-                    <div className={'lt-menu-overflow trailing order-3'}>
+                    <div ref={menuRef} className={'lt-menu-overflow trailing order-3'}>
                         <button onClick={handleLayerMenu}
                             className={'lt-icon-button lt-icon-button--transparent'}
                             aria-label={openLayerMenu ?
