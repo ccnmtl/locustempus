@@ -115,7 +115,7 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                         <figcaption>
                             {activeEventDetail.media[0].caption}<br/>
                             <small>
-                                Source: {activeEventDetail.media[0].caption}
+                                Source: {activeEventDetail.media[0].source}
                             </small>
                         </figcaption>
                     </figure>

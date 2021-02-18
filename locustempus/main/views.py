@@ -621,7 +621,7 @@ class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
             kwargs={'pk': self.kwargs.get('pk')})
 
 
-class SignS3View(LoggedInCourseMixin, BaseSignS3View):
+class SignS3View(LoginRequiredMixin, BaseSignS3View):
     root = "uploads/"
 
     def get_bucket(self):
