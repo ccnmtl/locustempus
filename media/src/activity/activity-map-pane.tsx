@@ -3,6 +3,7 @@ import {
     ActivityData, ResponseData, ResponseStatus
 } from './activity-map';
 import { LayerData, EventData, MediaObject } from '../project-activity-components/common';
+import {OverflowMenu} from '../project-activity-components/overflow-menu';
 import { Position } from '@deck.gl/core/utils/positions';
 import { DefaultPanel } from './activity-map-pane-panels';
 import {
@@ -77,7 +78,6 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
     const projectPaneHeader = useRef<HTMLDivElement>(null);
     const [projectPaneHeaderHeight, setProjectPaneHeaderHeight] = useState<number>(0);
     const [showPane, setShowPane] = useState<boolean>(true);
-    const [showProjectMenu, setShowProjectMenu] = useState<boolean>(false);
     const [showProjectEditPanel, setShowProjectEditPanel] =
         useState<boolean>(false);
 
@@ -95,26 +95,12 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
         return (): void => window.removeEventListener('resize', resize);
     });
 
-    const toggleProjectMenu = (e: React.MouseEvent): void => {
-        e.preventDefault();
-        setShowProjectMenu((prev) => {return !prev;});
-    };
-
-    const handleEdit = (e: React.MouseEvent<HTMLAnchorElement>): void => {
-        e.preventDefault();
+    const handleEdit = (): void => {
         setShowProjectEditPanel(true);
-        setShowProjectMenu(false);
-    };
-
-    const handleDelete = (e: React.MouseEvent<HTMLAnchorElement>): void => {
-        e.preventDefault();
-        deleteProject();
     };
 
     const showDefaultMenu = (): void => {
         setActiveTab(0);
-        setShowProjectMenu(false);
-        setShowProjectEditPanel(false);
     };
 
     const handleTogglePane = (e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -222,52 +208,18 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
                 <header ref={projectPaneHeader} className='project-pane__header'>
                     <h1>{title}</h1>
                     {isFaculty && (
-                        <div className={'lt-menu-overflow trailing'}>
-                            <button onClick={toggleProjectMenu}
-                                className={'lt-icon-button lt-icon-button--transparent'}
-                                aria-label={showProjectMenu ?
-                                    'Hide more actions' : 'Show more actions'}>
-                                <span
-                                    className={'lt-icons lt-icon-button__icon'}
-                                    aria-hidden='true'>
-                                    <FontAwesomeIcon icon={faEllipsisV}/>
-                                </span>
-                            </button>
-                            {showProjectMenu && (
-                                <div className={'lt-menu lt-menu-overflow--expand'}>
-                                    <ul className={'lt-list'} role='menu'>
-                                        <li className={'lt-list-item'} role='menuitem'>
-                                            <a href='#' onClick={handleEdit}
-                                                className={'lt-list-item__link'}>
-                                                <span
-                                                    className={'lt-icons lt-list-item__icon'}
-                                                    aria-hidden='true'>
-                                                    <FontAwesomeIcon icon={faPencilAlt}/>
-                                                </span>
-                                                <span
-                                                    className={'lt-list-item__primary-text'}>
-                                                    Edit project
-                                                </span>
-                                            </a>
-                                        </li>
-                                        <li className={'lt-list-item'} role='menuitem'>
-                                            <a href='#' onClick={handleDelete}
-                                                className={'lt-list-item__link'}>
-                                                <span
-                                                    className={'lt-icons lt-list-item__icon'}
-                                                    aria-hidden='true'>
-                                                    <FontAwesomeIcon icon={faTrashAlt}/>
-                                                </span>
-                                                <span
-                                                    className={'lt-list-item__primary-text'}>
-                                                    Delete project
-                                                </span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
+                        <OverflowMenu items={[
+                            {
+                                handler: handleEdit,
+                                icon: <FontAwesomeIcon icon={faPencilAlt}/>,
+                                label: 'Edit project'
+                            },
+                            {
+                                handler: deleteProject,
+                                icon: <FontAwesomeIcon icon={faTrashAlt}/>,
+                                label: 'Delete project'
+                            }
+                        ]}/>
                     )}
                 </header>
                 <div className='pane-content'>

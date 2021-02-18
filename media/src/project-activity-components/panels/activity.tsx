@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { ActivityData } from '../common';
+import {OverflowMenu} from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEllipsisV, faPencilAlt, faTrashAlt
@@ -41,10 +42,8 @@ export const Activity: React.FC<ActivityProps> = (
         setShowEditForm(false);
     };
 
-    const handleDelete  = (e: React.MouseEvent): void => {
-        e.preventDefault();
+    const handleDelete  = (): void => {
         activity && deleteActivity(activity.pk);
-        setShowMenu(false);
     };
 
     useEffect(() => {
@@ -57,53 +56,18 @@ export const Activity: React.FC<ActivityProps> = (
                 <div className='lt-pane-section__header'>
                     <h2>Activity</h2>
                     {isFaculty && (
-                        <div className={'lt-menu-overflow trailing'}>
-                            <button onClick={toggleMenu}
-                                className={'lt-icon-button lt-icon-button--transparent'}
-                                aria-label={showMenu ?
-                                    'Hide more actions' : 'Show more actions'}>
-                                <span
-                                    className={'lt-icons lt-icon-button__icon'}
-                                    aria-hidden='true'>
-                                    <FontAwesomeIcon icon={faEllipsisV}/>
-                                </span>
-                            </button>
-                            {showMenu && (
-                                <div className={'lt-menu lt-menu-overflow--expand'}>
-                                    <ul className={'lt-list'} role='menu'>
-                                        <li className={'lt-list-item'} role='menuitem'>
-                                            <a href='#' onClick={(): void => {
-                                                setShowMenu(false); setShowEditForm(true);}}
-                                            className={'lt-list-item__link'}>
-                                                <span
-                                                    className={'lt-icons lt-list-item__icon'}
-                                                    aria-hidden='true'>
-                                                    <FontAwesomeIcon icon={faPencilAlt}/>
-                                                </span>
-                                                <span
-                                                    className={'lt-list-item__primary-text'}>
-                                                    Edit activity
-                                                </span>
-                                            </a>
-                                        </li>
-                                        <li className={'lt-list-item'} role='menuitem'>
-                                            <a href='#' onClick={handleDelete}
-                                                className={'lt-list-item__link'}>
-                                                <span
-                                                    className={'lt-icons lt-list-item__icon'}
-                                                    aria-hidden='true'>
-                                                    <FontAwesomeIcon icon={faTrashAlt}/>
-                                                </span>
-                                                <span
-                                                    className={'lt-list-item__primary-text'}>
-                                                    Delete activity
-                                                </span>
-                                            </a>
-                                        </li>
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
+                        <OverflowMenu items={[
+                            {
+                                handler: () => {setShowEditForm(true);},
+                                icon: <FontAwesomeIcon icon={faPencilAlt}/>,
+                                label: 'Edit activity'
+                            },
+                            {
+                                handler: handleDelete,
+                                icon: <FontAwesomeIcon icon={faTrashAlt}/>,
+                                label: 'Delete activity'
+                            }
+                        ]}/>
                     )}
                 </div>
                 {showEditForm ? (

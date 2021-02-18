@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { EventData } from '../common';
+import { OverflowMenu } from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
@@ -33,16 +34,14 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
         setShowMenu((prev) => {return !prev;});
     };
 
-    const handleDelete = (e: React.MouseEvent): void => {
-        e.preventDefault();
+    const handleDelete = (): void => {
         if (activeEventDetail && activeLayer) {
             deleteEvent(activeEventDetail.pk, activeLayer);
             setActiveEventDetail(null);
         }
     };
 
-    const handleEdit = (e: React.MouseEvent<HTMLAnchorElement>): void => {
-        e.preventDefault();
+    const handleEdit = (): void => {
         setActiveEventEdit(activeEventDetail);
     };
 
@@ -59,55 +58,20 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
             <div className={'pane-content-body'}>
                 <div className='lt-pane-section__header'>
                     <h2>{activeEventDetail && activeEventDetail.label}</h2>
-                    <div className={'lt-menu-overflow trailing'}>
-                        {showEditMenu && (
-                            <button onClick={handleMenuToggle}
-                                className={'lt-icon-button lt-icon-button--transparent'}
-                                aria-label={showMenu ?
-                                    'Hide more actions' : 'Show more actions'}>
-                                <span
-                                    className={'lt-icons lt-icon-button__icon'}
-                                    aria-hidden='true'>
-                                    <FontAwesomeIcon icon={faEllipsisV}/>
-                                </span>
-                            </button>
-                        )}
-                        {showMenu && (
-                            <div className={'lt-menu lt-menu-overflow--expand'}>
-                                <ul className={'lt-list'} role='menu'>
-                                    <li className={'lt-list-item'} role='menuitem'>
-                                        <a href='#' onClick={handleEdit}
-                                            className={'lt-list-item__link'}>
-                                            <span
-                                                className={'lt-icons lt-list-item__icon'}
-                                                aria-hidden='true'>
-                                                <FontAwesomeIcon icon={faPencilAlt}/>
-                                            </span>
-                                            <span
-                                                className={'lt-list-item__primary-text'}>
-                                                Edit event marker
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li className={'lt-list-item'} role='menuitem'>
-                                        {/* TODO: Implement confirmation */}
-                                        <a href='#' onClick={handleDelete}
-                                            className={'lt-list-item__link'}>
-                                            <span
-                                                className={'lt-icons lt-list-item__icon'}
-                                                aria-hidden='true'>
-                                                <FontAwesomeIcon icon={faTrashAlt}/>
-                                            </span>
-                                            <span
-                                                className={'lt-list-item__primary-text'}>
-                                                Delete event marker
-                                            </span>
-                                        </a>
-                                    </li>
-                                </ul>
-                            </div>
-                        )}
-                    </div>
+                    {showEditMenu && (
+                        <OverflowMenu items={[
+                            {
+                                handler: handleEdit,
+                                icon: <FontAwesomeIcon icon={faPencilAlt}/>,
+                                label: 'Edit event marker'
+                            },
+                            {
+                                handler: handleDelete,
+                                icon: <FontAwesomeIcon icon={faTrashAlt}/>,
+                                label: 'Delete event marker'
+                            }
+                        ]}/>
+                    )}
                 </div>
                 {activeEventDetail && activeEventDetail.media.length > 0 && (
                     <figure className={'lt-pane-section__image'}>
