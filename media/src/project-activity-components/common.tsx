@@ -38,12 +38,35 @@ export interface CourseData {
     title: string;
 }
 
+export interface RasterLayerData {
+    pk: number;
+    title: string;
+    url: string;
+}
+
+export interface TileSublayerProps {
+    data: {
+        width: number;
+        height: number;
+    },
+    id: string;
+    tile: {
+        bbox: {
+            north: number,
+            south: number,
+            east: number,
+            west: number
+        }
+    },
+}
+
 export interface ProjectData {
     pk: number;
     title: string;
     description: string;
     base_map: string;
     layers: string[];
+    raster_layers: RasterLayerData[];
     coursePk: number;
     activity?: number;
     course: CourseData;

@@ -3,7 +3,7 @@ from django.contrib.gis.geos import Point
 from generic_relations.relations import GenericRelatedField
 from locustempus.main.models import (
     Layer, Project, Response, Event, Location, Activity, ResponseOwner,
-    MediaObject, Feedback
+    MediaObject, Feedback, RasterLayer
 )
 from rest_framework import serializers
 
@@ -15,6 +15,13 @@ class CourseSerializer(serializers.ModelSerializer):
         fields = ('title', 'pk')
 
 
+class RasterLayerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = RasterLayer
+        read_only_fields = ('pk', 'title', 'url')
+        fields = ('pk', 'title', 'url')
+
+
 class ProjectSerializer(serializers.ModelSerializer):
     course = CourseSerializer(read_only=True)
     layers = serializers.HyperlinkedRelatedField(
@@ -22,13 +29,17 @@ class ProjectSerializer(serializers.ModelSerializer):
         many=True,
         view_name='api-layer-detail'
     )
+    raster_layers = RasterLayerSerializer(
+        read_only=True,
+        many=True
+    )
 
     class Meta:
         model = Project
         read_only_fields = ('activity', 'pk', 'course')
         fields = (
-            'title', 'description', 'base_map', 'layers', 'activity', 'pk',
-            'course'
+            'title', 'description', 'base_map', 'layers', 'raster_layers',
+            'activity', 'pk', 'course'
         )
 
 
@@ -54,6 +65,10 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
         many=True,
         view_name='api-layer-detail'
     )
+    raster_layers = RasterLayerSerializer(
+        read_only=True,
+        many=True
+    )
     activity = serializers.PrimaryKeyRelatedField(
         queryset=Activity.objects.all())
 
@@ -73,8 +88,8 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
         read_only_fields = (
             'layers', 'pk', 'owners', 'submitted_at', 'feedback')
         fields = (
-            'pk', 'activity', 'owners', 'layers', 'reflection', 'status',
-            'submitted_at', 'feedback'
+            'pk', 'activity', 'owners', 'layers', 'raster_layers',
+            'reflection', 'status', 'submitted_at', 'feedback'
         )
 
 
