@@ -3,7 +3,7 @@ import { ActivityData } from '../common';
 import {OverflowMenu} from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faEllipsisV, faPencilAlt, faTrashAlt
+    faPencilAlt, faTrashAlt
 } from '@fortawesome/free-solid-svg-icons';
 import ReactQuill from 'react-quill';
 
@@ -20,7 +20,6 @@ export const Activity: React.FC<ActivityProps> = (
     {activity, isFaculty, createActivity, updateActivity, deleteActivity}: ActivityProps) => {
 
     const [instructions, setInstructions] = useState<string>('');
-    const [showMenu, setShowMenu] = useState<boolean>(false);
     const [showCreateForm, setShowCreateForm] = useState<boolean>(false);
     const [showEditForm, setShowEditForm] = useState<boolean>(false);
 
@@ -29,11 +28,6 @@ export const Activity: React.FC<ActivityProps> = (
         if (createActivity) {
             createActivity(instructions);
         }
-    };
-
-    const toggleMenu = (e: React.MouseEvent): void => {
-        e.preventDefault();
-        setShowMenu((prev) => !prev);
     };
 
     const handleEdit = (e: React.FormEvent<HTMLFormElement>): void => {
