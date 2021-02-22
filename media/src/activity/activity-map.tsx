@@ -5,7 +5,8 @@ import {
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
 import DeckGL, { Controller, FlyToInterpolator }  from 'deck.gl';
-import { IconLayer } from '@deck.gl/layers';
+import { BitmapLayer, IconLayer } from '@deck.gl/layers';
+import { TileLayer } from '@deck.gl/geo-layers';
 import { Position } from '@deck.gl/core/utils/positions';
 import { PickInfo } from '@deck.gl/core/lib/deck';
 
@@ -19,7 +20,7 @@ const CURRENT_USER = LocusTempus.currentUser.id;
 import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_COLOR,
     ICON_COLOR_ACTIVE, ProjectData, DeckGLClickEvent, LayerData, EventData,
-    MediaObject
+    MediaObject, TileSublayerProps
 } from '../project-activity-components/common';
 
 export interface ActivityData {
@@ -102,6 +103,8 @@ export const ActivityMap: React.FC = () => {
         useState<Map<number, LayerData[]>>(new Map());
     const [responseMapboxLayers, setResponseMapboxLayers] =
         useState<IconLayer<EventData>[]>([]);
+
+    const [rasterLayers, setRasterLayers] = useState<TileLayer<string>[]>([]);
 
     // Map to identify which layers should be visible
     const [layerVisibility, setLayerVisibility] =
@@ -699,6 +702,28 @@ export const ActivityMap: React.FC = () => {
                 }
             }
 
+            // Instantiate raster layers
+            const rLayers: TileLayer<string>[] = [];
+            for (const layer of projData.raster_layers) {
+                rLayers.push(new TileLayer({
+                    data: layer.url,
+                    renderSubLayers: (obj: TileSublayerProps) => {
+                        const {
+                            bbox: {west, south, east, north}
+                        } = obj.tile;
+                        return new BitmapLayer<string>({
+                            id: obj.id,
+                            image: obj.data,
+                            bounds: [west, south, east, north],
+                            desaturate: 0,
+                            transparentColor: [0, 0, 0, 0],
+                            tintColor: [255, 255, 255]
+                        });
+                    }
+                }));
+            }
+            setRasterLayers(rLayers);
+
             if (activityPk && CURRENT_USER) {
                 // Get related responses
                 // The fetch returns a queryset, hence the list type
@@ -789,7 +814,11 @@ export const ActivityMap: React.FC = () => {
             {isLoading && <LoadingModal />}
             {projectData && (
                 <DeckGL
-                    layers={isFaculty ? responseMapboxLayers.concat(projectMapboxLayers) : mapboxLayers.concat(projectMapboxLayers)} // eslint-disable-line max-len
+                    layers={[
+                        ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
+                        ...projectMapboxLayers,
+                        ...(isFaculty ? responseMapboxLayers : mapboxLayers)
+                    ]}
                     initialViewState={viewportState}
                     width={'100%'}
                     height={'100%'}

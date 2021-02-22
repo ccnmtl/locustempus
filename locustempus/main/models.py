@@ -46,6 +46,10 @@ class Layer(models.Model):
     )
 
 
+class RasterLayer(Layer):
+    url = models.CharField(max_length=512)
+
+
 class MediaObject(models.Model):
     url = models.URLField()
     source = models.TextField(blank=True)
@@ -145,6 +149,7 @@ class Project(models.Model):
         default='light-v10'
     )
     layers = GenericRelation(Layer, related_query_name='project')
+    raster_layers = GenericRelation(RasterLayer, related_query_name='project')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
@@ -208,7 +213,8 @@ class Response(models.Model):
         User,
         through='ResponseOwner'
     )
-    layers = GenericRelation(Layer, related_query_name='layer')
+    layers = GenericRelation(Layer, related_query_name='response')
+    raster_layers = GenericRelation(RasterLayer, related_query_name='response')
     status = models.CharField(
         max_length=12,
         choices=STATUS_CHOICES,

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { EventData } from '../common';
 import { OverflowMenu } from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faArrowLeft, faEllipsisV, faPencilAlt, faTrashAlt,
+    faArrowLeft, faPencilAlt, faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
 
 interface EventDetailPanelProps {
@@ -22,16 +22,10 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
         activeLayer, activeEventDetail, setActiveEventDetail,
         setActiveEventEdit, deleteEvent, paneHeaderHeight, showEditMenu
     }: EventDetailPanelProps) => {
-    const [showMenu, setShowMenu] = useState<boolean>(false);
 
     const handleBack = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
         setActiveEventDetail(null);
-    };
-
-    const handleMenuToggle = (e: React.MouseEvent<HTMLButtonElement>): void => {
-        e.preventDefault();
-        setShowMenu((prev) => {return !prev;});
     };
 
     const handleDelete = (): void => {

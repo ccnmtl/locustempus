@@ -10,7 +10,7 @@ import {
 } from '../project-activity-components/panels';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faEllipsisV, faTrashAlt, faPencilAlt, faCaretLeft, faCaretRight
+    faTrashAlt, faPencilAlt, faCaretLeft, faCaretRight
 } from '@fortawesome/free-solid-svg-icons';
 
 
@@ -66,7 +66,6 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     const projectPaneHeader = useRef<HTMLDivElement>(null);
 
     const [activeTab, setActiveTab] = useState<number>(0);
-    const [showProjectMenu, setShowProjectMenu] = useState<boolean>(false);
     const [showProjectEditPanel, setShowProjectEditPanel] =
         useState<boolean>(false);
     const [isNewProject, setIsNewProject] = useState<boolean>(newProjectFlag);
@@ -95,20 +94,13 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
         return (): void => window.removeEventListener('resize', resize);
     });
 
-    const toggleProjectMenu = (e: React.MouseEvent): void => {
-        e.preventDefault();
-        setShowProjectMenu((prev) => {return !prev;});
-    };
-
     const showDefaultMenu = (): void => {
         setActiveTab(0);
-        setShowProjectMenu(false);
         setShowProjectEditPanel(false);
     };
 
     const handleEdit = (): void => {
         setShowProjectEditPanel(true);
-        setShowProjectMenu(false);
     };
 
     const handleTogglePane = (e: React.MouseEvent<HTMLButtonElement>): void => {
