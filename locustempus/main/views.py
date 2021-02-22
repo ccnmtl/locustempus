@@ -160,6 +160,7 @@ class CourseRosterView(LoggedInFacultyMixin, DetailView):
             course=course,
             accepted_at=None
         )
+        ctx['page_type'] = 'roster'
         ctx['inactive_invitees'] = inactive_email_invites
         return ctx
 
