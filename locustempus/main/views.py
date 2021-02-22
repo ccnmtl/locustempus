@@ -402,7 +402,8 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
         return render(request, self.template_name, {
             'course': course,
             'uni_formset': self.uni_formset(prefix='uni'),
-            'email_formset': self.email_formset(prefix='email')
+            'email_formset': self.email_formset(prefix='email'),
+            'page_type': 'roster'
         })
 
     def post(self, request, *args, **kwargs) -> HttpResponse:
