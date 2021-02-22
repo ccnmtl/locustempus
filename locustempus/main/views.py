@@ -79,6 +79,7 @@ class CourseCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['page_type'] = 'course'
+        ctx['template_title'] = 'Create New Workspace'
         return ctx
 
     def get_success_url(self) -> str:
@@ -130,6 +131,7 @@ class CourseEditView(LoggedInFacultyMixin, UpdateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['page_type'] = 'course'
+        ctx['template_title'] = 'Edit'
         return ctx
 
     def get_success_url(self):
@@ -143,6 +145,7 @@ class CourseDeleteView(LoggedInFacultyMixin, DeleteView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['page_type'] = 'course'
+        ctx['template_title'] = 'Delete'
         return ctx
 
     def get_success_url(self) -> str:
@@ -161,6 +164,7 @@ class CourseRosterView(LoggedInFacultyMixin, DetailView):
             accepted_at=None
         )
         ctx['page_type'] = 'roster'
+        ctx['template_title'] = 'Roster'
         ctx['inactive_invitees'] = inactive_email_invites
         return ctx
 
@@ -403,7 +407,8 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
             'course': course,
             'uni_formset': self.uni_formset(prefix='uni'),
             'email_formset': self.email_formset(prefix='email'),
-            'page_type': 'roster'
+            'page_type': 'roster',
+            'template_title': 'Invite Contributor'
         })
 
     def post(self, request, *args, **kwargs) -> HttpResponse:
