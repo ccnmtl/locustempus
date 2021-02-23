@@ -6,13 +6,6 @@
 {% endblock %}
 
 {% block content %}
-<div class="row nav-dashboard">
-    <div class="col">
-        <h1 class="nav-dashboard__h1">
-            <a href="/dashboard/">Workspaces</a> &gt; <a href="{% url 'course-detail-view' object.pk %}">{{ object.title }}</a> &gt; Roster
-        </h1>
-    </div>
-</div>
 
 <div class="pt-3 px-3">
     <a href="{% url 'course-roster-invite-user' object.pk %}" type="button" class="btn lt-button">

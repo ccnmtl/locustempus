@@ -59,6 +59,13 @@
         <div class="header__shadow"></div>
         <nav class="navbar py-0 pl-0">
             <a href="/" class="navbar-brand py-0"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo-bgdark.svg" alt="Locus Tempus logo"></a>
+        <div class="badge badge-secondary temp-marker">
+        <span class="d-none d-xl-inline">Extra large</span>
+        <span class="d-none d-lg-inline d-xl-none">Large</span>
+        <span class="d-none d-md-inline d-lg-none">Medium</span>
+        <span class="d-none d-sm-inline d-md-none">Small</span>
+        <span class="d-inline d-sm-none">Extra small</span>
+        </div>
             {% block usernav %}
             <div class="user-nav">
                 {% if request.user.is_anonymous %}
@@ -139,6 +146,38 @@
             </div>
             {% endif %}
         {% endblock %}
+
+<!-- Dashboard breadcrumb and navigation bar -->        
+        {% if page_type == 'dashboard' or page_type == 'course' or page_type == 'roster' %}
+        <div class="nav-dashboard">
+            <div class="lt-breadcrumb">
+                <nav aria-label="breadcrumb">
+                    <ol class="breadcrumb nav-dashboard__h1">
+                        {% if page_type == 'dashboard' %}
+                            <li class="breadcrumb-item">
+                                {% if user.first_name %}
+                                    {{ user.first_name }}’s
+                                {% else %}
+                                    {{ user.username }}’s
+                                {% endif %}
+                                Workspaces
+                            </li>
+                        {% else %}
+                            <li class="breadcrumb-item"><a href="/dashboard/">Workspaces</a></li>
+                        {% endif %}
+                        {% if course.title %}
+                        <li class="breadcrumb-item"><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></li>
+                        {% endif %}                        
+                        {% if template_title %}
+                        <li class="breadcrumb-item">{{ template_title }}</li>
+                        {% endif %}                        
+                    </ol>
+                </nav>
+            </div>
+            {% block page_actions %}{% endblock %}
+        </div>
+        {% endif %}
+<!-- End Dashboard breadcrumb and navigation bar -->        
 
         {% block content %}{% endblock %}
 
