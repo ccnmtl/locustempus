@@ -5,8 +5,7 @@ Course Delete Form
 {% endblock %}
 
 {% block content %}
-<h1>Course Delete Form</h1>
-<p>Create all the courses.</p>
+
 <form action="." method="post">
     {% csrf_token %}
     <p>Are you sure you want to delete "{{ course.title }}"</p>

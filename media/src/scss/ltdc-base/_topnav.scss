@@ -35,26 +35,12 @@ header {
     background-color: $primary-ltds;
 }
 
-.header--homepage.shrink .header__logo {
-    height: 4.125rem;
-}
-
-.header--default .header__logo {
-    height: 4.125rem;
-}
-
-.header--dashboard .header__logo {
-    height: 4.125rem;
-}
-
-.header--course .header__logo {
-    height: 4.125rem;
-}
-
-.header--project .header__logo {
-    height: 4.125rem;
-}
-
+.header--homepage.shrink .header__logo,
+.header--default .header__logo,
+.header--dashboard .header__logo,
+.header--course .header__logo,
+.header--roster .header__logo,
+.header--project .header__logo,
 .header--activity .header__logo {
     height: 4.125rem;
 }
