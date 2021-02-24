@@ -831,7 +831,7 @@ export const ActivityMap: React.FC = () => {
                         width={'100%'}
                         height={'100%'}
                         preventStyleDiffing={true}
-                        mapStyle={'mapbox://styles/mapbox/' + projectData.base_map}
+                        mapStyle={projectData.base_map}
                         mapboxApiAccessToken={TOKEN}
                         onLoad={(): void => { setIsLoading(false); }}/>
                     {activeEvent && (

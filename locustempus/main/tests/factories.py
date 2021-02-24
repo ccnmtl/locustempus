@@ -58,7 +58,7 @@ class ProjectFactory(factory.DjangoModelFactory):
     title = factory.Sequence('Project {}'.format)
     description = factory.Sequence('A test description {}'.format)
     course = factory.SubFactory(SandboxCourseFactory)
-    base_map = 'dark-v10'
+    base_map = 'http://localhost:8888/style.json'
 
 
 class ActivityFactory(factory.DjangoModelFactory):

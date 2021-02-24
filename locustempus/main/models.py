@@ -12,16 +12,19 @@ from django_registration.signals import user_activated
 
 
 BASE_MAPS = [
-    ('streets-v11', 'Street'),
-    ('outdoors-v11', 'Outdoors'),
-    ('light-v10', 'Light'),
-    ('dark-v10', 'Dark'),
-    ('satellite-v9', 'Satellite'),
-    ('satellite-streets-v11', 'Street - Satellite'),
-    ('navigation-preview-day-v4', 'Navigation - Day'),
-    ('navigation-preview-night-v4', 'Navigation - Night'),
-    ('navigation-guidance-day-v4', 'Navigation/Guidance - Day'),
-    ('navigation-guidance-night-v4', 'Navigation/Guidance - Night'),
+    ('mapbox://styles/mapbox/streets-v11', 'Street'),
+    ('mapbox://styles/mapbox/outdoors-v11', 'Outdoors'),
+    ('mapbox://styles/mapbox/light-v10', 'Light'),
+    ('mapbox://styles/mapbox/dark-v10', 'Dark'),
+    ('mapbox://styles/mapbox/satellite-v9', 'Satellite'),
+    ('mapbox://styles/mapbox/satellite-streets-v11', 'Street - Satellite'),
+    ('mapbox://styles/mapbox/navigation-preview-day-v4', 'Navigation - Day'),
+    ('mapbox://styles/mapbox/navigation-preview-night-v4',
+        'Navigation - Night'),
+    ('mapbox://styles/mapbox/navigation-guidance-day-v4',
+        'Navigation/Guidance - Day'),
+    ('mapbox://styles/mapbox/navigation-guidance-night-v4',
+        'Navigation/Guidance - Night'),
 ]
 
 
@@ -146,7 +149,7 @@ class Project(models.Model):
     base_map = models.CharField(
         max_length=64,
         choices=BASE_MAPS,
-        default='light-v10'
+        default='mapbox://styles/mapbox/light-v10'
     )
     layers = GenericRelation(Layer, related_query_name='project')
     raster_layers = GenericRelation(RasterLayer, related_query_name='project')
