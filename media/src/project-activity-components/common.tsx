@@ -15,21 +15,21 @@ export const ICON_COLOR: RGBAColor = [204, 51, 51];
 export const ICON_COLOR_ACTIVE: RGBAColor = [0, 51, 255];
 
 export const BASE_MAPS = new Map([
-    ['streets-v11', 'Street'],
-    ['outdoors-v11', 'Outdoors'],
-    ['light-v10', 'Light'],
-    ['dark-v10', 'Dark'],
-    ['satellite-v9', 'Satellite'],
-    ['satellite-streets-v11', 'Satellite-Street'],
+    ['mapbox://styles/mapbox/streets-v11', 'Street'],
+    ['mapbox://styles/mapbox/outdoors-v11', 'Outdoors'],
+    ['mapbox://styles/mapbox/light-v10', 'Light'],
+    ['mapbox://styles/mapbox/dark-v10', 'Dark'],
+    ['mapbox://styles/mapbox/satellite-v9', 'Satellite'],
+    ['mapbox://styles/mapbox/satellite-streets-v11', 'Satellite-Street'],
 ]);
 
 export const BASE_MAP_IMAGES = new Map([
-    ['streets-v11', STATIC_URL + 'img/map_thumbnails/streets.jpg'],
-    ['outdoors-v11', STATIC_URL + 'img/map_thumbnails/outdoors.jpg'],
-    ['light-v10', STATIC_URL + 'img/map_thumbnails/light.jpg'],
-    ['dark-v10', STATIC_URL + 'img/map_thumbnails/dark.jpg'],
-    ['satellite-v9', STATIC_URL + 'img/map_thumbnails/satellite.jpg'],
-    ['satellite-streets-v11', STATIC_URL + 'img/map_thumbnails/satellite-streets.jpg'],
+    ['mapbox://styles/mapbox/streets-v11', STATIC_URL + 'img/map_thumbnails/streets.jpg'],
+    ['mapbox://styles/mapbox/outdoors-v11', STATIC_URL + 'img/map_thumbnails/outdoors.jpg'],
+    ['mapbox://styles/mapbox/light-v10', STATIC_URL + 'img/map_thumbnails/light.jpg'],
+    ['mapbox://styles/mapbox/dark-v10', STATIC_URL + 'img/map_thumbnails/dark.jpg'],
+    ['mapbox://styles/mapbox/satellite-v9', STATIC_URL + 'img/map_thumbnails/satellite.jpg'],
+    ['mapbox://styles/mapbox/satellite-streets-v11', STATIC_URL + 'img/map_thumbnails/satellite-streets.jpg'],
 ]);
 
 // Shared Types

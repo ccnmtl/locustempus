@@ -23,6 +23,10 @@ mypy: $(PY_SENTINAL)
 	$(MYPY)
 .PHONY: mypy
 
+tileserver: $(PY_SENTINAL)
+	cd tiles && ../$(VE)/bin/python3 ./server.py
+.PHONY: tileserver
+
 integrationserver: check
 	$(MANAGE) integrationserver --addrport $(INTERFACE):$(RUNSERVER_PORT) --noinput
 .PHONY: integrationserver 
@@ -69,5 +73,5 @@ dev:
 .PHONY: dev
 
 cypress:
-	trap 'kill 0' EXIT; make integrationserver & make webpack & make cypress-open
+	trap 'kill 0' EXIT; make integrationserver & make tileserver & make webpack & make cypress-open
 .PHONY: cypress
