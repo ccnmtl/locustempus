@@ -8,8 +8,17 @@ import './js/registration-form.js';
 import './js/header-scroll.js';
 
 // Table sorter
-$('.course-roster__table').tablesorter({
+$('#myTable').tablesorter({
     theme: 'bootstrap',
+});
+
+$('#roster__table').tablesorter({
+    theme: 'bootstrap',
+});
+
+$('#member-roster__table').tablesorter({
+    theme: 'bootstrap',
+    sortList: [[3,0], [0,0]],
 });
 
 // Login form

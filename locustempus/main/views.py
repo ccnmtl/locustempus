@@ -179,13 +179,13 @@ class CourseRosterPromoteView(LoggedInFacultyMixin, View):
         course = get_object_or_404(Course, id=kwargs.get('pk', None))
 
         if course.is_true_faculty(user):
-            msg = u'{} is already faculty in this course'.format(
+            msg = u'{} is already Author in this workspace.'.format(
                 user_display_name(user))
         elif course.is_member(user):
             course.faculty_group.user_set.add(user)
-            msg = u'{} is now faculty'.format(user_display_name(user))
+            msg = u'{} is now Author.'.format(user_display_name(user))
         else:
-            msg = u'{} is not a member of this course'.format(
+            msg = u'{} is not a member of this workspace.'.format(
                 user_display_name(user))
 
         messages.add_message(request, messages.INFO, msg)
@@ -204,13 +204,13 @@ class CourseRosterDemoteView(LoggedInFacultyMixin, View):
 
         if course.is_true_faculty(user):
             course.faculty_group.user_set.remove(user)
-            msg = u'{} is now only a member of this course'.format(
+            msg = u'{} is now Contributor'.format(
                 user_display_name(user))
         elif course.is_member(user):
-            msg = u'{} is already a member of this course'.format(
+            msg = u'{} is already a member of this workspace.'.format(
                 user_display_name(user))
         else:
-            msg = u'{} is not a user in this course'.format(
+            msg = u'{} is not a user in this workspace.'.format(
                 user_display_name(user))
 
         messages.add_message(request, messages.INFO, msg)
@@ -232,10 +232,10 @@ class CourseRosterRemoveView(LoggedInFacultyMixin, View):
 
         if course.is_member(user):
             course.group.user_set.remove(user)
-            msg = u'{} is no longer a member of this course'.format(
+            msg = u'{} is no longer a member of this workspace.'.format(
                 user_display_name(user))
         else:
-            msg = u'{} was not a member in this course'.format(
+            msg = u'{} was not a member in this workspace.'.format(
                 user_display_name(user))
 
         messages.add_message(request, messages.INFO, msg)
@@ -259,7 +259,7 @@ class CourseRosterResendEmailInviteView(LoggedInFacultyMixin, View):
         affil.save()
 
         # Resend email to invited user
-        subj = 'Locus Tempus Invite: {}'.format(course.title)
+        subj = 'Locus Tempus Invitation: {}'.format(course.title)
         send_template_email(
             subj,
             self.guest_email_template,
@@ -270,7 +270,7 @@ class CourseRosterResendEmailInviteView(LoggedInFacultyMixin, View):
         )
 
         msg = ('{} has been resent an invitation '
-               'to join the course.'.format(addr))
+               'to join the workspace.'.format(addr))
         messages.add_message(request, messages.INFO, msg)
         return HttpResponseRedirect(
             reverse('course-roster-view', args=[course.pk]))
@@ -328,7 +328,7 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
             else:
                 email = '{}@columbia.edu'.format(uni)
                 course.group.user_set.add(user)
-                subj = 'Locus Tempus Invite: {}'.format(course.title)
+                subj = 'Locus Tempus Invitation: {}'.format(course.title)
                 send_template_email(
                     subj,
                     self.email_template,
@@ -336,8 +336,8 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
                     email
                 )
                 msg = (
-                    '{} is now a course member. An email was sent to '
-                    '{} notifying the user.').format(display_name, email)
+                    '{} is now a workspace member. An email notification '
+                    'was sent to {}.').format(display_name, email)
 
                 messages.add_message(self.request, messages.SUCCESS, msg)
 
@@ -355,7 +355,7 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
                     messages.add_message(self.request, messages.WARNING, msg)
                 else:
                     course.group.user_set.add(user)
-                    subj = 'Locus Tempus Invite: {}'.format(course.title)
+                    subj = 'Locus Tempus Invitation: {}'.format(course.title)
                     send_template_email(
                         subj,
                         self.email_template,
@@ -363,8 +363,8 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
                         addr
                     )
                     msg = (
-                        '{} is now a course member. An email was sent to '
-                        '{} notifying the user.').format(
+                        '{} is now a workspace member. An email notification '
+                        'was sent to {}.').format(
                             user.username, addr)
 
                     messages.add_message(self.request, messages.SUCCESS, msg)
@@ -373,7 +373,7 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
                 # You need to check if an affiliation exist
                 if GuestUserAffil.objects.filter(
                         course=course, guest_email=addr).exists():
-                    msg = ('{} has alrady been invited to join the course.'
+                    msg = ('{} has already been invited to join the workspace.'
                            ' Please use the resend button below to '
                            'resend the invitation'.format(addr))
                     messages.add_message(self.request, messages.INFO, msg)
@@ -385,7 +385,7 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
                     )
                     affil.save()
                     # Send email to invite user to sign up
-                    subj = 'Locus Tempus Invite: {}'.format(course.title)
+                    subj = 'Locus Tempus Invitation: {}'.format(course.title)
                     send_template_email(
                         subj,
                         self.guest_email_template,
@@ -398,7 +398,7 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
                     )
                     # Show message to faculty
                     msg = ('{} has been sent an invitation '
-                           'to join the course.'.format(addr))
+                           'to join the workspace.'.format(addr))
                     messages.add_message(self.request, messages.SUCCESS, msg)
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
