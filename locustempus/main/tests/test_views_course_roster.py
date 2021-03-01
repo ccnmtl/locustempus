@@ -207,7 +207,7 @@ class CourseRoster(CourseTestMixin, TestCase):
 
         self.assertEqual(
             mail.outbox[0].subject,
-            'Locus Tempus Invite: {}'.format(self.sandbox_course.title))
+            'Locus Tempus Invitation: {}'.format(self.sandbox_course.title))
 
     def test_course_roster_uninvite(self):
         """Test that faculty can uninvite a guest user"""
@@ -467,7 +467,7 @@ class CourseRosterInviteUserTest(CourseTestMixin, TestCase):
         )
         self.assertContains(
             response,
-            'An email was sent to {} notifying the user.'.format(addr))
+            'An email notification was sent to {}.'.format(addr))
 
     def test_empty_form(self):
         self.assertTrue(
