@@ -101,6 +101,7 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
 
     const showDefaultMenu = (): void => {
         setActiveTab(0);
+        setShowProjectEditPanel(false);
     };
 
     const handleTogglePane = (e: React.MouseEvent<HTMLButtonElement>): void => {

@@ -29,7 +29,7 @@ BASE_MAPS = [
 
 
 class Layer(models.Model):
-    title = models.CharField(max_length=32)
+    title = models.CharField(max_length=256)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey('content_type', 'object_id')
@@ -50,7 +50,7 @@ class Layer(models.Model):
 
 
 class RasterLayer(Layer):
-    url = models.CharField(max_length=512)
+    url = models.CharField(max_length=2048)
 
 
 class MediaObject(models.Model):
@@ -175,7 +175,7 @@ class Project(models.Model):
 class Activity(models.Model):
     project = models.OneToOneField(
         Project, on_delete=models.CASCADE, related_name='activity')
-    instructions = models.CharField(max_length=256)
+    instructions = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey(
