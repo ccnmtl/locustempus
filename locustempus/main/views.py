@@ -58,7 +58,22 @@ class IndexView(View):
 
 class DashboardView(LoginRequiredMixin, View):
     template_name = 'main/course_list.html'
-    http_method_names = ['get']
+    http_method_names = ['get', 'post']
+
+    def post(self, request, *args, **kwargs) -> HttpResponse:
+        courses = get_courses_for_user(self.request.user)
+
+        is_grid = not request.session.get('course_list_grid', False)
+        request.session['course_list_grid'] = is_grid
+
+        ctx = {
+            'user': request.user,
+            'registrar_courses': courses.filter(info__term__isnull=False),
+            'sandbox_courses': courses.filter(info__term__isnull=True),
+            'page_type': 'dashboard',
+            'course_list_grid': is_grid
+        }
+        return render(request, self.template_name, ctx)
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
         user = request.user
@@ -67,12 +82,18 @@ class DashboardView(LoginRequiredMixin, View):
             user.first_name + "'s Workspaces" if user.first_name
             else user.username + "'s Workspaces": ''
         }
+
+        is_grid = request.session.get('course_list_grid', True)
+        if 'course_list_grid' not in request.session:
+            request.session['course_list_grid'] = is_grid
+
         ctx = {
             'user': user,
             'registrar_courses': courses.filter(info__term__isnull=False),
             'sandbox_courses': courses.filter(info__term__isnull=True),
             'page_type': 'dashboard',
-            'breadcrumb': breadcrumb
+            'breadcrumb': breadcrumb,
+            'course_list_grid': is_grid
         }
         return render(request, self.template_name, ctx)
 
@@ -118,22 +139,50 @@ class CourseCreateView(LoginRequiredMixin, CreateView):
         return result
 
 
-class CourseDetailView(LoggedInCourseMixin, DetailView):
-    model = Course
+class CourseDetailView(LoggedInCourseMixin, View):
     template_name = 'main/course_detail.html'
+    http_method_names = ['get', 'post']
 
-    def get_context_data(self, **kwargs):
-        ctx = super().get_context_data(**kwargs)
-        course: Course = kwargs.get('object')
-        ctx['projects'] = Project.objects.filter(course=course)\
-            .order_by('title')
-        ctx['is_faculty'] = course.is_true_faculty(self.request.user)
-        ctx['page_type'] = 'course'
-        ctx['breadcrumb'] = {
-            'Workspaces': reverse('course-list-view'),
-            course.title: '',
+    def post(self, request, *args, **kwargs):
+        course = get_object_or_404(Course, pk=kwargs.get('pk'))
+
+        is_grid = not request.session.get('project_list_grid', False)
+        request.session['project_list_grid'] = is_grid
+
+        ctx = {
+            'course': course,
+            'projects': Project.objects.filter(course=course)
+            .order_by('title'),
+            'is_faculty': course.is_true_faculty(self.request.user),
+            'page_type': 'course',
+            'project_list_grid': is_grid,
+            'breadcrumb': {
+                'Workspaces': reverse('course-list-view'),
+                course.title: '',
+            }
         }
-        return ctx
+        return render(request, self.template_name, ctx)
+
+    def get(self, request, *args, **kwargs):
+        course = get_object_or_404(Course, pk=kwargs.get('pk'))
+
+        is_grid = request.session.get('project_list_grid', True)
+        if 'project_list_grid' not in request.session:
+            request.session['project_list_grid'] = is_grid
+
+        ctx = {
+            'course': course,
+            'projects': Project.objects.filter(course=course)
+            .order_by('title'),
+            'is_faculty': course.is_true_faculty(self.request.user),
+            'page_type': 'course',
+            'project_list_grid': is_grid,
+            'breadcrumb': {
+                'Workspaces': reverse('course-list-view'),
+                course.title: '',
+            }
+        }
+        return render(request, self.template_name, ctx)
 
 
 class CourseEditView(LoggedInFacultyMixin, UpdateView):

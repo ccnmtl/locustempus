@@ -270,6 +270,25 @@ class CourseTest(CourseTestMixin, TestCase):
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/dashboard/")
 
+    def test_detail_toggle_grid_list(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.superuser.username,
+                password='test'
+            )
+        )
+        r1 = self.client.get(
+            reverse('course-detail-view', args=[self.sandbox_course.pk]))
+        self.assertTrue(r1.context['project_list_grid'])
+
+        r2 = self.client.post(
+            reverse('course-detail-view', args=[self.sandbox_course.pk]))
+        self.assertFalse(r2.context['project_list_grid'])
+
+        r3 = self.client.post(
+            reverse('course-detail-view', args=[self.sandbox_course.pk]))
+        self.assertTrue(r3.context['project_list_grid'])
+
 
 class DashboardTest(CourseTestMixin, TestCase):
     def setUp(self):
@@ -316,3 +335,19 @@ class DashboardTest(CourseTestMixin, TestCase):
             response.context['registrar_courses'].count(), 1)
         self.assertEqual(
             response.context['sandbox_courses'].count(), 1)
+
+    def test_detail_toggle_grid_list(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.superuser.username,
+                password='test'
+            )
+        )
+        r1 = self.client.get(reverse('course-list-view'))
+        self.assertTrue(r1.context['course_list_grid'])
+
+        r2 = self.client.post(reverse('course-list-view'))
+        self.assertFalse(r2.context['course_list_grid'])
+
+        r3 = self.client.post(reverse('course-list-view'))
+        self.assertTrue(r3.context['course_list_grid'])
