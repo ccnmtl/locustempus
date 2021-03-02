@@ -61,12 +61,18 @@ class DashboardView(LoginRequiredMixin, View):
     http_method_names = ['get']
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
-        courses = get_courses_for_user(self.request.user)
+        user = request.user
+        courses = get_courses_for_user(user)
+        breadcrumb = {
+            user.first_name + "'s Workspaces" if user.first_name
+            else user.username + "'s Workspaces": ''
+        }
         ctx = {
-            'user': request.user,
+            'user': user,
             'registrar_courses': courses.filter(info__term__isnull=False),
             'sandbox_courses': courses.filter(info__term__isnull=True),
-            'page_type': 'dashboard'
+            'page_type': 'dashboard',
+            'breadcrumb': breadcrumb
         }
         return render(request, self.template_name, ctx)
 
@@ -79,7 +85,10 @@ class CourseCreateView(LoginRequiredMixin, CreateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['page_type'] = 'course'
-        ctx['template_title'] = 'Create New Workspace'
+        ctx['breadcrumb'] = {
+            'Workspaces': reverse('course-list-view'),
+            'Create New Workspace': ''
+        }
         return ctx
 
     def get_success_url(self) -> str:
@@ -120,6 +129,10 @@ class CourseDetailView(LoggedInCourseMixin, DetailView):
             .order_by('title')
         ctx['is_faculty'] = course.is_true_faculty(self.request.user)
         ctx['page_type'] = 'course'
+        ctx['breadcrumb'] = {
+            'Workspaces': reverse('course-list-view'),
+            course.title: '',
+        }
         return ctx
 
 
@@ -131,7 +144,12 @@ class CourseEditView(LoggedInFacultyMixin, UpdateView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['page_type'] = 'course'
-        ctx['template_title'] = 'Edit'
+        ctx['breadcrumb'] = {
+            'Workspaces': reverse('course-list-view'),
+            self.object.title:
+                reverse('course-detail-view', args=[self.object.pk]),
+            'Edit': ''
+        }
         return ctx
 
     def get_success_url(self):
@@ -145,7 +163,12 @@ class CourseDeleteView(LoggedInFacultyMixin, DeleteView):
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
         ctx['page_type'] = 'course'
-        ctx['template_title'] = 'Delete'
+        ctx['breadcrumb'] = {
+            'Workspaces': reverse('course-list-view'),
+            self.object.title:
+                reverse('course-detail-view', args=[self.object.pk]),
+            'Delete': ''
+        }
         return ctx
 
     def get_success_url(self) -> str:
@@ -163,9 +186,8 @@ class CourseRosterView(LoggedInFacultyMixin, DetailView):
             course=course,
             accepted_at=None
         )
-        ctx['page_type'] = 'roster'
-        ctx['template_title'] = 'Roster'
         ctx['inactive_invitees'] = inactive_email_invites
+        ctx['page_type'] = 'roster'
         ctx['breadcrumb'] = {
             'Workspaces': reverse('course-list-view'),
             course.title: reverse('course-detail-view', args=[course.pk]),
