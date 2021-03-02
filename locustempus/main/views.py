@@ -166,6 +166,11 @@ class CourseRosterView(LoggedInFacultyMixin, DetailView):
         ctx['page_type'] = 'roster'
         ctx['template_title'] = 'Roster'
         ctx['inactive_invitees'] = inactive_email_invites
+        ctx['breadcrumb'] = {
+            'Workspaces': reverse('course-list-view'),
+            course.title: reverse('course-detail-view', args=[course.pk]),
+            'Roster': ''
+        }
         return ctx
 
 

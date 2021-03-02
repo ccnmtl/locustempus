@@ -88,7 +88,7 @@
                     <div class="lt-menu lt-menu-overflow--bootstrap dropdown-menu">
                         <ul class="lt-list">
                             <li class="lt-list-item">
-                                <a href="/dashboard/" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                                <a href="{% url 'course-list-view' %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
                                 <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-grid.svg" /></span>
                                 <span class="lt-list-item__primary-text">Your Workspaces</span>
                                 </a>
@@ -148,29 +148,18 @@
         {% endblock %}
 
 <!-- Dashboard breadcrumb and navigation bar -->        
-        {% if page_type == 'dashboard' or page_type == 'course' or page_type == 'roster' %}
+        {% if breadcrumb %}
         <div class="nav-dashboard">
             <div class="lt-breadcrumb">
                 <nav aria-label="breadcrumb">
                     <ol class="breadcrumb nav-dashboard__h1">
-                        {% if page_type == 'dashboard' %}
-                            <li class="breadcrumb-item">
-                                {% if user.first_name %}
-                                    {{ user.first_name }}’s
-                                {% else %}
-                                    {{ user.username }}’s
-                                {% endif %}
-                                Workspaces
-                            </li>
-                        {% else %}
-                            <li class="breadcrumb-item"><a href="/dashboard/">Workspaces</a></li>
-                        {% endif %}
-                        {% if course.title %}
-                        <li class="breadcrumb-item"><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></li>
-                        {% endif %}                        
-                        {% if template_title %}
-                        <li class="breadcrumb-item">{{ template_title }}</li>
-                        {% endif %}                        
+                        {% for title, path in breadcrumb.items %}
+                            {% if path == '' %}
+                                <li class="breadcrumb-item">{{ title }}</li>
+                            {% else %}
+                                <li class="breadcrumb-item"><a href="{{ path }}">{{ title }}</a></li>
+                            {% endif %}
+                        {% endfor %}
                     </ol>
                 </nav>
             </div>
