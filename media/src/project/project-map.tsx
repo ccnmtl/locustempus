@@ -226,6 +226,7 @@ export const ProjectMap: React.FC = () => {
         const layerVis = new Map(layerVisibility);
         layerVis.set(pk, !layerVisibility.get(pk));
         setLayerVisibility(layerVis);
+        updateMapboxLayers(layerData, setMapboxLayers, layerVis);
     };
 
     const goToNewEvent = useCallback(() => {
