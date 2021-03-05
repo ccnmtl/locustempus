@@ -60,6 +60,13 @@ class DashboardView(LoginRequiredMixin, View):
     template_name = 'main/course_list.html'
     http_method_names = ['get', 'post']
 
+    def get_breadcrumb(self):
+        user = self.request.user
+        return {
+            user.first_name + "'s Workspaces" if user.first_name
+            else user.username + "'s Workspaces": ''
+        }
+
     def post(self, request, *args, **kwargs) -> HttpResponse:
         courses = get_courses_for_user(self.request.user)
 
@@ -71,28 +78,24 @@ class DashboardView(LoginRequiredMixin, View):
             'registrar_courses': courses.filter(info__term__isnull=False),
             'sandbox_courses': courses.filter(info__term__isnull=True),
             'page_type': 'dashboard',
+            'breadcrumb': self.get_breadcrumb(),
             'course_list_grid': is_grid
         }
         return render(request, self.template_name, ctx)
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
-        user = request.user
-        courses = get_courses_for_user(user)
-        breadcrumb = {
-            user.first_name + "'s Workspaces" if user.first_name
-            else user.username + "'s Workspaces": ''
-        }
+        courses = get_courses_for_user(request.user)
 
         is_grid = request.session.get('course_list_grid', True)
         if 'course_list_grid' not in request.session:
             request.session['course_list_grid'] = is_grid
 
         ctx = {
-            'user': user,
+            'user': request.user,
             'registrar_courses': courses.filter(info__term__isnull=False),
             'sandbox_courses': courses.filter(info__term__isnull=True),
             'page_type': 'dashboard',
-            'breadcrumb': breadcrumb,
+            'breadcrumb': self.get_breadcrumb(),
             'course_list_grid': is_grid
         }
         return render(request, self.template_name, ctx)
@@ -145,14 +148,14 @@ class CourseDetailView(LoggedInCourseMixin, View):
 
     def post(self, request, *args, **kwargs):
         course = get_object_or_404(Course, pk=kwargs.get('pk'))
+        projects = Project.objects.filter(course=course).order_by('title')
 
         is_grid = not request.session.get('project_list_grid', False)
         request.session['project_list_grid'] = is_grid
 
         ctx = {
             'course': course,
-            'projects': Project.objects.filter(course=course)
-            .order_by('title'),
+            'projects': projects,
             'is_faculty': course.is_true_faculty(self.request.user),
             'page_type': 'course',
             'project_list_grid': is_grid,
