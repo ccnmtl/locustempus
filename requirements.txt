@@ -38,7 +38,7 @@ prompt_toolkit==2.0.10  # ipython
 pygments==2.5.2  # ipython
 scandir==1.10.0  # ipython
 ipython==7.8.0
-coverage==5.4
+coverage==5.5
 pyasn1==0.4.8
 cryptography<=3.2.1  # pyOpenSSL
 pyOpenSSL==20.0.1
