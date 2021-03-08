@@ -1,6 +1,7 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
-    _MapContext as MapContext, StaticMap, NavigationControl, Popup
+    _MapContext as MapContext, StaticMap, NavigationControl, Popup,
+    WebMercatorViewport
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
@@ -37,7 +38,7 @@ export const ProjectMap: React.FC = () => {
         longitude: -73.9647614,
         zoom: 12,
         bearing: 0,
-        pitch: 40.5
+        pitch: 0
     });
 
     const mapContainer: HTMLElement | null =
@@ -48,6 +49,8 @@ export const ProjectMap: React.FC = () => {
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
     const coursePk = pathList[pathList.length - 4];
+    const deckglMap = useRef<DeckGL>(null);
+    const mapPane = useRef<HTMLDivElement>(null);
     const [projectData, setProjectData] = useState<ProjectData | null>(null);
     const [layerData, setLayerData] = useState<Map<number, LayerData>>(new Map());
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
@@ -236,7 +239,7 @@ export const ProjectMap: React.FC = () => {
                 longitude: activePosition[1],
                 zoom: 15,
                 bearing: 0,
-                pitch: 40.5,
+                pitch: 0,
                 transitionDuration: 1000,
                 transitionInterpolator: new FlyToInterpolator()
             });
@@ -408,6 +411,56 @@ export const ProjectMap: React.FC = () => {
         }
     }
 
+    const getBoundedViewport = (layers: Map<number, LayerData>): WebMercatorViewport => {
+        // Returns a viewport object configured to include all event markers
+        let minLat = Infinity;
+        let minLng = Infinity;
+        let maxLat = -Infinity;
+        let maxLng = -Infinity;
+        for (const layer of layers.values()) {
+            for (const evt of layer.events) {
+                const [lng, lat] = evt.location.lng_lat;
+                minLat = lat < minLat ? lat : minLat;
+                minLng = lng < minLng ? lng : minLng;
+                maxLat = lat > maxLat ? lat : maxLat;
+                maxLng = lng > maxLng ? lng : maxLng;
+            }
+        }
+
+        if (deckglMap.current !== null) {
+            const viewportOpt = {
+                width: deckglMap.current.deck.width,
+                height: deckglMap.current.deck.height
+            };
+
+            const padding = 50;
+            // The left padding is contingent on if the map pane is visible or isn't.
+            // First, assume that the map pane is visible. It doesn't get rendered until
+            // after this component is rendered.
+            let leftPaddingOffset = 512;
+            if (mapPane.current !== null) {
+                const boundingRect = mapPane.current.getBoundingClientRect();
+                // If the map pane is off the screen, then remove the offset
+                leftPaddingOffset = boundingRect.x < 0 ? 0 : boundingRect.width;
+            }
+            const boundsOpt = {
+                padding: {
+                    top: padding,
+                    bottom: padding,
+                    left: padding + leftPaddingOffset,
+                    right: padding
+                }
+            };
+            return new WebMercatorViewport(viewportOpt).fitBounds([
+                [minLng, minLat], [maxLng, maxLat],
+            ], boundsOpt);
+        } else {
+            throw new Error(
+                'The Deck GL component has not yet been rendered. ' +
+                    'This function is being called too soon.');
+        }
+    };
+
     useEffect(() => {
         const getData = async(): Promise<void> => {
             // Fetch the Project data
@@ -433,12 +486,20 @@ export const ProjectMap: React.FC = () => {
 
                     acc.set(val.pk, val);
                     return acc;
-                }, new Map());
+                }, new Map<number, LayerData>());
                 setLayerData(layerMap);
 
                 updateMapboxLayers(layerMap, setMapboxLayers, layerVis);
                 setActiveLayer(layers[0].pk);
                 setLayerVisibility(layerVis);
+                const viewport = getBoundedViewport(layerMap);
+                setViewportState({
+                    latitude: viewport.latitude,
+                    longitude: viewport.longitude,
+                    zoom: viewport.zoom,
+                    bearing: 0,
+                    pitch: 0
+                });
             }
 
             // Instantiate raster layers
@@ -487,6 +548,7 @@ export const ProjectMap: React.FC = () => {
                     controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
                     onClick={handleDeckGlClick}
                     pickingRadius={15}
+                    ref={deckglMap}
                     ContextProvider={MapContext.Provider}>
                     <StaticMap
                         reuseMaps
@@ -529,6 +591,7 @@ export const ProjectMap: React.FC = () => {
             )}
             {projectData && (
                 <ProjectMapPane
+                    containerRef={mapPane}
                     title={projectData.title || 'Untitled'}
                     description={projectData.description || ''}
                     baseMap={projectData.base_map || ''}
