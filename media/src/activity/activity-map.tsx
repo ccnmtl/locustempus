@@ -188,7 +188,6 @@ export const ActivityMap: React.FC = () => {
         return true;
     };
 
-    // TODO: move this to a common func
     const updateMapboxLayers = (
         layers: Map<number, LayerData>, setterFunc = setMapboxLayers,
         layerVisMap = layerVisibility): void => {
@@ -219,49 +218,45 @@ export const ActivityMap: React.FC = () => {
         setterFunc(mapLayers);
     };
 
-    const toggleResponseVisibility = (responsePk = -1): void => {
-        // if responsePk == -1, show all responses
+    const toggleResponseVisibility = (responsePk: number): void => {
         const layerVis = new Map(layerVisibility);
-        if (responsePk == -1) {
-            layerVis.forEach((val, key, mmap) => {
-                mmap.set(key, true);
+        const layers = responseLayers.get(responsePk);
+        if (layers) {
+            layers.forEach((lyr) => {
+                if (layerVis.has(lyr.pk)) {
+                    layerVis.set(lyr.pk, !layerVis.get(lyr.pk));
+                }
             });
-        } else {
-            if (layerVis.has(responsePk)) {
-                layerVis.set(responsePk, !layerVis.get(responsePk));
+        }
+
+        const respMapLayers: IconLayer<EventData>[] = [];
+
+        // Iterate over the response layers
+        for (const [respPk, respLayers] of responseLayers.entries()) {
+            // For each set of layers check if visible, push to list if true
+            for (const layer of respLayers) {
+                if (layerVis.get(layer.pk)) {
+                    respMapLayers.push(
+                        new IconLayer<EventData>({
+                            id: `response-layer-${layer.pk}`,
+                            data: layer.events,
+                            pickable: true,
+                            iconAtlas: ICON_ATLAS,
+                            iconMapping: ICON_MAPPING,
+                            getIcon: (): string => 'marker',
+                            sizeScale: ICON_SCALE,
+                            getPosition: (d) => d.location.lng_lat,
+                            onClick: pickEventClickHandler,
+                            getSize: ICON_SIZE,
+                            getColor: ICON_COLOR,
+                        })
+                    );
+                }
             }
         }
 
-        // TODO: use the common func for this
-        const responseMapLayers = [...responseLayers.entries()].reduce(
-            (acc: IconLayer<EventData>[], entry) => {
-                const responsePk = entry[0];
-                const layers = entry[1];
-                const mapLayers = layers.reduce(
-                    (layerAcc: IconLayer<EventData>[], layerVal) => {
-                        if (layerVis.get(responsePk)) {
-                            const layer = new IconLayer<EventData>({
-                                id: `response-layer-${layerVal.pk}`,
-                                data: layerVal.events,
-                                pickable: true,
-                                iconAtlas: ICON_ATLAS,
-                                iconMapping: ICON_MAPPING,
-                                getIcon: (): string => 'marker',
-                                sizeScale: ICON_SCALE,
-                                getPosition: (d): Position => d.location.lng_lat,
-                                onClick: pickEventClickHandler,
-                                getSize: ICON_SIZE,
-                                getColor: ICON_COLOR,
-                            });
-                            layerAcc.push(layer);
-                        }
-                        return layerAcc;
-                    }, []);
-                return acc.concat(mapLayers);
-            }, []);
-
-        setResponseMapboxLayers(responseMapLayers);
         setLayerVisibility(layerVis);
+        setResponseMapboxLayers(respMapLayers);
     };
 
     const updateActivity = (instructions: string, pk: number): void => {
