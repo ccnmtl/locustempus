@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-{{ object.title }}
+{{ course.title }}
 {% endblock %}
 
 {% block page_actions %}
@@ -15,13 +15,13 @@
             <div class="lt-menu lt-menu-overflow--bootstrap dropdown-menu">
                 <ul class="lt-list">
                     <li class="lt-list-item">
-                        <a href="{% url 'course-edit-view' object.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                        <a href="{% url 'course-edit-view' course.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
                         <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-pencil.svg" class="active" /></span>
                         <span class="lt-list-item__primary-text">Edit Workspace</span>
                         </a>
                     </li>
                     <li class="lt-list-item">
-                        <a href="{% url 'course-roster-view' object.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                        <a href="{% url 'course-roster-view' course.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
                         <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-roster.svg" class="active" /></span>
                         <span class="lt-list-item__primary-text">Manage Roster</span>
                         </a>
@@ -36,14 +36,17 @@
             </div>
         </div>
         {% endif %}
-        <button type="button" class="lt-button mr-1 lt-button--transparent">
-            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" class="active" /></span>
-            <span class='lt-button__text'>Grid</span>
-        </button>
-        <button type="button" class="lt-button lt-button--transparent">
-            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" class="inactive" /></span>
-            <span class='lt-button__text'>List</span>
-        </button>
+        <form method="post">
+            {% csrf_token %}
+            <button type="submit" class="btn lt-button mr-1 lt-button--transparent" {% if project_list_grid %}disabled{% endif %}>
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" class="{% if project_list_grid %}inactive{% else %}active{% endif %}" /></span>
+                <span class='lt-button__text'>Grid</span>
+            </button>
+            <button type="submit" class="btn lt-button lt-button--transparent" {% if not project_list_grid %}disabled{% endif %}>
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" class="{% if project_list_grid %}active{% else %}inactive{% endif %}" /></span>
+                <span class='lt-button__text'>List</span>
+            </button>
+        </form>
     </div>
 {% endblock %}
 
@@ -51,7 +54,7 @@
 
 {% if is_faculty and projects %}
 <div class="pt-3 px-3">
-    <form action="{% url 'course-project-create' object.pk %}" method="post">
+    <form action="{% url 'course-project-create' course.pk %}" method="post">
         {% csrf_token %}
         <button class="btn lt-button" data-cy="project-create-button">
             <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
@@ -76,18 +79,18 @@
                     <ul class="list-group list-group-horizontal-sm lt-card__list-group">
                         <li class="list-group-item lt-card__list-group-item">Status?</li> {# not hooked up #}
                         <li class="list-group-item lt-card__list-group-item">
-                        {% if user not in object.faculty and project.activity %}
+                        {% if user not in course.faculty and project.activity %}
                             <a data-cy="view-activity-button" href="{% url 'course-project-detail' course.pk project.pk %}">Activity</a>
-                        {% elif user in object.faculty and project.activity %}
+                        {% elif user in course.faculty and project.activity %}
                             1 Activity
                         {% elif not project.activity %}
                             No Activity                       
                         {% endif %}
                         </li>
-                        {% if user not in object.faculty and project.activity %}
+                        {% if user not in course.faculty and project.activity %}
                         <li class="list-group-item lt-card__list-group-item">Responses status</li> {# not hooked up #}
                         {% endif %}
-                        {% if user in object.faculty and project.activity %}
+                        {% if user in course.faculty and project.activity %}
                         <li class="list-group-item lt-card__list-group-item">0/0 Responses</li> {# not hooked up #}
                         {% endif %}
                         <li class="list-group-item lt-card__list-group-item">What else?</li> {# not hooked up #}
@@ -109,7 +112,7 @@
                 <p class="create-prompt__instructions">
                 You can start by creating one
                 </p>
-            <form action="{% url 'course-project-create' object.pk %}" method="post">
+            <form action="{% url 'course-project-create' course.pk %}" method="post">
                 {% csrf_token %}
                 <button class="btn lt-button" data-cy="project-create-button">
                     <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
