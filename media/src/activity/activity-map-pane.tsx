@@ -59,7 +59,7 @@ export interface ActivityMapPaneProps {
     responseLayers: Map<number, LayerData[]>;
 }
 
-export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
+export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneProps>((
     {
         title, description, isFaculty, baseMap, setBaseMap, updateProject,
         deleteProject, layers, activity, updateActivity, deleteActivity,
@@ -71,7 +71,7 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
         activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent,
         projectLayers, responseData, updateResponse, createFeedback,
         updateFeedback, responseLayers
-    }: ActivityMapPaneProps) => {
+    }: ActivityMapPaneProps, forwardedRef) => {
 
     const [activeTab, setActiveTab] = useState<number>(0);
 
@@ -204,6 +204,7 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
 
     return (
         <div id='project-map-pane'
+            ref={forwardedRef}
             className={'widget-pane widget-pane-' + (showPane ? 'expanded' : 'collapsed') }>
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
                 <header ref={projectPaneHeader} className='project-pane__header'>
@@ -249,4 +250,4 @@ export const ActivityMapPane: React.FC<ActivityMapPaneProps> = (
             </div>
         </div>
     );
-};
+});

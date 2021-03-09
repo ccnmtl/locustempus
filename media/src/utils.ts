@@ -1,3 +1,8 @@
+import DeckGL  from 'deck.gl';
+import { RefObject } from 'react';
+import { WebMercatorViewport } from 'react-map-gl';
+import { LayerData } from './project-activity-components/common';
+
 type HTTPMethod = 'GET' | 'PUT' | 'POST' | 'DELETE'
 
 async function authedFetch(url: string, method: HTTPMethod, data?: unknown): Promise<Response> {
@@ -57,3 +62,64 @@ export async function del(url: string): Promise<void> {
         throw new Error(`DELETE request failed: ${resp.statusText}`);
     }
 }
+
+export const getBoundedViewport = (
+    layers: LayerData[],
+    deckGlRef: RefObject<DeckGL>,
+    mapPaneRef: RefObject<HTMLDivElement>): WebMercatorViewport => {
+    // Returns a viewport object configured to include all event markers
+
+    const coords: [number, number][] = [];
+    for (const layer of layers) {
+        for (const evt of layer.events) {
+            const [lng, lat] = evt.location.lng_lat;
+            coords.push([lng, lat]);
+        }
+    }
+
+    let minLat = Infinity;
+    let minLng = Infinity;
+    let maxLat = -Infinity;
+    let maxLng = -Infinity;
+
+    for (const c of coords) {
+        const [lng, lat] = c;
+        minLat = lat < minLat ? lat : minLat;
+        minLng = lng < minLng ? lng : minLng;
+        maxLat = lat > maxLat ? lat : maxLat;
+        maxLng = lng > maxLng ? lng : maxLng;
+    }
+
+    if (deckGlRef.current !== null) {
+        const viewportOpt = {
+            width: deckGlRef.current.deck.width,
+            height: deckGlRef.current.deck.height
+        };
+
+        const padding = 50;
+        // The left padding is contingent on if the map pane is visible or isn't.
+        // First, assume that the map pane is visible. It doesn't get rendered until
+        // after this component is rendered.
+        let leftPaddingOffset = 512; // Trust me, the pane is 512px wide
+        if (mapPaneRef.current !== null) {
+            const boundingRect = mapPaneRef.current.getBoundingClientRect();
+            // If the map pane is off the screen, then remove the offset
+            leftPaddingOffset = boundingRect.x < 0 ? 0 : boundingRect.width;
+        }
+        const boundsOpt = {
+            padding: {
+                top: padding,
+                bottom: padding,
+                left: padding + leftPaddingOffset,
+                right: padding
+            }
+        };
+        return new WebMercatorViewport(viewportOpt).fitBounds([
+            [minLng, minLat], [maxLng, maxLat],
+        ], boundsOpt);
+    } else {
+        throw new Error(
+            'The Deck GL component has not yet been rendered. ' +
+                'This function is being called too soon.');
+    }
+};

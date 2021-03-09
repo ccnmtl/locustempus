@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
     _MapContext as MapContext, StaticMap, NavigationControl, Popup
 } from 'react-map-gl';
@@ -13,7 +13,7 @@ import { PickInfo } from '@deck.gl/core/lib/deck';
 import { ActivityMapPane } from './activity-map-pane';
 import { LoadingModal } from '../project-activity-components/loading-modal';
 
-import {get, put, post, del } from '../utils';
+import {get, put, post, del, getBoundedViewport } from '../utils';
 
 const CURRENT_USER = LocusTempus.currentUser.id;
 
@@ -68,7 +68,7 @@ export const ActivityMap: React.FC = () => {
         longitude: -73.9647614,
         zoom: 12,
         bearing: 0,
-        pitch: 40.5
+        pitch: 0
     });
 
     const mapContainer: HTMLElement | null =
@@ -83,6 +83,9 @@ export const ActivityMap: React.FC = () => {
 
     const [projectData, setProjectData] = useState<ProjectData | null>(null);
     const [responseData, setResponseData] = useState<ResponseData[]>([]);
+
+    const deckglMap = useRef<DeckGL>(null);
+    const mapPane = useRef<HTMLDivElement>(null);
 
     /* Layers */
     // projectLayerData holds Layers belonging to the base project
@@ -428,7 +431,7 @@ export const ActivityMap: React.FC = () => {
                 longitude: activePosition[1],
                 zoom: 15,
                 bearing: 0,
-                pitch: 40.5,
+                pitch: 0,
                 transitionDuration: 1000,
                 transitionInterpolator: new FlyToInterpolator()
             });
@@ -653,6 +656,9 @@ export const ActivityMap: React.FC = () => {
     useEffect(() => {
         // TODO: Refactor this to rededuce complexity
         const getData = async(): Promise<void> => {
+            // List to hold the event, used to set zoom once all layers are loaded
+            let layersForZoom: LayerData[] = [];
+
             // Fetch the Project data
             let projData: ProjectData;
             if (projectPk) {
@@ -685,8 +691,9 @@ export const ActivityMap: React.FC = () => {
                     layerVis.set(val.pk, true);
                     acc.set(val.pk, val);
                     return acc;
-                }, new Map());
+                }, new Map<number, LayerData>());
                 setProjectLayerData(projLayers);
+                layersForZoom = layersForZoom.concat([...projLayers.values()]);
                 updateMapboxLayers(projLayers, setProjectMapboxLayers, layerVis);
                 setLayerVisibility(layerVis);
 
@@ -762,6 +769,9 @@ export const ActivityMap: React.FC = () => {
                     }
 
                     setResponseLayers(respLayers);
+                    for (const layers of respLayers.values()) {
+                        layersForZoom = layersForZoom.concat(layers);
+                    }
                     setResponseMapboxLayers(respMapLayers);
                 } else {
                     if (respData.length > 0) {
@@ -780,8 +790,9 @@ export const ActivityMap: React.FC = () => {
                                 // Set the layer visibility
                                 layerVis.set(val.pk, true);
                                 return acc;
-                            }, new Map());
+                            }, new Map<number, LayerData>());
                             setLayerData(lyrs);
+                            layersForZoom = layersForZoom.concat([...lyrs.values()]);
                             updateMapboxLayers(lyrs, setMapboxLayers, layerVis);
                             setActiveLayer(layers[0].pk);
                         }
@@ -799,6 +810,14 @@ export const ActivityMap: React.FC = () => {
                     }
                 }
             }
+            const viewport = getBoundedViewport(layersForZoom, deckglMap, mapPane);
+            setViewportState({
+                latitude: viewport.latitude,
+                longitude: viewport.longitude,
+                zoom: viewport.zoom,
+                bearing: 0,
+                pitch: 0
+            });
         };
 
         void getData();
@@ -814,6 +833,7 @@ export const ActivityMap: React.FC = () => {
                         ...projectMapboxLayers,
                         ...(isFaculty ? responseMapboxLayers : mapboxLayers)
                     ]}
+                    ref={deckglMap}
                     initialViewState={viewportState}
                     width={'100%'}
                     height={'100%'}
@@ -862,6 +882,7 @@ export const ActivityMap: React.FC = () => {
             )}
             {projectData && (
                 <ActivityMapPane
+                    ref={mapPane}
                     title={projectData.title}
                     description={(() => projectData.description)()}
                     baseMap={projectData.base_map}

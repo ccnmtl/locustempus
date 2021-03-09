@@ -20,7 +20,7 @@ import {
     MediaObject, DeckGLClickEvent, TileSublayerProps
 } from '../project-activity-components/common';
 
-import {get, put, post, del } from '../utils';
+import {get, put, post, del, getBoundedViewport } from '../utils';
 
 interface ViewportState {
     latitude: number;
@@ -411,56 +411,6 @@ export const ProjectMap: React.FC = () => {
         }
     }
 
-    const getBoundedViewport = (layers: Map<number, LayerData>): WebMercatorViewport => {
-        // Returns a viewport object configured to include all event markers
-        let minLat = Infinity;
-        let minLng = Infinity;
-        let maxLat = -Infinity;
-        let maxLng = -Infinity;
-        for (const layer of layers.values()) {
-            for (const evt of layer.events) {
-                const [lng, lat] = evt.location.lng_lat;
-                minLat = lat < minLat ? lat : minLat;
-                minLng = lng < minLng ? lng : minLng;
-                maxLat = lat > maxLat ? lat : maxLat;
-                maxLng = lng > maxLng ? lng : maxLng;
-            }
-        }
-
-        if (deckglMap.current !== null) {
-            const viewportOpt = {
-                width: deckglMap.current.deck.width,
-                height: deckglMap.current.deck.height
-            };
-
-            const padding = 50;
-            // The left padding is contingent on if the map pane is visible or isn't.
-            // First, assume that the map pane is visible. It doesn't get rendered until
-            // after this component is rendered.
-            let leftPaddingOffset = 512;
-            if (mapPane.current !== null) {
-                const boundingRect = mapPane.current.getBoundingClientRect();
-                // If the map pane is off the screen, then remove the offset
-                leftPaddingOffset = boundingRect.x < 0 ? 0 : boundingRect.width;
-            }
-            const boundsOpt = {
-                padding: {
-                    top: padding,
-                    bottom: padding,
-                    left: padding + leftPaddingOffset,
-                    right: padding
-                }
-            };
-            return new WebMercatorViewport(viewportOpt).fitBounds([
-                [minLng, minLat], [maxLng, maxLat],
-            ], boundsOpt);
-        } else {
-            throw new Error(
-                'The Deck GL component has not yet been rendered. ' +
-                    'This function is being called too soon.');
-        }
-    };
-
     useEffect(() => {
         const getData = async(): Promise<void> => {
             // Fetch the Project data
@@ -492,7 +442,7 @@ export const ProjectMap: React.FC = () => {
                 updateMapboxLayers(layerMap, setMapboxLayers, layerVis);
                 setActiveLayer(layers[0].pk);
                 setLayerVisibility(layerVis);
-                const viewport = getBoundedViewport(layerMap);
+                const viewport = getBoundedViewport([...layerMap.values()], deckglMap, mapPane);
                 setViewportState({
                     latitude: viewport.latitude,
                     longitude: viewport.longitude,
@@ -591,7 +541,7 @@ export const ProjectMap: React.FC = () => {
             )}
             {projectData && (
                 <ProjectMapPane
-                    containerRef={mapPane}
+                    ref={mapPane}
                     title={projectData.title || 'Untitled'}
                     description={projectData.description || ''}
                     baseMap={projectData.base_map || ''}

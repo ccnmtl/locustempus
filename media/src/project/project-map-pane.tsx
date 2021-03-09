@@ -50,10 +50,9 @@ export interface ProjectMapPaneProps {
     updateEvent(label: string, description: string,
                 lat: number, lng: number, pk: number,
                 layerPk: number, mediaObj: MediaObject | null): void;
-    containerRef: RefObject<HTMLDivElement>;
 }
 
-export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
+export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPaneProps>((
     {
         title, description, baseMap, setBaseMap, newProjectFlag, updateProject,
         deleteProject, layers, layerVisibility, activity, createActivity,
@@ -61,8 +60,8 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
         deleteLayer, updateLayer, toggleLayerVisibility, showAddEventForm,
         setShowAddEventForm, activePosition, addEvent, clearActivePosition,
         activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
-        activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent, containerRef
-    }: ProjectMapPaneProps) => {
+        activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent
+    }: ProjectMapPaneProps, forwardedRef) => {
 
     const projectPaneHeader = useRef<HTMLDivElement>(null);
 
@@ -192,7 +191,7 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
     return (
         // Collapsible pane div begin here
         <div id='project-map-pane'
-            ref={containerRef}
+            ref={forwardedRef}
             className={'widget-pane widget-pane-' + (showPane ? 'expanded' : 'collapsed') }>
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
                 <header ref={projectPaneHeader} className='project-pane__header'>
@@ -236,4 +235,6 @@ export const ProjectMapPane: React.FC<ProjectMapPaneProps> = (
             </div>
         </div>
     );
-};
+});
+
+ProjectMapPane.displayName = 'ProjectMapPane';
