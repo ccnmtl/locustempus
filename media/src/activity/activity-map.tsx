@@ -235,7 +235,8 @@ export const ActivityMap: React.FC = () => {
         const respMapLayers: IconLayer<EventData>[] = [];
 
         // Iterate over the response layers
-        for (const [respPk, respLayers] of responseLayers.entries()) {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        for (const [_, respLayers] of responseLayers.entries()) {
             // For each set of layers check if visible, push to list if true
             for (const layer of respLayers) {
                 if (layerVis.get(layer.pk)) {

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, ReactElement, RefObject } from 'react';
+import React, { useState, useEffect, useRef, ReactElement } from 'react';
 import {
     ActivityData, EventData, LayerData, MediaObject
 } from '../project-activity-components/common';

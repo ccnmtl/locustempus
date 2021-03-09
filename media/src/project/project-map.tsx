@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
 import {
-    _MapContext as MapContext, StaticMap, NavigationControl, Popup,
-    WebMercatorViewport
+    _MapContext as MapContext, StaticMap, NavigationControl, Popup
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl

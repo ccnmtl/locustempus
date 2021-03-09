@@ -251,3 +251,5 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         </div>
     );
 });
+
+ActivityMapPane.displayName = 'ActivityMapPane';
