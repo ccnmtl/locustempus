@@ -102,18 +102,20 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             value={description}
                             onChange={setDescription}/>
                     </div>
-                    <div className={'pane-form-divider'} />
-                    <div className={'form-group pane-form-group'}>
-                        <label htmlFor={'form-field__date'}>
-                            Date
-                        </label>
-                        <input
-                            className={'form-control'}
-                            type={'datetime-local'}
-                            id={'form-field__date'}
-                            value={datetime}
-                            onChange={handleDatetime}/>
-                    </div>
+                    {/*
+                        <div className={'pane-form-divider'} />
+                        <div className={'form-group pane-form-group'}>
+                            <label htmlFor={'form-field__date'}>
+                                Date
+                            </label>
+                            <input
+                                className={'form-control'}
+                                type={'datetime-local'}
+                                id={'form-field__date'}
+                                value={datetime}
+                                onChange={handleDatetime}/>
+                        </div>
+                    */}
                     <div className="form-row">
                         <div className={'form-group col-3'}>
                         </div>
