@@ -64,9 +64,9 @@ interface ViewportState {
 
 export const ActivityMap: React.FC = () => {
     const [viewportState, setViewportState] = useState<ViewportState>({
-        latitude: 40.8075395,
-        longitude: -73.9647614,
-        zoom: 12,
+        latitude: 0,
+        longitude: 0,
+        zoom: 0,
         bearing: 0,
         pitch: 0
     });
@@ -127,7 +127,8 @@ export const ActivityMap: React.FC = () => {
     const [showAddEventForm, setShowAddEventForm] = useState<boolean>(false);
     const [activePosition, setActivePosition] = useState<Position | null>(null);
 
-    const [isLoading, setIsLoading] = useState<boolean>(true);
+    const [isMapLoading, setIsMapLoading] = useState<boolean>(true);
+    const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
 
     // Project handling functions
     const setBaseMap = (baseMap: string) => {
@@ -821,12 +822,12 @@ export const ActivityMap: React.FC = () => {
             });
         };
 
-        void getData();
+        getData().finally(() => {setIsDataLoading(false);});
     }, []);
 
     return (
         <>
-            {isLoading && <LoadingModal />}
+            {(isMapLoading || isDataLoading) && <LoadingModal />}
             {projectData && (
                 <DeckGL
                     layers={[
@@ -849,7 +850,7 @@ export const ActivityMap: React.FC = () => {
                         preventStyleDiffing={true}
                         mapStyle={projectData.base_map}
                         mapboxApiAccessToken={TOKEN}
-                        onLoad={(): void => { setIsLoading(false); }}/>
+                        onLoad={(): void => { setIsMapLoading(false); }}/>
                     {activeEvent && (
                         <Popup
                             latitude={activeEvent.location.lng_lat[1]}
