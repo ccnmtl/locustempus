@@ -19,7 +19,8 @@ export interface ProjectMapPaneProps {
     description: string;
     baseMap: string;
     setBaseMap(baseMap: string): void;
-    newProjectFlag: boolean;
+    isNewProject: boolean;
+    setIsNewProject(flag: boolean): void;
     updateProject(title: string, description: string, baseMap: string): void;
     deleteProject(): void;
     layers: Map<number, LayerData>;
@@ -54,12 +55,13 @@ export interface ProjectMapPaneProps {
 
 export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPaneProps>((
     {
-        title, description, baseMap, setBaseMap, newProjectFlag, updateProject,
-        deleteProject, layers, layerVisibility, activity, createActivity,
-        updateActivity, deleteActivity, activeLayer, setActiveLayer, addLayer,
-        deleteLayer, updateLayer, toggleLayerVisibility, showAddEventForm,
-        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
-        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
+        title, description, baseMap, setBaseMap, isNewProject, setIsNewProject,
+        updateProject, deleteProject, layers, layerVisibility, activity,
+        createActivity, updateActivity, deleteActivity, activeLayer,
+        setActiveLayer, addLayer, deleteLayer, updateLayer,
+        toggleLayerVisibility, showAddEventForm, setShowAddEventForm,
+        activePosition, addEvent, clearActivePosition, activeEvent,
+        setActiveEvent, activeEventDetail, setActiveEventDetail,
         activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent
     }: ProjectMapPaneProps, forwardedRef) => {
 
@@ -68,7 +70,6 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
     const [activeTab, setActiveTab] = useState<number>(0);
     const [showProjectEditPanel, setShowProjectEditPanel] =
         useState<boolean>(false);
-    const [isNewProject, setIsNewProject] = useState<boolean>(newProjectFlag);
     const [projectPaneHeaderHeight, setProjectPaneHeaderHeight] = useState<number>(0);
     const [showPane, setShowPane] = useState<boolean>(true);
 

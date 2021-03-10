@@ -698,10 +698,12 @@ class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
         return ctx
 
     def get_success_url(self):
-        messages.add_message(
-            self.request, messages.SUCCESS,
-            '<strong>{}</strong> has been deleted.'.format(self.object.title)
-        )
+        if not self.request.GET.get('hide_course_delete_notice') == 'true':
+            messages.add_message(
+                self.request, messages.SUCCESS,
+                '<strong>{}</strong> has been deleted.'.format(
+                    self.object.title)
+            )
         return reverse(
             'course-detail-view',
             kwargs={'pk': self.kwargs.get('pk')})

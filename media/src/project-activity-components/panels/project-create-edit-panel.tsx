@@ -29,7 +29,12 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
 
     const [title, setTitle] = useState<string>(projectTitle);
     const [description, setDescription] = useState<string>(projectDescription);
+    const [initBaseMap, setInitBaseMap] = useState<string>('');
     const [showBaseMapMenu, setShowBaseMapMenu] = useState<boolean>(false);
+
+    useEffect(() => {
+        setInitBaseMap(projectBaseMap);
+    }, []);
 
     useEffect(() => {
         setTitle(projectTitle);
@@ -60,6 +65,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
 
     const handleCancel = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
+        setBaseMap(initBaseMap);
         showDefaultMenu();
     };
 
@@ -72,7 +78,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
     return (
         <>
             <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
-                <h2>{isNewProject ? 'Create Project' : 'Edit Project'}</h2>
+                <h2>{isNewProject ? 'Create Project' : 'Your Project Details'}</h2>
             </div>
             <div className={'pane-content-body'}>
                 <form onSubmit={handleFormSubmit} >
@@ -96,7 +102,36 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             onChange={setDescription}/>
                     </div>
                     <div className={'pane-form-divider'} />
-                    { showBaseMapMenu ? (
+                    {isNewProject && (
+                        <fieldset>
+                            <ul className='d-flex flex-row flex-wrap md-radio basemap__listview' role='radiogroup'> {/* eslint-disable-line max-len */}
+                                {[...BASE_MAPS.keys()].map((val, idx) => {
+                                    return (
+                                        <li className='basemap__item' key={idx}>
+                                            <input
+                                                name="basemapselection"
+                                                id={`base-map-${idx}`}
+                                                type={'radio'}
+                                                value={val}
+                                                onChange={handleBaseMap}
+                                                checked={
+                                                    val === projectBaseMap}
+                                            />
+                                            <label htmlFor={`base-map-${idx}`}
+                                                className={'basemap__label'}>
+                                                <span className='basemap__name'>{BASE_MAPS.get(val)}</span> {/* eslint-disable-line max-len */}
+                                                <img
+                                                    src={BASE_MAP_IMAGES.get(val)}
+                                                    alt='Thumbnail for {BASE_MAPS.get(val)}'
+                                                    className="img-fluid basemap__thumbnail" /> {/* eslint-disable-line max-len */}
+                                            </label>
+                                        </li>
+                                    );})
+                                }
+                            </ul>
+                        </fieldset>
+                    )}
+                    {showBaseMapMenu && !isNewProject && (
                         <div className={'form-group pane-form-group base-map-expanded'}>
                             <button onClick={toggleBaseMapMenu}
                                 className={'btn btn__accordion'}>
@@ -133,7 +168,8 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                                 </ul>
                             </fieldset>
                         </div>
-                    ) : (
+                    )}
+                    {!showBaseMapMenu && !isNewProject && (
                         <div className={'form-group pane-form-group base-map-collapsed'}>
                             <button onClick={toggleBaseMapMenu}
                                 className={'btn btn__accordion'}>
@@ -144,7 +180,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                                 Base Map: {BASE_MAPS.get(projectBaseMap)}
                             </button>
                         </div>
-                    ) }
+                    )}
                     <div className="form-row">
                         <div className={'form-group col-3'}>
                         </div>
@@ -160,7 +196,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                                     <button
                                         type={'submit'}
                                         className={'btn btn-primary'}>
-                                        Create project
+                                        Next
                                     </button>
                                 </>
                             ) : (
