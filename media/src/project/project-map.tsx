@@ -50,6 +50,7 @@ export const ProjectMap: React.FC = () => {
     const coursePk = pathList[pathList.length - 4];
     const deckglMap = useRef<DeckGL>(null);
     const mapPane = useRef<HTMLDivElement>(null);
+    const [isNewProject, setIsNewProject] = useState<boolean>(newProjectFlag);
     const [projectData, setProjectData] = useState<ProjectData | null>(null);
     const [layerData, setLayerData] = useState<Map<number, LayerData>>(new Map());
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
@@ -156,6 +157,9 @@ export const ProjectMap: React.FC = () => {
         form.style.visibility = 'hidden';
         form.method = 'POST';
         form.action = `/course/${coursePk}/project/${projectPk}/delete/`;
+        if (isNewProject) {
+            form.action += '?hide_course_delete_notice=true';
+        }
 
         const csrfField = document.createElement('input');
         csrfField.name = 'csrfmiddlewaretoken';
@@ -546,7 +550,8 @@ export const ProjectMap: React.FC = () => {
                     description={projectData.description || ''}
                     baseMap={projectData.base_map || ''}
                     setBaseMap={setBaseMap}
-                    newProjectFlag={newProjectFlag}
+                    isNewProject={isNewProject}
+                    setIsNewProject={setIsNewProject}
                     updateProject={updateProject}
                     deleteProject={deleteProject}
                     layers={layerData}
