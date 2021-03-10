@@ -29,7 +29,12 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
 
     const [title, setTitle] = useState<string>(projectTitle);
     const [description, setDescription] = useState<string>(projectDescription);
+    const [initBaseMap, setInitBaseMap] = useState<string>('');
     const [showBaseMapMenu, setShowBaseMapMenu] = useState<boolean>(false);
+
+    useEffect(() => {
+        setInitBaseMap(projectBaseMap);
+    }, []);
 
     useEffect(() => {
         setTitle(projectTitle);
@@ -60,6 +65,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
 
     const handleCancel = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
+        setBaseMap(initBaseMap);
         showDefaultMenu();
     };
 
