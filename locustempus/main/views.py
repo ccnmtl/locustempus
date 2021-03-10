@@ -701,7 +701,8 @@ class ProjectDeleteView(LoggedInFacultyMixin, DeleteView):
         if not self.request.GET.get('hide_course_delete_notice') == 'true':
             messages.add_message(
                 self.request, messages.SUCCESS,
-                '<strong>{}</strong> has been deleted.'.format(self.object.title)
+                '<strong>{}</strong> has been deleted.'.format(
+                    self.object.title)
             )
         return reverse(
             'course-detail-view',
