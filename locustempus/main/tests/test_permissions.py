@@ -228,38 +228,6 @@ class IsFeedbackFacultyOrStudentRecipientTest(CourseTestMixin, TestCase):
         req.user = self.student
         self.assertFalse(perm.has_permission(req, None))
 
-    def test_has_permissions_list_get_w_querystring(self):
-        """Tests GET list permissions"""
-        perm = IsFeedbackFacultyOrStudentRecipient()
-        req = RequestFactory().get(
-            reverse('api-feedback-list') + '/?activity={}'.format(
-                self.sandbox_course_activity.pk))
-        req.query_params = {'activity': self.sandbox_course_activity.pk}
-        req.data = dict()
-
-        # Anon
-        req.user = AnonymousUser()
-        self.assertFalse(perm.has_permission(req, None))
-
-        # Faculty
-        req.user = self.faculty
-        self.assertTrue(perm.has_permission(req, None))
-
-        # Student
-        req.user = self.student
-        self.assertTrue(perm.has_permission(req, None))
-
-        # Student in another course
-        schoolmate = UserFactory.create(
-            first_name='Student',
-            last_name='Two',
-            email='studenttwo@example.com'
-        )
-        self.registrar_course.group.user_set.add(
-            schoolmate)
-        req.user = schoolmate
-        self.assertFalse(perm.has_permission(req, None))
-
     def test_has_permissions_obj_get(self):
         """Tests GET permissions"""
         perm = IsFeedbackFacultyOrStudentRecipient()
@@ -320,10 +288,10 @@ class IsFeedbackFacultyOrStudentRecipientTest(CourseTestMixin, TestCase):
         r = ResponseFactory.create(activity=a, owners=[self.student])
         req = RequestFactory().post(
             reverse('api-feedback-list'),
-            {'response': r.pk, 'feedback': 'foobar'}
+            {'response': r.pk, 'body': 'foobar'}
         )
         req.query_params = dict()
-        req.data = {'activity': a.pk}
+        req.data = {'response': r.pk, 'body': 'foobar'}
 
         # Anon
         req.user = AnonymousUser()

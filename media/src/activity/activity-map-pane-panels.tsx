@@ -57,11 +57,15 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
 
     const [reflection, setReflection] = useState<string>('');
+    const [feedback, setFeedback] = useState<string>('');
 
     useEffect(() => {
         // Only set a reflection if the user is not faculty/author
         if (!isFaculty && responseData.length == 1 && responseData[0].reflection) {
             setReflection(responseData[0].reflection);
+            if (responseData[0].feedback) {
+                setFeedback(responseData[0].feedback.body);
+            }
         }
     }, [responseData]);
 
@@ -193,6 +197,10 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                     </div>
                                 </form>
                             </div>
+                            <div>
+                                <h2>Feedback</h2>
+                                <div dangerouslySetInnerHTML={{__html: feedback}}/>
+                            </div>
                         </>)}
                     </div>
                 )}
@@ -251,7 +259,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     // TODO fix spelling!
     const handleFeedbackSubmition = (e: React.FormEvent) => {
         e.preventDefault();
-        if (activeResponse && activeResponse.feedback) {
+        if (activeResponse) {
             if (activeResponse.feedback) {
                 updateFeedback(
                     activeResponse.feedback.pk,
