@@ -10,7 +10,7 @@ Workspaces
 
 {% block page_actions %}
 <div class="lt-dashboard_actions">
-    <form method="post">
+    <form method="post" class="lt-layout-toggle">
         {% csrf_token %}
         <button type="submit" class="lt-button mr-1 lt-button--transparent {% if course_grid_layout %}active{% endif %}" {% if course_grid_layout %}disabled{% endif %}>
             <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" /></span>

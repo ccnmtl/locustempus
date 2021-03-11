@@ -25,6 +25,10 @@ $('#workspaces__table').tablesorter({
     theme: 'bootstrap',
 });
 
+$('#projects__table').tablesorter({
+    theme: 'bootstrap',
+});
+
 // Login form
 $('#guest-login').click(function(evt) {
     $('#login-local-form__field-wrapper').show();
