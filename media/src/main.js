@@ -21,6 +21,10 @@ $('#member-roster__table').tablesorter({
     sortList: [[3,0], [0,0]],
 });
 
+$('#workspaces__table').tablesorter({
+    theme: 'bootstrap',
+});
+
 // Login form
 $('#guest-login').click(function(evt) {
     $('#login-local-form__field-wrapper').show();

@@ -11,3 +11,25 @@
     -webkit-filter: $cccccc;
     -moz-filter: $cccccc;
 }
+
+.lt-dashboard_actions .lt-button {
+    & .lt-icons {
+        filter: $cccccc;
+        -webkit-filter: $cccccc;
+        -moz-filter: $cccccc;
+    }
+    & .lt-button__text {
+        color: #cccccc;
+    }
+}
+
+.lt-dashboard_actions .lt-button.active {
+    & .lt-icons {
+        filter: $darksvg;
+        -webkit-filter: $darksvg;
+        -moz-filter: $darksvg;
+    }
+    & .lt-button__text {
+        color: #212529;
+    }
+}

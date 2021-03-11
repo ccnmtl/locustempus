@@ -314,9 +314,7 @@ class DashboardTest(CourseTestMixin, TestCase):
         response = self.client.get("/dashboard/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.context['registrar_courses'].count(), 0)
-        self.assertEqual(
-            response.context['sandbox_courses'].count(), 0)
+            response.context['courses'].count(), 0)
 
     def test_courses_present(self):
         """
@@ -332,9 +330,7 @@ class DashboardTest(CourseTestMixin, TestCase):
         response = self.client.get("/dashboard/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.context['registrar_courses'].count(), 1)
-        self.assertEqual(
-            response.context['sandbox_courses'].count(), 1)
+            response.context['courses'].count(), 2)
 
     def test_detail_toggle_grid_list(self):
         self.assertTrue(
