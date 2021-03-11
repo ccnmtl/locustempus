@@ -142,6 +142,8 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             addEvent={addEvent}
             clearActivePosition={clearActivePosition}
             setActiveTab={setActiveTab}
+            activeLayer={activeLayer}
+            layers={layers}
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         1: <EventDetailPanel
             activeLayer={activeLayer}
