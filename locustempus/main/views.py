@@ -68,15 +68,13 @@ class DashboardView(LoginRequiredMixin, View):
         }
 
     def post(self, request, *args, **kwargs) -> HttpResponse:
-        courses = get_courses_for_user(self.request.user)
-
         is_grid = not request.session.get('course_grid_layout', False)
         request.session['course_grid_layout'] = is_grid
 
         ctx = {
             'user': request.user,
-            'registrar_courses': courses.filter(info__term__isnull=False),
-            'sandbox_courses': courses.filter(info__term__isnull=True),
+            'courses': get_courses_for_user(
+                self.request.user).order_by('title'),
             'page_type': 'dashboard',
             'breadcrumb': self.get_breadcrumb(),
             'course_grid_layout': is_grid
@@ -84,16 +82,14 @@ class DashboardView(LoginRequiredMixin, View):
         return render(request, self.template_name, ctx)
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
-        courses = get_courses_for_user(request.user)
-
         is_grid = request.session.get('course_grid_layout', True)
         if 'course_grid_layout' not in request.session:
             request.session['course_grid_layout'] = is_grid
 
         ctx = {
             'user': request.user,
-            'registrar_courses': courses.filter(info__term__isnull=False),
-            'sandbox_courses': courses.filter(info__term__isnull=True),
+            'courses': get_courses_for_user(
+                self.request.user).order_by('title'),
             'page_type': 'dashboard',
             'breadcrumb': self.get_breadcrumb(),
             'course_grid_layout': is_grid
