@@ -585,7 +585,7 @@ export const ActivityMap: React.FC = () => {
     const createFeedback = (responsePk: number, feedback: string) => {
         const obj = {
             response: responsePk,
-            feedback: feedback
+            body: feedback
         };
         void post<FeedbackData>('/api/feedback/', obj)
             .then((data) => {
@@ -602,7 +602,8 @@ export const ActivityMap: React.FC = () => {
 
     const updateFeedback = (pk: number, responsePk: number, feedback: string) => {
         const obj = {
-            feedback: feedback
+            response: responsePk,
+            body: feedback
         };
         void put<FeedbackData>(`/api/feedback/${pk}/`, obj)
             .then((data) => {

@@ -1,5 +1,5 @@
 from courseaffils.lib import in_course
-from locustempus.main.models import Activity
+from locustempus.main.models import Activity, Response
 from rest_framework import permissions
 
 
@@ -118,15 +118,14 @@ class IsFeedbackFacultyOrStudentRecipient(permissions.IsAuthenticated):
 
         # First try to get an activity from query string params, then
         # from data in the reqest, else None
-        activity_pk = request.query_params.get(
-            'activity', request.data.get('activity', None))
+        response_pk = request.data.get('response', None)
 
-        if not activity_pk:
+        if not response_pk:
             return False
 
         try:
-            activity = Activity.objects.get(pk=activity_pk)
-        except Activity.DoesNotExist:
+            activity = Response.objects.get(pk=response_pk).activity
+        except Response.DoesNotExist:
             return False
 
         course = activity.project.course
