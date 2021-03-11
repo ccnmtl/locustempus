@@ -38,12 +38,12 @@
         {% endif %}
         <form method="post">
             {% csrf_token %}
-            <button type="submit" class="btn lt-button mr-1 lt-button--transparent" {% if project_list_grid %}disabled{% endif %}>
-                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" class="{% if project_list_grid %}inactive{% else %}active{% endif %}" /></span>
+            <button type="submit" class="lt-button mr-1 lt-button--transparent" {% if not project_grid_layout %}disabled{% endif %}>
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" class="{% if project_grid_layout %}inactive{% else %}active{% endif %}" /></span>
                 <span class='lt-button__text'>Grid</span>
             </button>
-            <button type="submit" class="btn lt-button lt-button--transparent" {% if not project_list_grid %}disabled{% endif %}>
-                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" class="{% if project_list_grid %}active{% else %}inactive{% endif %}" /></span>
+            <button type="submit" class="lt-button lt-button--transparent" {% if project_grid_layout %}disabled{% endif %}>
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" class="{% if project_grid_layout %}active{% else %}inactive{% endif %}" /></span>
                 <span class='lt-button__text'>List</span>
             </button>
         </form>
@@ -51,6 +51,8 @@
 {% endblock %}
 
 {% block content %}
+
+{% if project_grid_layout %}This is <b>grid</b> layout {% else %}This is <b>list</b> layout{% endif %}
 
 {% if is_faculty and projects %}
 <div class="pt-3 px-3">
