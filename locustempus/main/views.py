@@ -68,35 +68,31 @@ class DashboardView(LoginRequiredMixin, View):
         }
 
     def post(self, request, *args, **kwargs) -> HttpResponse:
-        courses = get_courses_for_user(self.request.user)
-
-        is_grid = not request.session.get('course_list_grid', False)
-        request.session['course_list_grid'] = is_grid
+        is_grid = not request.session.get('course_grid_layout', False)
+        request.session['course_grid_layout'] = is_grid
 
         ctx = {
             'user': request.user,
-            'registrar_courses': courses.filter(info__term__isnull=False),
-            'sandbox_courses': courses.filter(info__term__isnull=True),
+            'courses': get_courses_for_user(
+                self.request.user).order_by('title'),
             'page_type': 'dashboard',
             'breadcrumb': self.get_breadcrumb(),
-            'course_list_grid': is_grid
+            'course_grid_layout': is_grid
         }
         return render(request, self.template_name, ctx)
 
     def get(self, request, *args, **kwargs) -> HttpResponse:
-        courses = get_courses_for_user(request.user)
-
-        is_grid = request.session.get('course_list_grid', True)
-        if 'course_list_grid' not in request.session:
-            request.session['course_list_grid'] = is_grid
+        is_grid = request.session.get('course_grid_layout', True)
+        if 'course_grid_layout' not in request.session:
+            request.session['course_grid_layout'] = is_grid
 
         ctx = {
             'user': request.user,
-            'registrar_courses': courses.filter(info__term__isnull=False),
-            'sandbox_courses': courses.filter(info__term__isnull=True),
+            'courses': get_courses_for_user(
+                self.request.user).order_by('title'),
             'page_type': 'dashboard',
             'breadcrumb': self.get_breadcrumb(),
-            'course_list_grid': is_grid
+            'course_grid_layout': is_grid
         }
         return render(request, self.template_name, ctx)
 
@@ -150,15 +146,15 @@ class CourseDetailView(LoggedInCourseMixin, View):
         course = get_object_or_404(Course, pk=kwargs.get('pk'))
         projects = Project.objects.filter(course=course).order_by('title')
 
-        is_grid = not request.session.get('project_list_grid', False)
-        request.session['project_list_grid'] = is_grid
+        is_grid = not request.session.get('project_grid_layout', False)
+        request.session['project_grid_layout'] = is_grid
 
         ctx = {
             'course': course,
             'projects': projects,
             'is_faculty': course.is_true_faculty(self.request.user),
             'page_type': 'course',
-            'project_list_grid': is_grid,
+            'project_grid_layout': is_grid,
             'breadcrumb': {
                 'Workspaces': reverse('course-list-view'),
                 course.title: '',
@@ -169,9 +165,9 @@ class CourseDetailView(LoggedInCourseMixin, View):
     def get(self, request, *args, **kwargs):
         course = get_object_or_404(Course, pk=kwargs.get('pk'))
 
-        is_grid = request.session.get('project_list_grid', True)
-        if 'project_list_grid' not in request.session:
-            request.session['project_list_grid'] = is_grid
+        is_grid = request.session.get('project_grid_layout', True)
+        if 'project_grid_layout' not in request.session:
+            request.session['project_grid_layout'] = is_grid
 
         ctx = {
             'course': course,
@@ -179,7 +175,7 @@ class CourseDetailView(LoggedInCourseMixin, View):
             .order_by('title'),
             'is_faculty': course.is_true_faculty(self.request.user),
             'page_type': 'course',
-            'project_list_grid': is_grid,
+            'project_grid_layout': is_grid,
             'breadcrumb': {
                 'Workspaces': reverse('course-list-view'),
                 course.title: '',

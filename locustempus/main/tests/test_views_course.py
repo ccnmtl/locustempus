@@ -279,15 +279,15 @@ class CourseTest(CourseTestMixin, TestCase):
         )
         r1 = self.client.get(
             reverse('course-detail-view', args=[self.sandbox_course.pk]))
-        self.assertTrue(r1.context['project_list_grid'])
+        self.assertTrue(r1.context['project_grid_layout'])
 
         r2 = self.client.post(
             reverse('course-detail-view', args=[self.sandbox_course.pk]))
-        self.assertFalse(r2.context['project_list_grid'])
+        self.assertFalse(r2.context['project_grid_layout'])
 
         r3 = self.client.post(
             reverse('course-detail-view', args=[self.sandbox_course.pk]))
-        self.assertTrue(r3.context['project_list_grid'])
+        self.assertTrue(r3.context['project_grid_layout'])
 
 
 class DashboardTest(CourseTestMixin, TestCase):
@@ -314,9 +314,7 @@ class DashboardTest(CourseTestMixin, TestCase):
         response = self.client.get("/dashboard/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.context['registrar_courses'].count(), 0)
-        self.assertEqual(
-            response.context['sandbox_courses'].count(), 0)
+            response.context['courses'].count(), 0)
 
     def test_courses_present(self):
         """
@@ -332,9 +330,7 @@ class DashboardTest(CourseTestMixin, TestCase):
         response = self.client.get("/dashboard/")
         self.assertEqual(response.status_code, 200)
         self.assertEqual(
-            response.context['registrar_courses'].count(), 1)
-        self.assertEqual(
-            response.context['sandbox_courses'].count(), 1)
+            response.context['courses'].count(), 2)
 
     def test_detail_toggle_grid_list(self):
         self.assertTrue(
@@ -344,10 +340,10 @@ class DashboardTest(CourseTestMixin, TestCase):
             )
         )
         r1 = self.client.get(reverse('course-list-view'))
-        self.assertTrue(r1.context['course_list_grid'])
+        self.assertTrue(r1.context['course_grid_layout'])
 
         r2 = self.client.post(reverse('course-list-view'))
-        self.assertFalse(r2.context['course_list_grid'])
+        self.assertFalse(r2.context['course_grid_layout'])
 
         r3 = self.client.post(reverse('course-list-view'))
-        self.assertTrue(r3.context['course_list_grid'])
+        self.assertTrue(r3.context['course_grid_layout'])

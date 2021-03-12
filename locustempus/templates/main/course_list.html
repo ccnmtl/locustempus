@@ -10,14 +10,14 @@ Workspaces
 
 {% block page_actions %}
 <div class="lt-dashboard_actions">
-    <form method="post">
+    <form method="post" class="lt-layout-toggle">
         {% csrf_token %}
-        <button type="submit" class="btn lt-button mr-1 lt-button--transparent" {% if course_list_grid %}disabled{% endif %}>
-            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" class="{% if course_list_grid %}inactive{% else %}active{% endif %}" /></span>
+        <button type="submit" class="lt-button mr-1 lt-button--transparent {% if course_grid_layout %}active{% endif %}" {% if course_grid_layout %}disabled{% endif %}>
+            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" /></span>
             <span class='lt-button__text'>Grid</span>
         </button>
-        <button type="submit" class="btn lt-button lt-button--transparent" {% if not course_list_grid %}disabled{% endif %}>
-            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" class="{% if course_list_grid %}active{% else %}inactive{% endif %}" /></span>
+        <button type="submit" class="lt-button lt-button--transparent {% if not course_grid_layout %}active{% endif %}" {% if not course_grid_layout %}disabled{% endif %}>
+            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" /></span>
             <span class='lt-button__text'>List</span>
         </button>
     </form>
@@ -26,7 +26,7 @@ Workspaces
 
 {% block content %}
 
-{% if registrar_courses or sandbox_courses %}
+{% if courses %}
 <div class="pt-3 px-3">
     <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="btn lt-button">
         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
@@ -36,51 +36,59 @@ Workspaces
 {% endif %}
 
 <div class="row dashboard-container">
-    {% comment %}Registrar Workspaces{% endcomment %}
-
-    {% if registrar_courses %}
-        {% for course in registrar_courses %}
-        <div class="col-md-6 col-xl-4 py-2" data-cy="registrar-course-cards">
-            <div class="lt-card">
-                <div class="lt-card__body">
-                    <h3 class="lt-card__title"><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
-                    <p class="lt-card__term">{{ course.info.termyear }}</p>
-                    <p class="lt-card_text">Authors: {% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</p>
-                    <p class="lt-card__text">Concatenated workspace description go here, if we decide to have a field for that</p> {# not hooked up #}
-                    <p class="lt-card__text">You’re {% if user in course.faculty %}an Author{% else %}a Contributor{% endif %}</p>
-                    <ul class="list-group list-group-horizontal-sm lt-card__list-group">
-                        <li class="list-group-item lt-card__list-group-item">0 Projects</li> {# not hooked up #}
-                        <li class="list-group-item lt-card__list-group-item">5 Contributors</li> {# not hooked up #}
-                    </ul>
+    {% if courses %}
+        {% if course_grid_layout %}
+            {% for course in courses %}
+            <div class="col-md-6 col-xl-4 py-2" data-cy="workspace-cards">
+                <div class="lt-card">
+                    <div class="lt-card__body">
+                        <h3 class="lt-card__title"><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
+                        <p class="lt-card__term">{{ course.info.termyear }}</p>
+                        <p class="lt-card_text">Authors: {% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</p>
+                        <p class="lt-card__text">Concatenated workspace description go here, if we decide to have a field for that</p> {# not hooked up #}
+                        <p class="lt-card__text">You’re {% if user in course.faculty %}an Author{% else %}a Contributor{% endif %}</p>
+                        <ul class="list-group list-group-horizontal-sm lt-card__list-group">
+                            <li class="list-group-item lt-card__list-group-item">0 Projects</li> {# not hooked up #}
+                            <li class="list-group-item lt-card__list-group-item">5 Contributors</li> {# not hooked up #}
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <table class="table table-bordered tablesorter" id="workspaces__table">
+                <thead>
+                    <tr>
+                        <th scope="col">Workspace</th>
+                        <th scope="col">Term</th>
+                        <th scope="col">Authors</th>
+                        <th scope="col" class="sorter-false">Description</th>
+                        <th scope="col">Your role</th>
+                        <th scope="col" class="sorter-false">Other info</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for course in courses %}
+                    <tr>
+                        <td><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></td>
+                        <td>{% if course.info.termyear %}{{ course.info.termyear }}{% else %} None {% endif %}</td>
+                        <td>{% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</td>
+                        <td>Concatenated workspace description go here, if we decide to have a field for that</td> {# not hooked up #}
+                        <td>{% if user in course.faculty %}Author{% else %}Contributor{% endif %}</td>
+                        <td>
+                            <ul class="list-group list-group-horizontal-sm lt-card__list-group m-0">
+                                <li class="list-group-item lt-card__list-group-item py-0">{{ course.projects.count }} Projects</li>
+                                <li class="list-group-item lt-card__list-group-item py-0">{{ course.members.count }} Contributors</li>
+                            </ul>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}
     {% endif %}
-
-    {% comment %}Sandbox Workspaces{% endcomment %}
-
-    {% if sandbox_courses %}
-        {% for course in sandbox_courses %}
-        <div class="col-md-6 col-xl-4 py-2" data-cy="sandbox-workspace-cards">
-            <div class="lt-card">
-                <div class="lt-card__body">
-                    <h3 class="lt-card__title"><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
-                    {% comment %}<p class="lt-card__term">Spring 2021</p>{% endcomment %}
-                    <p class="lt-card_text">Authors: {% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</p>
-                    <p class="lt-card__text">Concatenated workspace description go here, if we decide to have a field for that</p> {# not hooked up #}
-                    <p class="lt-card__text">You’re {% if user in course.faculty %}an Author{% else %}a Contributor{% endif %}</p>
-                    <ul class="list-group list-group-horizontal-sm lt-card__list-group">
-                        <li class="list-group-item lt-card__list-group-item">{{ course.projects.count }} Projects</li>
-                        <li class="list-group-item lt-card__list-group-item">{{ course.members.count }} Contributors</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-        {% endfor %}
-    {% endif %}
-    
-    {% if not registrar_courses and not sandbox_courses %}
+   
+    {% if not courses %}
         <div class="create-prompt">
             <div class="create-prompt__decor">
                 <img src="{{STATIC_URL}}img/prompt-workspace.svg" />

@@ -36,14 +36,14 @@
             </div>
         </div>
         {% endif %}
-        <form method="post">
+        <form method="post" class="lt-layout-toggle">
             {% csrf_token %}
-            <button type="submit" class="btn lt-button mr-1 lt-button--transparent" {% if project_list_grid %}disabled{% endif %}>
-                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" class="{% if project_list_grid %}inactive{% else %}active{% endif %}" /></span>
+            <button type="submit" class="lt-button mr-1 lt-button--transparent {% if project_grid_layout %}active{% endif %}" {% if project_grid_layout %}disabled{% endif %}>
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" /></span>
                 <span class='lt-button__text'>Grid</span>
             </button>
-            <button type="submit" class="btn lt-button lt-button--transparent" {% if not project_list_grid %}disabled{% endif %}>
-                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" class="{% if project_list_grid %}active{% else %}inactive{% endif %}" /></span>
+            <button type="submit" class="lt-button lt-button--transparent {% if not project_grid_layout %}active{% endif %}" {% if not project_grid_layout %}disabled{% endif %}>
+                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" /></span>
                 <span class='lt-button__text'>List</span>
             </button>
         </form>
@@ -51,6 +51,8 @@
 {% endblock %}
 
 {% block content %}
+
+{% if project_grid_layout %}This is <b>grid</b> layout {% else %}This is <b>list</b> layout{% endif %}
 
 {% if is_faculty and projects %}
 <div class="pt-3 px-3">
@@ -67,38 +69,67 @@
 <div class="row dashboard-container">
     {% comment %}Projects cards{% endcomment %}
     {% if projects %}
-        {% for project in projects %}
-        <div class="col-md-6 col-xl-4 py-2">
-            <div class="lt-card">
-                <div class="lt-card__body">
-                    <h3 class="lt-card__title"><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></h3>
-                    <p class="lt-card__term">Last update? Modified?</p>
-                    <p class="lt-card_text"></p>
-                    <p class="lt-card__text">{{ project.description|striptags|truncatechars:100}}</p>
-                    <p class="lt-card__text"></p>
-                    <ul class="list-group list-group-horizontal-sm lt-card__list-group">
-                        <li class="list-group-item lt-card__list-group-item">Status?</li> {# not hooked up #}
-                        <li class="list-group-item lt-card__list-group-item">
-                        {% if user not in course.faculty and project.activity %}
-                            <a data-cy="view-activity-button" href="{% url 'course-project-detail' course.pk project.pk %}">Activity</a>
-                        {% elif user in course.faculty and project.activity %}
-                            1 Activity
-                        {% elif not project.activity %}
-                            No Activity                       
-                        {% endif %}
-                        </li>
-                        {% if user not in course.faculty and project.activity %}
-                        <li class="list-group-item lt-card__list-group-item">Responses status</li> {# not hooked up #}
-                        {% endif %}
-                        {% if user in course.faculty and project.activity %}
-                        <li class="list-group-item lt-card__list-group-item">0/0 Responses</li> {# not hooked up #}
-                        {% endif %}
-                        <li class="list-group-item lt-card__list-group-item">What else?</li> {# not hooked up #}
-                    </ul>
+        {% if project_grid_layout %}
+            {% for project in projects %}
+            <div class="col-md-6 col-xl-4 py-2">
+                <div class="lt-card">
+                    <div class="lt-card__body">
+                        <h3 class="lt-card__title"><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></h3>
+                        <p class="lt-card__term">Created on {{ project.created_at }}</p>
+                        <p class="lt-card__text">{{ project.description|striptags|truncatechars:100}}</p>
+                        <ul class="list-group list-group-horizontal-sm lt-card__list-group">
+                            <li class="list-group-item lt-card__list-group-item">Status?</li> {# not hooked up #}
+                            <li class="list-group-item lt-card__list-group-item">
+                            {% if project.activity %}
+                                1 Activity
+                            {% else %}
+                                No Activity                       
+                            {% endif %}
+                            </li>
+                            {% if user not in course.faculty and project.activity %}
+                            <li class="list-group-item lt-card__list-group-item">Responses TBD</li> {# not hooked up #}
+                            {% endif %}
+                            {% if user in course.faculty and project.activity %}
+                            <li class="list-group-item lt-card__list-group-item">Responses TBDs</li> {# not hooked up #}
+                            {% endif %}
+                            <li class="list-group-item lt-card__list-group-item">TBD</li> {# not hooked up #}
+                        </ul>
+                    </div>
                 </div>
             </div>
-        </div>
-        {% endfor %}
+            {% endfor %}
+        {% else %}
+            <table class="table table-bordered tablesorter" id="projects__table">
+                <thead>
+                    <tr>
+                        <th scope="col">Project</th>
+                        <th scope="col">Date created</th>
+                        <th scope="col" class="sorter-false">Description</th>
+                        <th scope="col">Status?</th>
+                        <th scope="col">Activity</th>
+                        <th scope="col" class="sorter-false">Other info</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for project in projects %}
+                    <tr>
+                        <td><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></td>
+                        <td>{{ project.created_at }}</td>
+                        <td>{{ project.description|striptags|truncatechars:100}}</td>
+                        <td>status</td>
+                        <td>
+                            {% if project.activity %}
+                                1 Activity
+                            {% else %}
+                                No Activity                       
+                            {% endif %}
+                        </td>
+                        <td>TBD</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% endif %}        
     {% else %}
         {% if is_faculty %}
         <div class="create-prompt">
