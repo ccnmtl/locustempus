@@ -30,6 +30,7 @@ Provision Your Course
                 Connect your Canvas course to Locus Tempus.
             </p>
             <form class="text-center" action="{% url 'lti-course-create' %}" method='POST'>
+                {% csrf_token %}
                 <input type="hidden" name="lms_course" value="{{lms_course}}">
                 <input type="hidden" name="lms_course_title" value="{{lms_course_title}}">
                 <input type="hidden" name="sis_course_id" value="{{sis_course_id}}">
