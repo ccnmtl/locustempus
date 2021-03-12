@@ -584,7 +584,7 @@ class LTICourseCreate(LoginRequiredMixin, View):
         user = self.request.user
         course_context = self.request.POST.get('lms_course')
         title = self.request.POST.get('lms_course_title')
-        sis_course_id = None if self.request.POST['sis_course_id'] == 'None' \
+        sis_course_id = '' if self.request.POST['sis_course_id'] == 'None' \
             else self.request.POST['sis_course_id']
 
         # This view needs to take four steps to create a course
