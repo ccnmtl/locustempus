@@ -34,25 +34,25 @@
     position: absolute;
     @include media-breakpoint-up(sm) {
         width: auto;
-        top: 16.25rem;
+        top: 14.25rem;
         left: 0;
         //transform: translate(-50%, -55%);
     }
     @include media-breakpoint-up(md) {
         width: auto;
-        top: 16.25rem;
+        top: 14.25rem;
         left: 0;
         //transform: translate(-33%, -55%);
     }
     @include media-breakpoint-up(lg) {
         width: 40rem;
-        top: 16.25rem;
+        top: 14.25rem;
         left: 0;
         //transform: translate(-50%, -55%);
     }
     @include media-breakpoint-up(xl) {
         width: 49rem;
-        top: 15.25rem;
+        top: 13.25rem;
         left: 0;
         //transform: translate(-50%, -55%);
     }
@@ -86,6 +86,11 @@
         }
     }
 }
+
+.hero-invitation {
+    margin-top: 2rem;
+}
+
 
 .hero-shadow {
     position: absolute;
