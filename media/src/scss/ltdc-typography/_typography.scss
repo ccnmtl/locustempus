@@ -35,6 +35,25 @@ h6 {
   @include font-size($h6-font-size);
 }
 
+
+.hero-invitation {
+    .lt-button__text {
+        text-transform: none;
+        font-weight: 400;
+        font-size: 1.2rem;
+        @include media-breakpoint-up(sm) {
+            font-size: 1.2rem;
+        }
+        @include media-breakpoint-up(md) {
+            font-size: 1.2rem;
+        }
+        @include media-breakpoint-up(lg) {
+            font-size: 1.625rem;
+        }
+    }
+}
+
+
 // Dashboard
 
 .nav-dashboard__h1 {

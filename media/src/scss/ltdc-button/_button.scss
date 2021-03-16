@@ -22,6 +22,11 @@
     }
 }
 
+.lt-button-outline {
+    background-color: transparent;
+    border-color: #f0f0f0;
+}
+
 .lt-button-back {
     @extend .btn;
     @include button-alt-typography;

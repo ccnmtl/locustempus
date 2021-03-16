@@ -9,14 +9,21 @@
     <div class="hero-text">
         <h1>A mapping application for spatial and temporal thinking</h1>
         <p>Visualize. Analyze. Collaborate.</p>
-    </div>
-        <div class="badge badge-secondary temp-marker">
-        <span class="d-none d-xl-inline">Extra large</span>
-        <span class="d-none d-lg-inline d-xl-none">Large</span>
-        <span class="d-none d-md-inline d-lg-none">Medium</span>
-        <span class="d-none d-sm-inline d-md-none">Small</span>
-        <span class="d-inline d-sm-none">Extra small</span>
+        <div class="hero-invitation">
+            {% if request.user.is_anonymous %}
+            <a href="/accounts/register/" class="lt-button lt-button-outline mx-2">
+                <span class='lt-button__text'>Create an account</span>
+            </a>
+            <a href="/accounts/login/?next=/" class="lt-button mx-2">
+                <span class='lt-button__text'>Sign in</span>
+            </a>
+            {% else %}
+            <a href="/dashboard/" class="lt-button mx-2">
+                <span class='lt-button__text'>See your Workspaces</span>
+            </a>
+            {% endif %}
         </div>
+    </div>
 </section>
 
 <section class="section--pitch">
