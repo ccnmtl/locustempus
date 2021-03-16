@@ -48,6 +48,8 @@
             }
         </script>
 
+        <link rel="stylesheet" href="https://search.sites.columbia.edu/cu-privacy-notice/cu-privacy-notice.css" />
+        <script src="https://search.sites.columbia.edu/cu-privacy-notice/cu-privacy-notice.js"></script>
     </head>
     <body class="{{ page_type }}" id="{% block bodyid %}{% endblock %}">
 
@@ -69,13 +71,13 @@
             {% block usernav %}
             <div class="user-nav">
                 {% if request.user.is_anonymous %}
-                <a href="/accounts/login/?next=/" class="lt-button lt-button--transparent">
+                <a href="/accounts/login/?next=/" class="lt-button lt-button--transparent" data-cy="sign-in-small">
                     <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-signin.svg" class="user-nav__icon" /></span>
                     <span class='lt-button__text'>Sign in</span>
                 </a>
                 {% else %}
                 <div class="lt-menu-overflow btn-group">
-                    <button type="button" class="lt-button lt-button--transparent dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="lt-button lt-button--transparent dropdown-toggle" data-cy="authenticated-user-choices" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-user.svg" class="user-nav__icon" /></span>
                         <span class='lt-button__text'>
                         {% if user.first_name %}
