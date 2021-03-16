@@ -1,3 +1,4 @@
+// https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Homepage_for_outreach
 // https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Sign-in
 // https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#User_navigation_.28after_signing_in.29
 
@@ -78,7 +79,10 @@ describe('Sign-In Stories', function() {
         // Navigate to workspaces
         cy.get('[data-cy="your-workspaces"]').click();
         cy.title().should('equal', 'Workspaces – Locus Tempus');
-        cy.go('back');
+
+        // Verify logo navigates to the home page
+        cy.get('[data-cy="app-logo"]').click();
+        cy.title().should('equal', 'Home page – Locus Tempus');
 
         // Sign out
         cy.get('[data-cy="authenticated-user-choices"]').click();
