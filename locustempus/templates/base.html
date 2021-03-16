@@ -90,7 +90,8 @@
                     <div class="lt-menu lt-menu-overflow--bootstrap dropdown-menu">
                         <ul class="lt-list">
                             <li class="lt-list-item">
-                                <a href="{% url 'course-list-view' %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                                <a href="{% url 'course-list-view' %}" class="d-flex align-items-center justify-content-start lt-list-item__link"
+                                    data-cy="your-workspaces">
                                 <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-grid.svg" /></span>
                                 <span class="lt-list-item__primary-text">Your Workspaces</span>
                                 </a>
@@ -104,7 +105,8 @@
                             </li>
                             {% endif %}
                             <li class="lt-list-item border-top">
-                                <a href="/accounts/logout/?next=/" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                                <a href="/accounts/logout/?next=/" class="d-flex align-items-center justify-content-start lt-list-item__link"
+                                    data-cy="sign-out">
                                 <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-sign-out.svg" /></span>
                                 <span class="lt-list-item__primary-text"><b>Sign out</b></span>
                                 </a>

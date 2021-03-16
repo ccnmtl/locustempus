@@ -1,4 +1,5 @@
 // https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Sign-in
+// https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#User_navigation_.28after_signing_in.29
 
 describe('Sign-In Stories', function() {
     beforeEach(() => {
@@ -63,10 +64,34 @@ describe('Sign-In Stories', function() {
         // Navigate to the dashboard
         cy.title().should('equal', 'Home page – Locus Tempus');
         cy.get('[data-cy="sign-in-small"]').should('not.exist');
+        cy.get('[data-cy="sign-in-large"]').should('not.exist');
         cy.get('[data-cy="authenticated-user-choices"]').should('be.visible');
+        cy.get('[data-cy="see-workspaces"]').should('be.visible');
+
+        // Verify menu choices are available
         cy.get('[data-cy="authenticated-user-choices"]').should(
                 'contain', 'Hello, Faculty');
-        cy.get('[data-cy="see-workspaces"]').should('be.visible');
+        cy.get('[data-cy="authenticated-user-choices"]').click();
+        cy.get('[data-cy="your-workspaces"]').should('be.visible');
+        cy.get('[data-cy="sign-out"]').should('be.visible');
+
+        // Navigate to workspaces
+        cy.get('[data-cy="your-workspaces"]').click();
+        cy.title().should('equal', 'Workspaces – Locus Tempus');
+        cy.go('back');
+
+        // Sign out
+        cy.get('[data-cy="authenticated-user-choices"]').click();
+        cy.get('[data-cy="your-workspaces"]').should('be.visible');
+        cy.get('[data-cy="sign-out"]').should('be.visible');
+        cy.get('[data-cy="sign-out"]').click();
+
+        // Verify signed out state
+        cy.title().should('equal', 'Home page – Locus Tempus');
+        cy.get('[data-cy="see-workspaces"]').should('not.exist');
+        cy.get('[data-cy="authenticated-user-choices"]').should('not.exist');
+        cy.get('[data-cy="sign-in-large"]').should('exist');
+        cy.get('[data-cy="sign-in-small"]').should('exist');
     });
 
     it('Forgot Password', function() {
