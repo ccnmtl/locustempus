@@ -171,6 +171,7 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             updateProject={updateProject}
             deleteProject={deleteProject}
             showDefaultMenu={showDefaultMenu}
+            setActiveTab={setActiveTab}
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         4: <DefaultPanel
             activeTab={activeTab}

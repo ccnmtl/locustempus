@@ -96,6 +96,7 @@ export interface EventData {
         lng_lat: Position;
     };
     media: MediaObject[];
+    showAddEventForm: boolean;
 }
 
 export interface LayerData {

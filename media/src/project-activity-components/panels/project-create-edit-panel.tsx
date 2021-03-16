@@ -18,13 +18,14 @@ interface ProjectCreateEditPanelProps {
     showDefaultMenu(): void;
     deleteProject(): void;
     paneHeaderHeight: number;
+    setActiveTab(tab: number): void;
 }
 
 export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
     {
         isNewProject, setIsNewProject, projectTitle, projectDescription,
         projectBaseMap, setBaseMap, updateProject, showDefaultMenu,
-        deleteProject, paneHeaderHeight
+        deleteProject, paneHeaderHeight, setActiveTab
     }: ProjectCreateEditPanelProps) => {
 
     const [title, setTitle] = useState<string>(projectTitle);
@@ -59,6 +60,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
         updateProject(title, description, projectBaseMap);
         showDefaultMenu();
         if (setIsNewProject) {
+            setActiveTab(1);
             setIsNewProject(false);
         }
     };
