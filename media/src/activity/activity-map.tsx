@@ -892,7 +892,7 @@ export const ActivityMap: React.FC = () => {
                     updateProject={updateProject}
                     deleteProject={deleteProject}
                     isFaculty={isFaculty}
-                    layers={layerData}
+                    layers={isFaculty ? projectLayerData : layerData}
                     activity={activity}
                     updateActivity={updateActivity}
                     deleteActivity={deleteActivity}

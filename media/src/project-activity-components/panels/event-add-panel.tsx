@@ -17,11 +17,12 @@ interface EventAddPanelProps {
     clearActivePosition(): void;
     setActiveTab(val: number): void;
     paneHeaderHeight: number;
+    returnTab: number;
 }
 
 export const EventAddPanel: React.FC<EventAddPanelProps> = (
     { setShowAddEventForm, activePosition, addEvent, clearActivePosition,
-        setActiveTab, paneHeaderHeight, activeLayer, layers
+        setActiveTab, paneHeaderHeight, activeLayer, layers, returnTab
     }: EventAddPanelProps) => {
 
     const [activeLayerTitle, setActiveLayerTitle] = useState<string>('');
@@ -56,8 +57,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                 eventName === '' ? 'Untitled Marker' : eventName,
                 description, activePosition[0], activePosition[1], media);
             setShowAddEventForm(false);
-            // TODO pass in the active tab this should return to
-            setActiveTab(1);
+            setActiveTab(returnTab);
             clearActivePosition();
         }
     };
