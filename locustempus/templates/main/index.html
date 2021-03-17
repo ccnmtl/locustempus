@@ -11,14 +11,14 @@
         <p>Visualize. Analyze. Collaborate.</p>
         <div class="hero-invitation">
             {% if request.user.is_anonymous %}
-            <a href="/accounts/register/" class="lt-button lt-button-outline mx-2">
+            <a href="/accounts/register/" class="lt-button lt-button-outline mx-2" data-cy="sign-up-large">
                 <span class='lt-button__text'>Create an account</span>
             </a>
-            <a href="/accounts/login/?next=/" class="lt-button mx-2">
+            <a href="/accounts/login/?next=/" class="lt-button mx-2" data-cy="sign-in-large">
                 <span class='lt-button__text'>Sign in</span>
             </a>
             {% else %}
-            <a href="/dashboard/" class="lt-button mx-2">
+            <a href="/dashboard/" class="lt-button mx-2" data-cy="see-workspaces">
                 <span class='lt-button__text'>See your Workspaces</span>
             </a>
             {% endif %}

@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load i18n admin_static %}
-{% block title %}&mdash; Sign up for an account{% endblock %}
+{% block title %}Sign up for an account{% endblock %}
 
 {% block css %}
 <style>
@@ -31,7 +31,7 @@
                 </p>
             </div>
             {% if form.errors|length %}
-                <div class="alert alert-danger">
+                <div class="alert alert-danger" data-cy="sign-up-error">
                   Please correct errors
                   {% if form.non_field_errors %}
                     <div>{{ form.non_field_errors}}</div>
@@ -47,19 +47,14 @@
         <div class="row">
             <div class="col-md-6 mb-1">
                 <input class="form-control" maxlength="50" name="first_name" type="text"
-                 value="{{form.data.first_name}}" placeholder="First Name">
+                 data-cy="first-name" value="{{form.data.first_name}}" placeholder="First Name">
             </div>
             <div class="col-md-6 mb-1">
-                <input class="form-control" maxlength="50" name="last_name"
-                 value="{{form.data.last_name}}"
-                 type="text" placeholder="Last Name">
+                <input class="form-control" maxlength="50" name="last_name" type="text"
+                 data-cy="last-name" value="{{form.data.last_name}}"
+                 placeholder="Last Name">
             </div>
         </div>
-        {% if form.first_name.errors or form.last_name.errors %}
-            <ul class="errorlist">
-                <li>First and last name are required.</li>
-            </ul>
-        {% endif %}
     </div>
 
     <div class="form-group ">
@@ -67,19 +62,23 @@
             <div class="col-md-6 {% if form.username.errors %}has-error{% endif %} mb-1">
                 <label>Username:</label>
                 <div>
-                    <input class="form-control" maxlength="30" name="username" type="text" value="{{form.data.username}}" placeholder="Username">
+                    <input class="form-control" data-cy="username" maxlength="30" name="username" type="text" value="{{form.data.username}}" placeholder="Username">
                     {% if not form.username.errors %}
                         <div class="small">30 characters or fewer.<br /> Usernames may contain alphanumeric, _, @, +, . and - characters.</div>
                     {% endif %}
                 </div>
-                {{ form.username.errors }}
+                <div data-cy="username-error">
+                    {{ form.username.errors }}
+                </div>
             </div>
             <div class="col-md-5 {% if form.email.errors %}has-error{% endif %} mb-1">
                 <label>Email:</label>
                 <div>
-                    <input class="form-control" name="email" type="email" value="{{form.data.email}}" placeholder="Email address">
+                    <input class="form-control" data-cy="email" name="email" type="email" value="{{form.data.email}}" placeholder="Email address">
                 </div>
-                {{ form.email.errors }}
+                <div data-cy="email-error">
+                    {{ form.email.errors }}
+                </div>
             </div>
         </div>
     </div>
@@ -88,20 +87,20 @@
         <label>Create a password:</label>
         <div class="row">
             <div class="col-md-6 mb-1">
-                <input class="form-control" name="password1" type="password" placeholder="Password" value="{{form.data.password1}}">
+                <input class="form-control" data-cy="password1" name="password1" type="password" placeholder="Password" value="{{form.data.password1}}">
             </div>
             <div class="col-md-6 mb-1">
-                <input class="form-control" name="password2" type="password" placeholder="Confirm Password" value="{{form.data.password2}}">
+                <input class="form-control" data-cy="password2" name="password2" type="password" placeholder="Confirm Password" value="{{form.data.password2}}">
             </div>
         </div>
         {% if form.password1.errors or form.password2.errors %}
-            <ul class="errorlist">
+            <ul class="errorlist" data-cy="password-error">
                 <li>Please enter your password twice.</li>
             </ul>
         {% endif %}
     </div>
 
-    <input class="btn btn-primary btn-large right" type="submit" value="{% trans 'Sign up!' %}" />
+    <input class="btn btn-primary btn-large right" data-cy="sign-up-submit" type="submit" value="{% trans 'Sign up!' %}" />
 </form>
 
 {% endblock %}

@@ -14,7 +14,7 @@
             <p>If you have a Columbia University Network ID (UNI)</p>
             <form class="text-center" method="get" action="{{CAS_BASE}}cas/login">
                 <input type="hidden" name="destination" value="http{% if request.is_secure %}s{% endif %}://{{ request.get_host }}/accounts/caslogin/?next={{ next }}" />
-                <input class="btn btn-primary" type="submit" value="Columbia Log In" />
+                <input class="btn btn-primary" data-cy="columbia-login" type="submit" value="Columbia Log In" />
                 <p class="small pt-2"><a href="http://cuit.columbia.edu/cuit/manage-my-uni" title="Learn more about UNI" target="_blank">What is a UNI?</a></p>
             </form>
             <hr class="seperator" />
@@ -22,7 +22,7 @@
         </div>
         <div class="loginbox__body--local">
         {% if form.errors %}
-            <div class="alert alert-danger" role="alert">
+            <div class="alert alert-danger" role="alert" data-cy="guest-login-error">
                 <div><b>Invalid username or password</b></div>
             </div>
         {% endif %}
@@ -35,18 +35,18 @@
                     <label for="id_username">Username</label>
                     <input id="id_username" maxlength="254"
                            name="username" type="text"
-                           class="form-control" autofocus>
+                           class="form-control" data-cy="guest-login-username" autofocus>
                 </div>
 
                 <div class="form-group">
                     <label for="id_password">Password</label>
-                    <input id="id_password" name="password" type="password" class="form-control">
+                    <input id="id_password" name="password" type="password" class="form-control" data-cy="guest-login-password">
                 </div>
             </div>
-            <input id="guest-login" class="btn btn-primary" type="button" value="Guest Log In" {% if form.errors %}style="display: none"{% endif %}/>
-            <input id="login-local-form__submit" class="btn btn-primary login-local-form" type="submit" value="Log In" {% if not form.errors %}style="display: none;"{% endif %} />                        
+            <input id="guest-login" class="btn btn-primary" data-cy="guest-login" type="button" value="Guest Log In" {% if form.errors %}style="display: none"{% endif %}/>
+            <input id="login-local-form__submit" class="btn btn-primary login-local-form" data-cy="guest-login-submit" type="submit" value="Log In" {% if not form.errors %}style="display: none;"{% endif %} />                        
             <input type="hidden" name="next" value="{{ next|urlencode }}" />
-            <p class="small pt-2"><a href="/accounts/password_reset/">Forgot Password?</a></p>
+            <p class="small pt-2"><a href="/accounts/password_reset/" data-cy="forgot-password">Forgot Password?</a></p>
         </form>
         </div>
     </div>
