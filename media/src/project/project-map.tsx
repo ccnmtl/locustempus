@@ -56,8 +56,8 @@ export const ProjectMap: React.FC = () => {
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
 
     const navControlStyle= {
-      right: 10,
-      bottom: 25
+        right: 10,
+        bottom: 25
     };
 
     // The selected event on the map
