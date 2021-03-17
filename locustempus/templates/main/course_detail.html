@@ -52,8 +52,6 @@
 
 {% block content %}
 
-{% if project_grid_layout %}This is <b>grid</b> layout {% else %}This is <b>list</b> layout{% endif %}
-
 {% if is_faculty and projects %}
 <div class="pt-3 px-3">
     <form action="{% url 'course-project-create' course.pk %}" method="post">

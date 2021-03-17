@@ -55,6 +55,11 @@ export const ProjectMap: React.FC = () => {
     const [layerData, setLayerData] = useState<Map<number, LayerData>>(new Map());
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
 
+    const navControlStyle= {
+        right: 10,
+        bottom: 25
+    };
+
     // The selected event on the map
     const [ activeEvent, setActiveEvent] =
         useState<EventData | null>(null);
@@ -539,7 +544,7 @@ export const ProjectMap: React.FC = () => {
                         </Popup>
                     )}
                     <div id='map-navigation-control'>
-                        <NavigationControl />
+                        <NavigationControl style={navControlStyle} />
                     </div>
                 </DeckGL>
             )}
