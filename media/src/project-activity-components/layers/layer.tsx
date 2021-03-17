@@ -3,7 +3,7 @@ import { EventData, LayerData } from '../common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEye, faEyeSlash, faAngleDown, faAngleRight, faEllipsisV, faMapMarker,
-    faPencilAlt, faTrashAlt
+    faPencilAlt, faTrashAlt, faLightbulb
 } from '@fortawesome/free-solid-svg-icons';
 
 export interface LayerProps {
@@ -219,8 +219,13 @@ export const Layer: React.FC<LayerProps> = (
                             })}
                         </ul>
                     ) : (
-                        <div className={'alert alert-secondary'}>
-                            Click on the map to add events in this layer.
+                        <div className={'lt-banner-tip-prompt'}>
+                            <span className='lt-icons lt-banner__icon'>
+                                <FontAwesomeIcon icon={faLightbulb}/>
+                            </span>
+                            <span className='lt-banner__text'>
+                                Click on the map to add events in this layer.
+                            </span>
                         </div>
                     )}
                 </>
