@@ -476,7 +476,6 @@ export const ActivityMap: React.FC = () => {
                         const setMapboxLayerFunc = isFaculty ?
                             setProjectMapboxLayers : setMapboxLayers;
                         updateMapboxLayers(updatedLayers, setMapboxLayerFunc, layerVisibility);
-                        setActiveEventDetail(data);
                         setActiveEvent(data);
                         goToNewEvent();
                     } else {
