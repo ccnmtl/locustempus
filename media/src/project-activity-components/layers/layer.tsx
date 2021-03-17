@@ -219,14 +219,24 @@ export const Layer: React.FC<LayerProps> = (
                             })}
                         </ul>
                     ) : (
-                        <div className={'lt-banner-tip-prompt'}>
-                            <span className='lt-icons lt-banner__icon'>
-                                <FontAwesomeIcon icon={faLightbulb}/>
-                            </span>
-                            <span className='lt-banner__text'>
-                                Click on the map to add events in this layer.
-                            </span>
-                        </div>
+                        <>
+                            {isActiveLayer ? (
+                                <div className={'lt-banner-tip-prompt'}>
+                                    <span className={'lt-icons lt-banner__icon'}>
+                                        <FontAwesomeIcon icon={faLightbulb}/>
+                                    </span>
+                                    <span className={'lt-banner__text'}>
+                                        Click on the map to add events in {layer.title}.
+                                    </span>
+                                </div>
+                            ) : (
+                                <div className={'lt-banner-tip-muted'} role="alert">
+                                    <span className={'lt-banner__text'}>
+                                        {layer.title} is empty.
+                                    </span>
+                                </div>
+                            )}
+                        </>
                     )}
                 </>
             ) }

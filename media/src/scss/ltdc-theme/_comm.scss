@@ -72,21 +72,26 @@
         filter: invert(62%) sepia(35%) saturate(5159%) hue-rotate(2deg) brightness(104%) contrast(102%);
     }
     &::after {
-    background-color: inherit;
-    border-right: inherit;
-    border-bottom: inherit;
-    content: "";
-    display: block;
-    height: 0.8rem;
-    width: 0.8rem;
-    position: absolute;
-	left: calc(100% - 0.4rem);
-	top: calc(50% - 0.4rem);
-    webkit-transform: rotate(-45deg);
-    transform: rotate(-45deg);
+        background-color: inherit;
+        border-right: inherit;
+        border-bottom: inherit;
+        content: "";
+        display: block;
+        height: 0.8rem;
+        width: 0.8rem;
+        position: absolute;
+        left: calc(100% - 0.4rem);
+        top: calc(50% - 0.4rem);
+        webkit-transform: rotate(-45deg);
+        transform: rotate(-45deg);
     }
 }
 
+.lt-banner-tip-muted {
+    @extend %banner-base;
+    background-color: #efefef;
+    border: 1px solid #e3e3e3;
+}
 
 
 @keyframes opacity-fade-out {
