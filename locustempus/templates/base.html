@@ -98,7 +98,7 @@
                             </li>
                             {% if user.is_superuser %}
                             <li class="lt-list-item">
-                                <a href="#" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                                <a href="{% url 'impersonate-search' %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
                                 <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-impersonate.svg" /></span>
                                 <span class="lt-list-item__primary-text">Impersonate</span>
                                 </a>
