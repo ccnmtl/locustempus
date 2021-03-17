@@ -287,7 +287,6 @@ export const ProjectMap: React.FC = () => {
 
                         setLayerData(updatedLayers);
                         updateMapboxLayers(updatedLayers);
-                        setActiveEventDetail(data);
                         setActiveEvent(data);
                         goToNewEvent();
                     }

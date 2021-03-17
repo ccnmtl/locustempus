@@ -1,32 +1,44 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Position } from '@deck.gl/core/utils/positions';
 import { MediaEditor } from '../layers/media-editor';
 import { MediaObject } from '../common';
 import ReactQuill from 'react-quill';
+import { LayerData } from '../common';
 
 interface EventAddPanelProps {
     showAddEventForm: boolean;
     setShowAddEventForm(val: boolean): void;
     activePosition: Position | null;
+    layers: Map<number, LayerData>;
+    activeLayer: number | null;
     addEvent(
         label: string, description: string, lat: number, lng: number,
         mediaObj: MediaObject | null): void;
     clearActivePosition(): void;
     setActiveTab(val: number): void;
     paneHeaderHeight: number;
+    returnTab: number;
 }
 
 export const EventAddPanel: React.FC<EventAddPanelProps> = (
-    { setShowAddEventForm, activePosition, addEvent,
-        clearActivePosition, setActiveTab, paneHeaderHeight
+    { setShowAddEventForm, activePosition, addEvent, clearActivePosition,
+        setActiveTab, paneHeaderHeight, activeLayer, layers, returnTab
     }: EventAddPanelProps) => {
 
+    const [activeLayerTitle, setActiveLayerTitle] = useState<string>('');
     const [eventName, setEventName] = useState<string>('');
     const [description, setDescription] = useState<string>('');
     const [datetime, setDatetime] = useState<string>('');
     const [fileS3Url, setFileS3Url] = useState<string | null>(null);
     const [source, setSource] = useState<string>('');
     const [caption, setCaption] = useState<string>('');
+
+    useEffect(() => {
+        if (activeLayer && layers.has(activeLayer)) {
+            const l = layers.get(activeLayer);
+            setActiveLayerTitle(l && l.title ? l.title : '');
+        }
+    }, [activeLayer, layers]);
 
     const handleName = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setEventName(e.target.value);
@@ -45,8 +57,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                 eventName === '' ? 'Untitled Marker' : eventName,
                 description, activePosition[0], activePosition[1], media);
             setShowAddEventForm(false);
-            // TODO pass in the active tab this should return to
-            setActiveTab(1);
+            setActiveTab(returnTab);
             clearActivePosition();
         }
     };
@@ -60,7 +71,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
     return (
         <>
             <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
-                <h2>Add an Event</h2>
+                <h2>{activeLayerTitle} &gt; Add an Event</h2>
             </div>
             <div className={'pane-content-body'}>
                 <form onSubmit={handleFormSubmit} >
