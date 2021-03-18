@@ -150,7 +150,11 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         2: <> {activeEventEdit && (
             <EventEditPanel
+                layers={layers}
                 activeLayer={activeLayer}
+                returnTab={1}
+                setActiveTab={setActiveTab}
+                setActiveEventDetail={setActiveEventDetail}
                 activeEventEdit={activeEventEdit}
                 setActiveEventEdit={setActiveEventEdit}
                 updateEvent={updateEvent}

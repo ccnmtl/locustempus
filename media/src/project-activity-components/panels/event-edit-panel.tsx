@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { MediaEditor } from '../layers/media-editor';
-import { EventData, MediaObject } from '../common';
+import { EventData, LayerData, MediaObject } from '../common';
 import ReactQuill from 'react-quill';
 
 
 interface EventEditPanelProps {
+    layers: Map<number, LayerData>;
     activeLayer: number | null;
     activeEventEdit: EventData;
     setActiveEventEdit(d: EventData | null): void;
@@ -12,11 +13,15 @@ interface EventEditPanelProps {
                 lat: number, lng: number, pk: number,
                 layerPk: number, mediaObj: MediaObject | null): void;
     paneHeaderHeight: number;
+    returnTab: number;
+    setActiveTab(val: number): void;
+    setActiveEventDetail(d: EventData | null): void;
 }
 
 export const EventEditPanel: React.FC<EventEditPanelProps> = (
     {
-        activeEventEdit, setActiveEventEdit, updateEvent, paneHeaderHeight
+        activeEventEdit, setActiveEventEdit, updateEvent, paneHeaderHeight,
+        layers, activeLayer, returnTab, setActiveTab, setActiveEventDetail
     }: EventEditPanelProps) => {
 
     const [
@@ -31,6 +36,14 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
     const [fileS3Url, setFileS3Url] = useState<string | null>(null);
     const [source, setSource] = useState<string>('');
     const [caption, setCaption] = useState<string>('');
+    const [activeLayerTitle, setActiveLayerTitle] = useState<string>('');
+
+    useEffect(() => {
+        if (activeLayer && layers.has(activeLayer)) {
+            const l = layers.get(activeLayer);
+            setActiveLayerTitle(l && l.title ? l.title : '');
+        }
+    }, [activeLayer, layers]);
 
     useEffect(() => {
         if (activeEventEdit.media.length > 0) {
@@ -54,7 +67,9 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
             eventName, description, activeEventEdit.location.lng_lat[1],
             activeEventEdit.location.lng_lat[0],
             activeEventEdit.pk, activeEventEdit.layer, media);
+        setActiveEventDetail(null);
         setActiveEventEdit(null);
+        setActiveTab(returnTab);
     };
 
     const handleCancel = (e: React.MouseEvent<HTMLButtonElement>): void => {
@@ -65,7 +80,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
     return (
         <>
             <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
-                <h2>Edit Event Marker</h2>
+                <h2>{activeLayerTitle} &gt; Edit event marker</h2>
             </div>
             <div className={'pane-content-body'}>
                 <form onSubmit={handleFormSubmit}>

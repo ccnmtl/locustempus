@@ -411,7 +411,7 @@ export const ActivityMap: React.FC = () => {
                     const setLayerDataFunc = isProjLayer ? setProjectLayerData : setLayerData;
                     setLayerDataFunc(updatedLayers);
 
-                    setActiveEventDetail(data);
+                    //setActiveEventDetail(data);
                     handleSetActiveEvent(data);
                 } else {
                     throw new Error(
