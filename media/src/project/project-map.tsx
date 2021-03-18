@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     _MapContext as MapContext, StaticMap, NavigationControl, Popup
 } from 'react-map-gl';
@@ -14,32 +14,16 @@ import { ProjectMapPane } from './project-map-pane';
 import { LoadingModal } from '../project-activity-components/loading-modal';
 
 import {
-    ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_COLOR,
-    ICON_COLOR_ACTIVE, ProjectData, ActivityData, LayerData, EventData,
-    MediaObject, DeckGLClickEvent, TileSublayerProps
+    ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_SIZE_ACTIVE,
+    ICON_COLOR, ICON_COLOR_ACTIVE, ICON_COLOR_NEW_EVENT,
+    DEFAULT_VIEWPORT_STATE, ViewportState, ProjectData, ActivityData,
+    LayerData, EventData, MediaObject, DeckGLClickEvent, TileSublayerProps
 } from '../project-activity-components/common';
 
 import {get, put, post, del, getBoundedViewport } from '../utils';
 
-interface ViewportState {
-    latitude: number;
-    longitude: number;
-    zoom: number;
-    bearing: number;
-    pitch: number;
-    transitionDuration?: number;
-    transitionInterpolator?: FlyToInterpolator;
-}
-
 export const ProjectMap: React.FC = () => {
-    const [viewportState, setViewportState] = useState<ViewportState>({
-        latitude: 0,
-        longitude: 0,
-        zoom: 0,
-        bearing: 0,
-        pitch: 0
-    });
-
+    const [viewportState, setViewportState] = useState<ViewportState>(DEFAULT_VIEWPORT_STATE);
     const mapContainer: HTMLElement | null =
         document.querySelector('#project-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
@@ -189,19 +173,22 @@ export const ProjectMap: React.FC = () => {
         setLayerVisibility(layerVis);
     };
 
-    const goToNewEvent = useCallback(() => {
-        if (activePosition) {
-            setViewportState({
-                latitude: activePosition[0],
-                longitude: activePosition[1],
-                zoom: 15,
-                bearing: 0,
-                pitch: 0,
-                transitionDuration: 1000,
-                transitionInterpolator: new FlyToInterpolator()
-            });
-        }
-    }, [activePosition]);
+    const goToEvent = (event: EventData) => {
+        setViewportState({
+            latitude: event.location.lng_lat[1],
+            longitude: event.location.lng_lat[0],
+            zoom: viewportState.zoom,
+            bearing: 0,
+            pitch: 0,
+            transitionDuration: 1000,
+            transitionInterpolator: new FlyToInterpolator()
+        });
+    };
+
+    const handleSetActiveEvent = (event: EventData) => {
+        setActiveEvent(event);
+        goToEvent(event);
+    };
 
     const addEvent = (
         label: string, description: string, lat: number, lng: number,
@@ -235,7 +222,7 @@ export const ProjectMap: React.FC = () => {
 
                         setLayerData(updatedLayers);
                         setActiveEvent(data);
-                        goToNewEvent();
+                        goToEvent(data);
                     }
                 }
             });
@@ -384,8 +371,12 @@ export const ProjectMap: React.FC = () => {
                 sizeScale: ICON_SCALE,
                 getPosition: (d) => d.location.lng_lat,
                 onClick: pickEventClickHandler,
-                getSize: ICON_SIZE,
-                getColor: ICON_COLOR,
+                getSize: (d) => {
+                    return activeEventDetail && d.pk == activeEventDetail.pk ?
+                        ICON_SIZE_ACTIVE : ICON_SIZE; },
+                getColor: (d) => {
+                    return activeEventDetail && d.pk == activeEventDetail.pk ?
+                        ICON_COLOR_ACTIVE : ICON_COLOR; },
                 visible: layerVisibility.get(layer.pk) || false
             });
             return acc.concat(MBLayer);
@@ -404,7 +395,7 @@ export const ProjectMap: React.FC = () => {
                 sizeScale: ICON_SCALE,
                 getPosition: (d) => d.lngLat,
                 getSize: ICON_SIZE,
-                getColor: ICON_COLOR_ACTIVE,
+                getColor: ICON_COLOR_NEW_EVENT,
             }));
     }
 
@@ -504,7 +495,7 @@ export const ProjectMap: React.FC = () => {
                         mapStyle={projectData.base_map}
                         mapboxApiAccessToken={TOKEN}
                         onLoad={(): void => {setIsMapLoading(false); }}/>
-                    {activeEvent && (
+                    {activeEvent && !activeEventDetail && (
                         <Popup
                             latitude={activeEvent.location.lng_lat[1]}
                             longitude={activeEvent.location.lng_lat[0]}
@@ -518,16 +509,6 @@ export const ProjectMap: React.FC = () => {
                                 </div>
                             )}
                             <h2>{activeEvent.label}</h2>
-                            {!activeEventDetail && (
-                                <button
-                                    type="button"
-                                    onClick={
-                                        (): void => {
-                                            setActiveEventDetail(activeEvent);}}
-                                    className={'lt-button btn-sm mapboxgl-popup-more'}>
-                                    <span className='lt-button__text'>More</span>
-                                </button>
-                            )}
                         </Popup>
                     )}
                     <div id='map-navigation-control'>
@@ -562,7 +543,7 @@ export const ProjectMap: React.FC = () => {
                     displayAddEventForm={displayAddEventForm}
                     activePosition={activePosition}
                     activeEvent={activeEvent}
-                    setActiveEvent={setActiveEvent}
+                    setActiveEvent={handleSetActiveEvent}
                     activeEventDetail={activeEventDetail}
                     setActiveEventDetail={setActiveEventDetail}
                     activeEventEdit={activeEventEdit}

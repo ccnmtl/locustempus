@@ -1,4 +1,5 @@
 /* A place to set shared settings */
+import { FlyToInterpolator }  from 'deck.gl';
 import { Position } from '@deck.gl/core/utils/positions';
 export const STATIC_URL = LocusTempus.staticUrl;
 
@@ -11,8 +12,10 @@ type RGBAColor = [number, number, number, number?];
 
 export const ICON_SCALE = 15;
 export const ICON_SIZE = 3;
+export const ICON_SIZE_ACTIVE = 4;
 export const ICON_COLOR: RGBAColor = [204, 51, 51];
-export const ICON_COLOR_ACTIVE: RGBAColor = [0, 51, 255];
+export const ICON_COLOR_ACTIVE: RGBAColor = [3, 110, 5];
+export const ICON_COLOR_NEW_EVENT: RGBAColor = [0, 51, 255];
 
 export const BASE_MAPS = new Map([
     ['mapbox://styles/mapbox/streets-v11', 'Street'],
@@ -107,3 +110,21 @@ export interface LayerData {
 export interface DeckGLClickEvent extends MouseEvent {
     tapCount?: number
 }
+
+export interface ViewportState {
+    latitude: number;
+    longitude: number;
+    zoom: number;
+    bearing: number;
+    pitch: number;
+    transitionDuration?: number;
+    transitionInterpolator?: FlyToInterpolator;
+}
+
+export const DEFAULT_VIEWPORT_STATE = {
+    latitude: 0,
+    longitude: 0,
+    zoom: 0,
+    bearing: 0,
+    pitch: 0
+};
