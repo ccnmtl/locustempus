@@ -1,5 +1,5 @@
-import React from 'react';
-import { EventData } from '../common';
+import React, { useState, useEffect } from 'react';
+import { EventData, LayerData } from '../common';
 import { OverflowMenu } from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -7,6 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 interface EventDetailPanelProps {
+    layers: Map<number, LayerData>;
     activeLayer: number | null;
     activeEventDetail: EventData | null;
     setActiveEventDetail(d: EventData | null): void;
@@ -19,9 +20,18 @@ interface EventDetailPanelProps {
 
 export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     {
-        activeLayer, activeEventDetail, setActiveEventDetail,
+        layers, activeLayer, activeEventDetail, setActiveEventDetail,
         setActiveEventEdit, deleteEvent, paneHeaderHeight, showEditMenu
     }: EventDetailPanelProps) => {
+
+    const [activeLayerTitle, setActiveLayerTitle] = useState<string>('');
+
+    useEffect(() => {
+        if (activeLayer && layers.has(activeLayer)) {
+            const l = layers.get(activeLayer);
+            setActiveLayerTitle(l && l.title ? l.title : '');
+        }
+    }, [activeLayer, layers]);
 
     const handleBack = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
@@ -46,7 +56,9 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                     <span className={'lt-icons lt-button-back__icon'}>
                         <FontAwesomeIcon icon={faArrowLeft}/>
                     </span>
-                    <span className={'lt-button-back__text'}>Back</span>
+                    <span className={'lt-button-back__text'}>
+                        {activeLayerTitle && (<>Back to {activeLayerTitle}</>)}
+                    </span>
                 </button>
             </div>
             <div className={'pane-content-body'}>
