@@ -37,12 +37,11 @@ export interface ActivityMapPaneProps {
     toggleResponseVisibility(pk: number): void;
     isProjectLayer(pk: number): boolean;
     showAddEventForm: boolean;
-    setShowAddEventForm(val: boolean): void;
+    displayAddEventForm(show: boolean, mockData?: EventData): void;
     activePosition: Position | null;
     addEvent(label: string,
              description: string, lat: number, lng: number, mediaObj: MediaObject | null): void;
     deleteEvent(pk: number, layerPk: number): void;
-    clearActivePosition(): void;
     activeEvent: EventData | null;
     setActiveEvent(d: EventData): void;
     activeEventDetail: EventData | null;
@@ -66,8 +65,8 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         activeLayer, setActiveLayer, addLayer, deleteLayer,
         updateLayer,layerVisibility, toggleLayerVisibility,
         toggleResponseVisibility, isProjectLayer, showAddEventForm,
-        setShowAddEventForm, activePosition, addEvent, clearActivePosition,
-        activeEvent, setActiveEvent, activeEventDetail, setActiveEventDetail,
+        displayAddEventForm, activePosition, addEvent, activeEvent,
+        setActiveEvent, activeEventDetail, setActiveEventDetail,
         activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent,
         projectLayers, responseData, updateResponse, createFeedback,
         updateFeedback, responseLayers
@@ -137,10 +136,9 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
     const PANEL: {[key: number]: ReactElement} = {
         0: <EventAddPanel
             showAddEventForm={showAddEventForm}
-            setShowAddEventForm={setShowAddEventForm}
+            displayAddEventForm={displayAddEventForm}
             activePosition={activePosition}
             addEvent={addEvent}
-            clearActivePosition={clearActivePosition}
             setActiveTab={setActiveTab}
             activeLayer={activeLayer}
             layers={layers}

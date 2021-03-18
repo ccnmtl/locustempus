@@ -3,26 +3,25 @@ import { Position } from '@deck.gl/core/utils/positions';
 import { MediaEditor } from '../layers/media-editor';
 import { MediaObject } from '../common';
 import ReactQuill from 'react-quill';
-import { LayerData } from '../common';
+import { EventData, LayerData } from '../common';
 
 interface EventAddPanelProps {
     showAddEventForm: boolean;
-    setShowAddEventForm(val: boolean): void;
+    displayAddEventForm(show: boolean, mockData?: EventData): void;
     activePosition: Position | null;
     layers: Map<number, LayerData>;
     activeLayer: number | null;
     addEvent(
         label: string, description: string, lat: number, lng: number,
         mediaObj: MediaObject | null): void;
-    clearActivePosition(): void;
     setActiveTab(val: number): void;
     paneHeaderHeight: number;
     returnTab: number;
 }
 
 export const EventAddPanel: React.FC<EventAddPanelProps> = (
-    { setShowAddEventForm, activePosition, addEvent, clearActivePosition,
-        setActiveTab, paneHeaderHeight, activeLayer, layers, returnTab
+    { displayAddEventForm, activePosition, addEvent, setActiveTab,
+        paneHeaderHeight, activeLayer, layers, returnTab
     }: EventAddPanelProps) => {
 
     const [activeLayerTitle, setActiveLayerTitle] = useState<string>('');
@@ -56,16 +55,14 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
             addEvent(
                 eventName === '' ? 'Untitled Marker' : eventName,
                 description, activePosition[0], activePosition[1], media);
-            setShowAddEventForm(false);
+            displayAddEventForm(false);
             setActiveTab(returnTab);
-            clearActivePosition();
         }
     };
 
     const handleCancel = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
-        setShowAddEventForm(false);
-        clearActivePosition();
+        displayAddEventForm(false);
     };
 
     return (
