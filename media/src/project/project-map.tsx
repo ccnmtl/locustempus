@@ -60,6 +60,9 @@ export const ProjectMap: React.FC = () => {
         bottom: 25
     };
 
+    // The point on the map where a new event will be placed
+    const [addEventMockData, setAddEventMockData] = useState<EventData | null>();
+
     // The selected event on the map
     const [ activeEvent, setActiveEvent] =
         useState<EventData | null>(null);
@@ -71,9 +74,6 @@ export const ProjectMap: React.FC = () => {
         useState<EventData | null>(null);
     const [activity, setActivity] = useState<ActivityData | null>(null);
 
-    const [mapboxLayers, setMapboxLayers] =
-        useState<IconLayer<EventData>[]>([]);
-
     const [rasterLayers, setRasterLayers] = useState<TileLayer<string>[]>([]);
 
     const [layerVisibility, setLayerVisibility] = useState<Map<number, boolean>>(new Map());
@@ -84,61 +84,10 @@ export const ProjectMap: React.FC = () => {
     const [isMapLoading, setIsMapLoading] = useState<boolean>(true);
     const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
 
-    const clearActivePosition = (): void => {
-        setActivePosition(null);
-        setMapboxLayers((prev) => {
-            return prev.filter((el) => {
-                return el.id !== 'active-position';
-            });
-        });
-    };
-
     const setBaseMap = (baseMap: string) => {
         if (projectData) {
             setProjectData({...projectData, base_map: baseMap});
         }
-    };
-
-    const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
-        // Clear the 'Add Event Form' and 'Add Event Pin'
-        setShowAddEventForm(false);
-        clearActivePosition();
-
-        // Set the active event
-        setActiveEvent(info.object);
-
-        // Returning true prevents event from bubling to map canvas
-        return true;
-    };
-
-    const updateMapboxLayers = (
-        layers: Map<number, LayerData>, setterFunc = setMapboxLayers,
-        layerVisMap = layerVisibility): void => {
-        const mapLayers = [...layers.entries()].reduce(
-            (acc: IconLayer<EventData>[], val: [number, LayerData]) => {
-                const layer = val[1];
-                if (layer && (layerVisMap.get(layer.pk) || false)) {
-                    const MBLayer = new IconLayer<EventData>({
-                        id: `icon-layer-${layer.pk}`,
-                        data: layer.events,
-                        pickable: true,
-                        iconAtlas: ICON_ATLAS,
-                        iconMapping: ICON_MAPPING,
-                        getIcon: (): string => 'marker',
-                        sizeScale: ICON_SCALE,
-                        getPosition: (d) => d.location.lng_lat,
-                        onClick: pickEventClickHandler,
-                        getSize: ICON_SIZE,
-                        getColor: ICON_COLOR,
-                    });
-                    return [...acc, MBLayer];
-                } else {
-                    return acc;
-                }
-            },
-            []);
-
-        setterFunc(mapLayers);
     };
 
     const updateProject = (
@@ -238,7 +187,6 @@ export const ProjectMap: React.FC = () => {
         const layerVis = new Map(layerVisibility);
         layerVis.set(pk, !layerVisibility.get(pk));
         setLayerVisibility(layerVis);
-        updateMapboxLayers(layerData, setMapboxLayers, layerVis);
     };
 
     const goToNewEvent = useCallback(() => {
@@ -286,7 +234,6 @@ export const ProjectMap: React.FC = () => {
                         updatedLayers.set(activeLayer, updatedLayer);
 
                         setLayerData(updatedLayers);
-                        updateMapboxLayers(updatedLayers);
                         setActiveEvent(data);
                         goToNewEvent();
                     }
@@ -323,7 +270,6 @@ export const ProjectMap: React.FC = () => {
                     updatedLayers.set(layerPk, updatedLayer);
 
                     setLayerData(updatedLayers);
-                    updateMapboxLayers(updatedLayers);
                     setActiveEventDetail(data);
                     setActiveEvent(data);
                 }
@@ -347,7 +293,6 @@ export const ProjectMap: React.FC = () => {
 
                     setLayerData(updatedLayers);
                     setActiveEvent(null);
-                    updateMapboxLayers(updatedLayers);
                 }
             });
     };
@@ -383,6 +328,16 @@ export const ProjectMap: React.FC = () => {
         void del(`/api/activity/${id}/`);
     };
 
+    const displayAddEventForm = (displayForm: boolean, mockData?: EventData) => {
+        if (displayForm && mockData) {
+            setShowAddEventForm(true);
+            setAddEventMockData(mockData);
+        } else {
+            setShowAddEventForm(false);
+            setAddEventMockData(null);
+        }
+    };
+
     function handleDeckGlClick<D>(info: PickInfo<D>, event: DeckGLClickEvent): void {
         // Cast to provide type def for coordinate
         const infoPrime = info as PickInfo<D> & {coordinate: [number, number]};
@@ -394,18 +349,54 @@ export const ProjectMap: React.FC = () => {
             setActiveEvent(null);
             setActiveEventDetail(null);
             setActiveEventEdit(null);
-            setShowAddEventForm(true);
             setActivePosition([infoPrime.coordinate[1], infoPrime.coordinate[0]]);
-            let updatedLayers = mapboxLayers.filter((el) => {
-                return el.id !== 'active-position';
-            });
+
             // The click data needs to be packed this way so that the type
-            // of mapboxLayers remains homogenous
+            // of mapLayers remains homogenous
             const mockData = {} as EventData;
             mockData.lngLat = [infoPrime.coordinate[0], infoPrime.coordinate[1]];
-            updatedLayers = updatedLayers.concat(new IconLayer<EventData>({
+            displayAddEventForm(true, mockData);
+        }
+    }
+
+    const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
+        if (showAddEventForm) {
+            return false;
+        }
+
+        // Set the active event
+        setActiveEvent(info.object);
+
+        // Returning true prevents event from bubling to map canvas
+        return true;
+    };
+
+    // Set up the layers for rendering
+    const mapLayers = [...layerData.values()].reduce(
+        (acc: IconLayer<EventData>[], layer: LayerData) => {
+            const MBLayer = new IconLayer<EventData>({
+                id: `icon-layer-${layer.pk}`,
+                data: [...layer.events],
+                pickable: true,
+                iconAtlas: ICON_ATLAS,
+                iconMapping: ICON_MAPPING,
+                getIcon: (): string => 'marker',
+                sizeScale: ICON_SCALE,
+                getPosition: (d) => d.location.lng_lat,
+                onClick: pickEventClickHandler,
+                getSize: ICON_SIZE,
+                getColor: ICON_COLOR,
+                visible: layerVisibility.get(layer.pk) || false
+            });
+            return acc.concat(MBLayer);
+        },
+        []);
+
+    if (addEventMockData) {
+        mapLayers.push(
+            new IconLayer<EventData>({
                 id: 'active-position',
-                data: [mockData],
+                data: [addEventMockData],
                 pickable: true,
                 iconAtlas: ICON_ATLAS,
                 iconMapping: ICON_MAPPING,
@@ -415,8 +406,6 @@ export const ProjectMap: React.FC = () => {
                 getSize: ICON_SIZE,
                 getColor: ICON_COLOR_ACTIVE,
             }));
-            setMapboxLayers(updatedLayers);
-        }
     }
 
     useEffect(() => {
@@ -447,7 +436,6 @@ export const ProjectMap: React.FC = () => {
                 }, new Map<number, LayerData>());
                 setLayerData(layerMap);
 
-                updateMapboxLayers(layerMap, setMapboxLayers, layerVis);
                 setActiveLayer(layers[0].pk);
                 setLayerVisibility(layerVis);
                 const viewport = getBoundedViewport([...layerMap.values()], deckglMap, mapPane);
@@ -498,7 +486,7 @@ export const ProjectMap: React.FC = () => {
                 <DeckGL
                     layers={[
                         ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
-                        ...mapboxLayers
+                        ...mapLayers
                     ]}
                     initialViewState={viewportState}
                     width={'100%'}
@@ -571,9 +559,8 @@ export const ProjectMap: React.FC = () => {
                     layerVisibility={layerVisibility}
                     toggleLayerVisibility={toggleLayerVisibility}
                     showAddEventForm={showAddEventForm}
-                    setShowAddEventForm={setShowAddEventForm}
+                    displayAddEventForm={displayAddEventForm}
                     activePosition={activePosition}
-                    clearActivePosition={clearActivePosition}
                     activeEvent={activeEvent}
                     setActiveEvent={setActiveEvent}
                     activeEventDetail={activeEventDetail}

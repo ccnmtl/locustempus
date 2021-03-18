@@ -36,12 +36,11 @@ export interface ProjectMapPaneProps {
     updateLayer(pk: number, title: string): void;
     toggleLayerVisibility(pk: number): void;
     showAddEventForm: boolean;
-    setShowAddEventForm(val: boolean): void;
+    displayAddEventForm(show: boolean, mockData?: EventData): void;
     activePosition: Position | null;
     addEvent(label: string,
              description: string, lat: number, lng: number, mediaObj: MediaObject | null): void;
     deleteEvent(pk: number, layerPk: number): void;
-    clearActivePosition(): void;
     activeEvent: EventData | null;
     setActiveEvent(d: EventData): void;
     activeEventDetail: EventData | null;
@@ -59,10 +58,10 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
         updateProject, deleteProject, layers, layerVisibility, activity,
         createActivity, updateActivity, deleteActivity, activeLayer,
         setActiveLayer, addLayer, deleteLayer, updateLayer,
-        toggleLayerVisibility, showAddEventForm, setShowAddEventForm,
-        activePosition, addEvent, clearActivePosition, activeEvent,
-        setActiveEvent, activeEventDetail, setActiveEventDetail,
-        activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent
+        toggleLayerVisibility, showAddEventForm, displayAddEventForm,
+        activePosition, addEvent, activeEvent, setActiveEvent,
+        activeEventDetail, setActiveEventDetail, activeEventEdit,
+        setActiveEventEdit, deleteEvent, updateEvent
     }: ProjectMapPaneProps, forwardedRef) => {
 
     const projectPaneHeader = useRef<HTMLDivElement>(null);
@@ -130,10 +129,9 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
     const PANEL: {[key: number]: ReactElement} = {
         0: <EventAddPanel
             showAddEventForm={showAddEventForm}
-            setShowAddEventForm={setShowAddEventForm}
+            displayAddEventForm={displayAddEventForm}
             activePosition={activePosition}
             addEvent={addEvent}
-            clearActivePosition={clearActivePosition}
             setActiveTab={setActiveTab}
             activeLayer={activeLayer}
             layers={layers}
