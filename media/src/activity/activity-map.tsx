@@ -92,6 +92,7 @@ export const ActivityMap: React.FC = () => {
     const [layerVisibility, setLayerVisibility] =
         useState<Map<number, boolean>>(new Map());
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
+    const [activeTab, setActiveTab] = useState<number>(0);
 
     // The point on the map where a new event will be placed
     const [addEventMockData, setAddEventMockData] = useState<EventData | null>();
@@ -540,6 +541,9 @@ export const ActivityMap: React.FC = () => {
 
         // Set the active event
         setActiveEvent(info.object);
+        // TODO
+        // If a student event, then find the response and open that up
+        setActiveTab(projectLayerData.has(info.object.layer) ? 1 : 2);
 
         // Returning true prevents event from bubling to map canvas
         return true;
@@ -818,6 +822,8 @@ export const ActivityMap: React.FC = () => {
                     deleteProject={deleteProject}
                     isFaculty={isFaculty}
                     layers={isFaculty ? projectLayerData : layerData}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
                     activity={activity}
                     updateActivity={updateActivity}
                     deleteActivity={deleteActivity}

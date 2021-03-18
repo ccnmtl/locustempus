@@ -38,6 +38,7 @@ export const ProjectMap: React.FC = () => {
     const [projectData, setProjectData] = useState<ProjectData | null>(null);
     const [layerData, setLayerData] = useState<Map<number, LayerData>>(new Map());
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
+    const [activeTab, setActiveTab] = useState<number>(0);
 
     const navControlStyle= {
         right: 10,
@@ -353,6 +354,7 @@ export const ProjectMap: React.FC = () => {
 
         // Set the active event
         setActiveEvent(info.object);
+        setActiveTab(1);
 
         // Returning true prevents event from bubling to map canvas
         return true;
@@ -528,6 +530,8 @@ export const ProjectMap: React.FC = () => {
                     updateProject={updateProject}
                     deleteProject={deleteProject}
                     layers={layerData}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
                     activity={activity}
                     createActivity={createActivity}
                     updateActivity={updateActivity}
