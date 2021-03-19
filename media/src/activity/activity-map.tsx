@@ -320,14 +320,16 @@ export const ActivityMap: React.FC = () => {
     };
 
     const goToEvent = (event: EventData) => {
-        setViewportState({
-            latitude: event.location.lng_lat[1],
-            longitude: event.location.lng_lat[0],
-            zoom: viewportState.zoom,
-            bearing: 0,
-            pitch: 0,
-            transitionDuration: 1000,
-            transitionInterpolator: new FlyToInterpolator()
+        setViewportState((prev) => {
+            return {
+                latitude: event.location.lng_lat[1],
+                longitude: event.location.lng_lat[0],
+                zoom: prev.zoom,
+                bearing: 0,
+                pitch: 0,
+                transitionDuration: 1000,
+                transitionInterpolator: new FlyToInterpolator()
+            };
         });
     };
 
@@ -776,7 +778,8 @@ export const ActivityMap: React.FC = () => {
                         ...mapLayers
                     ]}
                     ref={deckglMap}
-                    initialViewState={viewportState}
+                    viewState={viewportState}
+                    onViewStateChange={e => setViewportState(e.viewState)}
                     width={'100%'}
                     height={'100%'}
                     controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
