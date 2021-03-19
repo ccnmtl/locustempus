@@ -258,7 +258,6 @@ export const ProjectMap: React.FC = () => {
                     updatedLayers.set(layerPk, updatedLayer);
 
                     setLayerData(updatedLayers);
-                    setActiveEventDetail(data);
                     setActiveEvent(data);
                 }
             });
@@ -333,8 +332,10 @@ export const ProjectMap: React.FC = () => {
         // Create on single click, make sure that new event
         // is not created when user intends to pick an existing event
         if (event.tapCount === 1) {
+            // Prevent user from creating a new event or selecting a different
+            // event while editing an existing event
+            if (activeEventEdit) { return; }
             // Clear the active event
-            setActiveEvent(null);
             setActiveEventDetail(null);
             setActiveEventEdit(null);
             setActivePosition([infoPrime.coordinate[1], infoPrime.coordinate[0]]);
@@ -348,7 +349,7 @@ export const ProjectMap: React.FC = () => {
     }
 
     const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
-        if (showAddEventForm) {
+        if (showAddEventForm || activeEventEdit) {
             return false;
         }
 

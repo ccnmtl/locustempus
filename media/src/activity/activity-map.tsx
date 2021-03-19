@@ -411,8 +411,7 @@ export const ActivityMap: React.FC = () => {
                     const setLayerDataFunc = isProjLayer ? setProjectLayerData : setLayerData;
                     setLayerDataFunc(updatedLayers);
 
-                    //setActiveEventDetail(data);
-                    handleSetActiveEvent(data);
+                    setActiveEvent(data);
                 } else {
                     throw new Error(
                         'Update Event failed: the layer associated with this event does not exist');
@@ -521,6 +520,9 @@ export const ActivityMap: React.FC = () => {
         // Create on single click, make sure that new event
         // is not created when user intends to pick an existing event
         if (event.tapCount === 1) {
+            // Prevent user from creating a new event or selecting a different
+            // event while editing an existing event
+            if (activeEventEdit) { return; }
             // Clear the active event
             setActiveEvent(null);
             setActiveEventDetail(null);
@@ -535,14 +537,13 @@ export const ActivityMap: React.FC = () => {
     }
 
     const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
-        if (showAddEventForm) {
+        if (showAddEventForm || activeEventEdit) {
             return false;
         }
 
         // Set the active event
         setActiveEvent(info.object);
-        // TODO
-        // If a student event, then find the response and open that up
+        // TODO If a student event, then find the response and open that up
         setActiveTab(projectLayerData.has(info.object.layer) ? 1 : 2);
 
         // Returning true prevents event from bubling to map canvas
