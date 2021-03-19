@@ -124,7 +124,7 @@ export interface ViewportState {
 export const DEFAULT_VIEWPORT_STATE = {
     latitude: 0,
     longitude: 0,
-    zoom: 0,
+    zoom: 1,
     bearing: 0,
     pitch: 0
 };
