@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     _MapContext as MapContext, StaticMap, NavigationControl, Popup
 } from 'react-map-gl';
@@ -18,9 +18,10 @@ import {get, put, post, del, getBoundedViewport } from '../utils';
 const CURRENT_USER = LocusTempus.currentUser.id;
 
 import {
-    ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_COLOR,
-    ICON_COLOR_ACTIVE, ProjectData, DeckGLClickEvent, LayerData, EventData,
-    MediaObject, TileSublayerProps
+    ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_SIZE_ACTIVE,
+    ICON_COLOR, ICON_COLOR_ACTIVE, ICON_COLOR_NEW_EVENT,
+    DEFAULT_VIEWPORT_STATE, ViewportState, ProjectData, DeckGLClickEvent,
+    LayerData, EventData, MediaObject, TileSublayerProps
 } from '../project-activity-components/common';
 
 export interface ActivityData {
@@ -52,24 +53,8 @@ export interface ResponseData {
     feedback: FeedbackData | null;
 }
 
-interface ViewportState {
-    latitude: number;
-    longitude: number;
-    zoom: number;
-    bearing: number;
-    pitch: number;
-    transitionDuration?: number;
-    transitionInterpolator?: FlyToInterpolator;
-}
-
 export const ActivityMap: React.FC = () => {
-    const [viewportState, setViewportState] = useState<ViewportState>({
-        latitude: 0,
-        longitude: 0,
-        zoom: 0,
-        bearing: 0,
-        pitch: 0
-    });
+    const [viewportState, setViewportState] = useState<ViewportState>(DEFAULT_VIEWPORT_STATE);
 
     const mapContainer: HTMLElement | null =
         document.querySelector('#activity-map-container');
@@ -107,6 +92,7 @@ export const ActivityMap: React.FC = () => {
     const [layerVisibility, setLayerVisibility] =
         useState<Map<number, boolean>>(new Map());
     const [activeLayer, setActiveLayer] = useState<number | null>(null);
+    const [activeTab, setActiveTab] = useState<number>(0);
 
     // The point on the map where a new event will be placed
     const [addEventMockData, setAddEventMockData] = useState<EventData | null>();
@@ -333,19 +319,24 @@ export const ActivityMap: React.FC = () => {
 
     };
 
-    const goToNewEvent = useCallback(() => {
-        if (activePosition) {
-            setViewportState({
-                latitude: activePosition[0],
-                longitude: activePosition[1],
-                zoom: 15,
+    const goToEvent = (event: EventData) => {
+        setViewportState((prev) => {
+            return {
+                latitude: event.location.lng_lat[1],
+                longitude: event.location.lng_lat[0],
+                zoom: prev.zoom,
                 bearing: 0,
                 pitch: 0,
                 transitionDuration: 1000,
                 transitionInterpolator: new FlyToInterpolator()
-            });
-        }
-    }, [activePosition]);
+            };
+        });
+    };
+
+    const handleSetActiveEvent = (event: EventData) => {
+        setActiveEvent(event);
+        goToEvent(event);
+    };
 
     const addEvent = (
         label: string, description: string, lat: number,
@@ -381,7 +372,7 @@ export const ActivityMap: React.FC = () => {
                         setLayerDataFunc(updatedLayers);
 
                         setActiveEvent(data);
-                        goToNewEvent();
+                        goToEvent(data);
                     } else {
                         throw new Error('Add Event failed: the active layer failed to be located');
                     }
@@ -422,7 +413,6 @@ export const ActivityMap: React.FC = () => {
                     const setLayerDataFunc = isProjLayer ? setProjectLayerData : setLayerData;
                     setLayerDataFunc(updatedLayers);
 
-                    setActiveEventDetail(data);
                     setActiveEvent(data);
                 } else {
                     throw new Error(
@@ -532,6 +522,9 @@ export const ActivityMap: React.FC = () => {
         // Create on single click, make sure that new event
         // is not created when user intends to pick an existing event
         if (event.tapCount === 1) {
+            // Prevent user from creating a new event or selecting a different
+            // event while editing an existing event
+            if (activeEventEdit) { return; }
             // Clear the active event
             setActiveEvent(null);
             setActiveEventDetail(null);
@@ -546,12 +539,14 @@ export const ActivityMap: React.FC = () => {
     }
 
     const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
-        if (showAddEventForm) {
+        if (showAddEventForm || activeEventEdit) {
             return false;
         }
 
         // Set the active event
         setActiveEvent(info.object);
+        // TODO If a student event, then find the response and open that up
+        setActiveTab(projectLayerData.has(info.object.layer) ? 1 : 2);
 
         // Returning true prevents event from bubling to map canvas
         return true;
@@ -578,8 +573,12 @@ export const ActivityMap: React.FC = () => {
                 sizeScale: ICON_SCALE,
                 getPosition: (d) => d.location.lng_lat,
                 onClick: pickEventClickHandler,
-                getSize: ICON_SIZE,
-                getColor: ICON_COLOR,
+                getSize: (d) => {
+                    return activeEventDetail && d.pk == activeEventDetail.pk ?
+                        ICON_SIZE_ACTIVE : ICON_SIZE; },
+                getColor: (d) => {
+                    return activeEventDetail && d.pk == activeEventDetail.pk ?
+                        ICON_COLOR_ACTIVE : ICON_COLOR; },
                 visible: layerVisibility.get(layer.pk) || false
             });
             return acc.concat(MBLayer);
@@ -598,7 +597,7 @@ export const ActivityMap: React.FC = () => {
                 sizeScale: ICON_SCALE,
                 getPosition: (d) => d.lngLat,
                 getSize: ICON_SIZE,
-                getColor: ICON_COLOR_ACTIVE,
+                getColor: ICON_COLOR_NEW_EVENT,
             }));
     }
 
@@ -779,7 +778,8 @@ export const ActivityMap: React.FC = () => {
                         ...mapLayers
                     ]}
                     ref={deckglMap}
-                    initialViewState={viewportState}
+                    viewState={viewportState}
+                    onViewStateChange={e => setViewportState(e.viewState)}
                     width={'100%'}
                     height={'100%'}
                     controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
@@ -794,7 +794,7 @@ export const ActivityMap: React.FC = () => {
                         mapStyle={projectData.base_map}
                         mapboxApiAccessToken={TOKEN}
                         onLoad={(): void => { setIsMapLoading(false); }}/>
-                    {activeEvent && (
+                    {activeEvent && !activeEventDetail && !showAddEventForm && (
                         <Popup
                             latitude={activeEvent.location.lng_lat[1]}
                             longitude={activeEvent.location.lng_lat[0]}
@@ -808,16 +808,6 @@ export const ActivityMap: React.FC = () => {
                                 </div>
                             )}
                             <h2>{activeEvent.label}</h2>
-                            {!activeEventDetail && (
-                                <button
-                                    type="button"
-                                    onClick={
-                                        (): void => {
-                                            setActiveEventDetail(activeEvent);}}
-                                    className={'lt-button btn-sm mapboxgl-popup-more'}>
-                                    <span className='lt-button__text'>More</span>
-                                </button>
-                            )}
                         </Popup>
                     )}
                     <div id='map-navigation-control'>
@@ -836,6 +826,8 @@ export const ActivityMap: React.FC = () => {
                     deleteProject={deleteProject}
                     isFaculty={isFaculty}
                     layers={isFaculty ? projectLayerData : layerData}
+                    activeTab={activeTab}
+                    setActiveTab={setActiveTab}
                     activity={activity}
                     updateActivity={updateActivity}
                     deleteActivity={deleteActivity}
@@ -853,7 +845,7 @@ export const ActivityMap: React.FC = () => {
                     displayAddEventForm={displayAddEventForm}
                     activePosition={activePosition}
                     activeEvent={activeEvent}
-                    setActiveEvent={setActiveEvent}
+                    setActiveEvent={handleSetActiveEvent}
                     activeEventDetail={activeEventDetail}
                     setActiveEventDetail={setActiveEventDetail}
                     activeEventEdit={activeEventEdit}

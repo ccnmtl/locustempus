@@ -50,6 +50,8 @@ export interface ProjectMapPaneProps {
     updateEvent(label: string, description: string,
                 lat: number, lng: number, pk: number,
                 layerPk: number, mediaObj: MediaObject | null): void;
+    activeTab: number;
+    setActiveTab(tab: number): void;
 }
 
 export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPaneProps>((
@@ -61,12 +63,11 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
         toggleLayerVisibility, showAddEventForm, displayAddEventForm,
         activePosition, addEvent, activeEvent, setActiveEvent,
         activeEventDetail, setActiveEventDetail, activeEventEdit,
-        setActiveEventEdit, deleteEvent, updateEvent
+        setActiveEventEdit, deleteEvent, updateEvent, activeTab, setActiveTab
     }: ProjectMapPaneProps, forwardedRef) => {
 
     const projectPaneHeader = useRef<HTMLDivElement>(null);
 
-    const [activeTab, setActiveTab] = useState<number>(0);
     const [showProjectEditPanel, setShowProjectEditPanel] =
         useState<boolean>(false);
     const [projectPaneHeaderHeight, setProjectPaneHeaderHeight] = useState<number>(0);
@@ -138,6 +139,7 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
             returnTab={1}
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         1: <EventDetailPanel
+            layers={layers}
             activeLayer={activeLayer}
             activeEventDetail={activeEventDetail}
             setActiveEventDetail={setActiveEventDetail}
@@ -148,7 +150,11 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         2: <> {activeEventEdit && (
             <EventEditPanel
+                layers={layers}
                 activeLayer={activeLayer}
+                returnTab={1}
+                setActiveTab={setActiveTab}
+                setActiveEventDetail={setActiveEventDetail}
                 activeEventEdit={activeEventEdit}
                 setActiveEventEdit={setActiveEventEdit}
                 updateEvent={updateEvent}

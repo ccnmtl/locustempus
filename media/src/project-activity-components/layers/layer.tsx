@@ -56,6 +56,7 @@ export const Layer: React.FC<LayerProps> = (
         e.preventDefault();
         if (updateLayer) {
             updateLayer(layer.pk, updatedLayerTitle);
+            setOpenLayerMenu(false);
         }
     };
 
@@ -63,6 +64,7 @@ export const Layer: React.FC<LayerProps> = (
         e.preventDefault();
         if (deleteLayer) {
             deleteLayer(layer.pk);
+            setOpenLayerMenu(false);
         }
     };
 

@@ -56,6 +56,8 @@ export interface ActivityMapPaneProps {
     createFeedback(responsePk: number, feedback: string): void;
     updateFeedback(pk: number, responsePk: number, feedback: string): void;
     responseLayers: Map<number, LayerData[]>;
+    activeTab: number;
+    setActiveTab(tab: number): void;
 }
 
 export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneProps>((
@@ -69,10 +71,8 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         setActiveEvent, activeEventDetail, setActiveEventDetail,
         activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent,
         projectLayers, responseData, updateResponse, createFeedback,
-        updateFeedback, responseLayers
+        updateFeedback, responseLayers, activeTab, setActiveTab
     }: ActivityMapPaneProps, forwardedRef) => {
-
-    const [activeTab, setActiveTab] = useState<number>(0);
 
     const projectPaneHeader = useRef<HTMLDivElement>(null);
     const [projectPaneHeaderHeight, setProjectPaneHeaderHeight] = useState<number>(0);
@@ -145,6 +145,7 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             returnTab={isFaculty ? 1 : 2}
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         1: <EventDetailPanel
+            layers={layers}
             activeLayer={activeLayer}
             activeEventDetail={activeEventDetail}
             setActiveEventDetail={setActiveEventDetail}
@@ -155,7 +156,11 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         2: <> {activeEventEdit && (
             <EventEditPanel
+                layers={layers}
                 activeLayer={activeLayer}
+                returnTab={isFaculty ? 1 : 2}
+                setActiveTab={setActiveTab}
+                setActiveEventDetail={setActiveEventDetail}
                 activeEventEdit={activeEventEdit}
                 setActiveEventEdit={setActiveEventEdit}
                 updateEvent={updateEvent}

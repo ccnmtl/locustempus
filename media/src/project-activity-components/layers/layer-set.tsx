@@ -27,7 +27,7 @@ export const LayerSet: React.FC<LayerSetProps> = (
         setActiveEventDetail, activeEventEdit
     }: LayerSetProps) => {
 
-    const layerList = [...layers.values()];
+    const layerList = [...layers.values()].sort((a, b) => {return b.pk - a.pk;});
 
     const handleCreateLayer = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
