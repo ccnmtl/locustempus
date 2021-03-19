@@ -64,6 +64,7 @@ export const Layer: React.FC<LayerProps> = (
         e.preventDefault();
         if (deleteLayer) {
             deleteLayer(layer.pk);
+            setOpenLayerMenu(false);
         }
     };
 
