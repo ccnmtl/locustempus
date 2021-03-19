@@ -48,8 +48,8 @@ Workspaces
                         <p class="lt-card__text">Concatenated workspace description go here, if we decide to have a field for that</p> {# not hooked up #}
                         <p class="lt-card__text">You’re {% if user in course.faculty %}an Author{% else %}a Contributor{% endif %}</p>
                         <ul class="list-group list-group-horizontal-sm lt-card__list-group">
-                            <li class="list-group-item lt-card__list-group-item">0 Projects</li> {# not hooked up #}
-                            <li class="list-group-item lt-card__list-group-item">5 Contributors</li> {# not hooked up #}
+                            <li class="list-group-item lt-card__list-group-item">{{ course.projects.count }} Projects</li>
+                            <li class="list-group-item lt-card__list-group-item">{{ course.members.count }} Contributors</li>
                         </ul>
                     </div>
                 </div>
