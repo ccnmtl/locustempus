@@ -56,6 +56,7 @@ export const Layer: React.FC<LayerProps> = (
         e.preventDefault();
         if (updateLayer) {
             updateLayer(layer.pk, updatedLayerTitle);
+            setOpenLayerMenu(false);
         }
     };
 
