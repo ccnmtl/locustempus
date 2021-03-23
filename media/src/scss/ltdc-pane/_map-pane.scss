@@ -303,6 +303,10 @@ padding-bottom: 0.5rem;
     margin-bottom: 0;
     padding: 1rem;
     border-radius: 0.25rem;
+    &--final {
+        margin-bottom: 6rem;
+        border-bottom: 1px solid #ddd;
+    }
 }
 
 .pane-form-group:focus-within {
@@ -450,3 +454,36 @@ padding-bottom: 0.5rem;
 .basemap__item input:checked + .basemap__label .basemap__thumbnail {
   border-color: #666;
 }
+
+//* Floating Save-Cancel buttons
+
+.lt-cr-actions {
+    margin: 0 0 0 -1rem;
+    padding: 2.5rem 0;
+    position: fixed;
+    bottom: 0;
+    width: calc(100% - 0.5rem);
+    &__overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        background-color: #ccc;
+        width: 100%;
+        height: 100%;
+        opacity: 0.7;
+    }
+    &__buttons {
+        position: absolute;
+        top: 0;
+        left: 0;
+        padding: 1rem 0 0 0;
+        background-color: transparent;
+        width: 100%;
+        height: 100%;
+        text-align: center;
+        opacity: 1;
+    }
+
+}
+
+

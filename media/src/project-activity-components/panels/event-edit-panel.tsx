@@ -109,7 +109,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                     </div>
 
                     <div className={'pane-form-divider'} />
-                    <div className={'form-group pane-form-group'}>
+                    <div className={'form-group pane-form-group pane-form-group--final'}>
                         <label htmlFor={'form-field__description'}>
                             Description
                         </label>
@@ -131,13 +131,12 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                                 onChange={handleDatetime}/>
                         </div>
                     */}
-                    <div className="form-row">
-                        <div className={'form-group col-3'}>
-                        </div>
-                        <div className={'form-group col-9'}>
+                    <div className={'lt-cr-actions'}>
+                        <div className={'lt-cr-actions__overlay'}></div>
+                        <div className={'lt-cr-actions__buttons'}>
                             <button
                                 type={'button'}
-                                onClick={handleCancel} className={'btn btn-danger'}>
+                                onClick={handleCancel} className={'btn btn-danger mr-3'}>
                                 Cancel
                             </button>
                             <button type={'submit'} className={'btn btn-primary'}>
