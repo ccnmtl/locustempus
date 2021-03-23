@@ -188,7 +188,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                         </div>
                     )}
                     {!showBaseMapMenu && !isNewProject && (
-                        <div className={'form-group pane-form-group base-map-collapsed'}>
+                        <div className={'form-group pane-form-group pane-form-group--final base-map-collapsed'}> {/* eslint-disable-line max-len */}
                             <button onClick={toggleBaseMapMenu}
                                 className={'btn btn__accordion'}>
                                 <span className={'menu-icon'}>
@@ -199,22 +199,21 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             </button>
                         </div>
                     )}
-                    <div className={'form-row'}>
-                        <div className={'form-group col-3'}>
-                        </div>
-                        <div className={'form-group col-9'}>
+                    <div className={'lt-cr-actions'}>
+                        <div className={'lt-cr-actions__overlay'}></div>
+                        <div className={'lt-cr-actions__buttons'}>
                             {isNewProject ? (
                                 <>
                                     <button
                                         type={'button'}
                                         onClick={handleNewProjectCancel}
-                                        className={'btn btn-danger'}>
+                                        className={'btn btn-danger mr-3'}>
                                         Cancel
                                     </button>
                                     <button
                                         type={'submit'}
                                         className={'btn btn-primary'}>
-                                        Next
+                                        Next &raquo;
                                     </button>
                                 </>
                             ) : (
@@ -222,7 +221,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                                     <button
                                         type={'button'}
                                         onClick={handleCancel}
-                                        className={'btn btn-danger'}>
+                                        className={'btn btn-danger mr-3'}>
                                         Cancel
                                     </button>
                                     <button
