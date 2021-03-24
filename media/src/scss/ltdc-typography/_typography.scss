@@ -156,3 +156,8 @@ h6 {
 .create-prompt__instructions {
   @include font-size($font-size-base * 1.5);
 }
+
+.text-muted {
+    color: #aaa !important;
+    font-style: italic;
+}

@@ -76,7 +76,7 @@
                         <p class="lt-card__term">Created on {{ project.created_at }}</p>
                         <p class="lt-card__text">{{ project.description|striptags|truncatechars:100}}</p>
                         <ul class="list-group list-group-horizontal-sm lt-card__list-group">
-                            <li class="list-group-item lt-card__list-group-item">Status?</li> {# not hooked up #}
+                            <li class="list-group-item lt-card__list-group-item text-muted">Status TBD</li> {# not hooked up #}
                             <li class="list-group-item lt-card__list-group-item">
                             {% if project.activity %}
                                 1 Activity
@@ -85,12 +85,12 @@
                             {% endif %}
                             </li>
                             {% if user not in course.faculty and project.activity %}
-                            <li class="list-group-item lt-card__list-group-item">Responses TBD</li> {# not hooked up #}
+                            <li class="list-group-item lt-card__list-group-item text-muted">Responses TBD</li> {# not hooked up #}
                             {% endif %}
                             {% if user in course.faculty and project.activity %}
-                            <li class="list-group-item lt-card__list-group-item">Responses TBDs</li> {# not hooked up #}
+                            <li class="list-group-item lt-card__list-group-item text-muted">Responses TBD</li> {# not hooked up #}
                             {% endif %}
-                            <li class="list-group-item lt-card__list-group-item">TBD</li> {# not hooked up #}
+                            <li class="list-group-item lt-card__list-group-item text-muted">TBD</li> {# not hooked up #}
                         </ul>
                     </div>
                 </div>
@@ -103,7 +103,7 @@
                         <th scope="col">Project</th>
                         <th scope="col">Date created</th>
                         <th scope="col" class="sorter-false">Description</th>
-                        <th scope="col">Status?</th>
+                        <th scope="col">Status</th>
                         <th scope="col">Activity</th>
                         <th scope="col" class="sorter-false">Other info</th>
                     </tr>
@@ -114,7 +114,7 @@
                         <td><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></td>
                         <td>{{ project.created_at }}</td>
                         <td>{{ project.description|striptags|truncatechars:100}}</td>
-                        <td>status</td>
+                        <td class="text-muted">Status TBD</td>
                         <td>
                             {% if project.activity %}
                                 1 Activity
@@ -122,7 +122,7 @@
                                 No Activity                       
                             {% endif %}
                         </td>
-                        <td>TBD</td>
+                        <td class="text-muted">TBD</td>
                     </tr>
                     {% endfor %}
                 </tbody>
