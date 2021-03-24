@@ -45,8 +45,8 @@ Workspaces
                         <h3 class="lt-card__title"><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
                         <p class="lt-card__term">{{ course.info.termyear }}</p>
                         <p class="lt-card_text">Authors: {% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</p>
-                        <p class="lt-card__text">Concatenated workspace description go here, if we decide to have a field for that</p> {# not hooked up #}
-                        <p class="lt-card__text">You’re {% if user in course.faculty %}an Author{% else %}a Contributor{% endif %}</p>
+                        <p class="lt-card__text text-muted">Workspace description not implemented yet.</p> {# not hooked up #}
+                        <p class="lt-card__text">You’re {% if user in course.faculty %}an Author.{% else %}a Contributor.{% endif %}</p>
                         <ul class="list-group list-group-horizontal-sm lt-card__list-group">
                             <li class="list-group-item lt-card__list-group-item">{{ course.projects.count }} Projects</li>
                             <li class="list-group-item lt-card__list-group-item">{{ course.members.count }} Contributors</li>
@@ -73,7 +73,7 @@ Workspaces
                         <td><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></td>
                         <td>{% if course.info.termyear %}{{ course.info.termyear }}{% else %} None {% endif %}</td>
                         <td>{% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</td>
-                        <td>Concatenated workspace description go here, if we decide to have a field for that</td> {# not hooked up #}
+                        <td class="text-muted">Workspace description not implemented yet.</td> {# not hooked up #}
                         <td>{% if user in course.faculty %}Author{% else %}Contributor{% endif %}</td>
                         <td>
                             <ul class="list-group list-group-horizontal-sm lt-card__list-group m-0">
