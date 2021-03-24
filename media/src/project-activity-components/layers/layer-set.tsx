@@ -37,7 +37,7 @@ export const LayerSet: React.FC<LayerSetProps> = (
     };
 
     return (
-        <div className='fade-load'>
+        <>
             {addLayer && (
                 <div className={'d-flex justify-content-end'}>
                     <form onSubmit={handleCreateLayer}>
@@ -68,6 +68,6 @@ export const LayerSet: React.FC<LayerSetProps> = (
                             activeEventEdit={activeEventEdit}/>
                     );
                 })}
-        </div>
+        </>
     );
 };

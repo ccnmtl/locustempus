@@ -72,6 +72,11 @@ export const ActivityMap: React.FC = () => {
     const deckglMap = useRef<DeckGL>(null);
     const mapPane = useRef<HTMLDivElement>(null);
 
+    const navControlStyle= {
+        right: 10,
+        bottom: 25
+    };
+
     /* Layers */
     // projectLayerData holds Layers belonging to the base project
     const [projectLayerData, setProjectLayerData] = useState<Map<number, LayerData>>(new Map());
@@ -811,7 +816,7 @@ export const ActivityMap: React.FC = () => {
                         </Popup>
                     )}
                     <div id='map-navigation-control'>
-                        <NavigationControl />
+                        <NavigationControl style={navControlStyle} />
                     </div>
                 </DeckGL>
             )}
