@@ -48,7 +48,7 @@ export const Activity: React.FC<ActivityProps> = (
         return (
             <>
                 <div className='lt-pane-section__header'>
-                    <h2>Activity</h2>
+                    <h2>Activity instructions</h2>
                     {isFaculty && (
                         <OverflowMenu items={[
                             {
@@ -126,7 +126,9 @@ export const Activity: React.FC<ActivityProps> = (
                     </form>
                 ) : (
                     <>
-                        <p>There is no activity assigned on this project.</p>
+                        <p className={'text-muted'}>
+                            There is no activity assigned on this project.
+                        </p>
                         <button
                             type={'submit'}
                             className={'btn btn-primary'}

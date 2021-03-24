@@ -94,7 +94,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
     return (
         <>
             <ul className='nav nav-tabs pane-content-tabs' style={{ top: paneHeaderHeight }}>
-                {['Overview', 'Base', responseTabTitle].map((el, idx) => {
+                {['Overview', 'Base Layers', responseTabTitle].map((el, idx) => {
                     return (
                         <li className='nav-item button' key={idx}>
                             <a className={activeTab == idx ?
@@ -106,16 +106,17 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                     );
                 })}
             </ul>
-            <div className='pane-content-body'>
+            <div className={'pane-content-body'}>
                 {/* TODO: Render the tabs for activities here.
                     Think about how to turn these into components that can be passed into
                     this larger panel */}
                 {activeTab === OVERVIEW && activity && (
                     <div className='fade-load'>
-                        <div>
-                            <h2>Activity Description</h2>
-                            <div dangerouslySetInnerHTML={{__html: description}}/>
-                        </div>
+                        {description && (
+                            <section className={'lt-pane-section lt-pane-section__description'}>
+                                <div dangerouslySetInnerHTML={{__html: description}}/>
+                            </section>
+                        )}
                         <section>
                             <Activity
                                 activity={activity}
@@ -281,9 +282,9 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     };
 
     return (
-        <div>
+        <div className={'no-particular-class'}>
             {activeResponse && activeResonseLayers.size > 0 ? (<>
-                <div>
+                <div className={'it-has-layerset'}>
                     <LayerSet
                         layers={activeResonseLayers}
                         setActiveEvent={setActiveEvent}
@@ -291,11 +292,11 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                         setActiveEventDetail={setActiveEventDetail}
                         activeEventEdit={activeEventEdit} />
                 </div>
-                <div>
+                <div className={'reflection-space'}>
                     <h2>Reflection</h2>
                     <div dangerouslySetInnerHTML={{__html: activeResponse.reflection}}/>
                 </div>
-                <div>
+                <div className={'feedback-space'}>
                     <h2>Feedback</h2>
                     <form onSubmit={handleFeedbackSubmition}>
                         <div className="form-row">
@@ -320,8 +321,8 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                     </form>
                 </div>
             </>) : (<>
-                <div>There are {responseData.length} responses to this activity</div>
-                <div>
+                <p>There are {responseData.length} responses to this activity</p>
+                <div className={'contributor-container-for-now'}>
                     {responseData.map((el) => {
                         const subAt = (new Date(el.submitted_at)).toLocaleString();
                         return (
@@ -348,7 +349,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                             </div>
                         );
                     })}
-                </div>
+                </div>{/* Close contributor container */}
             </>)}
         </div>
     );

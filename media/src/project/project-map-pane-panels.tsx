@@ -68,7 +68,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             {description ? (
                                 <div dangerouslySetInnerHTML={{__html: description}}/>
                             ) : (
-                                <div>
+                                <div className={'text-muted'}>
                                     There is no description for this project.
                                 </div>
                             )}
