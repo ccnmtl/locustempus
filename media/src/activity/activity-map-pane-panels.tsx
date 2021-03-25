@@ -321,32 +321,54 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                     </form>
                 </div>
             </>) : (<>
-                <p>There are {responseData.length} responses to this activity</p>
+                {responseData.length === 1 ? (
+                    <p>There is {responseData.length} response to this activity.</p>
+                ) : (
+                    <p>There are {responseData.length} responses to this activity.</p>
+                )}
                 <div className={'contributor-container-for-now'}>
                     {responseData.map((el) => {
-                        const subAt = (new Date(el.submitted_at)).toLocaleString();
+                        const subAt = (new Date(el.submitted_at)).toLocaleString(
+                            'en-US', {dateStyle: 'long', timeStyle: 'short'});
                         return (
-                            <div className="row" key={el.pk}>
-                                <div className="col-1">
-                                    <button onClick={
-                                        (): void => {toggleResponseVisibility(el.pk);}}>
-                                        <FontAwesomeIcon icon={faEye}/>
-                                    </button>
-                                </div>
-                                <div className="col-10">
-                                    <div>
+                            <section
+                                className={'lt-response-summary d-flex'}
+                                aria-labelledby={'response-${el.pk}'}
+                                key={el.pk}>
+                                <div className={'d-flex flex-column'}>
+                                    <h3 id={'response-${el.pk}'}>
                                         {el.owners.join(', ')}
-                                    </div>
-                                    <div>
-                                        Submitted: {subAt}
-                                    </div>
+                                    </h3>
+                                    <p className={'lt-date-display'}>
+                                        Submitted on {subAt}
+                                    </p>
                                 </div>
-                                <div className="col-1">
-                                    <button onClick={(): void => {setActiveResponse(el);}}>
-                                        <FontAwesomeIcon icon={faLayerGroup}/>
-                                    </button>
-                                </div>
-                            </div>
+                                <ul className={'lt-list-group__action d-flex'}>
+                                    {/* Needs a different icon when hidden
+                                      two attributes needs to change state
+                                      something like...
+                                      aria-label=responseVisibility ? 'Hide layer' : 'Show layer'
+                                      FontAwesomeIcon icon=responseVisibility ? faEye : faEyeSlash
+                                    */}
+                                    <li><button
+                                        onClick={
+                                            (): void => {toggleResponseVisibility(el.pk);}}
+                                        className={'lt-icon-button lt-icon-button--transparent'}>
+                                        <span className={'lt-icons lt-icon-button__icon'}
+                                            aria-hidden='true'>
+                                            <FontAwesomeIcon icon={faEye}/>
+                                        </span>
+                                    </button></li>
+                                    <li><button
+                                        onClick={(): void => {setActiveResponse(el);}}
+                                        className={'lt-icon-button lt-icon-button--transparent'}>
+                                        <span className={'lt-icons lt-icon-button__icon'}
+                                            aria-hidden='true'>
+                                            <FontAwesomeIcon icon={faLayerGroup}/>
+                                        </span>
+                                    </button></li>
+                                </ul>
+                            </section>
                         );
                     })}
                 </div>{/* Close contributor container */}
