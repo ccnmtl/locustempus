@@ -59,7 +59,12 @@ export const Activity: React.FC<ActivityProps> = (
                             {
                                 handler: handleDelete,
                                 icon: <FontAwesomeIcon icon={faTrashAlt}/>,
-                                label: 'Delete activity'
+                                label: 'Delete activity',
+                                confirmationTitle: 'Delete Activity?',
+                                confirmationText:
+                                    'Are you sure that you want to delete this activity? ' +
+                                    'All student responses will be lost.',
+                                confirmationButtonText: 'Delete',
                             }
                         ]}/>
                     )}

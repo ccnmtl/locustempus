@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { EventData, LayerData } from '../common';
+import { ConfirmableAction } from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEye, faEyeSlash, faAngleDown, faAngleRight, faEllipsisV, faMapMarker,
@@ -60,11 +61,9 @@ export const Layer: React.FC<LayerProps> = (
         }
     };
 
-    const handleDeleteLayer = (e: React.FormEvent<HTMLAnchorElement>): void => {
-        e.preventDefault();
+    const handleDeleteLayer = (): void => {
         if (deleteLayer) {
             deleteLayer(layer.pk);
-            setOpenLayerMenu(false);
         }
     };
 
@@ -167,18 +166,15 @@ export const Layer: React.FC<LayerProps> = (
                                         </form>
                                     </li>
                                     <li className={'lt-list-item'} role='menuitem'>
-                                        <a href='#' onClick={handleDeleteLayer}
-                                            className={'lt-list-item__link'}>
-                                            <span
-                                                className={'lt-icons lt-list-item__icon'}
-                                                aria-hidden='true'>
-                                                <FontAwesomeIcon icon={faTrashAlt}/>
-                                            </span>
-                                            <span
-                                                className={'lt-list-item__primary-text'}>
-                                                Delete layer
-                                            </span>
-                                        </a>
+                                        <ConfirmableAction
+                                            icon={<FontAwesomeIcon icon={faTrashAlt}/>}
+                                            handler={handleDeleteLayer}
+                                            label={'Delete layer'}
+                                            confirmationTitle={'Delete layer?'}
+                                            confirmationText={
+                                                'Are you sure you want to delete this layer?'}
+                                            confirmationButtonText={'Delete'}
+                                            setShowMenu={setOpenLayerMenu}/>
                                     </li>
                                 </ul>
                             </div>
