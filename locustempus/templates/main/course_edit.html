@@ -10,8 +10,8 @@ Edit {{ course.title }}
     <form action="." method="post">
         {% csrf_token %}
         <div class="form-group">
-            <label for="{{ form.title.id_for_label }}">Title:</label>
-           <input type="text" name="title" id="id_title" value="{{ object.title }}" required="required" class="form-control {% if form.title.errors %}is-invalid{% endif %}" />
+           <label for="{{ form.title.id_for_label }}">Title:</label>
+           <input data-cy="field-workspace-title" type="text" name="title" id="id_title" value="{{ object.title }}" required="required" class="form-control {% if form.title.errors %}is-invalid{% endif %}" />
         </div>
         <div class="form-group">
             <label for="id_description">Description:</label>  {# not hooked up #}
@@ -19,10 +19,10 @@ Edit {{ course.title }}
         </div>
         <div class="row">
             <div class="col-md-1 pr-0">
-                <button type="submit" class="btn btn-primary">Save</button>
+                <button data-cy="save-workspace" type="submit" class="btn btn-primary">Save</button>
             </div>
             <div class="col-md-1 pr-0">
-                 <a class="btn btn-block btn-secondary" href="/course/{{ course.pk }}/">Cancel</a>
+                 <a data-cy="cancel-save-workspace" class="btn btn-block btn-secondary" href="/course/{{ course.pk }}/">Cancel</a>
             </div>
         </div>
     </form>
