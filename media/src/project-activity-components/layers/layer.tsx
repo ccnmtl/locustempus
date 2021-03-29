@@ -27,10 +27,14 @@ export const Layer: React.FC<LayerProps> = (
         layerVisibility, toggleLayerVisibility, activeEvent, setActiveEvent,
         setActiveEventDetail
     }: LayerProps) => {
-    const [updatedLayerTitle, setUpdatedLayerTitle] = useState<string>(layer.title);
+    const [updatedLayerTitle, setUpdatedLayerTitle] = useState<string>('');
     const [openLayerMenu, setOpenLayerMenu] = useState<boolean>(false);
     const [isLayerCollapsed, setIsLayerCollapsed] = useState<boolean>(false);
     const menuRef = useRef<HTMLDivElement>(null);
+
+    useEffect(() => {
+        setUpdatedLayerTitle(layer.title);
+    }, [layer.title]);
 
     useEffect(() => {
         if (openLayerMenu) {
