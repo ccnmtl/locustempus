@@ -26,6 +26,18 @@ export const ConfirmableAction: React.FC<ConfirmableActionProps> = ({
     confirmationButtonText, setShowMenu}: ConfirmableActionProps) => {
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
+    useEffect(() => {
+        const closeOnEsc = (evt: KeyboardEvent): void => {
+            if (evt.code == 'Escape') {
+                setShowConfirmation(false);
+                setShowMenu(false);
+            }
+        };
+        /* eslint-disable-next-line scanjs-rules/call_addEventListener */
+        window.addEventListener('keyup', closeOnEsc);
+        return () => {window.removeEventListener('keyup', closeOnEsc);};
+    }, []);
+
     const handleCancel = (e: React.MouseEvent) => {
         e.preventDefault();
         e.stopPropagation();
