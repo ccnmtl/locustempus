@@ -501,7 +501,8 @@ export const ProjectMap: React.FC = () => {
                         mapStyle={projectData.base_map}
                         mapboxApiAccessToken={TOKEN}
                         onLoad={(): void => {setIsMapLoading(false); }}/>
-                    {activeEvent && !activeEventDetail && !showAddEventForm && (
+                    {activeEvent && layerVisibility.get(activeEvent.layer) &&
+                        !activeEventDetail && !showAddEventForm && (
                         <Popup
                             latitude={activeEvent.location.lng_lat[1]}
                             longitude={activeEvent.location.lng_lat[0]}
