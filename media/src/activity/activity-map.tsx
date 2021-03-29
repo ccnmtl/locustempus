@@ -245,6 +245,10 @@ export const ActivityMap: React.FC = () => {
                 updatedLayers.delete(pk);
                 setLayerDataFunc(updatedLayers);
 
+                const layerVis = new Map(layerVisibility);
+                layerVis.delete(pk);
+                setLayerVisibility(layerVis);
+
                 if (updatedLayers.size === 0) {
                     // addLayer has a stale closure, so the fetch
                     // is called here instead
