@@ -1,6 +1,6 @@
-// https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Homepage_for_outreach
-// https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Sign-in
-// https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#User_navigation_.28after_signing_in.29
+// 1. https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Homepage_for_outreach
+// 2. https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Sign-in
+// 4. https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#User_navigation_.28after_signing_in.29
 
 describe('Sign-In Stories', function() {
     beforeEach(() => {

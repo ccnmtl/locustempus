@@ -159,9 +159,9 @@
                     <ol class="breadcrumb nav-dashboard__h1">
                         {% for title, path in breadcrumb.items %}
                             {% if path == '' %}
-                                <li class="breadcrumb-item">{{ title }}</li>
+                                <li data-cy="breadcrumb-{{forloop.counter}}" class="breadcrumb-item">{{ title }}</li>
                             {% else %}
-                                <li class="breadcrumb-item"><a href="{{ path }}">{{ title }}</a></li>
+                                <li data-cy="breadcrumb-{{forloop.counter}}" class="breadcrumb-item"><a href="{{ path }}">{{ title }}</a></li>
                             {% endif %}
                         {% endfor %}
                     </ol>

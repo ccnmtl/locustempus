@@ -74,6 +74,14 @@ def reset_test_models():
     c2.group.user_set.add(f2)
     c2.faculty_group.user_set.add(f2)
 
+    # No affiliations
+    UserFactory.create(
+        username='faculty-three',
+        first_name='Faculty',
+        last_name='Three',
+        email='facultythree@example.com'
+    )
+
 
 class Command(BaseCommand):
     help = 'Runs a development server with data created by factories.'

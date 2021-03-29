@@ -1,7 +1,7 @@
 {% extends 'base.html' %}
 
 {% block title %}
-Course Delete Form
+Delete Workspace
 {% endblock %}
 
 {% block content %}
@@ -9,7 +9,7 @@ Course Delete Form
 <form action="." method="post">
     {% csrf_token %}
     <p>Are you sure you want to delete "{{ course.title }}"</p>
-    <input type="submit" value="Confirm">
-    <a href="{% url 'course-detail-view' course.pk %}">Cancel</a>
+    <input data-cy="delete-workspace" type="submit" value="Confirm">
+    <a data-cy="cancel-delete-workspace" href="{% url 'course-detail-view' course.pk %}">Cancel</a>
 </form>
 {% endblock %}

@@ -1,4 +1,4 @@
-// https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Sign-up
+// 3. https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Sign-up
 
 describe('Sign-Up Stories', function() {
     it('Sign Up', function() {
