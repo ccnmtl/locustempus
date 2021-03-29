@@ -74,7 +74,11 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                             {
                                 handler: handleDelete,
                                 icon: <FontAwesomeIcon icon={faTrashAlt}/>,
-                                label: 'Delete event marker'
+                                label: 'Delete event marker',
+                                confirmationTitle: 'Delete event?',
+                                confirmationText:
+                                    'Are you sure that you want to delete this event?',
+                                confirmationButtonText: 'Delete',
                             }
                         ]}/>
                     )}

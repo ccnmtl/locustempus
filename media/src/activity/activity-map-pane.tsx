@@ -225,7 +225,12 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
                             {
                                 handler: deleteProject,
                                 icon: <FontAwesomeIcon icon={faTrashAlt}/>,
-                                label: 'Delete project'
+                                label: 'Delete project',
+                                confirmationTitle: 'Delete project?',
+                                confirmationText:
+                                    'Are you sure that you want to delete this project? ' +
+                                    'All data associated with this project will be lost.',
+                                confirmationButtonText: 'Delete',
                             }
                         ]}/>
                     )}
