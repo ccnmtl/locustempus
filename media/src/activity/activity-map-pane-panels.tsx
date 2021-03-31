@@ -284,16 +284,15 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     return (
         <div className={'no-particular-class'}>
             {activeResponse && activeResponseLayers.size > 0 ? (<>
-            <button onClick={handleFeedbackCancel}>
-                Return to Responses
-            </button>
-            <h2>{activeResponse.owners.join(', ')}</h2>
-            <p 
-                className={'lt-date-display'}>
-                Submitted on {activeResponse.submitted_at_formatted}<br />
-                Last modified on {activeResponse.modified_at_formatted}
-            </p>
-            
+                <button onClick={handleFeedbackCancel}>
+                    Return to Responses
+                </button>
+                <h2>{activeResponse.owners.join(', ')}</h2>
+                <p
+                    className={'lt-date-display'}>
+                    Submitted on {activeResponse.submitted_at_formatted}<br />
+                    Last modified on {activeResponse.modified_at_formatted}
+                </p>
                 <div className={'it-has-layerset'}>
                     <LayerSet
                         layers={activeResponseLayers}

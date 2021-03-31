@@ -255,11 +255,11 @@ class Response(models.Model):
 
     def submitted_at_formatted(self):
         return timezone.localtime(self.submitted_at).strftime(
-        '%B %d, %Y at %I:%M %p').lstrip("0").replace(" 0", " ")
+            '%B %d, %Y at %I:%M %p').lstrip("0").replace(" 0", " ")
 
     def modified_at_formatted(self):
         return timezone.localtime(self.modified_at).strftime(
-        '%B %d, %Y at %I:%M %p').lstrip("0").replace(" 0", " ")
+            '%B %d, %Y at %I:%M %p').lstrip("0").replace(" 0", " ")
 
     def owner_strings(self):
         return [
