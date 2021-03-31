@@ -9,6 +9,7 @@ from django.contrib.gis.db.models.fields import PointField, PolygonField
 from django.dispatch import receiver
 from django.db import models
 from django_registration.signals import user_activated
+from django.utils import timezone
 
 
 BASE_MAPS = [
@@ -251,6 +252,14 @@ class Response(models.Model):
         related_name='+',
         null=True
     )
+
+    def submitted_at_formatted(self):
+        return timezone.localtime(self.submitted_at).strftime(
+            '%B %d, %Y at %I:%M %p').lstrip("0").replace(" 0", " ")
+
+    def modified_at_formatted(self):
+        return timezone.localtime(self.modified_at).strftime(
+            '%B %d, %Y at %I:%M %p').lstrip("0").replace(" 0", " ")
 
     def owner_strings(self):
         return [

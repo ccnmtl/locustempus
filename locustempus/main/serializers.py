@@ -86,11 +86,12 @@ class ResponseSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Response
         read_only_fields = (
-            'layers', 'pk', 'owners', 'submitted_at', 'feedback')
+            'layers', 'pk', 'owners', 'submitted_at', 'submitted_at_formatted',
+            'modified_at', 'modified_at_formatted', 'feedback')
         fields = (
             'pk', 'activity', 'owners', 'layers', 'raster_layers',
-            'reflection', 'status', 'submitted_at', 'feedback'
-        )
+            'reflection', 'status', 'submitted_at', 'submitted_at_formatted',
+            'modified_at', 'modified_at_formatted', 'feedback')
 
 
 class LocationSerializer(serializers.ModelSerializer):
