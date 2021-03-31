@@ -233,7 +233,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
 }: FacultySubPanelProps) => {
 
     const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);
-    const [activeResonseLayers, setActiveResponseLayers] =
+    const [activeResponseLayers, setActiveResponseLayers] =
         useState<Map<number, LayerData>>(new Map());
     const [feedback, setFeedback] = useState<string>('');
 
@@ -283,10 +283,20 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
 
     return (
         <div className={'no-particular-class'}>
-            {activeResponse && activeResonseLayers.size > 0 ? (<>
+            {activeResponse && activeResponseLayers.size > 0 ? (<>
+            <button onClick={handleFeedbackCancel}>
+                Return to Responses
+            </button>
+            <h2>{activeResponse.owners.join(', ')}</h2>
+            <p 
+                className={'lt-date-display'}>
+                Submitted on {activeResponse.submitted_at_formatted}<br />
+                Last modified on {activeResponse.modified_at_formatted}
+            </p>
+            
                 <div className={'it-has-layerset'}>
                     <LayerSet
-                        layers={activeResonseLayers}
+                        layers={activeResponseLayers}
                         setActiveEvent={setActiveEvent}
                         activeEvent={activeEvent}
                         setActiveEventDetail={setActiveEventDetail}
@@ -328,8 +338,6 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 )}
                 <div className={'contributor-container-for-now'}>
                     {responseData.map((el) => {
-                        const subAt = (new Date(el.submitted_at)).toLocaleString(
-                            'en-US', {dateStyle: 'long', timeStyle: 'short'});
                         const responseLayers = el.layers.reduce((acc: boolean[], val) => {
                             const layerPks = val.split('/');
                             // Get the layer pk off of the API url
@@ -344,7 +352,6 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                         }, []);
 
                         const responseVisible = responseLayers.every((i: boolean) => i);
-
                         return (
                             <section
                                 className={'lt-response-summary d-flex'}
@@ -354,8 +361,10 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                                     <h3 id={'response-${el.pk}'}>
                                         {el.owners.join(', ')}
                                     </h3>
-                                    <p className={'lt-date-display'}>
-                                        Submitted on {subAt}
+                                    <p
+                                        className={'lt-date-display'}>
+                                        Submitted on {el.submitted_at_formatted}<br />
+                                        Last modified on {el.modified_at_formatted}
                                     </p>
                                 </div>
                                 <ul className={'lt-list-group__action d-flex'}>
