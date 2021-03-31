@@ -7,7 +7,7 @@ import {
 } from './activity-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faEye, faLayerGroup
+    faEye, faEyeSlash, faLayerGroup
 } from '@fortawesome/free-solid-svg-icons';
 import ReactQuill from 'react-quill';
 
@@ -228,7 +228,7 @@ interface FacultySubPanelProps {
 
 const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     responseData, createFeedback, updateFeedback, responseLayers,
-    toggleResponseVisibility, activeEvent, setActiveEvent,
+    toggleResponseVisibility, activeEvent, setActiveEvent, layerVisibility,
     setActiveEventDetail, activeEventEdit
 }: FacultySubPanelProps) => {
 
@@ -330,6 +330,21 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                     {responseData.map((el) => {
                         const subAt = (new Date(el.submitted_at)).toLocaleString(
                             'en-US', {dateStyle: 'long', timeStyle: 'short'});
+                        const responseLayers = el.layers.reduce((acc: boolean[], val) => {
+                            const layerPks = val.split('/');
+                            // Get the layer pk off of the API url
+                            const PK_IDX = layerPks.length - 2;
+                            if (layerPks && layerPks.length >= PK_IDX) {
+                                const layerPk = Number(layerPks[5]);
+                                if (typeof layerPk === 'number') {
+                                    acc.push(layerVisibility.get(layerPk) || false);
+                                }
+                            }
+                            return acc;
+                        }, []);
+
+                        const responseVisible = responseLayers.every((i: boolean) => i);
+
                         return (
                             <section
                                 className={'lt-response-summary d-flex'}
@@ -344,19 +359,15 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                                     </p>
                                 </div>
                                 <ul className={'lt-list-group__action d-flex'}>
-                                    {/* Needs a different icon when hidden
-                                      two attributes needs to change state
-                                      something like...
-                                      aria-label=responseVisibility ? 'Hide layer' : 'Show layer'
-                                      FontAwesomeIcon icon=responseVisibility ? faEye : faEyeSlash
-                                    */}
                                     <li><button
                                         onClick={
                                             (): void => {toggleResponseVisibility(el.pk);}}
-                                        className={'lt-icon-button lt-icon-button--transparent'}>
+                                        className={'lt-icon-button lt-icon-button--transparent'}
+                                        aria-label={responseVisible ? 'Hide layer' : 'Show layer'}>
                                         <span className={'lt-icons lt-icon-button__icon'}
-                                            aria-hidden='true'>
-                                            <FontAwesomeIcon icon={faEye}/>
+                                            aria-hidden={responseVisible ? 'false' : 'true'}>
+                                            <FontAwesomeIcon icon={
+                                                responseVisible ? faEye : faEyeSlash}/>
                                         </span>
                                     </button></li>
                                     <li><button

@@ -245,6 +245,10 @@ export const ActivityMap: React.FC = () => {
                 updatedLayers.delete(pk);
                 setLayerDataFunc(updatedLayers);
 
+                const layerVis = new Map(layerVisibility);
+                layerVis.delete(pk);
+                setLayerVisibility(layerVis);
+
                 if (updatedLayers.size === 0) {
                     // addLayer has a stale closure, so the fetch
                     // is called here instead
@@ -799,7 +803,8 @@ export const ActivityMap: React.FC = () => {
                         mapStyle={projectData.base_map}
                         mapboxApiAccessToken={TOKEN}
                         onLoad={(): void => { setIsMapLoading(false); }}/>
-                    {activeEvent && !activeEventDetail && !showAddEventForm && (
+                    {activeEvent && layerVisibility.get(activeEvent.layer) &&
+                        !activeEventDetail && !showAddEventForm && (
                         <Popup
                             latitude={activeEvent.location.lng_lat[1]}
                             longitude={activeEvent.location.lng_lat[0]}

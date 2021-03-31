@@ -47,6 +47,8 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
 
     useEffect(() => {
         if (activeEventEdit.media.length > 0) {
+            setCaption(activeEventEdit.media[0].caption || '');
+            setSource(activeEventEdit.media[0].source || '');
             setFileS3Url(activeEventEdit.media[0].url);
         }
     }, [activeEventEdit]);
