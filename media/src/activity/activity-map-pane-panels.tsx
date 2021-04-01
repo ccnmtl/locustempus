@@ -7,7 +7,7 @@ import {
 } from './activity-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faEye, faEyeSlash, faLayerGroup
+    faEye, faEyeSlash, faLayerGroup, faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
 import ReactQuill from 'react-quill';
 
@@ -113,11 +113,11 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 {activeTab === OVERVIEW && activity && (
                     <div className='fade-load'>
                         {description && (
-                            <section className={'lt-pane-section lt-pane-section__description'}>
+                            <section className={'lt-pane-section'}>
                                 <div dangerouslySetInnerHTML={{__html: description}}/>
                             </section>
                         )}
-                        <section>
+                        <section className={'lt-pane-section'}>
                             <Activity
                                 activity={activity}
                                 isFaculty={isFaculty}
@@ -175,7 +175,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 setActiveEventDetail={setActiveEventDetail}
                                 activeEventEdit={activeEventEdit} />
                             <div>
-                                <h2>Reflection</h2>
+                                <h3>Reflection</h3>
                                 <form onSubmit={handleSubmitResponse}>
                                     <div className="form-row">
                                         <div className={'form-group col-12'}>
@@ -199,7 +199,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 </form>
                             </div>
                             <div>
-                                <h2>Feedback</h2>
+                                <h3>Feedback</h3>
                                 <div dangerouslySetInnerHTML={{__html: feedback}}/>
                             </div>
                         </>)}
@@ -281,117 +281,126 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
         setActiveResponse(null);
     };
 
-    return (
-        <div className={'no-particular-class'}>
-            {activeResponse && activeResponseLayers.size > 0 ? (<>
-                <button onClick={handleFeedbackCancel}>
+    return (<>
+        {activeResponse && activeResponseLayers.size > 0 ? (<>
+            <button onClick={handleFeedbackCancel} className={'lt-button-back'}>
+                <span className={'lt-icons lt-button-back__icon'}>
+                    <FontAwesomeIcon icon={faArrowLeft}/>
+                </span>
+                <span className={'lt-button-back__text'}>
                     Return to Responses
-                </button>
-                <h2>{activeResponse.owners.join(', ')}</h2>
-                <p
-                    className={'lt-date-display'}>
-                    Submitted on {activeResponse.submitted_at_formatted}<br />
-                    Last modified on {activeResponse.modified_at_formatted}
-                </p>
-                <div className={'it-has-layerset'}>
-                    <LayerSet
-                        layers={activeResponseLayers}
-                        setActiveEvent={setActiveEvent}
-                        activeEvent={activeEvent}
-                        setActiveEventDetail={setActiveEventDetail}
-                        activeEventEdit={activeEventEdit} />
-                </div>
-                <div className={'reflection-space'}>
-                    <h2>Reflection</h2>
-                    <div dangerouslySetInnerHTML={{__html: activeResponse.reflection}}/>
-                </div>
-                <div className={'feedback-space'}>
-                    <h2>Feedback</h2>
+                </span>
+            </button>
+
+            <h2>Response by {activeResponse.owners.join(', ')}</h2>
+            <p className={'lt-date-display'}>
+                Submitted on {activeResponse.submitted_at_formatted}<br />
+                Last modified on {activeResponse.modified_at_formatted}
+            </p>
+
+            <section className={'lt-pane-section'}>
+                <h3>Events</h3>
+                <LayerSet
+                    layers={activeResponseLayers}
+                    setActiveEvent={setActiveEvent}
+                    activeEvent={activeEvent}
+                    setActiveEventDetail={setActiveEventDetail}
+                    activeEventEdit={activeEventEdit} />
+            </section>
+
+            <section className={'lt-pane-section'}>
+                <h3>Reflection</h3>
+                <div dangerouslySetInnerHTML={{__html: activeResponse.reflection}}/>
+            </section>
+            <section className={'lt-pane-section'}>
+                <h3>
+                Feedback for {activeResponse.owners.join(', ')}
+                </h3>
+                <div className={'form-group pane-form-group'}>
                     <form onSubmit={handleFeedbackSubmition}>
-                        <div className="form-row">
-                            <div className={'form-group col-12'}>
-                                <ReactQuill
-                                    value={feedback}
-                                    onChange={setFeedback}/>
-                            </div>
-                        </div>
-                        <div className="form-row">
-                            <div className={'form-group col-12'}>
-                                <button onClick={handleFeedbackCancel}>
-                                    Cancel
-                                </button>
-                                <button
-                                    type={'submit'}
-                                    className={'btn btn-primary'}>
-                                    Send
-                                </button>
-                            </div>
+                        <p className={'lt-date-display'}>
+                            Last modified on Month DD at hh:mm AM/PM
+                        </p>
+                        <ReactQuill
+                            id={'form-field__feedback'}
+                            value={feedback}
+                            onChange={setFeedback}/>
+                        <div className={'text-center mt-3'}>
+                            <button
+                                className={'btn btn-danger mr-3'}
+                                onClick={handleFeedbackCancel}>
+                                Cancel
+                            </button>
+                            <button
+                                type={'submit'}
+                                className={'btn btn-primary'}>
+                                Send
+                            </button>
                         </div>
                     </form>
                 </div>
-            </>) : (<>
-                {responseData.length === 1 ? (
-                    <p>There is {responseData.length} response to this activity.</p>
-                ) : (
-                    <p>There are {responseData.length} responses to this activity.</p>
-                )}
-                <div className={'contributor-container-for-now'}>
-                    {responseData.map((el) => {
-                        const responseLayers = el.layers.reduce((acc: boolean[], val) => {
-                            const layerPks = val.split('/');
-                            // Get the layer pk off of the API url
-                            const PK_IDX = layerPks.length - 2;
-                            if (layerPks && layerPks.length >= PK_IDX) {
-                                const layerPk = Number(layerPks[5]);
-                                if (typeof layerPk === 'number') {
-                                    acc.push(layerVisibility.get(layerPk) || false);
-                                }
-                            }
-                            return acc;
-                        }, []);
+            </section>
+        </>) : (<>
+            {responseData.length === 1 ? (
+                <p>There is {responseData.length} response to this activity.</p>
+            ) : (
+                <p>There are {responseData.length} responses to this activity.</p>
+            )}
 
-                        const responseVisible = responseLayers.every((i: boolean) => i);
-                        return (
-                            <section
-                                className={'lt-response-summary d-flex'}
-                                aria-labelledby={'response-${el.pk}'}
-                                key={el.pk}>
-                                <div className={'d-flex flex-column'}>
-                                    <h3 id={'response-${el.pk}'}>
-                                        {el.owners.join(', ')}
-                                    </h3>
-                                    <p
-                                        className={'lt-date-display'}>
-                                        Submitted on {el.submitted_at_formatted}<br />
-                                        Last modified on {el.modified_at_formatted}
-                                    </p>
-                                </div>
-                                <ul className={'lt-list-group__action d-flex'}>
-                                    <li><button
-                                        onClick={
-                                            (): void => {toggleResponseVisibility(el.pk);}}
-                                        className={'lt-icon-button lt-icon-button--transparent'}
-                                        aria-label={responseVisible ? 'Hide layer' : 'Show layer'}>
-                                        <span className={'lt-icons lt-icon-button__icon'}
-                                            aria-hidden={responseVisible ? 'false' : 'true'}>
-                                            <FontAwesomeIcon icon={
-                                                responseVisible ? faEye : faEyeSlash}/>
-                                        </span>
-                                    </button></li>
-                                    <li><button
-                                        onClick={(): void => {setActiveResponse(el);}}
-                                        className={'lt-icon-button lt-icon-button--transparent'}>
-                                        <span className={'lt-icons lt-icon-button__icon'}
-                                            aria-hidden='true'>
-                                            <FontAwesomeIcon icon={faLayerGroup}/>
-                                        </span>
-                                    </button></li>
-                                </ul>
-                            </section>
-                        );
-                    })}
-                </div>{/* Close contributor container */}
-            </>)}
-        </div>
-    );
+            {responseData.map((el) => {
+                const responseLayers = el.layers.reduce((acc: boolean[], val) => {
+                    const layerPks = val.split('/');
+                    // Get the layer pk off of the API url
+                    const PK_IDX = layerPks.length - 2;
+                    if (layerPks && layerPks.length >= PK_IDX) {
+                        const layerPk = Number(layerPks[5]);
+                        if (typeof layerPk === 'number') {
+                            acc.push(layerVisibility.get(layerPk) || false);
+                        }
+                    }
+                    return acc;
+                }, []);
+
+                const responseVisible = responseLayers.every((i: boolean) => i);
+                return (
+                    <section
+                        className={'lt-response-summary d-flex'}
+                        aria-labelledby={`response-${el.pk}`}
+                        key={el.pk}>
+                        <div className={'d-flex flex-column'}>
+                            <h3 id={`response-${el.pk}`}>
+                                {el.owners.join(', ')}
+                            </h3>
+                            <p
+                                className={'lt-date-display'}>
+                                Submitted on {el.submitted_at_formatted}<br />
+                                Last modified on {el.modified_at_formatted}
+                            </p>
+                        </div>
+                        <ul className={'lt-list-group__action d-flex'}>
+                            <li><button
+                                onClick={
+                                    (): void => {toggleResponseVisibility(el.pk);}}
+                                className={'lt-icon-button lt-icon-button--transparent'}
+                                aria-label={responseVisible ? 'Hide layer' : 'Show layer'}>
+                                <span className={'lt-icons lt-icon-button__icon'}
+                                    aria-hidden={responseVisible ? 'false' : 'true'}>
+                                    <FontAwesomeIcon icon={
+                                        responseVisible ? faEye : faEyeSlash}/>
+                                </span>
+                            </button></li>
+                            <li><button
+                                onClick={(): void => {setActiveResponse(el);}}
+                                className={'lt-icon-button lt-icon-button--transparent'}>
+                                <span className={'lt-icons lt-icon-button__icon'}
+                                    aria-hidden='true'>
+                                    <FontAwesomeIcon icon={faLayerGroup}/>
+                                </span>
+                            </button></li>
+                        </ul>
+                    </section>
+                );
+            })}
+        </>)}
+    </>);
 };

@@ -96,7 +96,7 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
 
                 )}
                 {activeEventDetail && (
-                    <div className={'lt-pane-section__event-desc'} dangerouslySetInnerHTML={
+                    <section className={'lt-pane-section'} dangerouslySetInnerHTML={
                         {__html: activeEventDetail.description}}/>
                 )}
             </div>
