@@ -88,8 +88,8 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="new-project-save"]').should('be.visible');
 
         // Update the field names
-        cy.get('[data-cy="edit-project-title"]')
-            .clear().type('My Project');
+        cy.get('[data-cy="edit-project-title"]').clear();
+        cy.get('[data-cy="edit-project-title"]').type('My Project');
         //cy.get('[data-cy="edit-project-description"]')
         //    .clear().type('Descriptive text');
 
@@ -173,8 +173,10 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="edit-project-title"]').should('be.visible');
         // cy.get('[data-cy="edit-project-description"]').should('be.visible');
         cy.get('[data-cy="edit-project-basemap"').should('be.visible');
-        cy.get('[data-cy="edit-project-basemap"').contains('Light');
-        // @todo - select a different map & validate that is shown
+
+        // @todo - select a different map layer & validate that is shown
+        // This is complicated as we've tried to remove any test
+        // dependency on Mapbox.
 
         // the cancel & "next", e.g. Save button should be visible
         cy.get('[data-cy="edit-project-cancel"]').should('be.visible');

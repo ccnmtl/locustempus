@@ -26,6 +26,7 @@ BASE_MAPS = [
         'Navigation/Guidance - Day'),
     ('mapbox://styles/mapbox/navigation-guidance-night-v4',
         'Navigation/Guidance - Night'),
+    ('http://localhost:8888/style.json', 'Integration')
 ]
 
 
