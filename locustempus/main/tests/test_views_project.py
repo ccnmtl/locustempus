@@ -1,5 +1,7 @@
 """Tests for the Project views"""
+from django.conf import settings
 from django.test import TestCase
+from django.test.utils import override_settings
 from django.urls.base import reverse
 from locustempus.main.models import Project
 from locustempus.main.tests.factories import (
@@ -11,7 +13,10 @@ class ProjectTest(CourseTestMixin, TestCase):
     def setUp(self):
         self.setup_course()
 
+    @override_settings()
     def test_create_project_faculty(self):
+        del settings.DEFAULT_BASE_MAP
+
         """Test that faculty can create projects"""
         self.assertTrue(
             self.client.login(
@@ -19,6 +24,7 @@ class ProjectTest(CourseTestMixin, TestCase):
                 password='test'
             )
         )
+
         response = self.client.post(
             reverse(
                 'course-project-create', args=[self.sandbox_course.pk]),
