@@ -24,6 +24,7 @@ describe('Project List Stories (Workspace Detail)', function() {
 
         // Navigate to the Sandbox Workspace
         cy.get('[data-cy="workspace-title-link"]').click();
+        cy.title().should('equal', 'Sandbox Workspace – Locus Tempus');
     }); 
 
     it('Verifies the workspace detail page', function() {
@@ -43,12 +44,11 @@ describe('Project List Stories (Workspace Detail)', function() {
 
     it('Creates and cancel project', function() {
         cy.get('[data-cy="project-create-button"]').click();
-        cy.get('[data-cy="loading-modal"]').should('be.visible');
 
         // creating a project takes the user to the project detail space
         cy.title().should('equal', 'Untitled project – Locus Tempus');
 
-        // wait for the loading icon to go away
+        cy.get('[data-cy="loading-modal"]').should('be.visible');
         cy.get('[data-cy="loading-modal"]').should('not.exist');
 
         // cancelling the creation flow returns the user to the workspace
@@ -64,7 +64,7 @@ describe('Project List Stories (Workspace Detail)', function() {
         // verify there is no alert confirming the delete
         cy.get('.alert').should('not.exist');
     });
-
+/**
     it('Creates and saves project', function() {
         cy.get('[data-cy="project-create-button"]').click();
         cy.get('[data-cy="loading-modal"]').should('be.visible');
@@ -257,4 +257,5 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="project-card"]')
             .contains('Untitled project').should('not.exist');
     });
+**/
 });
