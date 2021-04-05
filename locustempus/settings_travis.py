@@ -2,12 +2,12 @@
 import sys
 from locustempus.settings_shared import *
 
-
 try:
     from locustempus.local_settings import *
 except ImportError:
     pass
 
+DEFAULT_BASE_MAP = 'http://localhost:8888/style.json'
 
 if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
         or 'check' in sys.argv or 'integrationserver' in sys.argv):
@@ -22,4 +22,3 @@ if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
             'ATOMIC_REQUESTS': True,
         }
     }
-

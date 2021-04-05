@@ -29,7 +29,8 @@ def reset_test_models():
         first_name='Super',
         last_name='User',
         email='superuser@example.com',
-        is_superuser=True
+        is_superuser=True,
+        is_staff=True
     )
     # Sandbox Course
     c1: Course = SandboxCourseFactory.create(title='Sandbox Workspace')

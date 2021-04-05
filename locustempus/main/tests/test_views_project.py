@@ -1,6 +1,7 @@
 """Tests for the Project views"""
 from django.test import TestCase
 from django.urls.base import reverse
+from locustempus.main.models import Project
 from locustempus.main.tests.factories import (
     CourseTestMixin, ProjectFactory
 )
@@ -29,6 +30,10 @@ class ProjectTest(CourseTestMixin, TestCase):
         )
         self.assertEqual(response.status_code, 302)
 
+        project = Project.objects.get(title='Untitled project')
+        self.assertEqual(project.description, '')
+        self.assertEqual(project.base_map, 'mapbox://styles/mapbox/light-v10')
+
     def test_create_project_student(self):
         """Test that students can't create projects"""
         self.assertTrue(
@@ -40,6 +45,26 @@ class ProjectTest(CourseTestMixin, TestCase):
         response = self.client.get(
             reverse('course-project-create', args=[self.sandbox_course.pk]))
         self.assertEqual(response.status_code, 403)
+
+    def test_create_test_project(self):
+        """Test that the base map default is used"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        with self.settings(DEFAULT_BASE_MAP='alternate'):
+            response = self.client.post(
+                reverse(
+                    'course-project-create', args=[self.sandbox_course.pk]), {}
+            )
+            self.assertEqual(response.status_code, 302)
+
+            project = Project.objects.get(title='Untitled project')
+            self.assertEqual(project.description, '')
+            self.assertEqual(project.base_map, 'alternate')
 
     def test_delete_project_faculty(self):
         """Test that faculty can delete projects"""
