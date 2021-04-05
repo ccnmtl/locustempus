@@ -64,7 +64,7 @@ describe('Project List Stories (Workspace Detail)', function() {
         // verify there is no alert confirming the delete
         cy.get('.alert').should('not.exist');
     });
-/**
+
     it('Creates and saves project', function() {
         cy.get('[data-cy="project-create-button"]').click();
         cy.get('[data-cy="loading-modal"]').should('be.visible');
@@ -257,5 +257,4 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="project-card"]')
             .contains('Untitled project').should('not.exist');
     });
-**/
 });
