@@ -19,3 +19,4 @@ reports
 .mypy_cache
 cypress/videos
 cypress/screenshots/
+cypress/fixtures/

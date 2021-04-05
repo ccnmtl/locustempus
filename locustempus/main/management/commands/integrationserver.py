@@ -32,7 +32,7 @@ def reset_test_models():
         is_superuser=True
     )
     # Sandbox Course
-    c1: Course = SandboxCourseFactory.create()
+    c1: Course = SandboxCourseFactory.create(title='Sandbox Workspace')
     s1: User = UserFactory.create(
         username='student-one',
         first_name='Student',
@@ -49,7 +49,7 @@ def reset_test_models():
     c1.group.user_set.add(f1)
     c1.faculty_group.user_set.add(f1)
 
-    project = ProjectFactory.create(course=c1)
+    project = ProjectFactory.create(course=c1, title='Project One')
     activity = ActivityFactory.create(project=project)
     ResponseFactory.create(
         activity=activity,

@@ -64,7 +64,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
             <div className='pane-content-body'>
                 {activeTab === OVERVIEW && (
                     <div className='fade-load'>
-                        <section className={'lt-pane-section lt-pane-section__description'}>
+                        <section data-cy={'project-description'}
+                            className={'lt-pane-section lt-pane-section__description'}>
                             {description ? (
                                 <div dangerouslySetInnerHTML={{__html: description}}/>
                             ) : (

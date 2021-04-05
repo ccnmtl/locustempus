@@ -42,7 +42,7 @@ Workspaces
             <div class="col-md-6 col-xl-4 py-2" data-cy="workspace-cards">
                 <div class="lt-card">
                     <div class="lt-card__body">
-                        <h3 class="lt-card__title"><a data-cy="card-title-link" href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
+                        <h3 class="lt-card__title"><a data-cy="workspace-title-link" href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
                         <p class="lt-card__term">{{ course.info.termyear }}</p>
                         <p class="lt-card_text">Authors: {% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</p>
                         <p class="lt-card__text text-muted">Workspace description not implemented yet.</p> {# not hooked up #}

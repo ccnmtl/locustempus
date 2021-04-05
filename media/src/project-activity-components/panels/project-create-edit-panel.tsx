@@ -78,18 +78,21 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
     return (
         <>
             <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
-                <h2>{isNewProject ? 'Your project details' : 'Edit project details'}</h2>
+                <h2 data-cy='edit-project-header'>
+                    {isNewProject ? 'Your project details' : 'Edit project details'}
+                </h2>
             </div>
             <div className={'pane-content-body'}>
                 <form onSubmit={handleFormSubmit} >
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__name'}>Title</label>
                         {isNewProject && (
-                            <small id="form-field__description-help" className={'form-text text-muted mb-2 mt-0'}> {/* eslint-disable-line max-len */}
+                            <small  id="form-field__description-help" className={'form-text text-muted mb-2 mt-0'}> {/* eslint-disable-line max-len */}
                                 Name your new project.
                             </small>
                         )}
                         <input
+                            data-cy={'edit-project-title'}
                             type={'text'}
                             id={'form-field__name'}
                             className={'form-control'}
@@ -109,6 +112,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             </small>
                         )}
                         <ReactQuill
+                            data-cy={'edit-project-description'}
                             value={description}
                             onChange={setDescription}/>
                     </div>
@@ -190,6 +194,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                     {!showBaseMapMenu && !isNewProject && (
                         <div className={'form-group pane-form-group pane-form-group--final base-map-collapsed'}> {/* eslint-disable-line max-len */}
                             <button onClick={toggleBaseMapMenu}
+                                data-cy={'edit-project-basemap'}
                                 className={'btn btn__accordion'}>
                                 <span className={'menu-icon'}>
                                     <FontAwesomeIcon
@@ -205,12 +210,14 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             {isNewProject ? (
                                 <>
                                     <button
+                                        data-cy="new-project-cancel"
                                         type={'button'}
                                         onClick={handleNewProjectCancel}
                                         className={'btn btn-danger mr-3'}>
                                         Cancel
                                     </button>
                                     <button
+                                        data-cy="new-project-save"
                                         type={'submit'}
                                         className={'btn btn-primary'}>
                                         Next &raquo;
@@ -219,12 +226,14 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             ) : (
                                 <>
                                     <button
+                                        data-cy="edit-project-cancel"
                                         type={'button'}
                                         onClick={handleCancel}
                                         className={'btn btn-danger mr-3'}>
                                         Cancel
                                     </button>
                                     <button
+                                        data-cy="edit-project-save"
                                         type={'submit'}
                                         className={'btn btn-primary'}>
                                         Save

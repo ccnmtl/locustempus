@@ -41,7 +41,7 @@ describe('Workspaces Stories', function() {
     });
 
     it('Verify the workspace details page', function() {
-        cy.get('[data-cy="card-title-link"]')
+        cy.get('[data-cy="workspace-title-link"]')
             .contains('New Workspace').click();
         cy.title().should('equal', 'New Workspace – Locus Tempus');
         cy.get('[data-cy="create-projects-prompt"]').should('be.visible');
@@ -57,7 +57,7 @@ describe('Workspaces Stories', function() {
 
     it('Edit the workspace details', function() {
         // Navigate to the edit view
-        cy.get('[data-cy="card-title-link"]')
+        cy.get('[data-cy="workspace-title-link"]')
             .contains('New Workspace').click();
         cy.title().should('equal', 'New Workspace – Locus Tempus');
         cy.get('[data-cy="manage-workspace"]').should('be.visible');
@@ -86,7 +86,7 @@ describe('Workspaces Stories', function() {
 
     it('Delete the workspace details', function() {
         cy.title().should('equal', 'Workspaces – Locus Tempus');
-        cy.get('[data-cy="card-title-link"]')
+        cy.get('[data-cy="workspace-title-link"]')
             .contains('A New Workspace').click();
 
         cy.get('[data-cy="manage-workspace"]').should('be.visible');
