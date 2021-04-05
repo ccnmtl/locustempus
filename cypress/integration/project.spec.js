@@ -43,9 +43,13 @@ describe('Project List Stories (Workspace Detail)', function() {
 
     it('Creates and cancel project', function() {
         cy.get('[data-cy="project-create-button"]').click();
+        cy.get('[data-cy="loading-modal"]').should('be.visible');
 
         // creating a project takes the user to the project detail space
         cy.title().should('equal', 'Untitled project – Locus Tempus');
+
+        // wait for the loading icon to go away
+        cy.get('[data-cy="loading-modal"]').should('not.exist');
 
         // cancelling the creation flow returns the user to the workspace
         // detail page, with a delete confirmation
@@ -63,9 +67,13 @@ describe('Project List Stories (Workspace Detail)', function() {
 
     it('Creates and saves project', function() {
         cy.get('[data-cy="project-create-button"]').click();
+        cy.get('[data-cy="loading-modal"]').should('be.visible');
 
         // creating a project takes the user to the project detail space
         cy.title().should('equal', 'Untitled project – Locus Tempus');
+
+        // wait for the loading icon to go away
+        cy.get('[data-cy="loading-modal"]').should('not.exist');
 
         // the editing fields should be visible and tuned to a "new" project
         cy.get('[data-cy="edit-project-header"]').should('be.visible');
@@ -107,6 +115,10 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="project-card"]')
             .contains('My Project').click();
 
+        // wait for the loading icon to go away
+        cy.get('[data-cy="loading-modal"]').should('be.visible');
+        cy.get('[data-cy="loading-modal"]').should('not.exist');
+
         cy.get('[data-cy="project-title"]').contains('My Project');
         // cy.get('[data-cy="project-description"]')
         //  .contains('Descriptive text');
@@ -144,6 +156,10 @@ describe('Project List Stories (Workspace Detail)', function() {
         // Navigate to project detail
         cy.get('[data-cy="project-card"]')
             .contains('My Project').click();
+
+        // wait for the loading icon to go away
+        cy.get('[data-cy="loading-modal"]').should('be.visible');
+        cy.get('[data-cy="loading-modal"]').should('not.exist');
 
         // open the menu and click edit
         cy.get('[data-cy="overflow-menu"]').eq(0).click();
@@ -205,6 +221,10 @@ describe('Project List Stories (Workspace Detail)', function() {
         // Navigate to project detail
         cy.get('[data-cy="project-card"]')
             .contains('My Amazing Project').click();
+
+        // wait for the loading icon to go away
+        cy.get('[data-cy="loading-modal"]').should('be.visible');
+        cy.get('[data-cy="loading-modal"]').should('not.exist');
 
         // open the menu and click delete, then cancel
         cy.get('[data-cy="confirm-dialog"]').should('not.exist');
