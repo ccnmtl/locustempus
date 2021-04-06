@@ -161,12 +161,12 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 setActiveEventDetail={setActiveEventDetail}
                                 activeEventEdit={activeEventEdit}/>
                         ) : (<>
-                             <p className={'lt-date-display'}>
+                            <p className={'lt-date-display'}>
                                 Submitted on Month dd at hh:mm AM/PM<br />
                                 Last modified on Month dd at hh:mm AM/PM
                             </p>
                             <section className={'lt-pane-section'}>
-                               <LayerSet
+                                <LayerSet
                                     layers={layers}
                                     addLayer={addLayer}
                                     deleteLayer={deleteLayer}
