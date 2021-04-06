@@ -163,15 +163,21 @@
 }
 
 .lt-pane-section {
+    padding-top: 1rem;
     padding-bottom: 1rem;
-    &__description {
-        border-bottom: 1px solid #ccc;
-        padding-top: 1rem;
+    border-bottom: 1px solid #ccc;
+    &:last-child {
+        border-bottom: 0;
     }
     &__header {
         display: flex;
         align-items: center;
         justify-content: flex-start;
+    }
+    &__description {
+    }
+    &__response_layers {
+        padding-top: 1rem;
     }
     &__title {
         font-size: 0.875rem !important;
