@@ -236,3 +236,12 @@
         border-bottom: 1px solid #ccc;
     }
 }
+
+.border {
+    &-top {
+        border-top: 1px solid #ccc !important;
+    }
+    &-bottom {
+        border-bottom: 1px solid #ccc !important;
+    }
+}
