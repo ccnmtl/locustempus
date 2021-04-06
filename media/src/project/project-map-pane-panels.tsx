@@ -75,7 +75,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             )}
                         </section>
 
-                        <section>
+                        <section className={'lt-pane-section'}>
                             <Activity
                                 activity={activity}
                                 isFaculty={true}

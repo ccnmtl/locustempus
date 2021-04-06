@@ -113,6 +113,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                         )}
                         <ReactQuill
                             data-cy={'edit-project-description'}
+                            id={'form-field__description'}
                             value={description}
                             onChange={setDescription}/>
                     </div>
