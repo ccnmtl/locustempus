@@ -109,6 +109,8 @@ DATABASES = {
     }
 }
 
+DEFAULT_BASE_MAP = 'mapbox://styles/mapbox/light-v10'
+
 # Needed to get Cypress to run
 if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
         or 'check' in sys.argv or 'integrationserver' in sys.argv):
@@ -129,6 +131,4 @@ if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )
-
-
-DEFAULT_BASE_MAP = 'mapbox://styles/mapbox/light-v10'
+    DEFAULT_BASE_MAP = 'http://localhost:8888/style.json'
