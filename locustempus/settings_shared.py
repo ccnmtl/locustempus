@@ -129,3 +129,6 @@ if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
     PASSWORD_HASHERS = (
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )
+
+
+DEFAULT_BASE_MAP = 'mapbox://styles/mapbox/light-v10'

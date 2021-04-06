@@ -10,6 +10,7 @@ from django.dispatch import receiver
 from django.db import models
 from django_registration.signals import user_activated
 from django.utils import timezone
+from django.conf import settings
 
 
 BASE_MAPS = [
@@ -151,7 +152,7 @@ class Project(models.Model):
     base_map = models.CharField(
         max_length=64,
         choices=BASE_MAPS,
-        default='mapbox://styles/mapbox/light-v10'
+        default=settings.DEFAULT_BASE_MAP
     )
     layers = GenericRelation(Layer, related_query_name='project')
     raster_layers = GenericRelation(RasterLayer, related_query_name='project')

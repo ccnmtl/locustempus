@@ -1,7 +1,5 @@
 """Tests for the Project views"""
-from django.conf import settings
 from django.test import TestCase
-from django.test.utils import override_settings
 from django.urls.base import reverse
 from locustempus.main.models import Project
 from locustempus.main.tests.factories import (
@@ -13,10 +11,7 @@ class ProjectTest(CourseTestMixin, TestCase):
     def setUp(self):
         self.setup_course()
 
-    @override_settings()
     def test_create_project_faculty(self):
-        del settings.DEFAULT_BASE_MAP
-
         """Test that faculty can create projects"""
         self.assertTrue(
             self.client.login(
@@ -25,20 +20,22 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
 
-        response = self.client.post(
-            reverse(
-                'course-project-create', args=[self.sandbox_course.pk]),
-            {
-                'title': 'A Test Project',
-                'description': 'A fine description',
-                'base_map': 'dark-v10'
-            }
-        )
-        self.assertEqual(response.status_code, 302)
+        default_base_map = 'mapbox://styles/mapbox/light-v10'
+        with self.settings(DEFAULT_BASE_MAP=default_base_map):
+            response = self.client.post(
+                reverse(
+                    'course-project-create', args=[self.sandbox_course.pk]),
+                {
+                    'title': 'A Test Project',
+                    'description': 'A fine description',
+                    'base_map': 'dark-v10'
+                }
+            )
+            self.assertEqual(response.status_code, 302)
 
-        project = Project.objects.get(title='Untitled project')
-        self.assertEqual(project.description, '')
-        self.assertEqual(project.base_map, 'mapbox://styles/mapbox/light-v10')
+            project = Project.objects.get(title='Untitled project')
+            self.assertEqual(project.description, '')
+            self.assertEqual(project.base_map, default_base_map)
 
     def test_create_project_student(self):
         """Test that students can't create projects"""
@@ -61,7 +58,8 @@ class ProjectTest(CourseTestMixin, TestCase):
             )
         )
 
-        with self.settings(DEFAULT_BASE_MAP='alternate'):
+        default_base_map = 'http://localhost:8888/style.json'
+        with self.settings(DEFAULT_BASE_MAP=default_base_map):
             response = self.client.post(
                 reverse(
                     'course-project-create', args=[self.sandbox_course.pk]), {}
@@ -70,7 +68,7 @@ class ProjectTest(CourseTestMixin, TestCase):
 
             project = Project.objects.get(title='Untitled project')
             self.assertEqual(project.description, '')
-            self.assertEqual(project.base_map, 'alternate')
+            self.assertEqual(project.base_map, default_base_map)
 
     def test_delete_project_faculty(self):
         """Test that faculty can delete projects"""

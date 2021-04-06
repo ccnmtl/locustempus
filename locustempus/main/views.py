@@ -675,12 +675,8 @@ class ProjectCreateView(LoggedInFacultyMixin, View):
     def post(self, request, *args, **kwargs):
         course = get_object_or_404(Course, pk=kwargs.get('pk', None))
 
-        if hasattr(settings, 'DEFAULT_BASE_MAP'):
-            # Allow base_map overrides for testing scenarios
-            project = Project.objects.create(
-                course=course, base_map=settings.DEFAULT_BASE_MAP)
-        else:
-            project = Project.objects.create(course=course)
+        project = Project.objects.create(
+            course=course, base_map=settings.DEFAULT_BASE_MAP)
 
         return HttpResponseRedirect(reverse(
             'course-project-detail',
