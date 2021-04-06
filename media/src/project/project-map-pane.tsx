@@ -203,12 +203,12 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
             className={'widget-pane widget-pane-' + (showPane ? 'expanded' : 'collapsed') }>
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
                 <header ref={projectPaneHeader} className='project-pane__header'>
-                    <h1>{title}</h1>
+                    <h1 data-cy="project-title">{title}</h1>
                     <OverflowMenu items={[
                         {
                             handler: handleEdit,
                             icon: <FontAwesomeIcon icon={faPencilAlt}/>,
-                            label: 'Edit project'
+                            label: 'Edit project',
                         },
                         {
                             handler: deleteProject,

@@ -135,6 +135,7 @@ export const Activity: React.FC<ActivityProps> = (
                             There is no activity assigned on this project.
                         </p>
                         <button
+                            data-cy={'create-activity'}
                             type={'submit'}
                             className={'btn btn-primary'}
                             onClick={(): void => setShowCreateForm(true)}>

@@ -114,9 +114,14 @@ export const getBoundedViewport = (
                 right: padding
             }
         };
-        return new WebMercatorViewport(viewportOpt).fitBounds([
-            [minLng, minLat], [maxLng, maxLat],
-        ], boundsOpt);
+        let viewport = new WebMercatorViewport(viewportOpt);
+        if (minLng !== Infinity && minLng !== Infinity &&
+                maxLat !== -Infinity && maxLng !== -Infinity) {
+            viewport = viewport.fitBounds([
+                [minLng, minLat], [maxLng, maxLat],
+            ], boundsOpt);
+        }
+        return viewport;
     } else {
         throw new Error(
             'The Deck GL component has not yet been rendered. ' +

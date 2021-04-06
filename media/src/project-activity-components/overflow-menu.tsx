@@ -58,7 +58,7 @@ export const ConfirmableAction: React.FC<ConfirmableActionProps> = ({
     return (
         <>
             {showConfirmation && (
-                <div id="lt-confirmation-modal"
+                <div data-cy="confirm-dialog" id="lt-confirmation-modal"
                     tabIndex={-1}
                     role="dialog"
                     onClick={handleCancel}
@@ -81,11 +81,13 @@ export const ConfirmableAction: React.FC<ConfirmableActionProps> = ({
                             </div>
                             <div className="modal-footer">
                                 <button type="button"
+                                    data-cy="confirm-dialog-cancel"
                                     onClick={handleCancel}
                                     className="btn btn-secondary lt-modal-cancel">
                                     Close
                                 </button>
                                 <button type="button"
+                                    data-cy="confirm-dialog-okay"
                                     onClick={handleConfirmation}
                                     className="btn btn-primary">
                                     {confirmationButtonText}
@@ -142,7 +144,7 @@ export const OverflowMenu: React.FC<OverflowMenuProps> = ({items}: OverflowMenuP
     }, [showMenu]);
 
     return (
-        <div ref={menuRef} className={'lt-menu-overflow trailing'}>
+        <div data-cy={'overflow-menu'} ref={menuRef} className={'lt-menu-overflow trailing'}>
             <button onClick={() => setShowMenu((prev) => !prev)}
                 className={'lt-icon-button lt-icon-button--transparent'}
                 aria-label={showMenu ?
@@ -158,7 +160,8 @@ export const OverflowMenu: React.FC<OverflowMenuProps> = ({items}: OverflowMenuP
                     <ul className={'lt-list'} role='menu'>
                         {items.map((item, idx) => {
                             return (
-                                <li className={'lt-list-item'} role='menuitem' key={idx}>
+                                <li className={'lt-list-item'} data-cy='overflow-menu-item'
+                                    role='menuitem' key={idx}>
                                     { /* eslint-disable-next-line max-len */ }
                                     {item.confirmationTitle && item.confirmationText && item.confirmationButtonText ? (
                                         <ConfirmableAction

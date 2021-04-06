@@ -671,9 +671,12 @@ class ProjectView(LoggedInCourseMixin, View):
 
 
 class ProjectCreateView(LoggedInFacultyMixin, View):
+
     def post(self, request, *args, **kwargs):
         course = get_object_or_404(Course, pk=kwargs.get('pk', None))
-        project = Project.objects.create(course=course)
+
+        project = Project.objects.create(
+            course=course, base_map=settings.DEFAULT_BASE_MAP)
 
         return HttpResponseRedirect(reverse(
             'course-project-detail',

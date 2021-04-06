@@ -11,7 +11,7 @@
 
 <h2 class="mt-3">Authors and Contributors</h2>
 
-<a href="{% url 'course-roster-invite-user' object.pk %}" type="button" class="btn lt-button">
+<a data-cy="workspace-roster-invite" href="{% url 'course-roster-invite-user' object.pk %}" type="button" class="btn lt-button">
     <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/add-user.svg" /></span>
     <span class='lt-button__text'>Invite Contributor</span>
 </a>
@@ -45,12 +45,12 @@
                     {% csrf_token %}
                     <input type="hidden" name="user_id" id="user_id" value="{{ member.id }}">
                     {% if is_faculty %}
-                    <button type="submit" class="btn lt-button lt-button--demote">
+                    <button data-cy='roster-demote' type="submit" class="btn lt-button lt-button--demote">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-demote-user.svg" /></span>
                         <span class='lt-button__text'>Demote</span>
                     </button>
                     {% else %}
-                    <button type="submit" class="btn lt-button lt-button--promote">
+                    <button data-cy='roster-promote' type="submit" class="btn lt-button lt-button--promote">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-promote-user.svg" /></span>
                         <span class='lt-button__text'>Promote</span>
                     </button>
@@ -59,7 +59,7 @@
                 <form class="d-inline-block" action="{% url 'course-roster-remove-view' object.pk %}" method="post">
                     {% csrf_token %}
                     <input type="hidden" name="user_id" id="user_id" value="{{ member.id }}">
-                    <button type="submit" class="btn lt-button">
+                    <button data-cy='roster-remove' type="submit" class="btn lt-button">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-trash.svg" /></span>
                         <span class='lt-button__text'>Remove</span>
                     </button>
