@@ -101,11 +101,11 @@
                 <thead>
                     <tr>
                         <th scope="col">Project</th>
-                        <th scope="col">Date created</th>
+                        <th scope="col" class="text-nowrap">Date created</th>
                         <th scope="col" class="sorter-false">Description</th>
                         <th scope="col">Status</th>
                         <th scope="col">Activity</th>
-                        <th scope="col" class="sorter-false">Other info</th>
+                        <th scope="col" class="sorter-false text-nowrap">Other info</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -115,7 +115,7 @@
                         <td>{{ project.created_at }}</td>
                         <td>{{ project.description|striptags|truncatechars:100}}</td>
                         <td class="text-muted">Status TBD</td>
-                        <td>
+                        <td class="text-nowrap">
                             {% if project.activity %}
                                 1 Activity
                             {% else %}
