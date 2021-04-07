@@ -19,7 +19,7 @@
 
 .tablesorter-bootstrap .tablesorter-header-inner{position:relative;margin-left: 1.2rem; padding: 0}
 
-.tablesorter-bootstrap .sorter-false .tablesorter-header-inner{padding: 0}
+.tablesorter-bootstrap .sorter-false .tablesorter-header-inner{padding: 0; margin-left: 0;}
 
 .tablesorter-bootstrap thead .tablesorter-headerUnSorted:not(.sorter-false){background-image:url('/media/img/icon-unsorted.svg');}
 

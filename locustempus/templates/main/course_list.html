@@ -63,8 +63,8 @@ Workspaces
                         <th scope="col">Term</th>
                         <th scope="col">Authors</th>
                         <th scope="col" class="sorter-false">Description</th>
-                        <th scope="col">Your role</th>
-                        <th scope="col" class="sorter-false">Other info</th>
+                        <th scope="col" class="text-nowrap">Your role</th>
+                        <th scope="col" class="sorter-false text-nowrap">Other info</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -75,7 +75,7 @@ Workspaces
                         <td>{% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</td>
                         <td class="text-muted">Workspace description not implemented yet.</td> {# not hooked up #}
                         <td>{% if user in course.faculty %}Author{% else %}Contributor{% endif %}</td>
-                        <td>
+                        <td class="text-nowrap">
                             <ul class="list-group list-group-horizontal-sm lt-card__list-group m-0">
                                 <li class="list-group-item lt-card__list-group-item py-0">{{ course.projects.count }} Projects</li>
                                 <li class="list-group-item lt-card__list-group-item py-0">{{ course.members.count }} Contributors</li>
