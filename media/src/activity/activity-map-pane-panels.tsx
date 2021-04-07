@@ -161,47 +161,58 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 setActiveEventDetail={setActiveEventDetail}
                                 activeEventEdit={activeEventEdit}/>
                         ) : (<>
-                            <LayerSet
-                                layers={layers}
-                                addLayer={addLayer}
-                                deleteLayer={deleteLayer}
-                                updateLayer={updateLayer}
-                                layerVisibility={layerVisibility}
-                                toggleLayerVisibility={toggleLayerVisibility}
-                                activeLayer={activeLayer}
-                                setActiveLayer={setActiveLayer}
-                                setActiveEvent={setActiveEvent}
-                                activeEvent={activeEvent}
-                                setActiveEventDetail={setActiveEventDetail}
-                                activeEventEdit={activeEventEdit} />
-                            <div>
+                            <p className={'lt-date-display'}>
+                                Submitted on Month dd at hh:mm AM/PM<br />
+                                Last modified on Month dd at hh:mm AM/PM
+                            </p>
+                            <section className={'lt-pane-section'}>
+                                <LayerSet
+                                    layers={layers}
+                                    addLayer={addLayer}
+                                    deleteLayer={deleteLayer}
+                                    updateLayer={updateLayer}
+                                    layerVisibility={layerVisibility}
+                                    toggleLayerVisibility={toggleLayerVisibility}
+                                    activeLayer={activeLayer}
+                                    setActiveLayer={setActiveLayer}
+                                    setActiveEvent={setActiveEvent}
+                                    activeEvent={activeEvent}
+                                    setActiveEventDetail={setActiveEventDetail}
+                                    activeEventEdit={activeEventEdit} />
+                            </section>
+                            <section className={'lt-pane-section'}>
                                 <h3>Reflection</h3>
+                                <small className={'form-text text-muted mb-2 mt-0'}>
+                                    A short instruction on what reflection is about
+                                    and some guidance on the length of text.
+                                </small>
                                 <form onSubmit={handleSubmitResponse}>
-                                    <div className="form-row">
-                                        <div className={'form-group col-12'}>
-                                            <ReactQuill
-                                                value={reflection}
-                                                onChange={setReflection}/>
-                                        </div>
-                                    </div>
-                                    <div className="form-row">
-                                        <div className={'form-group col-12'}>
-                                            <button
-                                                type={'submit'}
-                                                className={'btn btn-primary'}>
-                                                Submit response
-                                            </button>
-                                            <button onClick={handleReflectionSaveDraft}>
-                                                Save draft
-                                            </button>
-                                        </div>
+                                    <ReactQuill
+                                        value={reflection}
+                                        onChange={setReflection}/>
+                                    <div className={'text-center mt-3'}>
+                                        <button
+                                            className={'btn btn-secondary mr-3'}
+                                            onClick={handleReflectionSaveDraft}>
+                                            Save as draft
+                                        </button>
+                                        <button
+                                            type={'submit'}
+                                            className={'btn btn-primary'}>
+                                            Submit response
+                                        </button>
                                     </div>
                                 </form>
-                            </div>
-                            <div>
-                                <h3>Feedback</h3>
+                            </section>
+                            <section className={'lt-pane-section mt-1 border-top'}>
+                                <h3>Feedback for you</h3>
+                                <p className={'lt-date-display'}>
+                                    From Person Who Submits Feedback<br />
+                                    Submitted on Month dd at hh:mm AM/PM<br />
+                                    Last modified on Month dd at hh:mm AM/PM
+                                </p>
                                 <div dangerouslySetInnerHTML={{__html: feedback}}/>
-                            </div>
+                            </section>
                         </>)}
                     </div>
                 )}
@@ -257,8 +268,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
         }
     }, [activeResponse]);
 
-    // TODO fix spelling!
-    const handleFeedbackSubmition = (e: React.FormEvent) => {
+    const handleFeedbackSubmission = (e: React.FormEvent) => {
         e.preventDefault();
         if (activeResponse) {
             if (activeResponse.feedback) {
@@ -316,10 +326,15 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 <h3>
                 Feedback for {activeResponse.owners.join(', ')}
                 </h3>
+                <small className={'form-text text-muted mb-2 mt-0'}>
+                    A short instruction on what feedback is about
+                    and some guidance on the length of text.
+                </small>
                 <div className={'form-group pane-form-group'}>
-                    <form onSubmit={handleFeedbackSubmition}>
+                    <form onSubmit={handleFeedbackSubmission}>
                         <p className={'lt-date-display'}>
-                            Last modified on Month DD at hh:mm AM/PM
+                            Submitted on Month dd at hh:mm AM/PM<br />
+                            Last modified on Month dd at hh:mm AM/PM
                         </p>
                         <ReactQuill
                             id={'form-field__feedback'}
@@ -327,7 +342,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                             onChange={setFeedback}/>
                         <div className={'text-center mt-3'}>
                             <button
-                                className={'btn btn-danger mr-3'}
+                                className={'btn btn-link mr-3'}
                                 onClick={handleFeedbackCancel}>
                                 Cancel
                             </button>
