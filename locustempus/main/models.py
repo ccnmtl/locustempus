@@ -12,7 +12,7 @@ from django_registration.signals import user_activated
 from django.utils import timezone
 from django.conf import settings
 
-DATE_FORMAT = '%B %d, %Y at %-I:%M %p'
+DATE_FORMAT = '%B %-d, %Y at %-I:%M %p'
 
 
 BASE_MAPS = [
@@ -331,6 +331,10 @@ class Feedback(models.Model):
 
     def modified_at_formatted(self):
         return timezone.localtime(self.modified_at).strftime(DATE_FORMAT)
+
+    def feedback_from(self):
+        person = self.modified_by or self.created_by
+        return person.get_full_name() or person.username
 
 
 class GuestUserAffil(models.Model):

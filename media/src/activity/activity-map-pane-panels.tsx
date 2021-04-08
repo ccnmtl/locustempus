@@ -58,13 +58,22 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
     const [reflection, setReflection] = useState<string>('');
     const [feedback, setFeedback] = useState<string>('');
+    const [feedbackSubmittedDate, setFeedbackSubmittedDate] = useState<string>('');
+    const [feedbackModifiedDate, setFeedbackModifiedDate] = useState<string>('');
+    const [feedbackSubmittedBy, setFeedbackSubmittedBy] = useState<string>('');
 
     useEffect(() => {
         // Only set a reflection if the user is not faculty/author
         if (!isFaculty && responseData.length == 1 && responseData[0].reflection) {
             setReflection(responseData[0].reflection);
             if (responseData[0].feedback) {
-                setFeedback(responseData[0].feedback.body);
+                setFeedback(responseData[0].feedback.body || '');
+                setFeedbackSubmittedDate(
+                    responseData[0].feedback.submitted_at_formatted || '');
+                setFeedbackModifiedDate(
+                    responseData[0].feedback.modified_at_formatted || '');
+                setFeedbackSubmittedBy(
+                    responseData[0].feedback.feedback_from || '');
             }
         }
     }, [responseData]);
@@ -206,12 +215,24 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             </section>
                             <section className={'lt-pane-section mt-1 border-top'}>
                                 <h3>Feedback for you</h3>
-                                <p className={'lt-date-display'}>
-                                    From Person Who Submits Feedback<br />
-                                    Submitted on Month dd at hh:mm AM/PM<br />
-                                    Last modified on Month dd at hh:mm AM/PM
-                                </p>
-                                <div dangerouslySetInnerHTML={{__html: feedback}}/>
+                                {feedback ? (
+                                    <>
+                                        <p className={'lt-date-display'}>
+                                            From {feedbackSubmittedBy}<br />
+                                            {feedbackSubmittedDate == feedbackModifiedDate ? (
+                                                <>Submitted on {feedbackSubmittedDate}</>
+                                            ) : (<>
+                                                Submitted on {feedbackSubmittedDate}<br />
+                                                Last modified on {feedbackModifiedDate}
+                                            </>)}
+                                        </p>
+                                        <div dangerouslySetInnerHTML={{__html: feedback}}/>
+                                    </>
+                                ) : (
+                                    <p className={'lt-date-display'}>
+                                        There is no feedback for your response
+                                    </p>
+                                )}
                             </section>
                         </>)}
                     </div>

@@ -56,11 +56,12 @@ class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
         read_only_fields = (
-            'pk', 'submitted_at_formatted', 'modified_at_formatted'
+            'pk', 'submitted_at_formatted', 'modified_at_formatted',
+            'feedback_from'
         )
         fields = (
             'pk', 'body', 'response', 'submitted_at_formatted',
-            'modified_at_formatted'
+            'modified_at_formatted', 'feedback_from'
         )
 
 
