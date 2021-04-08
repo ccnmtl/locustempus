@@ -247,11 +247,15 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     const [activeResponseLayers, setActiveResponseLayers] =
         useState<Map<number, LayerData>>(new Map());
     const [feedback, setFeedback] = useState<string>('');
+    const [feedbackSubmittedDate, setFeedbackSubmittedDate] = useState<string>('');
+    const [feedbackModifiedDate, setFeedbackModifiedDate] = useState<string>('');
 
     useEffect(() => {
         // Populate feedback
         if (activeResponse && activeResponse.feedback) {
-            setFeedback(activeResponse.feedback.body ? activeResponse.feedback.body : '');
+            setFeedback(activeResponse.feedback.body || '');
+            setFeedbackSubmittedDate(activeResponse.feedback.submitted_at_formatted || '');
+            setFeedbackModifiedDate(activeResponse.feedback.modified_at_formatted || '');
         }
 
         // Create a map of just the layers beloning to the active response
@@ -266,7 +270,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 );
             }
         }
-    }, [activeResponse]);
+    }, [activeResponse, responseData]);
 
     const handleFeedbackSubmission = (e: React.FormEvent) => {
         e.preventDefault();
@@ -332,10 +336,20 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 </small>
                 <div className={'form-group pane-form-group'}>
                     <form onSubmit={handleFeedbackSubmission}>
-                        <p className={'lt-date-display'}>
-                            Submitted on Month dd at hh:mm AM/PM<br />
-                            Last modified on Month dd at hh:mm AM/PM
-                        </p>
+                        {feedbackSubmittedDate && feedbackModifiedDate ? (
+                            <p className={'lt-date-display'}>
+                                {feedbackSubmittedDate == feedbackModifiedDate ? (
+                                    <>Submitted on {feedbackSubmittedDate}</>
+                                ) : (<>
+                                    Submitted on {feedbackSubmittedDate}<br />
+                                    Last modified on {feedbackModifiedDate}
+                                </>)}
+                            </p>
+                        ) : (
+                            <p className={'lt-date-display'}>
+                                You haven&apos;t submitted feedback
+                            </p>
+                        )}
                         <ReactQuill
                             id={'form-field__feedback'}
                             value={feedback}

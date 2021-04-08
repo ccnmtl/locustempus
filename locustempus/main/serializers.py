@@ -55,8 +55,13 @@ class ActivitySerializer(serializers.ModelSerializer):
 class FeedbackSerializer(serializers.ModelSerializer):
     class Meta:
         model = Feedback
-        read_only_fields = ('pk',)
-        fields = ('pk', 'body', 'response')
+        read_only_fields = (
+            'pk', 'submitted_at_formatted', 'modified_at_formatted'
+        )
+        fields = (
+            'pk', 'body', 'response', 'submitted_at_formatted',
+            'modified_at_formatted'
+        )
 
 
 class ResponseSerializer(serializers.HyperlinkedModelSerializer):
