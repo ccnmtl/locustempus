@@ -25,7 +25,7 @@ fuzzywuzzy==0.18.0
 sure==1.4.11
 traitlets==4.3.3  # ipython
 ipython_genutils==0.2.0  # ipython
-decorator==5.0.2  # ipython
+decorator==5.0.6  # ipython
 ptyprocess==0.7.0  # ipython
 pexpect==4.8.0  # ipython
 pathlib2==2.3.5  # ipython
