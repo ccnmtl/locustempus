@@ -334,7 +334,10 @@ class Feedback(models.Model):
 
     def feedback_from(self):
         person = self.modified_by or self.created_by
-        return person.get_full_name() or person.username
+        if person:
+            return person.get_full_name() or person.username
+        else:
+            return ''
 
 
 class GuestUserAffil(models.Model):

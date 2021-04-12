@@ -57,6 +57,11 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
 
     const [reflection, setReflection] = useState<string>('');
+    const [reflectionSubmittedAt, setReflectionSubmittedAt] = useState<string>('');
+    const [reflectionModfiedAt, setReflectionModifiedAt] = useState<string>('');
+    // TODO: display response status
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [reflectionStatus, setReflectionStatus] = useState<string>('DRAFT');
     const [feedback, setFeedback] = useState<string>('');
     const [feedbackSubmittedDate, setFeedbackSubmittedDate] = useState<string>('');
     const [feedbackModifiedDate, setFeedbackModifiedDate] = useState<string>('');
@@ -66,6 +71,10 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         // Only set a reflection if the user is not faculty/author
         if (!isFaculty && responseData.length == 1 && responseData[0].reflection) {
             setReflection(responseData[0].reflection);
+            setReflectionSubmittedAt(responseData[0].submitted_at_formatted || '');
+            setReflectionModifiedAt(responseData[0].modified_at_formatted || '');
+            setReflectionStatus(responseData[0].status);
+
             if (responseData[0].feedback) {
                 setFeedback(responseData[0].feedback.body || '');
                 setFeedbackSubmittedDate(
@@ -171,8 +180,18 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 activeEventEdit={activeEventEdit}/>
                         ) : (<>
                             <p className={'lt-date-display'}>
-                                Submitted on Month dd at hh:mm AM/PM<br />
-                                Last modified on Month dd at hh:mm AM/PM
+                                {reflection ? (
+                                    <>{reflectionSubmittedAt == reflectionModfiedAt ? (
+                                        <>Submitted on {reflectionSubmittedAt}</>
+                                    ) : (
+                                        <>
+                                            Submitted on {reflectionSubmittedAt}<br />
+                                            Last modified on {reflectionModfiedAt}
+                                        </>
+                                    )}</>
+                                ) : (
+                                    <>You have not submitted your response</>
+                                )}
                             </p>
                             <section className={'lt-pane-section'}>
                                 <LayerSet
