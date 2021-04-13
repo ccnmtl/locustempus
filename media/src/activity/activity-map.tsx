@@ -53,7 +53,7 @@ export interface ResponseData {
     submitted_at: Date;
     modified_at: Date;
     submitted_at_formatted: string;
-    modified_at_formatted?: string;
+    modified_at_formatted: string;
     reflection: string;
     status: ResponseStatus;
     feedback: FeedbackData | null;
