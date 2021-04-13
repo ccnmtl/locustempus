@@ -57,14 +57,32 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
 
     const [reflection, setReflection] = useState<string>('');
+    const [reflectionSubmittedAt, setReflectionSubmittedAt] = useState<string>('');
+    const [reflectionModfiedAt, setReflectionModifiedAt] = useState<string>('');
+    // TODO: display response status
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const [reflectionStatus, setReflectionStatus] = useState<string>('DRAFT');
     const [feedback, setFeedback] = useState<string>('');
+    const [feedbackSubmittedDate, setFeedbackSubmittedDate] = useState<string>('');
+    const [feedbackModifiedDate, setFeedbackModifiedDate] = useState<string>('');
+    const [feedbackSubmittedBy, setFeedbackSubmittedBy] = useState<string>('');
 
     useEffect(() => {
         // Only set a reflection if the user is not faculty/author
         if (!isFaculty && responseData.length == 1 && responseData[0].reflection) {
             setReflection(responseData[0].reflection);
+            setReflectionSubmittedAt(responseData[0].submitted_at_formatted || '');
+            setReflectionModifiedAt(responseData[0].modified_at_formatted || '');
+            setReflectionStatus(responseData[0].status);
+
             if (responseData[0].feedback) {
-                setFeedback(responseData[0].feedback.body);
+                setFeedback(responseData[0].feedback.body || '');
+                setFeedbackSubmittedDate(
+                    responseData[0].feedback.submitted_at_formatted || '');
+                setFeedbackModifiedDate(
+                    responseData[0].feedback.modified_at_formatted || '');
+                setFeedbackSubmittedBy(
+                    responseData[0].feedback.feedback_from || '');
             }
         }
     }, [responseData]);
@@ -162,8 +180,18 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 activeEventEdit={activeEventEdit}/>
                         ) : (<>
                             <p className={'lt-date-display'}>
-                                Submitted on Month dd at hh:mm AM/PM<br />
-                                Last modified on Month dd at hh:mm AM/PM
+                                {reflection ? (
+                                    <>{reflectionSubmittedAt == reflectionModfiedAt ? (
+                                        <>Submitted on {reflectionSubmittedAt}</>
+                                    ) : (
+                                        <>
+                                            Submitted on {reflectionSubmittedAt}<br />
+                                            Last modified on {reflectionModfiedAt}
+                                        </>
+                                    )}</>
+                                ) : (
+                                    <>You have not submitted your response</>
+                                )}
                             </p>
                             <section className={'lt-pane-section'}>
                                 <LayerSet
@@ -206,12 +234,24 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             </section>
                             <section className={'lt-pane-section mt-1 border-top'}>
                                 <h3>Feedback for you</h3>
-                                <p className={'lt-date-display'}>
-                                    From Person Who Submits Feedback<br />
-                                    Submitted on Month dd at hh:mm AM/PM<br />
-                                    Last modified on Month dd at hh:mm AM/PM
-                                </p>
-                                <div dangerouslySetInnerHTML={{__html: feedback}}/>
+                                {feedback ? (
+                                    <>
+                                        <p className={'lt-date-display'}>
+                                            From {feedbackSubmittedBy}<br />
+                                            {feedbackSubmittedDate == feedbackModifiedDate ? (
+                                                <>Submitted on {feedbackSubmittedDate}</>
+                                            ) : (<>
+                                                Submitted on {feedbackSubmittedDate}<br />
+                                                Last modified on {feedbackModifiedDate}
+                                            </>)}
+                                        </p>
+                                        <div dangerouslySetInnerHTML={{__html: feedback}}/>
+                                    </>
+                                ) : (
+                                    <p className={'lt-date-display'}>
+                                        There is no feedback for your response
+                                    </p>
+                                )}
                             </section>
                         </>)}
                     </div>
@@ -247,11 +287,15 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     const [activeResponseLayers, setActiveResponseLayers] =
         useState<Map<number, LayerData>>(new Map());
     const [feedback, setFeedback] = useState<string>('');
+    const [feedbackSubmittedDate, setFeedbackSubmittedDate] = useState<string>('');
+    const [feedbackModifiedDate, setFeedbackModifiedDate] = useState<string>('');
 
     useEffect(() => {
         // Populate feedback
         if (activeResponse && activeResponse.feedback) {
-            setFeedback(activeResponse.feedback.body ? activeResponse.feedback.body : '');
+            setFeedback(activeResponse.feedback.body || '');
+            setFeedbackSubmittedDate(activeResponse.feedback.submitted_at_formatted || '');
+            setFeedbackModifiedDate(activeResponse.feedback.modified_at_formatted || '');
         }
 
         // Create a map of just the layers beloning to the active response
@@ -266,7 +310,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 );
             }
         }
-    }, [activeResponse]);
+    }, [activeResponse, responseData]);
 
     const handleFeedbackSubmission = (e: React.FormEvent) => {
         e.preventDefault();
@@ -332,10 +376,20 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 </small>
                 <div className={'form-group pane-form-group'}>
                     <form onSubmit={handleFeedbackSubmission}>
-                        <p className={'lt-date-display'}>
-                            Submitted on Month dd at hh:mm AM/PM<br />
-                            Last modified on Month dd at hh:mm AM/PM
-                        </p>
+                        {feedbackSubmittedDate && feedbackModifiedDate ? (
+                            <p className={'lt-date-display'}>
+                                {feedbackSubmittedDate == feedbackModifiedDate ? (
+                                    <>Submitted on {feedbackSubmittedDate}</>
+                                ) : (<>
+                                    Submitted on {feedbackSubmittedDate}<br />
+                                    Last modified on {feedbackModifiedDate}
+                                </>)}
+                            </p>
+                        ) : (
+                            <p className={'lt-date-display'}>
+                                You haven&apos;t submitted feedback
+                            </p>
+                        )}
                         <ReactQuill
                             id={'form-field__feedback'}
                             value={feedback}

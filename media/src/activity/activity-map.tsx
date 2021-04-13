@@ -40,6 +40,9 @@ export enum ResponseStatus {
 interface FeedbackData {
     pk: number;
     body: string;
+    submitted_at_formatted: string;
+    modified_at_formatted?: string;
+    feedback_from: string;
 }
 
 export interface ResponseData {

@@ -112,7 +112,8 @@ export const getBoundedViewport = (
                 bottom: padding,
                 left: padding + leftPaddingOffset,
                 right: padding
-            }
+            },
+            maxZoom: 15
         };
         let viewport = new WebMercatorViewport(viewportOpt);
         if (minLng !== Infinity && minLng !== Infinity &&

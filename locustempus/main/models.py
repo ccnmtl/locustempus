@@ -12,6 +12,8 @@ from django_registration.signals import user_activated
 from django.utils import timezone
 from django.conf import settings
 
+DATE_FORMAT = '%B %-d, %Y at %-I:%M %p'
+
 
 BASE_MAPS = [
     ('mapbox://styles/mapbox/streets-v11', 'Street'),
@@ -256,12 +258,10 @@ class Response(models.Model):
     )
 
     def submitted_at_formatted(self):
-        return timezone.localtime(self.submitted_at).strftime(
-            '%B %d, %Y at %I:%M %p').lstrip("0").replace(" 0", " ")
+        return timezone.localtime(self.submitted_at).strftime(DATE_FORMAT)
 
     def modified_at_formatted(self):
-        return timezone.localtime(self.modified_at).strftime(
-            '%B %d, %Y at %I:%M %p').lstrip("0").replace(" 0", " ")
+        return timezone.localtime(self.modified_at).strftime(DATE_FORMAT)
 
     def owner_strings(self):
         return [
@@ -323,6 +323,21 @@ class Feedback(models.Model):
         related_name='+',
         null=True
     )
+
+    def submitted_at_formatted(self):
+        # Note the shift from created_at -> submitted_at to better align
+        # with the front end
+        return timezone.localtime(self.created_at).strftime(DATE_FORMAT)
+
+    def modified_at_formatted(self):
+        return timezone.localtime(self.modified_at).strftime(DATE_FORMAT)
+
+    def feedback_from(self):
+        person = self.modified_by or self.created_by
+        if person:
+            return person.get_full_name() or person.username
+        else:
+            return ''
 
 
 class GuestUserAffil(models.Model):
