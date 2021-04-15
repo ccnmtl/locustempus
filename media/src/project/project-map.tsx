@@ -516,6 +516,8 @@ export const ProjectMap: React.FC = () => {
                                 </div>
                             )}
                             <h2>{activeEvent.label}</h2>
+                            {/* TODO: byline */}
+                            <p>{activeEvent.owner}</p>
                         </Popup>
                     )}
                     <div id='map-navigation-control'>

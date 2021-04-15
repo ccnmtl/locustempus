@@ -93,6 +93,7 @@ export interface EventData {
     pk: number;
     description: string;
     datetime: string;
+    owner: string;
     location: {
         point: string;
         polygon: string;

@@ -105,6 +105,9 @@ class Event(models.Model):
         null=True
     )
 
+    def owner(self):
+        return self.created_by.get_full_name() or self.created_by.username
+
 
 class Location(models.Model):
     event = models.OneToOneField(
