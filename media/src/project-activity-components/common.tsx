@@ -94,6 +94,7 @@ export interface EventData {
     description: string;
     datetime: string;
     owner: string;
+    short_description: string;
     location: {
         point: string;
         polygon: string;

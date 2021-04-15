@@ -173,9 +173,9 @@ class EventSerializer(serializers.ModelSerializer):
         model = Event
         fields = (
             'pk', 'label', 'layer', 'description', 'datetime',
-            'location', 'media', 'owner'
+            'location', 'media', 'owner', 'short_description'
         )
-        read_only_fields = ('owner',)
+        read_only_fields = ('owner', 'short_description')
 
 
 class LayerSerializer(serializers.ModelSerializer):
