@@ -450,7 +450,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                             <li><button
                                 onClick={
                                     (): void => {toggleResponseVisibility(el.pk);}}
-                                className={'lt-icon-button lt-icon-button--transparent'}
+                                className={'lt-icon-button'}
                                 aria-label={responseVisible ? 'Hide layer' : 'Show layer'}>
                                 <span className={'lt-icons lt-icon-button__icon'}
                                     aria-hidden={responseVisible ? 'false' : 'true'}>
@@ -460,7 +460,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                             </button></li>
                             <li><button
                                 onClick={(): void => {setActiveResponse(el);}}
-                                className={'lt-icon-button lt-icon-button--transparent'}>
+                                className={'lt-icon-button'}>
                                 <span className={'lt-icons lt-icon-button__icon'}
                                     aria-hidden='true'>
                                     <FontAwesomeIcon icon={faLayerGroup}/>

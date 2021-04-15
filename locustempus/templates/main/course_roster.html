@@ -13,7 +13,7 @@
 
 <a data-cy="workspace-roster-invite" href="{% url 'course-roster-invite-user' object.pk %}" type="button" class="btn lt-button">
     <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/add-user.svg" /></span>
-    <span class='lt-button__text'>Invite Contributor</span>
+    <span class='lt-button__label'>Invite Contributor</span>
 </a>
 
 
@@ -47,12 +47,12 @@
                     {% if is_faculty %}
                     <button data-cy='roster-demote' type="submit" class="btn lt-button lt-button--demote">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-demote-user.svg" /></span>
-                        <span class='lt-button__text'>Demote</span>
+                        <span class='lt-button__label'>Demote</span>
                     </button>
                     {% else %}
                     <button data-cy='roster-promote' type="submit" class="btn lt-button lt-button--promote">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-promote-user.svg" /></span>
-                        <span class='lt-button__text'>Promote</span>
+                        <span class='lt-button__label'>Promote</span>
                     </button>
                     {% endif %}
                 </form>
@@ -61,7 +61,7 @@
                     <input type="hidden" name="user_id" id="user_id" value="{{ member.id }}">
                     <button data-cy='roster-remove' type="submit" class="btn lt-button">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-trash.svg" /></span>
-                        <span class='lt-button__text'>Remove</span>
+                        <span class='lt-button__label'>Remove</span>
                     </button>
                 </form>
             </td>
@@ -92,7 +92,7 @@
                     <input type="hidden" name="user_email" value="{{ invitee.guest_email }}">
                     <button type="submit" class="btn lt-button">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-invitation.svg" /></span>
-                        <span class='lt-button__text'>Resend invitation</span>
+                        <span class='lt-button__label'>Resend invitation</span>
                     </button>
                 </form>
                 <form class="d-inline-block" action="{% url 'course-roster-uninvite-view' object.pk %}" method="post">
@@ -100,7 +100,7 @@
                     <input type="hidden" name="user_email" value="{{ invitee.guest_email }}">
                     <button type="submit" class="btn lt-button">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-close-circle.svg" /></span>
-                        <span class='lt-button__text'>Withdraw invitation</span>
+                        <span class='lt-button__label'>Withdraw invitation</span>
                     </button>
                 </form>
             </td>
