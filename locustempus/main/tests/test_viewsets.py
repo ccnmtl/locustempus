@@ -28,15 +28,18 @@ class IsLoggedInCourseTest(CourseTestMixin, TestCase):
     def test_student(self):
         request = MagicMock(user=self.student)
         view = MagicMock()
-        project = self.sandbox_course.projects.first()
+        p1 = self.sandbox_course.projects.first()
+        p2 = self.sandbox_course.projects.last()
+        self.assertFalse(
+            self.perm.has_object_permission(request, view, p1))
         self.assertTrue(
-            self.perm.has_object_permission(request, view, project))
+            self.perm.has_object_permission(request, view, p2))
 
     def test_superuser(self):
         request = MagicMock(user=self.superuser)
         view = MagicMock()
         project = self.sandbox_course.projects.first()
-        self.assertTrue(
+        self.assertFalse(
             self.perm.has_object_permission(request, view, project))
 
     def test_non_course_user(self):
@@ -78,7 +81,7 @@ class IsLoggedInFacultyTest(CourseTestMixin, TestCase):
         request = MagicMock(user=self.superuser)
         view = MagicMock()
         project = self.sandbox_course.projects.first()
-        self.assertTrue(
+        self.assertFalse(
             self.perm.has_object_permission(request, view, project))
 
     def test_non_course_user(self):
@@ -121,10 +124,15 @@ class ProjectAPITest(CourseTestMixin, TestCase):
             )
         )
 
-        project = self.sandbox_course.projects.first()
-        response = self.client.get(
-            reverse('api-project-detail', args=[project.pk]))
-        self.assertEqual(response.status_code, 200)
+        p1 = self.sandbox_course.projects.first()
+        r1 = self.client.get(
+            reverse('api-project-detail', args=[p1.pk]))
+        self.assertEqual(r1.status_code, 403)
+
+        p2 = self.sandbox_course.projects.last()
+        r2 = self.client.get(
+            reverse('api-project-detail', args=[p2.pk]))
+        self.assertEqual(r2.status_code, 200)
 
     def test_superuser(self):
         self.assertTrue(
@@ -137,7 +145,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         project = self.sandbox_course.projects.first()
         response = self.client.get(
             reverse('api-project-detail', args=[project.pk]))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
 
     def test_non_course_user(self):
         user = UserFactory.create()

@@ -10,6 +10,7 @@ from django.contrib.auth.mixins import (
 )
 from django.contrib.auth.models import User, Group
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import PermissionDenied
 from django.db import connections
 from django.http import (
     HttpRequest, HttpResponse, HttpResponseRedirect, Http404
@@ -142,9 +143,15 @@ class CourseDetailView(LoggedInCourseMixin, View):
     template_name = 'main/course_detail.html'
     http_method_names = ['get', 'post']
 
+    def get_projects(self, course, is_faculty):
+        projects = Project.objects.filter(course=course) if is_faculty \
+            else Project.objects.filter(course=course, activity__isnull=False)
+        return projects.order_by('title')
+
     def post(self, request, *args, **kwargs):
         course = get_object_or_404(Course, pk=kwargs.get('pk'))
-        projects = Project.objects.filter(course=course).order_by('title')
+        is_faculty = course.is_true_faculty(self.request.user)
+        projects = self.get_projects(course, is_faculty)
 
         is_grid = not request.session.get('project_grid_layout', False)
         request.session['project_grid_layout'] = is_grid
@@ -152,7 +159,7 @@ class CourseDetailView(LoggedInCourseMixin, View):
         ctx = {
             'course': course,
             'projects': projects,
-            'is_faculty': course.is_true_faculty(self.request.user),
+            'is_faculty': is_faculty,
             'page_type': 'course',
             'project_grid_layout': is_grid,
             'breadcrumb': {
@@ -164,6 +171,8 @@ class CourseDetailView(LoggedInCourseMixin, View):
 
     def get(self, request, *args, **kwargs):
         course = get_object_or_404(Course, pk=kwargs.get('pk'))
+        is_faculty = course.is_true_faculty(self.request.user)
+        projects = self.get_projects(course, is_faculty)
 
         is_grid = request.session.get('project_grid_layout', True)
         if 'project_grid_layout' not in request.session:
@@ -171,9 +180,8 @@ class CourseDetailView(LoggedInCourseMixin, View):
 
         ctx = {
             'course': course,
-            'projects': Project.objects.filter(course=course)
-            .order_by('title'),
-            'is_faculty': course.is_true_faculty(self.request.user),
+            'projects': projects,
+            'is_faculty': is_faculty,
             'page_type': 'course',
             'project_grid_layout': is_grid,
             'breadcrumb': {
@@ -654,6 +662,10 @@ class ProjectView(LoggedInCourseMixin, View):
         project: Any = get_object_or_404(
             Project.objects.filter(course=course.pk),
             pk=kwargs.get('project_pk', None))
+        is_faculty = course.is_true_faculty(request.user)
+
+        if not is_faculty and not hasattr(project, 'activity'):
+            raise PermissionDenied
 
         new_project = False
         if request.GET.get('new_project', None):
@@ -663,7 +675,7 @@ class ProjectView(LoggedInCourseMixin, View):
             'course': course,
             'project': project,
             'token': getattr(settings, 'MAPBOX_TOKEN', '123abc'),
-            'is_faculty': course.is_true_faculty(request.user),
+            'is_faculty': is_faculty,
             'page_type': 'project',
             'is_new_project': new_project
         }
