@@ -42,6 +42,7 @@ interface DefaultPanelProps {
     isFaculty: boolean;
     responseLayers: Map<number, LayerData[]>;
     paneHeaderHeight: number;
+    setAlert(alert: string | null): void;
 }
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
@@ -52,7 +53,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         activeLayer, setActiveLayer, activeEvent, setActiveEvent,
         setActiveEventDetail, activeEventEdit, projectLayers, responseData,
         updateResponse, createFeedback, updateFeedback, isFaculty,
-        responseLayers, paneHeaderHeight
+        responseLayers, paneHeaderHeight, setAlert
     }: DefaultPanelProps) => {
 
 
@@ -95,12 +96,14 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
     const handleSubmitResponse = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
+        setAlert('Your reflection has been submitted.');
         updateResponse(reflection, ResponseStatus.SUBMITTED);
     };
 
     const handleReflectionSaveDraft = (
         e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
+        setAlert('Your draft reflection has been saved.');
         updateResponse(reflection);
     };
 
@@ -177,7 +180,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 activeEvent={activeEvent}
                                 setActiveEvent={setActiveEvent}
                                 setActiveEventDetail={setActiveEventDetail}
-                                activeEventEdit={activeEventEdit}/>
+                                activeEventEdit={activeEventEdit}
+                                setAlert={setAlert}/>
                         ) : (<>
                             <p className={'lt-date-display'}>
                                 {reflection ? (
@@ -219,15 +223,21 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                         value={reflection}
                                         onChange={setReflection}/>
                                     <div className={'text-center mt-3'}>
-                                        <button
-                                            className={'btn btn-secondary mr-3'}
-                                            onClick={handleReflectionSaveDraft}>
-                                            Save as draft
-                                        </button>
+                                        {reflectionStatus === 'DRAFT' && (
+                                            <button
+                                                className={'btn btn-secondary mr-3'}
+                                                onClick={handleReflectionSaveDraft}>
+                                                Save as draft
+                                            </button>
+                                        )}
                                         <button
                                             type={'submit'}
                                             className={'btn btn-primary'}>
-                                            Submit response
+                                            {reflectionStatus === 'DRAFT' ? (
+                                                <>Submit reflection</>
+                                            ) : (
+                                                <>Update reflection</>
+                                            )}
                                         </button>
                                     </div>
                                 </form>
@@ -275,12 +285,13 @@ interface FacultySubPanelProps {
     setActiveEvent(d: EventData): void;
     setActiveEventDetail(d: EventData): void;
     activeEventEdit: EventData | null;
+    setAlert(alert: string | null): void;
 }
 
 const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     responseData, createFeedback, updateFeedback, responseLayers,
     toggleResponseVisibility, activeEvent, setActiveEvent, layerVisibility,
-    setActiveEventDetail, activeEventEdit
+    setActiveEventDetail, activeEventEdit, setAlert
 }: FacultySubPanelProps) => {
 
     const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);
@@ -316,12 +327,14 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
         e.preventDefault();
         if (activeResponse) {
             if (activeResponse.feedback) {
+                setAlert('Your feedback has been updated.');
                 updateFeedback(
                     activeResponse.feedback.pk,
                     activeResponse.pk,
                     feedback
                 );
             } else {
+                setAlert('Your feedback has been created.');
                 createFeedback(
                     activeResponse.pk,
                     feedback
@@ -403,7 +416,11 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                             <button
                                 type={'submit'}
                                 className={'btn btn-primary'}>
-                                Send
+                                {feedbackSubmittedDate ? (
+                                    <>Update feedback</>
+                                ) : (
+                                    <>Send feedback</>
+                                )}
                             </button>
                         </div>
                     </form>
