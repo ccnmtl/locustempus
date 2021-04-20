@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.urls.base import reverse
 from locustempus.main.models import Project
 from locustempus.main.tests.factories import (
-    CourseTestMixin, ProjectFactory
+    CourseTestMixin, ProjectFactory, ActivityFactory
 )
 
 
@@ -125,7 +125,9 @@ class ProjectTest(CourseTestMixin, TestCase):
 
     def test_list_project_students(self):
         """Test that students and faculty can list projects"""
+        # Make the first project an activity, the second not
         p1 = ProjectFactory(course=self.sandbox_course)
+        ActivityFactory(project=p1)
         p2 = ProjectFactory(course=self.sandbox_course)
         self.assertTrue(
             self.client.login(
@@ -136,7 +138,7 @@ class ProjectTest(CourseTestMixin, TestCase):
         response = self.client.get(
             reverse('course-detail-view', args=[self.sandbox_course.pk]))
         self.assertIn(p1, response.context['projects'])
-        self.assertIn(p2, response.context['projects'])
+        self.assertNotIn(p2, response.context['projects'])
         self.assertNotContains(response, 'Create New Project')
 
     def test_detail_project_faculty(self):
@@ -154,7 +156,9 @@ class ProjectTest(CourseTestMixin, TestCase):
         self.assertEqual(response.status_code, 200)
 
     def test_detail_project_students(self):
-        """Test that students can view a project"""
+        """
+        Test that students can not view a project if it is not yet an activity
+        """
         project = ProjectFactory.create(course=self.sandbox_course)
         self.assertTrue(
             self.client.login(
@@ -165,4 +169,4 @@ class ProjectTest(CourseTestMixin, TestCase):
         response = self.client.get(
             reverse('course-project-detail',
                     args=[self.sandbox_course.pk, project.pk]))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.status_code, 403)
