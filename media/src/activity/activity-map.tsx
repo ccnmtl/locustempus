@@ -12,6 +12,7 @@ import { PickInfo } from '@deck.gl/core/lib/deck';
 
 import { ActivityMapPane } from './activity-map-pane';
 import { LoadingModal } from '../project-activity-components/loading-modal';
+import { Notification } from '../project-activity-components/notification';
 
 import {get, put, post, del, getBoundedViewport } from '../utils';
 
@@ -124,6 +125,18 @@ export const ActivityMap: React.FC = () => {
 
     const [isMapLoading, setIsMapLoading] = useState<boolean>(true);
     const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
+
+    const [alertString, setAlert] = useState<string | null>(null);
+    const alertTimeoutId = useRef<number>(0);
+    const ALERT_DURUATION = 4000;
+
+    useEffect(() => {
+        if (alertString) {
+            window.clearTimeout(alertTimeoutId.current);
+            // eslint-disable-next-line scanjs-rules/call_setTimeout
+            alertTimeoutId.current = window.setTimeout(() => setAlert(null), ALERT_DURUATION);
+        }
+    }, [alertString]);
 
     // Project handling functions
     const setBaseMap = (baseMap: string) => {
@@ -786,6 +799,10 @@ export const ActivityMap: React.FC = () => {
     return (
         <>
             {(isMapLoading || isDataLoading) && <LoadingModal />}
+            {alertString &&
+                <Notification
+                    alertString={alertString}
+                    closeHandler={() => setAlert(null)} />}
             {projectData && (
                 <DeckGL
                     layers={[
@@ -824,6 +841,9 @@ export const ActivityMap: React.FC = () => {
                                 </div>
                             )}
                             <h2>{activeEvent.label}</h2>
+                            {/* TODO: byline, short description */}
+                            <p>{activeEvent.owner}</p>
+                            <p dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/>
                         </Popup>
                     )}
                     <div id='map-navigation-control'>
@@ -873,7 +893,8 @@ export const ActivityMap: React.FC = () => {
                     updateResponse={updateResponse}
                     createFeedback={createFeedback}
                     updateFeedback={updateFeedback}
-                    responseLayers={responseLayers}/>
+                    responseLayers={responseLayers}
+                    setAlert={setAlert}/>
             )}
         </>
     );

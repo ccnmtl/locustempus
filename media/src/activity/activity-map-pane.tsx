@@ -58,6 +58,7 @@ export interface ActivityMapPaneProps {
     responseLayers: Map<number, LayerData[]>;
     activeTab: number;
     setActiveTab(tab: number): void;
+    setAlert(alert: string | null): void;
 }
 
 export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneProps>((
@@ -71,7 +72,7 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         setActiveEvent, activeEventDetail, setActiveEventDetail,
         activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent,
         projectLayers, responseData, updateResponse, createFeedback,
-        updateFeedback, responseLayers, activeTab, setActiveTab
+        updateFeedback, responseLayers, activeTab, setActiveTab, setAlert
     }: ActivityMapPaneProps, forwardedRef) => {
 
     const projectPaneHeader = useRef<HTMLDivElement>(null);
@@ -205,7 +206,8 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             updateFeedback={updateFeedback}
             isFaculty={isFaculty}
             responseLayers={responseLayers}
-            paneHeaderHeight={projectPaneHeaderHeight}/>
+            paneHeaderHeight={projectPaneHeaderHeight}
+            setAlert={setAlert}/>
     };
 
     return (

@@ -306,6 +306,7 @@ class EventAPITest(CourseTestMixin, TestCase):
             label='An event label',
             layer=self.layer,
             description='A description',
+            created_by=self.faculty
         )
 
         self.assertTrue(

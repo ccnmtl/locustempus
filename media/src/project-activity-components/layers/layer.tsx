@@ -207,6 +207,8 @@ export const Layer: React.FC<LayerProps> = (
                                                 {val.label}
                                             </span>
                                         </div>
+                                        {/* TODO: byline */}
+                                        <p>{val.owner}</p>
                                         {activeEvent && activeEvent.pk === val.pk && (
                                             <button
                                                 type="button"

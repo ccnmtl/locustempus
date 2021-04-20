@@ -11,6 +11,7 @@ from django.db import models
 from django_registration.signals import user_activated
 from django.utils import timezone
 from django.conf import settings
+from django.template.defaultfilters import truncatechars_html
 
 DATE_FORMAT = '%B %-d, %Y at %-I:%M %p'
 
@@ -104,6 +105,12 @@ class Event(models.Model):
         related_name='+',
         null=True
     )
+
+    def owner(self):
+        return self.created_by.get_full_name() or self.created_by.username
+
+    def short_description(self):
+        return truncatechars_html(self.description, 100)
 
 
 class Location(models.Model):
