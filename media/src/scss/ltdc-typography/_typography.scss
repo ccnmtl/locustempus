@@ -36,8 +36,8 @@ h6 {
 }
 
 
-.hero-invitation {
-    .lt-button__text {
+.lt-button--lg {
+    .lt-button__label {
         text-transform: none;
         font-weight: 400;
         font-size: 1.2rem;
@@ -119,6 +119,7 @@ h6 {
     font-family: $font-family-base;
     font-weight: 500;
     font-size: 0.875rem;
+    line-height: 100%;
     text-transform: uppercase;
 }
 

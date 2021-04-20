@@ -3,7 +3,7 @@ import { EventData, LayerData } from '../common';
 import { ConfirmableAction } from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faEye, faEyeSlash, faAngleDown, faAngleRight, faEllipsisV, faMapMarker,
+    faEye, faEyeSlash, faAngleDown, faAngleRight, faBars, faMapMarker,
     faPencilAlt, faTrashAlt, faLightbulb
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -106,7 +106,7 @@ export const Layer: React.FC<LayerProps> = (
                     {layerVisibility && (
                         <button
                             onClick={handleLayerVisibility}
-                            className={'lt-icon-button lt-icon-button--transparent'}
+                            className={'lt-icon-button'}
                             aria-label={layerVisibility ? 'Hide layer' : 'Show layer'}>
                             <span className={'lt-icons lt-icon-button__icon'}
                                 aria-hidden='true'>
@@ -117,7 +117,7 @@ export const Layer: React.FC<LayerProps> = (
                     )}
                     <button
                         onClick={handleLayerCollapse}
-                        className={'lt-icon-button lt-icon-button--transparent'}
+                        className={'lt-icon-button'}
                         aria-label={isLayerCollapsed ? 'Expand layer' : 'Collapse layer'}>
                         <span className={'lt-icons lt-icon-button__icon'}
                             aria-hidden='true'>
@@ -129,13 +129,13 @@ export const Layer: React.FC<LayerProps> = (
                 {updateLayer && deleteLayer && (
                     <div ref={menuRef} className={'lt-menu-overflow trailing order-3'}>
                         <button onClick={handleLayerMenu}
-                            className={'lt-icon-button lt-icon-button--transparent'}
+                            className={'lt-icon-button'}
                             aria-label={openLayerMenu ?
                                 'Hide more actions' : 'Show more actions'}>
                             <span
                                 className={'lt-icons lt-icon-button__icon'}
                                 aria-hidden='true'>
-                                <FontAwesomeIcon icon={faEllipsisV}/>
+                                <FontAwesomeIcon icon={faBars}/>
                             </span>
                         </button>
                         {openLayerMenu && (
@@ -213,7 +213,7 @@ export const Layer: React.FC<LayerProps> = (
                                                 onClick={(): void => {
                                                     setActiveEventDetail(val);}}
                                                 className={'lt-button btn-sm trailing'}>
-                                                <span className='lt-button__text'>More</span>
+                                                <span className='lt-button__label'>More</span>
                                             </button>
                                         )}
                                     </li>

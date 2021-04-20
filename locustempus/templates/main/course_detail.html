@@ -7,10 +7,10 @@
 {% block page_actions %}
     <div class="lt-dashboard_actions">
         {% if is_faculty %}
-        <div class="lt-menu-overflow btn-group">
-            <button type="button" data-cy="manage-workspace" class="lt-button mr-1 lt-button--transparent dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+        <div class="lt-menu-overflow">
+            <button type="button" data-cy="manage-workspace" class="lt-button mr-4 dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
                 <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-cog.svg" class="active" /></span>
-                <span class='lt-button__text'>Manage</span>
+                <span class='lt-button__label'>Manage</span>
             </button>
             <div class="lt-menu lt-menu-overflow--bootstrap dropdown-menu">
                 <ul class="lt-list">
@@ -38,13 +38,13 @@
         {% endif %}
         <form method="post" class="lt-layout-toggle">
             {% csrf_token %}
-            <button type="submit" class="lt-button mr-1 lt-button--transparent {% if project_grid_layout %}active{% endif %}" {% if project_grid_layout %}disabled{% endif %}>
+            <button type="submit" class="lt-button mr-1 {% if project_grid_layout %}active{% endif %}" {% if project_grid_layout %}disabled{% endif %}>
                 <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" /></span>
-                <span class='lt-button__text'>Grid</span>
+                <span class='lt-button__label'>Grid</span>
             </button>
-            <button type="submit" class="lt-button lt-button--transparent {% if not project_grid_layout %}active{% endif %}" {% if not project_grid_layout %}disabled{% endif %}>
+            <button type="submit" class="lt-button {% if not project_grid_layout %}active{% endif %}" {% if not project_grid_layout %}disabled{% endif %}>
                 <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" /></span>
-                <span class='lt-button__text'>List</span>
+                <span class='lt-button__label'>List</span>
             </button>
         </form>
     </div>
@@ -56,9 +56,8 @@
 <div class="pt-3 px-3">
     <form action="{% url 'course-project-create' course.pk %}" method="post">
         {% csrf_token %}
-        <button class="btn lt-button" data-cy="project-create-button">
-            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
-            <span class='lt-button__text'>Create New Project</span>
+        <button data-cy="project-create-button" class="lt-button lt-button--solid">
+            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create New Project</span>
         </button>
     </form>
 </div>
@@ -143,9 +142,8 @@
                 </p>
             <form action="{% url 'course-project-create' course.pk %}" method="post">
                 {% csrf_token %}
-                <button class="btn lt-button" data-cy="project-create-button">
-                    <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
-                    <span class='lt-button__text'>Create New Project</span>
+                <button data-cy="project-create-button" class="lt-button lt-button--solid">
+                    <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create New Project</span>
                 </button>
             </form>
             </div>

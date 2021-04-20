@@ -15,8 +15,8 @@
         left: 50%;
         transform: translate(-50%, 0);
         z-index: 1040;
-        animation: opacity-fade-out 1s forwards;
-        animation-delay: 3s;
+        //animation: opacity-fade-out 1s forwards;
+        //animation-delay: 3s;
     }
     &--top.alert-dismissible .close {
         position: absolute;

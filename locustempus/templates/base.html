@@ -61,25 +61,18 @@
         <div class="header__shadow"></div>
         <nav class="navbar py-0 pl-0">
             <a href="/" class="navbar-brand py-0" data-cy="app-logo"><img class="header__logo" src="{{STATIC_URL}}img/lt-logo-bgdark.svg" alt="Locus Tempus logo"></a>
-        <div class="badge badge-secondary temp-marker">
-        <span class="d-none d-xl-inline">Extra large</span>
-        <span class="d-none d-lg-inline d-xl-none">Large</span>
-        <span class="d-none d-md-inline d-lg-none">Medium</span>
-        <span class="d-none d-sm-inline d-md-none">Small</span>
-        <span class="d-inline d-sm-none">Extra small</span>
-        </div>
             {% block usernav %}
             <div class="user-nav">
                 {% if request.user.is_anonymous %}
-                <a href="/accounts/login/?next=/" class="lt-button lt-button--transparent" data-cy="sign-in-small">
+                <a href="/accounts/login/?next=/" class="lt-button" data-cy="sign-in-small">
                     <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-signin.svg" class="user-nav__icon" /></span>
-                    <span class='lt-button__text'>Sign in</span>
+                    <span class='lt-button__label'>Sign in</span>
                 </a>
                 {% else %}
                 <div class="lt-menu-overflow btn-group">
-                    <button type="button" class="lt-button lt-button--transparent dropdown-toggle" data-cy="authenticated-user-choices" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="lt-button dropdown-toggle" data-cy="authenticated-user-choices" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-user.svg" class="user-nav__icon" /></span>
-                        <span class='lt-button__text'>
+                        <span class='lt-button__label'>
                         {% if user.first_name %}
                           Hello, {{ user.first_name }}!
                         {% else %}
@@ -144,7 +137,7 @@
                         {% endif %}
                     {% endfor %}
                 </div>
-                <button class="close lt-icon-button lt-button--transparent" data-dismiss="alert" aria-label="Close">
+                <button class="close lt-icon-button" data-dismiss="alert" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>

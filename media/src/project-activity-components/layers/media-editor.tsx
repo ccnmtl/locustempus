@@ -131,11 +131,11 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
                             <button
                                 onClick={handleClearImage}
                                 type={'button'}
-                                className={'lt-button'}>
+                                className={'lt-button lt-button--solid'}>
                                 <span className={'lt-icons lt-button__icon'}>
                                     <FontAwesomeIcon icon={faTrashAlt}/>
                                 </span>
-                                <span className={'lt-button__text'}>
+                                <span className={'lt-button__label'}>
                                     Remove this image
                                 </span>
                             </button>

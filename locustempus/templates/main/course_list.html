@@ -12,13 +12,13 @@ Workspaces
 <div class="lt-dashboard_actions">
     <form method="post" class="lt-layout-toggle">
         {% csrf_token %}
-        <button type="submit" class="lt-button mr-1 lt-button--transparent {% if course_grid_layout %}active{% endif %}" {% if course_grid_layout %}disabled{% endif %}>
+        <button type="submit" class="lt-button mr-1 {% if course_grid_layout %}active{% endif %}" {% if course_grid_layout %}disabled{% endif %}>
             <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" /></span>
-            <span class='lt-button__text'>Grid</span>
+            <span class='lt-button__label'>Grid</span>
         </button>
-        <button type="submit" class="lt-button lt-button--transparent {% if not course_grid_layout %}active{% endif %}" {% if not course_grid_layout %}disabled{% endif %}>
+        <button type="submit" class="lt-button {% if not course_grid_layout %}active{% endif %}" {% if not course_grid_layout %}disabled{% endif %}>
             <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" /></span>
-            <span class='lt-button__text'>List</span>
+            <span class='lt-button__label'>List</span>
         </button>
     </form>
 </div>
@@ -28,9 +28,8 @@ Workspaces
 
 {% if courses %}
 <div class="pt-3 px-3">
-    <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="btn lt-button">
-        <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
-        <span class='lt-button__text'>Create new workspace</span>
+    <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="lt-button lt-button--solid">
+        <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create new workspace</span>
     </a>
 </div>
 {% endif %}
@@ -100,9 +99,8 @@ Workspaces
                 <p class="create-prompt__instructions">
                 You can start by creating one
                 </p>
-                <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="btn lt-button">
-                    <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span>
-                    <span class='lt-button__text'>Create new workspace</span>
+                <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="lt-button lt-button--solid">
+                    <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create new workspace</span>
                 </a>
             </div>
         </div>
