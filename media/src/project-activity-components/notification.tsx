@@ -19,7 +19,7 @@ export const Notification: React.FC<NotificationProps> = (
             </div>
             <button
                 onClick={handleClick}
-                className="close lt-icon-button lt-button--transparent"
+                className="close lt-icon-button"
                 aria-label="Close">
                 <span aria-hidden="true">&times;</span>
             </button>

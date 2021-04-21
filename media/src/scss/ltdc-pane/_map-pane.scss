@@ -85,9 +85,9 @@
 .project-pane__header {
     position: -webkit-sticky;
     position: sticky;
-    background-color: #fff;
+    background-color: $primary-light;
     height: auto;
-    padding: 1rem 1rem 2rem 1rem;
+    padding: 1rem;
     z-index: 1000;
     display: flex;
     flex-direction: row;
@@ -114,7 +114,7 @@
 .pane-content-tabs {
     position: -webkit-sticky;
     position: sticky;
-    background-color: #fff;
+    background-color: $primary-light;
     border-bottom: 1px solid #ccc;
     z-index: 900;
 }
@@ -123,8 +123,23 @@
     margin: 0;
     padding-left: 1rem;
     padding-right: 1rem;
-    background-color: #fff;
+    background-color: $primary-light;
     text-align: center;
+    border-bottom-width: 3px;
+    border-bottom-style: solid;
+    border-bottom-color: transparent;
+    -moz-transition-property: border-bottom-color;
+    transition-property: border-bottom-color;
+    -moz-transition-duration: 300ms;
+    transition-duration: 300ms;
+    -moz-transition-timing-function: ease-in;
+    transition-timing-function: ease-in;
+}
+
+.pane-content-tabs .nav-item:hover {
+    border-bottom-width: 3px;
+    border-bottom-style: solid;
+    border-bottom-color: #ccc;
 }
 
 .nav-item:first-child {
@@ -134,14 +149,10 @@
 .pane-content-tabs .nav-item .nav-link {
     text-align: center;
     padding: 0.75rem 1rem;
-    border-radius: 3px;
     border: 0;
-    border-bottom-width: 3px;
-    border-bottom-style: solid;
-    border-bottom-color: transparent;
-    background-color: #fff;
-    -moz-transition-property: border-bottom-color, background-color;
-    transition-property: border-bottom-color, background-color;
+    background-color: $primary-light;
+    -moz-transition-property: background-color;
+    transition-property: background-color;
     -moz-transition-duration: 300ms;
     transition-duration: 300ms;
     -moz-transition-timing-function: ease-in;
@@ -151,13 +162,12 @@
 }
 
 .pane-content-tabs .nav-item .nav-link:hover {
-    border-bottom-color: #ccc;
-    background-color: #fff;
+    background-color: $primary-medium;
 }
 
 @keyframes background-fade {
   0% {
-    background-color: #BBDEFB;
+    background-color: $primary-medium;
   }
   100% {
     background-color: transparent;
@@ -173,18 +183,22 @@
   }
 }
 
-.pane-content-tabs .nav-item .nav-link.active {
-    border-bottom-width: 3px;
-    border-bottom-style: solid;
-    border-bottom-color: #333;
-    border-radius: 3px;
-    -moz-transition-property: border-bottom-color;
-    transition-property: border-bottom-color;
-    -moz-transition-duration: 200ms;
-    transition-duration: 200ms;
-    -moz-transition-timing-function: ease-in;
-    transition-timing-function: ease-in;
-    animation: background-fade 1s;
+.pane-content-tabs .nav-item {
+    .nav-link.active {
+        animation: background-fade 1s;
+    }
+    &.active {
+        border-bottom-width: 3px;
+        border-bottom-style: solid;
+        border-bottom-color: #333;
+        /* border-radius: 3px; */
+        -moz-transition-property: border-bottom-color;
+        transition-property: border-bottom-color;
+        -moz-transition-duration: 200ms;
+        transition-duration: 200ms;
+        -moz-transition-timing-function: ease-in;
+        transition-timing-function: ease-in;
+    }
 }
 
 .fade-load {

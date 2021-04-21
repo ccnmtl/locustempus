@@ -1,6 +1,20 @@
 // Color system
 
 $white:    #ffffff !default;
+$black:    #000000 !default;
+
+$blue-050:   #e3f2fd !default;
+$blue-100:   #bbdefb !default;
+$blue-200:   #90caf9 !default;
+$blue-900:   #0d47a1 !default;
+
+$green-050:  #e8f5e9 !default;
+$green-100:  #c8e6c9 !default;
+$green-200:  #a5d6a7 !default;
+$green-600:  #28a745 !default;
+$green-700:  #388e3c !default;
+$green-900:  #1b5e20 !default;
+
 $gray-ltds-100: #f5f5f5 !default;
 $gray-ltds-200: #eeeeee !default;
 $gray-ltds-300: #e0e0e0 !default;
@@ -10,7 +24,6 @@ $gray-ltds-600: #757575 !default;
 $gray-ltds-700: #616161 !default;
 $gray-ltds-800: #424242 !default;
 $gray-ltds-900: #212121 !default;
-$black:    #000000 !default;
 
 $red-900:  #b71c1c !default;
 
@@ -23,9 +36,17 @@ $ffffff: invert(100%) grayscale(100%) brightness(100%);
 
 // Theme
 
-$primary-ltds:        #01579b !default;
-$primary-ltds-light:  #a4a4a4 !default;
-$primary-ltds-dark:   #494949 !default;
+$primary-dark:    $blue-900 !default;
+$primary-medium:  $blue-200 !default;
+$primary-light:   $blue-100 !default;
+$primary-lightest:   $blue-050 !default;
+
+$secondary1-dark:    $green-600 !default;
+$secondary1-medium:  $green-100 !default;
+$secondary1-light:   $green-050 !default;
+
+$secondary2-dark:    $green-700 !default;
+$secondary2-medium:    $green-200 !default;
 
 $secondary-lt1:        #546e7a !default;
 $secondary-lt1-light:  #819ca9 !default;

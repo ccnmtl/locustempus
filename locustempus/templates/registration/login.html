@@ -11,10 +11,12 @@
         </div>
         <div class="loginbox__body--cuid">
         {% if CAS_BASE %}
-            <p>If you have a Columbia University Network ID (UNI)</p>
+            <h2 class="h6 mb-3 text-center">If you have a Columbia University Network ID (UNI)</h2>
             <form class="text-center" method="get" action="{{CAS_BASE}}cas/login">
                 <input type="hidden" name="destination" value="http{% if request.is_secure %}s{% endif %}://{{ request.get_host }}/accounts/caslogin/?next={{ next }}" />
-                <input class="btn btn-primary" data-cy="columbia-login" type="submit" value="Columbia Sign In" />
+                <button class="lt-button lt-button--priority mt-3" data-cy="columbia-login" type="submit">
+                    <span class='lt-button__label'>Columbia UNI Sign In</span>
+                </button>
                 <p class="small pt-2"><a href="http://cuit.columbia.edu/cuit/manage-my-uni" title="Learn more about UNI" target="_blank">What is a UNI?</a></p>
             </form>
             <hr class="seperator" />
@@ -27,7 +29,7 @@
             </div>
         {% endif %}
 
-        <p>If you have a Locus Tempus account</p>
+        <h2 class="h6 mb-3 text-center">If you have a Locus Tempus account</h2>
         <form class="text-center" name="login_local" method="post" action=".">
             {% csrf_token %}
             <div id="login-local-form__field-wrapper" class="login-local-form" {% if not form.errors %}style="display: none"{% endif %}>
@@ -43,8 +45,12 @@
                     <input id="id_password" name="password" type="password" class="form-control" data-cy="guest-login-password">
                 </div>
             </div>
-            <input id="guest-login" class="btn btn-primary" data-cy="guest-login" type="button" value="Account Sign In" {% if form.errors %}style="display: none"{% endif %}/>
-            <input id="login-local-form__submit" class="btn btn-primary login-local-form" data-cy="guest-login-submit" type="submit" value="Sign In" {% if not form.errors %}style="display: none;"{% endif %} />                        
+            <button id="guest-login" class="lt-button lt-button--priority mt-3" data-cy="guest-login" type="button" {% if form.errors %}style="display: none"{% endif %}>
+                <span class='lt-button__label'>Account Sign In</span>
+            </button>
+            <button id="login-local-form__submit" class="lt-button lt-button--priority mt-3" data-cy="guest-login-submit" type="submit" {% if not form.errors %}style="display: none;"{% endif %}>
+                <span class='lt-button__label'>Account Sign In</span>
+            </button>
             <input type="hidden" name="next" value="{{ next|urlencode }}" />
             <p class="small pt-2"><a href="/accounts/password_reset/" data-cy="forgot-password">Forgot Password?</a></p>
         </form>

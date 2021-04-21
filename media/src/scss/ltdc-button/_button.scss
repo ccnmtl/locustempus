@@ -10,16 +10,39 @@
     align-items: center;
     justify-content: center;
     vertical-align: middle;
+    &--priority {
+        @include button-darkbg-typography;
+        background-color: $secondary1-dark;
+        border: 1px solid $secondary1-dark;
+        &:hover {
+            @include button-darkbg-typography;
+            background-color: $secondary2-dark;
+            border: 1px solid $secondary2-dark;
+        }
+    }
     &--solid {
-        background-color: #efefef;
-        border: 1px solid #efefef;
+        @include button-lightbg-typography;
+        background-color: $secondary1-medium;
+        border: 1px solid $secondary1-medium;
+        &:hover {
+            @include button-mediumbg-typography;
+            background-color: $secondary2-medium;
+            border: 1px solid $secondary2-medium;
+        }
+    }
+    &--priority-outlined {
+        @include button-lightbg-typography;
+        background-color: transparent;
+        border: 1px solid $secondary1-medium;
+        &:hover {
+            @include button-darkbg-typography;
+            background-color: $secondary1-dark;
+            border: 1px solid $secondary1-dark;
+        }
     }
     &--outlined {
         background-color: transparent;
         border: 1px solid #efefef;
-    }
-    &--transparent { /* to be removed later */
-        border: 1px solid transparent;
     }
     &--lg {
         min-width: 9rem;
