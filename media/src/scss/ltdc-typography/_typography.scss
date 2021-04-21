@@ -36,24 +36,6 @@ h6 {
 }
 
 
-.lt-button--lg {
-    .lt-button__label {
-        text-transform: none;
-        font-weight: 400;
-        font-size: 1.2rem;
-        @include media-breakpoint-up(sm) {
-            font-size: 1.2rem;
-        }
-        @include media-breakpoint-up(md) {
-            font-size: 1.2rem;
-        }
-        @include media-breakpoint-up(lg) {
-            font-size: 1.625rem;
-        }
-    }
-}
-
-
 // Dashboard
 
 .nav-dashboard__h1 {
@@ -129,6 +111,36 @@ h6 {
     font-weight: 600;
     text-transform: none;
 }
+
+@mixin button-darkbg-typography {
+    color: $white;
+}
+
+@mixin button-lightbg-typography {
+    color: $green-900;
+}
+
+@mixin button-mediumbg-typography {
+    color: $black;
+}
+
+.lt-button--lg {
+    .lt-button__label {
+        text-transform: none;
+        font-weight: 400;
+        font-size: 1.2rem;
+        @include media-breakpoint-up(sm) {
+            font-size: 1.2rem;
+        }
+        @include media-breakpoint-up(md) {
+            font-size: 1.2rem;
+        }
+        @include media-breakpoint-up(lg) {
+            font-size: 1.625rem;
+        }
+    }
+}
+
 
 // List
 

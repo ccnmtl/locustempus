@@ -117,7 +117,9 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
             <ul className='nav nav-tabs pane-content-tabs' style={{ top: paneHeaderHeight }}>
                 {['Overview', 'Base Layers', responseTabTitle].map((el, idx) => {
                     return (
-                        <li className='nav-item button' key={idx}>
+                        <li className={activeTab == idx ?
+                            'nav-item active button' : 'nav-item button'}
+                        key={idx}>
                             <a className={activeTab == idx ?
                                 'nav-link active' : 'nav-link'}
                             href='#'

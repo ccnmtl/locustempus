@@ -3,7 +3,7 @@
     padding: 0.5rem 0;
     margin: 0;
     border: 0;
-    border-bottom: 1px solid #ccc;
+    background-color: $primary-light;
 }
 
 .nav-dashboard__h1 {
@@ -44,5 +44,5 @@
 .nav-dashboard__h1 .breadcrumb-item a:hover {
     text-decoration: none;
     border-radius: 0.5rem;
-    background-color: #efefef;
+    background-color: $primary-medium;
 }

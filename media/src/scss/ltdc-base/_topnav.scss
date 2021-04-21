@@ -1,6 +1,6 @@
 header {
     @extend .fixed-top;
-    background-color: $primary-ltds;
+    background-color: $primary-dark;
     height: 4.125rem;
 }
 
@@ -19,7 +19,7 @@ header {
         position: absolute;
         top: 0;
         left: 0;
-        background-color: $primary-ltds;
+        background-color: $primary-dark;
         opacity: 0.6;
     }
     &__logo { /* .header__logo */
@@ -32,7 +32,7 @@ header {
 
 .header--homepage.shrink {
     height: 4.125rem;
-    background-color: $primary-ltds;
+    background-color: $primary-dark;
 }
 
 .header--homepage.shrink .header__logo,
