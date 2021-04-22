@@ -19,6 +19,12 @@
             background-color: $secondary2-dark;
             border: 1px solid $secondary2-dark;
         }
+        &:focus {
+            @include button-darkbg-typography;
+            background-color: $secondary2-dark;
+            border: 1px solid $secondary2-dark;
+            box-shadow: $focus-box-shadow-secondary;
+        }
     }
     &--solid {
         @include button-lightbg-typography;
@@ -28,6 +34,12 @@
             @include button-mediumbg-typography;
             background-color: $secondary2-medium;
             border: 1px solid $secondary2-medium;
+        }
+        &:focus {
+            @include button-mediumbg-typography;
+            background-color: $secondary2-medium;
+            border: 1px solid $secondary2-medium;
+            box-shadow: $focus-box-shadow-secondary;
         }
     }
     &--priority-outlined {

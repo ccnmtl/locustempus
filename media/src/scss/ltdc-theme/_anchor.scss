@@ -1,0 +1,17 @@
+a:not([class]) {
+    color: $link-color;
+    text-decoration: none;
+    &:hover {
+        color: $link-hover-color;
+        text-decoration: underline;
+        background-color: $primary-lightest;
+    }
+    &:focus {
+        color: $link-focus-color;
+        text-decoration: underline;
+        border-radius: 0.125rem;
+        //outline: 1px solid $link-color;
+        outline: 0;
+        box-shadow: $focus-box-shadow-primary;
+    }
+}

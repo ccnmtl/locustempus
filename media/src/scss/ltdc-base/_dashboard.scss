@@ -2,39 +2,3 @@
     padding: 1rem;
     margin: 0 0 5rem 0;
 }
-
-.lt-card {
-    @extend .card;
-    margin: 0.5rem 0;
-    height: 100%;
-    &__body {
-        @extend .card-body;
-    }
-    &__title {
-        @extend .card-title;
-        @extend %heading;
-        @include font-size($h5-font-size);
-    }
-    &__term {
-        @extend .card-text;
-        margin-top: -0.5rem;
-    }
-    &__text {
-        @extend .card-text;
-    }
-    &__list-group {
-        margin-top: 1rem;
-    }
-    &__list-group-item {
-        margin: 0;
-        padding: 0.25rem 0.5rem;
-        border: 0;
-        border-right: 1px solid #ccc;
-    }
-    &__list-group-item:first-child {
-        padding-left: 0;
-    }
-    &__list-group-item:last-child {
-        border-right: 1px solid transparent;
-    }
-}

@@ -1,6 +1,6 @@
 %section--homepage {
     padding: 4rem 0;
-    border-top: 1px solid $gray-ltds-300;
+    border-top: 1px solid $gray-300;
     @extend .container;
     @include media-breakpoint-up(lg) {
         border-top: none;

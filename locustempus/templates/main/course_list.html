@@ -42,13 +42,12 @@ Workspaces
                 <div class="lt-card">
                     <div class="lt-card__body">
                         <h3 class="lt-card__title"><a data-cy="workspace-title-link" href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
-                        <p class="lt-card__term">{{ course.info.termyear }}</p>
+                        <p class="lt-card__term">Term: {% if course.info.termyear %}{{ course.info.termyear }}{% else %} None {% endif %}</p>
                         <p class="lt-card_text">Authors: {% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</p>
                         <p class="lt-card__text text-muted">Workspace description not implemented yet.</p> {# not hooked up #}
                         <p class="lt-card__text">You’re {% if user in course.faculty %}an Author.{% else %}a Contributor.{% endif %}</p>
                         <ul class="list-group list-group-horizontal-sm lt-card__list-group">
                             <li class="list-group-item lt-card__list-group-item">{{ course.projects.count }} Projects</li>
-                            <li class="list-group-item lt-card__list-group-item">{{ course.members.count }} Contributors</li>
                         </ul>
                     </div>
                 </div>
@@ -77,7 +76,6 @@ Workspaces
                         <td class="text-nowrap">
                             <ul class="list-group list-group-horizontal-sm lt-card__list-group m-0">
                                 <li class="list-group-item lt-card__list-group-item py-0">{{ course.projects.count }} Projects</li>
-                                <li class="list-group-item lt-card__list-group-item py-0">{{ course.members.count }} Contributors</li>
                             </ul>
                         </td>
                     </tr>
