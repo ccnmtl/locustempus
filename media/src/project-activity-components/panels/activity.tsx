@@ -131,9 +131,9 @@ export const Activity: React.FC<ActivityProps> = (
                     </form>
                 ) : (
                     <>
-                        <p className={'text-muted'}>
+                        <div className={'lt-banner'} role={'banner'}>
                             There is no activity assigned on this project.
-                        </p>
+                        </div>
                         <button
                             data-cy={'create-activity'}
                             type={'submit'}

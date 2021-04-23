@@ -26,6 +26,26 @@ $green-600:  #28a745 !default;
 $green-700:  #388e3c !default;
 $green-900:  #1b5e20 !default;
 
+$amber-050:  #fff8e1 !default;
+$amber-100:  #ffecb3 !default;
+$amber-200:  #ffe082 !default;
+$amber-300:  #ffd54f !default;
+$amber-400:  #ffca28 !default;
+$amber-500:  #ffc107 !default;
+$amber-600:  #ffb300 !default;
+$amber-700:  #ffa000 !default;
+$amber-800:  #ff8f00 !default;
+$amber-900:  #ff6f00 !default;
+$amber-a100:  #ffe57f !default;
+$amber-a200:  #ffd740 !default;
+$amber-a400:  #ffc400 !default;
+$amber-a700:  #ffab00 !default;
+
+$yellow-050:   #fffde7 !default;
+$yellow-100:   #fff9c4 !default;
+$yellow-200:   #fff59d !default;
+$yellow-300:   #fff176 !default;
+
 $gray-050:  #fafafa !default;
 $gray-100:  #f5f5f5 !default;
 $gray-200:  #eeeeee !default;
@@ -38,10 +58,17 @@ $gray-800:  #424242 !default;
 $gray-900:  #212121 !default;
 $gray-ccc:  #cccccc !default;
 $gray-999:  #999999 !default;
+$gray-666:  #666666 !default;
 
 $red-900:  #b71c1c !default;
 
+
 // SVG filters
+
+$green-900-svg: invert(25%) sepia(18%) saturate(2758%) hue-rotate(79deg) brightness(95%) contrast(84%);
+$amber-800-svg: invert(58%) sepia(86%) saturate(2221%) hue-rotate(360deg) brightness(102%) contrast(107%);
+$black-svg: invert(0%) grayscale(0%) brightness(0%);
+
 
 $cccccc: invert(100%) grayscale(100%) brightness(80%);
 $darksvg: invert(0%) grayscale(0%) brightness(0%);
@@ -71,6 +98,18 @@ $focus-box-shadow-secondary: 0 0 0 0.1875rem rgba($green-600, 0.5) !default;
 
 $border-color: #d0d0d0 !default;
 
+$helper-color: $gray-999 !default;
+$banner-color: $gray-666 !default;
+
+$surface-dark: $amber-800 !default;
+$surface-medium: $amber-400 !default;
+$surface-light:  $amber-200 !default;
+$surface-lighter:  $amber-100 !default;
+$surface-lightest:  $amber-050 !default;
+
+$surface-muted: $gray-100 !default;
+
+
 $secondary-lt1:        #546e7a !default;
 $secondary-lt1-light:  #819ca9 !default;
 $secondary-lt1-dark:   #29434e !default;
@@ -80,3 +119,4 @@ $surface-ltds:    $white !default;
 
 $on-background:  $gray-900 !default;
 $on-surface:     $gray-900 !default;
+$on-surface-muted:     $gray-600 !default;

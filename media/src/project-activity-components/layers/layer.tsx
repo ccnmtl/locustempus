@@ -96,7 +96,7 @@ export const Layer: React.FC<LayerProps> = (
     return (
         <div
             className={'lt-list-group ' +
-                (isActiveLayer ? 'lt-list-group--active' : '')}
+                (isActiveLayer ? 'lt-list-group--active' : 'lt-list-group--inactive')}
             onClick={handleSetActiveLayer}>
             <div className={'lt-list-group__header'}>
                 {/* Layer title */}
@@ -184,7 +184,7 @@ export const Layer: React.FC<LayerProps> = (
                             </div>
                         )}
                     </div>
-                ) }
+                )}
             </div>
             { !isLayerCollapsed && (
                 <>
@@ -201,14 +201,12 @@ export const Layer: React.FC<LayerProps> = (
                                             onClick={(): void => {setActiveEvent(val);}}>
                                             <span className={'lt-icons lt-list-item__icon'}
                                                 aria-hidden='true'>
-                                                <FontAwesomeIcon icon={faMapMarker}/>
+                                                <FontAwesomeIcon icon={faMapMarker}/> {/* eslint-disable-line max-len */}
                                             </span>
                                             <span className={'lt-list-item__primary-text'}>
                                                 {val.label}
                                             </span>
                                         </div>
-                                        {/* TODO: byline */}
-                                        <p>{val.owner}</p>
                                         {activeEvent && activeEvent.pk === val.pk && (
                                             <button
                                                 type="button"
@@ -243,7 +241,7 @@ export const Layer: React.FC<LayerProps> = (
                         </>
                     )}
                 </>
-            ) }
+            )}
         </div>
     );
 };

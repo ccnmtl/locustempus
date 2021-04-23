@@ -1,3 +1,26 @@
+.lt-helper {
+    margin: 0 0 0.5rem 0;
+    padding: 0;
+    border: 0;
+    color: $helper-color;
+    font-style: italic;
+    &--line {
+        font-size: ($font-size-base * 0.8125);
+    }
+    &--block {
+        font-size: $font-size-base;
+    }
+}
+
+.lt-banner {
+    margin: 0.5rem 0;
+    padding: 0;
+    border: 0;
+    color: $banner-color;
+    font-size: $font-size-base;
+    font-style: italic;
+}
+
 .lt-alert {
     margin: auto;
     padding: 0.875rem 1rem;
@@ -15,8 +38,8 @@
         left: 50%;
         transform: translate(-50%, 0);
         z-index: 1040;
-        //animation: opacity-fade-out 1s forwards;
-        //animation-delay: 3s;
+        animation: opacity-fade-out 1s forwards;
+        animation-delay: 3s;
     }
     &--top.alert-dismissible .close {
         position: absolute;
@@ -57,6 +80,7 @@
         font-style: italic;
         padding: 0;
         margin: 0;
+        color: $banner-color;
     }
     &--transparent {
         background-color: transparent;
@@ -66,11 +90,16 @@
 
 .lt-banner-tip-prompt {
     @extend %banner-base;
-    background-color: #fff9c4;
-    border: 1px solid #f0c36d;
+    margin: 1rem 0;
+    background-color: $yellow-100;
+    border: 1px solid $surface-medium;
     .lt-banner__icon {
-        filter: invert(62%) sepia(35%) saturate(5159%) hue-rotate(2deg) brightness(104%) contrast(102%);
+        //filter: invert(62%) sepia(35%) saturate(5159%) hue-rotate(2deg) brightness(104%) contrast(102%);
+        filter: $amber-800-svg;
+        -webkit-filter: $amber-800-svg;
+        -moz-filter: $amber-800-svg;
     }
+    
     &::after {
         background-color: inherit;
         border-right: inherit;
@@ -89,6 +118,7 @@
 
 .lt-banner-tip-muted {
     @extend %banner-base;
+    margin: 1rem 0;
     background-color: #efefef;
     border: 1px solid #e3e3e3;
 }

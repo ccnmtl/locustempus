@@ -57,7 +57,7 @@
     <form action="{% url 'course-project-create' course.pk %}" method="post">
         {% csrf_token %}
         <button data-cy="project-create-button" class="lt-button lt-button--solid">
-            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create New Project</span>
+            <span class='lt-icons lt-button__icon lt-button--svg'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create New Project</span>
         </button>
     </form>
 </div>
@@ -143,7 +143,7 @@
             <form action="{% url 'course-project-create' course.pk %}" method="post">
                 {% csrf_token %}
                 <button data-cy="project-create-button" class="lt-button lt-button--solid">
-                    <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create New Project</span>
+                    <span class='lt-icons lt-button__icon lt-button--svg'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create New Project</span>
                 </button>
             </form>
             </div>

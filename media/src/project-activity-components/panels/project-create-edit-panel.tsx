@@ -87,9 +87,11 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__name'}>Title</label>
                         {isNewProject && (
-                            <small  id="form-field__description-help" className={'form-text text-muted mb-2 mt-0'}> {/* eslint-disable-line max-len */}
-                                Name your new project.
-                            </small>
+                            <div className={'lt-helper'}>
+                                <div className={'lt-helper--line'} id={'helper-field__name'}>
+                                    Name your new project.
+                                </div>
+                            </div>
                         )}
                         <input
                             data-cy={'edit-project-title'}
@@ -98,7 +100,9 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             className={'form-control'}
                             value={title}
                             autoFocus={true}
-                            onChange={handleTitle}/>
+                            onChange={handleTitle}
+                            aria-controls={'helper-field__name'}
+                            aria-describedby={'helper-field__name'}/>
                     </div>
                     <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group'}>
@@ -106,10 +110,13 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             About this project
                         </label>
                         {isNewProject && (
-                            <small id="form-field__description-help" className={'form-text text-muted mb-2 mt-0'}> {/* eslint-disable-line max-len */}
-                                Describe what your new project is about.
-                                You can return later to fill this out.
-                            </small>
+                            <div className={'lt-helper'}>
+                                <div className={'lt-helper--line'}
+                                    id={'helper-field__description'}>
+                                    Describe what your new project is about.
+                                    You can return later to fill this out.
+                                </div>
+                            </div>
                         )}
                         <ReactQuill
                             data-cy={'edit-project-description'}
@@ -122,10 +129,14 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                         <div className={'form-group pane-form-group'}>
                             <fieldset>
                                 <legend className={'label'}>Base map</legend>
-                                <small id="form-field__description-help" className={'form-text text-muted mb-2 mt-0'}> {/* eslint-disable-line max-len */}
-                                The default base map is “Light.” You can select a different one,
-                                or return later if you change your mind.
-                                </small>
+                                <div className={'lt-helper'}>
+                                    <div className={'lt-helper--line'}
+                                        id={'helper-field__base-map'}>
+                                        The default base map is “Light.”
+                                        You can select a different one,
+                                        or return later if you change your mind.
+                                    </div>
+                                </div>
                                 <ul className={'d-flex flex-row flex-wrap md-radio basemap__listview'} role='radiogroup'> {/* eslint-disable-line max-len */}
                                     {[...BASE_MAPS.keys()].map((val, idx) => {
                                         return (

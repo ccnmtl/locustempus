@@ -170,11 +170,6 @@ h6 {
   @include font-size($font-size-base * 1.5);
 }
 
-.text-muted {
-    color: #aaa !important;
-    font-style: italic;
-}
-
 .lt-date-display {
     display: block;
     margin: 0.25rem 0 0.5rem 0;

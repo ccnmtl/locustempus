@@ -135,11 +135,19 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                     this larger panel */}
                 {activeTab === OVERVIEW && activity && (
                     <div className='fade-load'>
-                        {description && (
+                        {description ? (
                             <section className={'lt-pane-section'}>
                                 <div dangerouslySetInnerHTML={{__html: description}}/>
                             </section>
-                        )}
+                        ) : (<>
+                            {isFaculty && (
+                                <section className={'lt-pane-section'}>
+                                    <div className={'lt-banner'} role={'banner'}>
+                                        There is no description for this project.
+                                    </div>
+                                </section>
+                            )}
+                        </>)}
                         <section className={'lt-pane-section'}>
                             <Activity
                                 activity={activity}

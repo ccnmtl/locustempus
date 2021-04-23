@@ -9,7 +9,7 @@
     @include list-layer-typography;
     margin-left: 0.875rem;
     &-item--active {
-        background-color: #e5e5e5;
+        background-color: $surface-lighter;
         color: #c00;
     }
 }
@@ -44,8 +44,14 @@
     &__link:focus {
         outline: none;
         border-color: transparent;
+        box-shadow: $focus-box-shadow-primary;
+        background-color: transparent;
+    }
+    &__link:active {
+        outline: none;
+        border-color: transparent;
         box-shadow: none;
-        background-color: #e5e5e5;
+        background-color: transparent;
     }
     &__primary-text {
         text-overflow: ellipsis;
