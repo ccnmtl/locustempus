@@ -33,3 +33,27 @@
         color: #212529;
     }
 }
+
+// SVG image color in django templates behave differently than
+// that in React templates. Special class .lt-button--svg for
+// django template svg icons
+
+.lt-button {
+    &--solid {
+        .lt-button--svg {
+            filter: $green-900-svg;
+            -webkit-filter: $green-900-svg;
+            -moz-filter: $green-900-svg;
+        }
+        &:hover .lt-button--svg {
+            filter: $black-svg;
+            -webkit-filter: $black-svg;
+            -moz-filter: $black-svg;
+        }
+        &:focus .lt-button--svg {
+            filter: $black-svg;
+            -webkit-filter: $black-svg;
+            -moz-filter: $black-svg;
+        }
+    }
+}

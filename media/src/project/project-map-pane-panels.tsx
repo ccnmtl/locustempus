@@ -71,7 +71,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             {description ? (
                                 <div dangerouslySetInnerHTML={{__html: description}}/>
                             ) : (
-                                <div className={'text-muted'}>
+                                <div className={'lt-banner'} role={'banner'}>
                                     There is no description for this project.
                                 </div>
                             )}

@@ -1,11 +1,25 @@
 .lt-list-group {
-    margin-top: 0.5rem;
+    margin-top: 0.75rem;
     padding-left: 1rem;
     padding-right: 1rem;
-    border: 1px solid #ccc;
+    border: 1px solid transparent;
+    position: relative;
+    color: $on-background;
     &--active {
-        background-color: #dddddd;
-        border-color: #333;
+        color: $on-surface;
+        background-color: $surface-lightest;
+        border-color: $surface-medium;
+        .lt-list-group__header {
+            background-color: $surface-light;
+        }
+    }
+    &--inactive {
+        color: $on-surface-muted;
+        background-color: $surface-muted;
+        border-color: $surface-muted;
+        .lt-list-group__header {
+            background-color: $surface-muted;
+        }
     }
     &__header {
         padding-top: 0.25rem;
