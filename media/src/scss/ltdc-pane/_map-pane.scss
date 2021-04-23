@@ -109,6 +109,11 @@
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
+    &--event {
+        color: $on-surface;
+        background-color: $surface-light;
+        border-color: $surface-medium;
+    }
 }
 
 .pane-content-tabs {

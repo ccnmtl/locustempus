@@ -190,7 +190,7 @@
     }
     &__image {
         display: block;
-        margin: 0.5rem 0 1rem 0;
+        margin: 0 -1rem 1rem -1rem;
     }
     &__image img {
         width: 100%;
@@ -223,7 +223,18 @@
         -webkit-filter: grayscale(100%) brightness(5) brightness(80%);
         filter: grayscale(100%) brightness(5) brightness(80%);
     }
+    .event-attr {
+        padding-bottom: 1rem;
+    }
 }
+
+figcaption {
+    margin: 0.625rem 1rem;
+    .img__caption {
+        padding-right: 1rem;
+    }
+}
+
 
 .lt-response-summary {
     padding: 1rem 0.5rem 0.5rem 0.5rem;

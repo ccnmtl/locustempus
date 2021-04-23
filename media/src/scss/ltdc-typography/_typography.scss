@@ -95,6 +95,18 @@ h6 {
   @include font-size($font-size-base * 1.125);
 }
 
+.mapboxgl-popup-content .event-attr {
+  @include font-size($font-size-base * 0.8125);
+  color: $gray-600;
+  line-height: 1;
+}
+
+.mapboxgl-popup-content .event-summary > * {
+  @include font-size($font-size-base * 0.8125);
+  color: $on-background;
+  line-height: 1.3;
+}
+
 // Button
 
 @mixin button-typography {
@@ -177,4 +189,20 @@ h6 {
     line-height: 1.4;
     font-size: 0.8rem;
     font-weight: 400;
+}
+
+figcaption {
+  @include font-size($font-size-base * 0.875);
+  color: $on-background;
+  line-height: 1.3;
+    .img__attr {
+    @include font-size($font-size-base * 0.75);
+        color: $gray-500;
+    }
+}
+
+.lt-pane-section .event-attr {
+  @include font-size($font-size-base);
+  color: $gray-600;
+  font-weight: 500;
 }
