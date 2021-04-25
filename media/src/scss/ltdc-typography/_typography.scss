@@ -90,6 +90,15 @@ h6 {
     margin: 0;
 }
 
+.pane-content-tabs {
+    .nav-link {
+        color: $gray-700;
+        &.active {
+            color: $primary-dark;
+        }
+    }
+}
+
 .mapboxgl-popup-content h2 {
 @extend %heading;
   @include font-size($font-size-base * 1.125);

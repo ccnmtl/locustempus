@@ -437,11 +437,13 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 </div>
             </section>
         </>) : (<>
+            <section className={'lt-pane-section'}>
             {responseData.length === 1 ? (
                 <p>There is {responseData.length} response to this activity.</p>
             ) : (
                 <p>There are {responseData.length} responses to this activity.</p>
             )}
+            </section>
 
             {responseData.map((el) => {
                 const responseLayers = el.layers.reduce((acc: boolean[], val) => {

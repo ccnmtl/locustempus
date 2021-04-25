@@ -81,7 +81,8 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
 
     return (
         <>
-            <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
+            <div className={'pane-content-header pane-content-header--event'}
+                style={{ top: paneHeaderHeight }}>
                 <h2>{activeLayerTitle} &gt; Edit event marker</h2>
             </div>
             <div className={'pane-content-body'}>
@@ -138,11 +139,12 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                         <div className={'lt-cr-actions__buttons'}>
                             <button
                                 type={'button'}
-                                onClick={handleCancel} className={'btn btn-danger mr-3'}>
-                                Cancel
+                                onClick={handleCancel}
+                                className={'lt-button lt-button--outlined mr-3'}>
+                                <span className={'lt-button__label'}>Cancel</span>
                             </button>
-                            <button type={'submit'} className={'btn btn-primary'}>
-                                Save
+                            <button type={'submit'} className={'lt-button lt-button--priority'}>
+                                <span className={'lt-button__label'}>Save changes</span>
                             </button>
                         </div>
                     </div>

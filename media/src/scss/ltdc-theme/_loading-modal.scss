@@ -45,10 +45,10 @@
     &--progress {
         width: 3rem;
         height: 3rem;
-        border: 6px solid #ccc;
+        border: 6px solid $secondary1-medium;
         border-radius: 50%;
-        border-top: 6px solid #333;
-        background-color: #fff;
+        border-top: 6px solid $secondary2-dark;
+        background-color: $white;
         -webkit-animation: spin 2s linear infinite; /* Safari */
         animation: spin 0.5s linear infinite;
     }

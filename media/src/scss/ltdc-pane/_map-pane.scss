@@ -98,12 +98,13 @@
 }
 
 .pane-content-header {
+    @extend .elevation-6;
     position: -webkit-sticky;
     position: sticky;
     padding: 0.9375rem 1rem;
     margin: 0;
+    border: 0;
     background-color: #efefef;
-    border-bottom: 1px solid #ccc;
     z-index: 900;
     display: -ms-flexbox;
     display: flex;
@@ -114,13 +115,18 @@
         background-color: $surface-light;
         border-color: $surface-medium;
     }
+    .lt-button-back:hover,
+    .lt-button-back:focus {
+        background-color: $amber-600;
+    }
 }
 
 .pane-content-tabs {
+    @extend .elevation-6;
     position: -webkit-sticky;
     position: sticky;
     background-color: $primary-light;
-    border-bottom: 1px solid #ccc;
+    border: 0;
     z-index: 900;
 }
 
@@ -130,9 +136,7 @@
     padding-right: 1rem;
     background-color: $primary-light;
     text-align: center;
-    border-bottom-width: 3px;
-    border-bottom-style: solid;
-    border-bottom-color: transparent;
+    border-bottom: 3px solid transparent;
     -moz-transition-property: border-bottom-color;
     transition-property: border-bottom-color;
     -moz-transition-duration: 300ms;
@@ -193,10 +197,7 @@
         animation: background-fade 1s;
     }
     &.active {
-        border-bottom-width: 3px;
-        border-bottom-style: solid;
-        border-bottom-color: #333;
-        /* border-radius: 3px; */
+        border-bottom: 3px solid  $primary-dark;
         -moz-transition-property: border-bottom-color;
         transition-property: border-bottom-color;
         -moz-transition-duration: 200ms;
@@ -329,7 +330,7 @@ padding-bottom: 0.5rem;
 }
 
 .pane-form-group:focus-within {
-    background-color: #fafafa;
+    background-color: rgba($primary-lightest, 0.6);
     box-shadow: 0 0 0.2rem rgba(0,0,0,0.3);
     outline: 0;
 }
@@ -486,10 +487,10 @@ padding-bottom: 0.5rem;
         position: absolute;
         top: 0;
         left: 0;
-        background-color: #ccc;
+        background-color: $surface-lighter;
         width: 100%;
         height: 100%;
-        opacity: 0.7;
+        opacity: 1;
     }
     &__buttons {
         position: absolute;

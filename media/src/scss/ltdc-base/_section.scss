@@ -201,7 +201,7 @@
         width: 100%;
         margin: 0;
         padding: 0;
-        border: 0;
+        border: $border-color;
         z-index: 0 !important;
     }
     &__thumbnail img {
@@ -214,14 +214,14 @@
         height: 6rem;
         margin: 0;
         padding: 1rem;
-        border: 4px dashed #e0e0e0;
+        border: 4px dashed $black;
         color: #ccc;
-        background-image: url('/media/img/image-fff.svg');
+        background-image: url('/media/img/image-placeholder.svg');
         background-repeat: no-repeat;
         background-position: center center;
         background-size: contain;
-        -webkit-filter: grayscale(100%) brightness(5) brightness(80%);
-        filter: grayscale(100%) brightness(5) brightness(80%);
+        -webkit-filter: $gray-400-svg;
+        filter: $gray-400-svg;
     }
     .event-attr {
         padding-bottom: 1rem;

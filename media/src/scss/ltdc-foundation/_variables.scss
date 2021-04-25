@@ -67,7 +67,8 @@ $red-900:  #b71c1c !default;
 
 $green-900-svg: invert(25%) sepia(18%) saturate(2758%) hue-rotate(79deg) brightness(95%) contrast(84%);
 $amber-800-svg: invert(58%) sepia(86%) saturate(2221%) hue-rotate(360deg) brightness(102%) contrast(107%);
-$black-svg: invert(0%) grayscale(0%) brightness(0%);
+$gray-400-svg:  invert(91%) sepia(2%) saturate(24%) hue-rotate(143deg) brightness(86%) contrast(85%);;
+$black-svg:     invert(0%) grayscale(0%) brightness(0%);
 
 
 $cccccc: invert(100%) grayscale(100%) brightness(80%);
@@ -107,6 +108,7 @@ $surface-light:  $amber-200 !default;
 $surface-lighter:  $amber-100 !default;
 $surface-lightest:  $amber-050 !default;
 
+$surface-muted-dark: #d0d0d0 !default;
 $surface-muted: $gray-100 !default;
 
 
