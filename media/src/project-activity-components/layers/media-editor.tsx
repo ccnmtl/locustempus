@@ -71,7 +71,9 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
                             Reminder: Before uploading or sourcing an image,
                             you must have permission to use it. Google provides
                             an easy-to-use guide that
-                            helps <a target="_blank" href="https://support.google.com/websearch/answer/29508?hl=en">
+                            helps <a target="_blank"
+                                rel="noopener noreferrer"
+                                href="https://support.google.com/websearch/answer/29508?hl=en">
                             find appropriate images you can use and share</a>.
                         </div>
                     </div>

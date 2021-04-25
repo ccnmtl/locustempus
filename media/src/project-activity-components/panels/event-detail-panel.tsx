@@ -88,8 +88,12 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                     <figure className={'lt-pane-section__image'}>
                         <img src={activeEventDetail.media[0].url} />
                         <figcaption>
-                            <span className={'img__caption'}>{activeEventDetail.media[0].caption}</span>
-                            <span className={'img__attr'}>{activeEventDetail.media[0].source}</span>
+                            <span className={'img__caption'}>
+                                {activeEventDetail.media[0].caption}
+                            </span>
+                            <span className={'img__attr'}>
+                                {activeEventDetail.media[0].source}
+                            </span>
                         </figcaption>
                     </figure>
                 )}
