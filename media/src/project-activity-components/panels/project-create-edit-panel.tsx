@@ -216,9 +216,9 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             </button>
                         </div>
                     )}
-                    <div className={'lt-cr-actions'}>
-                        <div className={'lt-cr-actions__overlay'}></div>
-                        <div className={'lt-cr-actions__buttons'}>
+                    <div className={'lt-pane-actions'}>
+                        <div className={'lt-pane-actions__overlay'}></div>
+                        <div className={'lt-pane-actions__buttons'}>
                             {isNewProject ? (
                                 <>
                                     <button

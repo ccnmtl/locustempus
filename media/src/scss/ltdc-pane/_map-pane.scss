@@ -121,6 +121,17 @@
     }
 }
 
+.pane-content-subheader {
+    padding: 0.9375rem 1rem;
+    margin: -1rem -1rem 1rem -1rem;
+    border: 0;
+    background-color: $primary-lightest;
+    .lt-button-back:hover,
+    .lt-button-back:focus {
+        background-color: $primary-light;
+    }
+}
+
 .pane-content-tabs {
     @extend .elevation-6;
     position: -webkit-sticky;
@@ -477,7 +488,7 @@ padding-bottom: 0.5rem;
 
 //* Floating Save-Cancel buttons
 
-.lt-cr-actions {
+.lt-pane-actions {
     margin: 0 0 0 -1rem;
     padding: 2.5rem 0;
     position: fixed;
@@ -492,11 +503,16 @@ padding-bottom: 0.5rem;
         height: 100%;
         opacity: 1;
     }
+    &--response {
+        .lt-pane-actions__overlay {
+            background-color: $primary-lightest;
+        }
+    }
     &__buttons {
         position: absolute;
         top: 0;
         left: 0;
-        padding: 1rem 0 0 0;
+        padding: 1.25rem 0 0 0;
         background-color: transparent;
         width: 100%;
         height: 100%;

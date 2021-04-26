@@ -184,6 +184,12 @@
         padding: 0;
         margin: 0 1rem 0 0 !important;
     }
+    &__feedback {
+        margin-top: 0.25rem;
+        margin-bottom: 6rem;
+        border-top: 1px solid $border-color;
+        border-bottom: 1px solid $border-color;
+    }
     &__action {
         white-space: nowrap;
         margin-right: 0.5rem;

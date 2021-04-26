@@ -49,6 +49,12 @@
         border-bottom: 0;
         border-left: 0.375rem solid transparent;
     }
+    .lt-button {
+        color: $on-background;
+        &:hover, &:focus {
+            color: $on-background;
+        }
+    }
 }
 
 .lt-menu .lt-list-item:hover,

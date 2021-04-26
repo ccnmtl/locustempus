@@ -3,7 +3,7 @@ import { ActivityData } from '../common';
 import {OverflowMenu} from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faPencilAlt, faTrashAlt
+    faPencilAlt, faTrashAlt, faUserEdit
 } from '@fortawesome/free-solid-svg-icons';
 import ReactQuill from 'react-quill';
 
@@ -70,30 +70,27 @@ export const Activity: React.FC<ActivityProps> = (
                     )}
                 </div>
                 {showEditForm ? (
-                    <form onSubmit={handleEdit}>
-                        <div className="form-group">
+                    <div className={'form-group pane-form-group'}>
+                        <form onSubmit={handleEdit}>
                             <label htmlFor={'activity-form__instructions'}>
+                                Edit Instructions
                             </label>
                             <ReactQuill
                                 value={instructions}
                                 onChange={setInstructions}/>
-                        </div>
-                        <div className="form-row">
-                            <div className={'form-group col-3'}>
-                            </div>
-                            <div className={'form-group col-9'}>
+                            <div className={'text-center mt-3'}>
                                 <button
-                                    type={'button'}
                                     onClick={(): void => setShowEditForm(false)}
-                                    className={'btn btn-danger'}>
-                                    Cancel
+                                    className={'lt-button lt-button--outlined mr-3'}>
+                                    <span className={'lt-button__label'}>Cancel</span>
                                 </button>
-                                <button type={'submit'} className={'btn btn-primary'}>
-                                    Save
+                                <button type={'submit'}
+                                    className={'lt-button lt-button--priority'}>
+                                    <span className={'lt-button__label'}>Save changes</span>
                                 </button>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 ) : (
                     <div dangerouslySetInnerHTML={{__html: activity.instructions}}/>
                 )}
@@ -104,42 +101,41 @@ export const Activity: React.FC<ActivityProps> = (
             <>
                 <h2>Activity</h2>
                 {showCreateForm ? (
-                    <form onSubmit={handleCreateActivity}>
-                        <div className={'form-group pane-form-group'}>
+                    <div className={'form-group pane-form-group'}>
+                        <form onSubmit={handleCreateActivity}>
                             <label htmlFor={'activity-form__instructions'}>
                                 Instructions
                             </label>
                             <ReactQuill
                                 value={instructions || ''}
                                 onChange={setInstructions}/>
-                        </div>
-                        <div className="form-row">
-                            <div className={'form-group col-3'}>
-                            </div>
-                            <div className={'form-group col-9'}>
+                            <div className={'text-center mt-3'}>
                                 <button
-                                    type={'button'}
                                     onClick={(): void => setShowCreateForm(false)}
-                                    className={'btn btn-danger'}>
-                                    Cancel
+                                    className={'lt-button lt-button--outlined mr-3'}>
+                                    <span className={'lt-button__label'}>Cancel</span>
                                 </button>
-                                <button type={'submit'} className={'btn btn-primary'}>
-                                    Create
+                                <button type={'submit'}
+                                    className={'lt-button lt-button--priority'}>
+                                    <span className={'lt-button__label'}>Create</span>
                                 </button>
                             </div>
-                        </div>
-                    </form>
+                        </form>
+                    </div>
                 ) : (
                     <>
-                        <div className={'lt-banner'} role={'banner'}>
+                        <div className={'lt-banner mb-3'} role={'banner'}>
                             There is no activity assigned on this project.
                         </div>
                         <button
                             data-cy={'create-activity'}
                             type={'submit'}
-                            className={'btn btn-primary'}
-                            onClick={(): void => setShowCreateForm(true)}>
-                            Create Activity
+                            onClick={(): void => setShowCreateForm(true)}
+                            className={'lt-button lt-button--solid'}>
+                            <span className={'lt-icons lt-button__icon'}>
+                                <FontAwesomeIcon icon={faUserEdit}/>
+                            </span>
+                            <span className={'lt-button__label'}>Create Activity</span>
                         </button>
                     </>
                 )}

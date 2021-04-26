@@ -134,9 +134,9 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                                 onChange={handleDatetime}/>
                         </div>
                     */}
-                    <div className={'lt-cr-actions'}>
-                        <div className={'lt-cr-actions__overlay'}></div>
-                        <div className={'lt-cr-actions__buttons'}>
+                    <div className={'lt-pane-actions'}>
+                        <div className={'lt-pane-actions__overlay'}></div>
+                        <div className={'lt-pane-actions__buttons'}>
                             <button
                                 type={'button'}
                                 onClick={handleCancel}
