@@ -10,6 +10,7 @@
     align-items: center;
     justify-content: center;
     vertical-align: middle;
+    color: $secondary1-dark;
     &--priority {
         @include button-darkbg-typography;
         background-color: $secondary1-dark;
@@ -54,7 +55,13 @@
     }
     &--outlined {
         background-color: transparent;
-        border: 1px solid #efefef;
+        border: 1px solid $secondary1-dark;
+        color: $secondary1-dark;
+        &:hover {
+            @include button-lightbg-typography;
+            background-color: $secondary1-medium;
+            border: 1px solid $secondary1-medium;
+        }
     }
     &--lg {
         min-width: 9rem;
@@ -218,39 +225,38 @@
 .lt-file-button-upload {
     cursor: pointer;
     display: block;
+    width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 .lt-file-button-upload::-webkit-file-upload-button {
+    @extend .btn;
     @include button-typography;
-    color: #212529;
-    // @include button-color
-    background-color: #efefef;
-    padding: 0.375rem 1rem 0.375rem 2.25rem;
-  transition: 1s;
+    @include button-lightbg-typography;
+    background-color: $secondary1-medium;
+    border: 1px solid $secondary1-medium;
+    padding: 0.75rem 1rem 0.75rem 2.25rem;
+    transition: 1s;
     background-image: url('/media/img/upload.svg');
-        background-repeat: no-repeat;
-        background-position: 0.5rem center;
-        background-size: 1.25rem;
-    border: 1px solid transparent;
-    line-height: 1.5;
-    border-radius: 0.25rem;
+    background-repeat: no-repeat;
+    background-position: 0.5rem center;
+    background-size: 1.25rem;
     cursor: pointer;
 }
 
 .lt-file-button-upload::file-selector-button {
+    @extend .btn;
     @include button-typography;
-    color: #212529;
-    // @include button-color
-    background-color: #efefef;
-    padding: 0.375rem 1rem 0.375rem 2.25rem;
-  transition: 1s;
+    @include button-lightbg-typography;
+    background-color: $secondary1-medium;
+    border: 1px solid $secondary1-medium;
+    padding: 0.75rem 1rem 0.75rem 2.25rem;
+    transition: 1s;
     background-image: url('/media/img/upload.svg');
-        background-repeat: no-repeat;
-        background-position: 0.5rem center;
-        background-size: 1.25rem;
-    border: 1px solid transparent;
-    line-height: 1.5;
-    border-radius: 0.25rem;
+    background-repeat: no-repeat;
+    background-position: 0.5rem center;
+    background-size: 1.25rem;
     cursor: pointer;
 }
 

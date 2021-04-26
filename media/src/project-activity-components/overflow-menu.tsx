@@ -84,12 +84,12 @@ export const ConfirmableAction: React.FC<ConfirmableActionProps> = ({
                                     data-cy="confirm-dialog-cancel"
                                     onClick={handleCancel}
                                     className="btn btn-secondary lt-modal-cancel">
-                                    Close
+                                    Cancel
                                 </button>
                                 <button type="button"
                                     data-cy="confirm-dialog-okay"
                                     onClick={handleConfirmation}
-                                    className="btn btn-primary">
+                                    className="btn btn-danger">
                                     {confirmationButtonText}
                                 </button>
                             </div>

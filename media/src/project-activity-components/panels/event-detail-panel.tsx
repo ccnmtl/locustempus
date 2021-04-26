@@ -51,7 +51,8 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
 
     return (
         <>
-            <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
+            <div className={'pane-content-header pane-content-header--event'}
+                style={{ top: paneHeaderHeight }}>
                 <button onClick={handleBack} className={'lt-button-back'}>
                     <span className={'lt-icons lt-button-back__icon'}>
                         <FontAwesomeIcon icon={faArrowLeft}/>
@@ -87,17 +88,23 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                     <figure className={'lt-pane-section__image'}>
                         <img src={activeEventDetail.media[0].url} />
                         <figcaption>
-                            {activeEventDetail.media[0].caption}<br/>
-                            <small>
-                                Source: {activeEventDetail.media[0].source}
-                            </small>
+                            <span className={'img__caption'}>
+                                {activeEventDetail.media[0].caption}
+                            </span>
+                            <span className={'img__attr'}>
+                                {activeEventDetail.media[0].source}
+                            </span>
                         </figcaption>
                     </figure>
-
                 )}
                 {activeEventDetail && (
-                    <section className={'lt-pane-section'} dangerouslySetInnerHTML={
-                        {__html: activeEventDetail.description}}/>
+                    <section className={'lt-pane-section'}>
+                        <div className={'event-attr'}>By {activeEventDetail.owner}</div>
+
+                        <div dangerouslySetInnerHTML={
+                            {__html: activeEventDetail.description}}/>
+                        <hr className={'w-75 mt-5'} />
+                    </section>
                 )}
             </div>
         </>

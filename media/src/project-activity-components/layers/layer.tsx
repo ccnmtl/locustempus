@@ -96,7 +96,7 @@ export const Layer: React.FC<LayerProps> = (
     return (
         <div
             className={'lt-list-group ' +
-                (isActiveLayer ? 'lt-list-group--active' : 'lt-list-group--inactive')}
+                (isActiveLayer ? 'lt-list-group--active' : '')}
             onClick={handleSetActiveLayer}>
             <div className={'lt-list-group__header'}>
                 {/* Layer title */}

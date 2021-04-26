@@ -66,16 +66,18 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
         <>
             {!fileS3Url ? (
                 <>
-                    <p>
-                        Reminder: Before uploading or sourcing an
-                        image, you must have permission to use it.
-                        Google provides an easy-to-use guide that
-                        helps find and choose appropriate images.
-                        See here for more information:
-                        <a target="about:blank" href="https://support.google.com/websearch/answer/29508?hl=en">
-                            Find free-to-use images</a>.
-                    </p>
-                    <div className={'row m-0'}>
+                    <div className={'lt-helper'}>
+                        <div className={'lt-helper--line'} id={'helper-field__image'}>
+                            Reminder: Before uploading or sourcing an image,
+                            you must have permission to use it. Google provides
+                            an easy-to-use guide that
+                            helps <a target="_blank"
+                                rel="noopener noreferrer"
+                                href="https://support.google.com/websearch/answer/29508?hl=en">
+                            find appropriate images you can use and share</a>.
+                        </div>
+                    </div>
+                    <div className={'row m-0 mt-3'}>
                         <div className={'col-4 p-0 position-relative'}>
                             <div className={'lt-pane-section__imageplaceholder'} />
                             <div className={'upload-status'}>
@@ -149,8 +151,7 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
                                 id={'form-field__caption'}
                                 className={'form-control'}
                                 value={caption || ''}
-                                onChange={handleCaption}
-                                autoFocus={true} />
+                                onChange={handleCaption} />
                         </div>
                         <div className={'form-group'}>
                             <label htmlFor={'form-field__imgsrc'}>Source</label>

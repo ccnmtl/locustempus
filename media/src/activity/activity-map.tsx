@@ -840,10 +840,12 @@ export const ActivityMap: React.FC = () => {
                                         'url(' +  activeEvent.media[0].url + ')'}}>
                                 </div>
                             )}
-                            <h2>{activeEvent.label}</h2>
-                            {/* TODO: byline, short description */}
-                            <p>{activeEvent.owner}</p>
-                            <p dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/>
+                            <div className={'mapboxgl-popup-text'}>
+                                <h2>{activeEvent.label}</h2>
+                                <div className={'event-attr'}>by {activeEvent.owner}</div>
+                                <div className={'event-summary'}
+                                    dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
+                            </div>
                         </Popup>
                     )}
                     <div id='map-navigation-control'>

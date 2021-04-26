@@ -73,7 +73,7 @@
                     <div class="lt-card__body">
                         <h3 class="lt-card__title"><a data-cy="project-title-link"  href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></h3>
                         <p class="lt-card__term">Created on {{ project.created_at }}</p>
-                        <p class="lt-card__text">{{ project.description|striptags|truncatechars:100}}</p>
+                        <p class="lt-card__text">{{ project.description|striptags|truncatechars:140}}</p>
                         <ul class="list-group list-group-horizontal-sm lt-card__list-group">
                             <li class="list-group-item lt-card__list-group-item text-muted">Status TBD</li> {# not hooked up #}
                             <li class="list-group-item lt-card__list-group-item">
@@ -112,7 +112,7 @@
                     <tr>
                         <td><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></td>
                         <td>{{ project.created_at }}</td>
-                        <td>{{ project.description|striptags|truncatechars:100}}</td>
+                        <td>{{ project.description|striptags|truncatechars:140}}</td>
                         <td class="text-muted">Status TBD</td>
                         <td class="text-nowrap">
                             {% if project.activity %}
