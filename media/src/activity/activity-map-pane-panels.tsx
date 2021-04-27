@@ -194,21 +194,24 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 activeEventEdit={activeEventEdit}
                                 setAlert={setAlert}/>
                         ) : (<>
-                            {reflectionStatus === 'SUBMITTED' ? (
-                                <p className={'lt-date-display m-0'}>
-                                    Last saved on {reflectionModifiedAt}
-                                </p>
-                            ) : (<>
-                                <div className={'lt-banner mb-3'} role={'banner'}>
-                                    Use this space to craft your response to this activity by
-                                    adding event markers, and composing your reflection. You can
-                                    save your response as draft, or submit it when done.
-                                </div>
-                                <p className={'lt-date-display m-0'}>
-                                    You have not submitted your response.
-                                </p>
-                            </>)}
+                            <section className={'lt-pane-section pb-0 mb-0 border-0'}>
+                                {reflectionStatus === 'SUBMITTED' ? (
+                                    <p className={'lt-date-display'}>
+                                        Last saved on {reflectionModifiedAt}
+                                    </p>
+                                ) : (<>
+                                     <p className={'lt-date-display'}>
+                                        You have not submitted your response.
+                                    </p>
+                                   <div className={'lt-banner'} role={'banner'}>
+                                        Use this space to craft your response to this activity by
+                                        adding event markers, and composing your reflection. You
+                                        can save your response as draft, or submit it when done.
+                                    </div>
+                                </>)}
+                            </section>
                             <section className={'lt-pane-section'}>
+                                <h2 className={'mb-0'}>Event Markers</h2>
                                 <LayerSet
                                     layers={layers}
                                     addLayer={addLayer}
@@ -227,11 +230,14 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 <h2>Reflection</h2>
                                 <form onSubmit={handleSubmitResponse}>
                                     <div className={'form-group pane-form-group'}>
-                                        <small className={'form-text text-muted mb-2 mt-0'}>
-                                            A short instruction on what reflection is about
-                                            and some guidance on the length of text.
-                                        </small>
-                                        <ReactQuill
+                                        <div className={'lt-helper'}>
+                                            <div className={'lt-helper--line'}
+                                                id={'helper-field__description'}>
+                                                TBD: A short instruction on what reflection is
+                                                about and some guidance on the length of text.
+                                            </div>
+                                        </div>
+                                       <ReactQuill
                                             value={reflection}
                                             onChange={setReflection}/>
                                     </div>
@@ -396,15 +402,18 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
             </section>
 
             <section className={'lt-pane-section'}>
-                <h3>Reflection what is this?</h3>
+                <h3>Reflection</h3>
                 <div dangerouslySetInnerHTML={{__html: activeResponse.reflection}}/>
             </section>
             <section className={'lt-pane-section lt-pane-section__feedback'}>
                 <h3>Feedback for {activeResponse.owners.join(', ')}</h3>
-                <small className={'form-text text-muted mb-2 mt-0'}>
-                    A short instruction on what feedback is about
-                    and some guidance on the length of text.
-                </small>
+                <div className={'lt-helper'}>
+                    <div className={'lt-helper--line'}
+                        id={'helper-field__description'}>
+                        TBD: A short instruction on what feedback is
+                        about and some guidance on the length of text.
+                    </div>
+                </div>
                 <div className={'form-group pane-form-group'}>
                     <form onSubmit={handleFeedbackSubmission}>
                         {feedbackSubmittedDate && feedbackModifiedDate ? (
