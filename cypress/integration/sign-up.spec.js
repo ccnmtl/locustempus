@@ -17,13 +17,13 @@ describe('Sign-Up Stories', function() {
         cy.get('[data-cy="sign-up-submit"]').click();
         cy.get('[data-cy="sign-up-error"]').should('be.visible');
         cy.get('[data-cy="sign-up-error"]').should(
-                'contain', 'Please correct errors');
+                'contain', 'Something’s wrong with your account creation...');
         cy.get('[data-cy="username-error"]').should(
                 'contain', 'This field is required');
         cy.get('[data-cy="email-error"]').should(
                 'contain', 'This field is required');
         cy.get('[data-cy="password-error"]').should(
-                'contain', 'Please enter your password twice.');
+                'contain', 'Please create and confirm your password.');
 
         // Complete registration
         cy.get('[data-cy="username"]').type('newstudent').blur();

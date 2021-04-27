@@ -22,7 +22,14 @@
 .alert {
     &--error {
         padding-top: 0.5rem;
-        color: #b00020;
-        font-size: 0.8rem;
+        color: $on-error;
+        font-size: 0.8125rem;
     }
+}
+
+.errorlist {
+    padding: 0;
+    margin: 0 !important;
+    font-size: 0.875rem !important;
+    color: $on-error !important;
 }
