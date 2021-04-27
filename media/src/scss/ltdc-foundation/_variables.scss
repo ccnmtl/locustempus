@@ -62,7 +62,6 @@ $gray-666:  #666666 !default;
 
 $red-900:  #b71c1c !default;
 
-
 // SVG filters
 
 $green-900-svg: invert(25%) sepia(18%) saturate(2758%) hue-rotate(79deg) brightness(95%) contrast(84%);
@@ -122,3 +121,6 @@ $surface-ltds:    $white !default;
 $on-background:  $gray-900 !default;
 $on-surface:     $gray-900 !default;
 $on-surface-muted:     $gray-600 !default;
+
+$on-error:       #b00020 !default;
+$error-surface:  #f8d7da !default;

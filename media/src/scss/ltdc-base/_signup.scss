@@ -1,0 +1,44 @@
+/*
+.loginbox {
+    width: 30rem;
+    margin: 4rem auto 4rem auto;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    &__content {
+        background-color: $white;
+        margin: 0;
+        padding: 2rem;
+        border-radius: 0.5rem;
+        border: 0;
+    }
+    &__header {
+        margin: 0;
+        padding: 0;
+        border: 0;
+    }
+    &__title {
+        margin-top: 4rem;
+        margin-bottom: 3rem;
+        text-align: center;
+    }
+    &__avatar {
+        width: 4rem;
+        display: block;
+        margin: -4rem auto;
+    }
+}
+*/
+
+.page-container {
+    padding: 1rem;
+    margin: 0 0 5rem 0;
+}
+
+.signupbox {
+    width: 55rem;
+    margin: 4rem auto 0 auto;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+}
