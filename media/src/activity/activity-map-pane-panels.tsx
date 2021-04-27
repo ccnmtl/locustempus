@@ -58,8 +58,9 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
 
     const [reflection, setReflection] = useState<string>('');
-    const [reflectionSubmittedAt, setReflectionSubmittedAt] = useState<string>('');
-    const [reflectionModfiedAt, setReflectionModifiedAt] = useState<string>('');
+    // keep this for later, till we figure out the date logic
+    // const [reflectionSubmittedAt, setReflectionSubmittedAt] = useState<string>('');
+    const [reflectionModifiedAt, setReflectionModifiedAt] = useState<string>('');
     // TODO: display response status
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [reflectionStatus, setReflectionStatus] = useState<string>('DRAFT');
@@ -72,7 +73,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         // Only set a reflection if the user is not faculty/author
         if (!isFaculty && responseData.length == 1 && responseData[0].reflection) {
             setReflection(responseData[0].reflection);
-            setReflectionSubmittedAt(responseData[0].submitted_at_formatted || '');
+            // setReflectionSubmittedAt(responseData[0].submitted_at_formatted || '');
             setReflectionModifiedAt(responseData[0].modified_at_formatted || '');
             setReflectionStatus(responseData[0].status);
 
@@ -96,14 +97,14 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
     const handleSubmitResponse = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        setAlert('Your reflection has been submitted.');
+        setAlert('Your response has been submitted.');
         updateResponse(reflection, ResponseStatus.SUBMITTED);
     };
 
     const handleReflectionSaveDraft = (
         e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();
-        setAlert('Your draft reflection has been saved.');
+        setAlert('Your draft response has been saved.');
         updateResponse(reflection);
     };
 
@@ -193,21 +194,24 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 activeEventEdit={activeEventEdit}
                                 setAlert={setAlert}/>
                         ) : (<>
-                            <p className={'lt-date-display'}>
-                                {reflection ? (
-                                    <>{reflectionSubmittedAt == reflectionModfiedAt ? (
-                                        <>Submitted on {reflectionSubmittedAt}</>
-                                    ) : (
-                                        <>
-                                            Submitted on {reflectionSubmittedAt}<br />
-                                            Last modified on {reflectionModfiedAt}
-                                        </>
-                                    )}</>
-                                ) : (
-                                    <>You have not submitted your response</>
-                                )}
-                            </p>
+                            <section className={'lt-pane-section pb-0 mb-0 border-0'}>
+                                {reflectionStatus === 'SUBMITTED' ? (
+                                    <p className={'lt-date-display'}>
+                                        Last saved on {reflectionModifiedAt}
+                                    </p>
+                                ) : (<>
+                                    <p className={'lt-date-display'}>
+                                        You have not submitted your response.
+                                    </p>
+                                    <div className={'lt-banner'} role={'banner'}>
+                                        Use this space to craft your response to this activity by
+                                        adding event markers, and composing your reflection. You
+                                        can save your response as draft, or submit it when done.
+                                    </div>
+                                </>)}
+                            </section>
                             <section className={'lt-pane-section'}>
+                                <h2 className={'mb-0'}>Event Markers</h2>
                                 <LayerSet
                                     layers={layers}
                                     addLayer={addLayer}
@@ -223,37 +227,48 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                     activeEventEdit={activeEventEdit} />
                             </section>
                             <section className={'lt-pane-section'}>
-                                <h3>Reflection</h3>
-                                <small className={'form-text text-muted mb-2 mt-0'}>
-                                    A short instruction on what reflection is about
-                                    and some guidance on the length of text.
-                                </small>
+                                <h2>Reflection</h2>
                                 <form onSubmit={handleSubmitResponse}>
-                                    <ReactQuill
-                                        value={reflection}
-                                        onChange={setReflection}/>
-                                    <div className={'text-center mt-3'}>
-                                        {reflectionStatus === 'DRAFT' && (
-                                            <button
-                                                className={'btn btn-secondary mr-3'}
-                                                onClick={handleReflectionSaveDraft}>
-                                                Save as draft
-                                            </button>
-                                        )}
-                                        <button
-                                            type={'submit'}
-                                            className={'btn btn-primary'}>
-                                            {reflectionStatus === 'DRAFT' ? (
-                                                <>Submit reflection</>
-                                            ) : (
-                                                <>Update reflection</>
+                                    <div className={'form-group pane-form-group'}>
+                                        <div className={'lt-helper'}>
+                                            <div className={'lt-helper--line'}
+                                                id={'helper-field__description'}>
+                                                TBD: A short instruction on what reflection is
+                                                about and some guidance on the length of text.
+                                            </div>
+                                        </div>
+                                        <ReactQuill
+                                            value={reflection}
+                                            onChange={setReflection}/>
+                                    </div>
+                                    <div className={'lt-pane-actions lt-pane-actions--response'}>
+                                        <div className={'lt-pane-actions__overlay'}></div>
+                                        <div className={'lt-pane-actions__buttons'}>
+                                            {reflectionStatus === 'DRAFT' && (
+                                                <button
+                                                    className={'lt-button lt-button--solid mr-3'}
+                                                    onClick={handleReflectionSaveDraft}>
+                                                    <span className={'lt-button__label'}>Save as draft</span> {/* eslint-disable-line max-len */}
+                                                </button>
                                             )}
-                                        </button>
+                                            <button
+                                                type={'submit'}
+                                                className={'lt-button lt-button--priority'}>
+                                                <span className={'lt-button__label'}>
+                                                    {reflectionStatus === 'DRAFT' ? (
+                                                        <>Submit response</>
+                                                    ) : (
+                                                        <>Update response</>
+                                                    )}
+                                                </span>
+                                            </button>
+                                        </div>
                                     </div>
                                 </form>
                             </section>
-                            <section className={'lt-pane-section mt-1 border-top'}>
-                                <h3>Feedback for you</h3>
+                            <section
+                                className={'lt-pane-section lt-pane-section__feedback'}>
+                                <h2>Feedback for you</h2>
                                 {feedback ? (
                                     <>
                                         <p className={'lt-date-display'}>
@@ -344,7 +359,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                     feedback
                 );
             } else {
-                setAlert('Your feedback has been created.');
+                setAlert('Your feedback has been sent.');
                 createFeedback(
                     activeResponse.pk,
                     feedback
@@ -360,18 +375,19 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
 
     return (<>
         {activeResponse && activeResponseLayers.size > 0 ? (<>
-            <button onClick={handleFeedbackCancel} className={'lt-button-back'}>
-                <span className={'lt-icons lt-button-back__icon'}>
-                    <FontAwesomeIcon icon={faArrowLeft}/>
-                </span>
-                <span className={'lt-button-back__text'}>
-                    Return to Responses
-                </span>
-            </button>
+            <div className={'pane-content-subheader'}>
+                <button onClick={handleFeedbackCancel} className={'lt-button-back'}>
+                    <span className={'lt-icons lt-button-back__icon'}>
+                        <FontAwesomeIcon icon={faArrowLeft}/>
+                    </span>
+                    <span className={'lt-button-back__text'}>
+                        Return to Responses
+                    </span>
+                </button>
+            </div>
 
             <h2>Response by {activeResponse.owners.join(', ')}</h2>
             <p className={'lt-date-display'}>
-                Submitted on {activeResponse.submitted_at_formatted}<br />
                 Last modified on {activeResponse.modified_at_formatted}
             </p>
 
@@ -389,14 +405,15 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 <h3>Reflection</h3>
                 <div dangerouslySetInnerHTML={{__html: activeResponse.reflection}}/>
             </section>
-            <section className={'lt-pane-section'}>
-                <h3>
-                Feedback for {activeResponse.owners.join(', ')}
-                </h3>
-                <small className={'form-text text-muted mb-2 mt-0'}>
-                    A short instruction on what feedback is about
-                    and some guidance on the length of text.
-                </small>
+            <section className={'lt-pane-section lt-pane-section__feedback'}>
+                <h3>Feedback for {activeResponse.owners.join(', ')}</h3>
+                <div className={'lt-helper'}>
+                    <div className={'lt-helper--line'}
+                        id={'helper-field__description'}>
+                        TBD: A short instruction on what feedback is
+                        about and some guidance on the length of text.
+                    </div>
+                </div>
                 <div className={'form-group pane-form-group'}>
                     <form onSubmit={handleFeedbackSubmission}>
                         {feedbackSubmittedDate && feedbackModifiedDate ? (
@@ -419,18 +436,19 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                             onChange={setFeedback}/>
                         <div className={'text-center mt-3'}>
                             <button
-                                className={'btn btn-link mr-3'}
-                                onClick={handleFeedbackCancel}>
-                                Cancel
+                                onClick={handleFeedbackCancel}
+                                className={'lt-button lt-button--outlined mr-3'}>
+                                <span className={'lt-button__label'}>Cancel</span>
                             </button>
-                            <button
-                                type={'submit'}
-                                className={'btn btn-primary'}>
-                                {feedbackSubmittedDate ? (
-                                    <>Update feedback</>
-                                ) : (
-                                    <>Send feedback</>
-                                )}
+                            <button type={'submit'}
+                                className={'lt-button lt-button--priority'}>
+                                <span className={'lt-button__label'}>
+                                    {feedbackSubmittedDate ? (
+                                        <>Update feedback</>
+                                    ) : (
+                                        <>Send feedback</>
+                                    )}
+                                </span>
                             </button>
                         </div>
                     </form>
@@ -471,7 +489,6 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                             </h3>
                             <p
                                 className={'lt-date-display'}>
-                                Submitted on {el.submitted_at_formatted}<br />
                                 Last modified on {el.modified_at_formatted}
                             </p>
                         </div>
