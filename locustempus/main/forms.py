@@ -1,7 +1,26 @@
+from courseaffils.models import Course
 from django import forms
 from django.conf import settings
 from django.forms.formsets import formset_factory
 from django.core.validators import RegexValidator
+
+
+class CourseForm(forms.ModelForm):
+    description = forms.CharField(widget=forms.Textarea)
+
+    def save(self):
+        course = super().save()
+        description = self.cleaned_data.get('description', None)
+        if description:
+            course.add_detail('description', description)
+
+        course.save()
+
+        return course
+
+    class Meta:
+        model = Course
+        fields = ['title']
 
 
 class CourseRosterInviteUNIForm(forms.Form):

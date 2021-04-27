@@ -47,7 +47,10 @@ class CourseTest(CourseTestMixin, TestCase):
         )
         response = self.client.post(
             reverse('course-create-view'),
-            {'title': 'A test course'}
+            {
+                'title': 'A test course',
+                'description': 'A test description'
+            }
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/dashboard/")
@@ -160,7 +163,10 @@ class CourseTest(CourseTestMixin, TestCase):
         )
         response = self.client.post(
             reverse('course-edit-view', args=[self.sandbox_course.pk]),
-            {'title': 'An edited course'}
+            {
+                'title': 'An edited course',
+                'description': 'An edited description'
+            }
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
@@ -199,7 +205,10 @@ class CourseTest(CourseTestMixin, TestCase):
         )
         response = self.client.post(
             reverse('course-edit-view', args=[self.sandbox_course.pk]),
-            {'title': 'An edited course'}
+            {
+                'title': 'An edited course',
+                'description': 'An edited description'
+            }
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(

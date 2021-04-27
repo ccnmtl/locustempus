@@ -27,7 +27,7 @@ from django.views.generic.edit import (
 from lti_provider.models import LTICourseContext
 
 from locustempus.main.forms import (
-    InviteUNIFormset, InviteEmailFormset
+    CourseForm, InviteUNIFormset, InviteEmailFormset
 )
 from locustempus.main.models import GuestUserAffil, Project
 from locustempus.main.management.commands.integrationserver import (
@@ -101,7 +101,7 @@ class DashboardView(LoginRequiredMixin, View):
 class CourseCreateView(LoginRequiredMixin, CreateView):
     model = Course
     template_name = 'main/course_create.html'
-    fields = ['title']
+    form_class = CourseForm
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
@@ -150,6 +150,7 @@ class CourseDetailView(LoggedInCourseMixin, View):
 
     def post(self, request, *args, **kwargs):
         course = get_object_or_404(Course, pk=kwargs.get('pk'))
+        course.description = course.get_detail('description', None)
         is_faculty = course.is_true_faculty(self.request.user)
         projects = self.get_projects(course, is_faculty)
 
@@ -171,6 +172,7 @@ class CourseDetailView(LoggedInCourseMixin, View):
 
     def get(self, request, *args, **kwargs):
         course = get_object_or_404(Course, pk=kwargs.get('pk'))
+        course.description = course.get_detail('description', None)
         is_faculty = course.is_true_faculty(self.request.user)
         projects = self.get_projects(course, is_faculty)
 
@@ -195,10 +197,11 @@ class CourseDetailView(LoggedInCourseMixin, View):
 class CourseEditView(LoggedInFacultyMixin, UpdateView):
     model = Course
     template_name = 'main/course_edit.html'
-    fields = ['title']
+    form_class = CourseForm
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
+        ctx['object'].description = ctx['object'].get_detail('description', None)
         ctx['page_type'] = 'course'
         ctx['breadcrumb'] = {
             'Workspaces': reverse('course-list-view'),
