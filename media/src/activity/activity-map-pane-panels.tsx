@@ -200,10 +200,10 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                         Last saved on {reflectionModifiedAt}
                                     </p>
                                 ) : (<>
-                                     <p className={'lt-date-display'}>
+                                    <p className={'lt-date-display'}>
                                         You have not submitted your response.
                                     </p>
-                                   <div className={'lt-banner'} role={'banner'}>
+                                    <div className={'lt-banner'} role={'banner'}>
                                         Use this space to craft your response to this activity by
                                         adding event markers, and composing your reflection. You
                                         can save your response as draft, or submit it when done.
@@ -237,7 +237,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                                 about and some guidance on the length of text.
                                             </div>
                                         </div>
-                                       <ReactQuill
+                                        <ReactQuill
                                             value={reflection}
                                             onChange={setReflection}/>
                                     </div>
