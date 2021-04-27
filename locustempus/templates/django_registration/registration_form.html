@@ -67,7 +67,7 @@
                 </div>
                 <div class="row mt-4">
                     <div class="col {% if form.email.errors %}has-error{% endif %}">
-                        <label for="id_email">Email address</label>
+                        <label for="id_email" class="m-0">Email address*</label>
                         {% if not form.email.errors %}
                         <div class="lt-helper mb-1">
                             <div class="lt-helper--line" id="helper-field__username">
@@ -88,8 +88,8 @@
                     </div>
                 </div>
                 <div class="row mt-4 form-group">
-                    <div class="col">
-                        <label for="id_username" class="m-0  {% if form.username.errors %}has-error{% endif %}">Choose a username*</label>
+                    <div class="col {% if form.username.errors %}has-error{% endif %}">
+                        <label for="id_username" class="m-0">Choose a username*</label>
                         {% if not form.username.errors %}
                         <div class="lt-helper mb-1">
                             <div class="lt-helper--line" id="helper-field__username">
