@@ -4,6 +4,6 @@ Thank you for registering with Locus Tempus. To activate your account, please cl
 
 http://{{ site.domain }}{% url "django_registration_activate" activation_key %}
 
-Once you've activated your account, you can log in to {{site.domain}} using the log in button on the front page.
+Once you've activated your account, you can sign in to Locus Tempus, {{site.domain}}.
  
 The link is valid for {{ expiration_days }} days.
