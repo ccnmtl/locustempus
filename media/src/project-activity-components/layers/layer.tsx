@@ -159,17 +159,19 @@ export const Layer: React.FC<LayerProps> = (
                                                 className={'form-control lt-menu-form__input-text'}
                                                 type="text"/>
                                             <div className={'lt-menu-form__button-group'}>
-                                                <input type='button'
+                                                <button
+                                                    type={'button'}
                                                     onClick={handleLayerMenu}
-                                                    className={'lt-button all-transparent leading'}
-                                                    value={'Cancel'} />
-                                                <input type='submit'
-                                                    className={'lt-button'}
-                                                    value={'Save'} />
+                                                    className={'lt-button lt-button--outlined leading'}>
+                                                    <span className={'lt-button__label'}>Cancel</span>
+                                                </button>
+                                                <button type={'submit'} className={'lt-button lt-button--priority'}>
+                                                    <span className={'lt-button__label'}>Save</span>
+                                                </button>
                                             </div>
                                         </form>
                                     </li>
-                                    <li className={'lt-list-item'} role='menuitem'>
+                                    <li className={'lt-list-item lt-list-item--caution'} role='menuitem'>
                                         <ConfirmableAction
                                             icon={<FontAwesomeIcon icon={faTrashAlt}/>}
                                             handler={handleDeleteLayer}

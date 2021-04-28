@@ -212,6 +212,7 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
                         },
                         {
                             handler: deleteProject,
+                            classCustom: 'caution',
                             icon: <FontAwesomeIcon icon={faTrashAlt}/>,
                             label: 'Delete project',
                             confirmationTitle: 'Delete project?',

@@ -59,7 +59,7 @@
 
 .lt-menu .lt-list-item:hover,
 .lt-menu .lt-list-item:focus-within {
-    background-color: #e5e5e5;
+    background-color: $secondary1-light;
 }
 
 .lt-menu .lt-list-item__link {
@@ -68,8 +68,23 @@
 }
 
 .lt-menu .lt-list-item__link:hover {
-    background-color: #e5e5e5;
+    background-color: $secondary1-light;
 }
+
+
+
+.lt-menu .lt-list-item--caution:hover,
+.lt-menu .lt-list-item--caution:focus-within {
+    background-color: $error-surface-alt;
+}
+
+.lt-menu .lt-list-item--caution .lt-list-item__link:hover {
+    background-color: $error-surface-alt;
+}
+
+
+
+
 
 .lt-menu-form {
     align-items: start;
@@ -92,6 +107,6 @@
         padding: 0.5rem 0;
         display: flex !important;
         justify-content: flex-end !important;
-        border-bottom: 1px solid #ddd;
+        border-bottom: 1px solid $border-color;
     }
 }

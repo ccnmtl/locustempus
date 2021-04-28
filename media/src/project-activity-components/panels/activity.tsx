@@ -58,6 +58,7 @@ export const Activity: React.FC<ActivityProps> = (
                             },
                             {
                                 handler: handleDelete,
+                                classCustom: 'caution',
                                 icon: <FontAwesomeIcon icon={faTrashAlt}/>,
                                 label: 'Delete activity',
                                 confirmationTitle: 'Delete Activity?',

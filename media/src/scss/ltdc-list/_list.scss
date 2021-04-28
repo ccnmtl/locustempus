@@ -58,6 +58,19 @@
         white-space: nowrap;
         overflow: hidden;
     }
+    &--caution {
+        .lt-list-item__primary-text {
+            color: $on-error;
+        }
+        .lt-list-item__link {
+            color: $on-error;
+        }
+         .lt-icons {
+            filter: $error-svg;
+            -webkit-filter: $error-svg;
+            -moz-filter: $error-svg;
+        }
+    }
 }
 
 .lt-form-list-item {
