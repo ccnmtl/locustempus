@@ -19,7 +19,7 @@ describe('Sign-In Stories', function() {
         // Navigate to login via the large Sign In button
         cy.get('[data-cy="sign-in-large"]').should('exist');
         cy.get('[data-cy="sign-in-large"]').click();
-        cy.title().should('equal', 'Log in – Locus Tempus');
+        cy.title().should('equal', 'Sign in – Locus Tempus');
         cy.get('[data-cy="columbia-login"]').should('exist');
         cy.get('[data-cy="guest-login"]').should('exist');
 
