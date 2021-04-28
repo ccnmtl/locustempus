@@ -19,142 +19,140 @@
 {% endblock %}
 
 {% block content %}
-<div class="page-container">
-    <div class="signupbox row">
-        <div class="col-7">
-            <h2>Create an account</h2>
-            <div class="lt-banner" role="banner">
-                If you have a Columbia UNI, or a Locus Tempus account,
-                <a href="/accounts/login/?next=/">sign in instead</a>. 
-                Need help to <a href="{% url "password_reset" %}">reset your password</a>?
-            </div>
-
-            <form method="post" action="." class="register-form">
-            {% csrf_token %}
-                <div class="row">
-                    <div class="col">
-                        {% if form.errors|length %}
-                            <div class="alert alert-danger mt-3" data-cy="sign-up-error">
-                              Something’s wrong with your account creation...
-                              {% if form.non_field_errors %}
-                                <div class="m-0 p-0">{{ form.non_field_errors}}</div>
-                              {% endif %}
-                            </div>
-                        {% endif %}
-                    </div>
-                </div>
-                <div class="row mt-4 form-group {% if form.first_name.errors or form.last_name.errors %}has-error{% endif %}">
-                    <div class="col">
-                        <label for="id_first_name">First name</label>
-                        <input type="text"
-                            maxlength="50"
-                            class="form-control"
-                            id="id_first_name"
-                            name="first_name"
-                            data-cy="first-name"
-                            value="{{form.data.first_name}}">
-                    </div>
-                    <div class="col">
-                        <label for="id_last_name">Last name</label>
-                        <input type="text"
-                            maxlength="50"
-                            class="form-control"
-                            id="id_last_name"
-                            name="last_name"
-                            data-cy="last-name"
-                            value="{{form.data.last_name}}">
-                    </div>
-                </div>
-                <div class="row mt-4">
-                    <div class="col {% if form.email.errors %}has-error{% endif %}">
-                        <label for="id_email" class="m-0">Email address*</label>
-                        {% if not form.email.errors %}
-                        <div class="lt-helper mb-1">
-                            <div class="lt-helper--line" id="helper-field__username">
-                                *Required
-                            </div>
-                        </div>
-                        {% endif %}
-                        <div data-cy="email-error">
-                            {{ form.email.errors }}
-                        </div>
-                        <input
-                            type="email"
-                            class="form-control {% if form.email.errors %}is-invalid{% endif %}"
-                            id="id_email"
-                            name="email"
-                            data-cy="email"
-                            value="{{form.data.email}}">
-                    </div>
-                </div>
-                <div class="row mt-4 form-group">
-                    <div class="col {% if form.username.errors %}has-error{% endif %}">
-                        <label for="id_username" class="m-0">Choose a username*</label>
-                        {% if not form.username.errors %}
-                        <div class="lt-helper mb-1">
-                            <div class="lt-helper--line" id="helper-field__username">
-                                *Required. You can use a mix of letters, numbers, _, @, +, . and - characters
-                            </div>
-                        </div>
-                        {% endif %}
-                        <div data-cy="username-error">
-                            {{ form.username.errors }}
-                        </div>
-                       <input
-                            type="text"
-                            maxlength="30"
-                            class="form-control {% if form.username.errors %}is-invalid{% endif %}"
-                            id="id_username"
-                            name="username"
-                            data-cy="username"
-                            value="{{form.data.username}}">
-                    </div>
-                </div>
-                <div class="row mt-4 form-group {% if form.password1.errors or form.password2.errors %}has-error{% endif %}">
-                {% if form.password1.errors or form.password2.errors %}
-                    <ul class="errorlist col-12 pl-3" data-cy="password-error">
-                        <li>Please create and confirm your password.</li>
-                    </ul>
-                {% endif %}
-                    <div class="col-6">
-                        <label for="id_password1">Create password</label>
-                        <input
-                            type="password"
-                            class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
-                            id="id_password1"
-                            name="password1"
-                            data-cy="password1"
-                            value="{{form.data.password1}}">
-                    </div>
-                    <div class="col-6">
-                        <label for="id_password2">Confirm password</label>
-                        <input
-                            type="password"
-                            class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
-                            id="id_password2"
-                            name="password2"
-                            data-cy="password2"
-                            value="{{form.data.password2}}">
-                    </div>
-                </div>
-                <div class="row mt-5">
-                    <div class="col text-center">
-                        <button
-                            class="lt-button lt-button--priority"
-                            type="submit"
-                            data-cy="sign-up-submit">
-                            <span class='lt-button__label'>Create my account</span>
-                        </button>
-                    </div>
-                </div>
-
-            </form>
-
+<div class="signupbox row">
+    <div class="col-7">
+        <h2>Create an account</h2>
+        <div class="lt-banner" role="banner">
+            If you have a Columbia UNI, or a Locus Tempus account,
+            <a href="/accounts/login/?next=/">sign in instead</a>. 
+            Need help to <a href="{% url "password_reset" %}">reset your password</a>?
         </div>
-        <div class="col-5 pt-5">
-            <div class="create-prompt__decor w-100 mt-5">
-                <img src="{{STATIC_URL}}img/prompt-signup.svg" />
+
+        <form method="post" action="." class="register-form">
+        {% csrf_token %}
+            <div class="row">
+                <div class="col">
+                    {% if form.errors|length %}
+                        <div class="alert alert-danger mt-3" data-cy="sign-up-error">
+                          Something’s wrong with your account creation...
+                          {% if form.non_field_errors %}
+                            <div class="m-0 p-0">{{ form.non_field_errors}}</div>
+                          {% endif %}
+                        </div>
+                    {% endif %}
+                </div>
             </div>
+            <div class="row mt-4 form-group {% if form.first_name.errors or form.last_name.errors %}has-error{% endif %}">
+                <div class="col">
+                    <label for="id_first_name">First name</label>
+                    <input type="text"
+                        maxlength="50"
+                        class="form-control"
+                        id="id_first_name"
+                        name="first_name"
+                        data-cy="first-name"
+                        value="{{form.data.first_name}}">
+                </div>
+                <div class="col">
+                    <label for="id_last_name">Last name</label>
+                    <input type="text"
+                        maxlength="50"
+                        class="form-control"
+                        id="id_last_name"
+                        name="last_name"
+                        data-cy="last-name"
+                        value="{{form.data.last_name}}">
+                </div>
+            </div>
+            <div class="row mt-4">
+                <div class="col {% if form.email.errors %}has-error{% endif %}">
+                    <label for="id_email" class="m-0">Email address*</label>
+                    {% if not form.email.errors %}
+                    <div class="lt-helper mb-1">
+                        <div class="lt-helper--line" id="helper-field__username">
+                            *Required
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div data-cy="email-error">
+                        {{ form.email.errors }}
+                    </div>
+                    <input
+                        type="email"
+                        class="form-control {% if form.email.errors %}is-invalid{% endif %}"
+                        id="id_email"
+                        name="email"
+                        data-cy="email"
+                        value="{{form.data.email}}">
+                </div>
+            </div>
+            <div class="row mt-4 form-group">
+                <div class="col {% if form.username.errors %}has-error{% endif %}">
+                    <label for="id_username" class="m-0">Choose a username*</label>
+                    {% if not form.username.errors %}
+                    <div class="lt-helper mb-1">
+                        <div class="lt-helper--line" id="helper-field__username">
+                            *Required. You can use a mix of letters, numbers, _, @, +, . and - characters
+                        </div>
+                    </div>
+                    {% endif %}
+                    <div data-cy="username-error">
+                        {{ form.username.errors }}
+                    </div>
+                   <input
+                        type="text"
+                        maxlength="30"
+                        class="form-control {% if form.username.errors %}is-invalid{% endif %}"
+                        id="id_username"
+                        name="username"
+                        data-cy="username"
+                        value="{{form.data.username}}">
+                </div>
+            </div>
+            <div class="row mt-4 form-group {% if form.password1.errors or form.password2.errors %}has-error{% endif %}">
+            {% if form.password1.errors or form.password2.errors %}
+                <ul class="errorlist col-12 pl-3" data-cy="password-error">
+                    <li>Please create and confirm your password.</li>
+                </ul>
+            {% endif %}
+                <div class="col-6">
+                    <label for="id_password1">Create password</label>
+                    <input
+                        type="password"
+                        class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
+                        id="id_password1"
+                        name="password1"
+                        data-cy="password1"
+                        value="{{form.data.password1}}">
+                </div>
+                <div class="col-6">
+                    <label for="id_password2">Confirm password</label>
+                    <input
+                        type="password"
+                        class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
+                        id="id_password2"
+                        name="password2"
+                        data-cy="password2"
+                        value="{{form.data.password2}}">
+                </div>
+            </div>
+            <div class="row mt-5">
+                <div class="col text-center">
+                    <button
+                        class="lt-button lt-button--priority"
+                        type="submit"
+                        data-cy="sign-up-submit">
+                        <span class='lt-button__label'>Create my account</span>
+                    </button>
+                </div>
+            </div>
+
+        </form>
+
+    </div>
+    <div class="col-5 pt-5">
+        <div class="create-prompt__decor w-100 mt-5">
+            <img src="{{STATIC_URL}}img/prompt-signup.svg" />
         </div>
     </div>
 </div>
