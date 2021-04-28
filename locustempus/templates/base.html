@@ -114,7 +114,7 @@
     </header>
     {% endblock %}
 
-    <main class="main--{{ page_type }}" id="content">
+    <main class="main--{% if page_type %}{{ page_type }}{% else %}default{% endif %}" id="content">
 
         {% comment %}Confirmation message box{% endcomment %}
         {% block messages %}
@@ -173,7 +173,7 @@
 <footer>
     <ul class="navlist--footer">
         <li class="nav-item">
-            <a href="#">About Locus Tempus</a>
+            <a href="/about/">About Locus Tempus</a>
         </li>
         <li class="nav-item">
             <a href="mailto:ctl-locustempus@columbia.edu" title="Send email to ctl-locustempus@columbia.edu">Contact Us</a>
