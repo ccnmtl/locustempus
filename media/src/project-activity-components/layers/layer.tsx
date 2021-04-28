@@ -162,16 +162,22 @@ export const Layer: React.FC<LayerProps> = (
                                                 <button
                                                     type={'button'}
                                                     onClick={handleLayerMenu}
-                                                    className={'lt-button lt-button--outlined leading'}>
-                                                    <span className={'lt-button__label'}>Cancel</span>
+                                                    className={'lt-button lt-button--outlined leading'}> {/* eslint-disable-line max-len */}
+                                                    <span className={'lt-button__label'}>
+                                                        Cancel
+                                                    </span>
                                                 </button>
-                                                <button type={'submit'} className={'lt-button lt-button--priority'}>
-                                                    <span className={'lt-button__label'}>Save</span>
+                                                <button type={'submit'}
+                                                    className={'lt-button lt-button--priority'}>
+                                                    <span className={'lt-button__label'}>
+                                                        Save
+                                                    </span>
                                                 </button>
                                             </div>
                                         </form>
                                     </li>
-                                    <li className={'lt-list-item lt-list-item--caution'} role='menuitem'>
+                                    <li className={'lt-list-item lt-list-item--caution'}
+                                        role='menuitem'>
                                         <ConfirmableAction
                                             icon={<FontAwesomeIcon icon={faTrashAlt}/>}
                                             handler={handleDeleteLayer}
