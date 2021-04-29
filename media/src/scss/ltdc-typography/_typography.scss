@@ -134,15 +134,15 @@ h6 {
 }
 
 @mixin button-darkbg-typography {
-    color: $white;
+    color: $white !important;
 }
 
 @mixin button-lightbg-typography {
-    color: $green-900;
+    color: $green-900 !important;
 }
 
 @mixin button-mediumbg-typography {
-    color: $black;
+    color: $black !important;
 }
 
 .lt-button--lg {

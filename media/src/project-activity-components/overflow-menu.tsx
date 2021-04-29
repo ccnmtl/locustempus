@@ -6,6 +6,7 @@ interface MenuItem {
     handler(): void;
     icon: ReactElement;
     label: string;
+    classCustom?: string;
     confirmationTitle?: string;
     confirmationText?: string;
     confirmationButtonText?: string;
@@ -160,8 +161,10 @@ export const OverflowMenu: React.FC<OverflowMenuProps> = ({items}: OverflowMenuP
                     <ul className={'lt-list'} role='menu'>
                         {items.map((item, idx) => {
                             return (
-                                <li className={'lt-list-item'} data-cy='overflow-menu-item'
-                                    role='menuitem' key={idx}>
+                                <li className={`lt-list-item ${item.classCustom !== undefined ?
+                                    'lt-list-item--caution' : ''}`}
+                                data-cy='overflow-menu-item'
+                                role='menuitem' key={idx}>
                                     { /* eslint-disable-next-line max-len */ }
                                     {item.confirmationTitle && item.confirmationText && item.confirmationButtonText ? (
                                         <ConfirmableAction

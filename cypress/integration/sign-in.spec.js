@@ -19,7 +19,7 @@ describe('Sign-In Stories', function() {
         // Navigate to login via the large Sign In button
         cy.get('[data-cy="sign-in-large"]').should('exist');
         cy.get('[data-cy="sign-in-large"]').click();
-        cy.title().should('equal', 'Log in – Locus Tempus');
+        cy.title().should('equal', 'Sign in – Locus Tempus');
         cy.get('[data-cy="columbia-login"]').should('exist');
         cy.get('[data-cy="guest-login"]').should('exist');
 
@@ -30,12 +30,12 @@ describe('Sign-In Stories', function() {
         cy.title().should('equal', 'Home page – Locus Tempus');
         cy.get('[data-cy="sign-in-small"]').should('exist');
         cy.get('[data-cy="sign-in-small"]').click();
-        cy.title().should('equal', 'Log in – Locus Tempus');
+        cy.title().should('equal', 'Sign in – Locus Tempus');
         cy.get('[data-cy="columbia-login"]').should('exist');
         cy.get('[data-cy="guest-login"]').should('exist');
 
         // Sign in as a guest
-        cy.title().should('equal', 'Log in – Locus Tempus');
+        cy.title().should('equal', 'Sign in – Locus Tempus');
         cy.get('[data-cy="guest-login"]').click();
 
         cy.get('[data-cy="guest-login-username"]').should('be.visible');
@@ -107,7 +107,7 @@ describe('Sign-In Stories', function() {
         cy.get('[data-cy="sign-in-small"]').click();
 
         // Navigate to the sign-in page
-        cy.title().should('equal', 'Log in – Locus Tempus');
+        cy.title().should('equal', 'Sign in – Locus Tempus');
         cy.get('[data-cy="forgot-password"]').should('exist');
 
         // Navigate to the forgot password page
