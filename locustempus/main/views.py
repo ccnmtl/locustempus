@@ -30,7 +30,7 @@ from lti_provider.models import LTICourseContext
 from locustempus.main.forms import (
     CourseForm, InviteUNIFormset, InviteEmailFormset
 )
-from locustempus.main.models import GuestUserAffil, Project, Response, Activity
+from locustempus.main.models import GuestUserAffil, Project, Response
 from locustempus.main.management.commands.integrationserver import (
     reset_test_models
 )
@@ -148,7 +148,8 @@ class CourseDetailView(LoggedInCourseMixin, View):
         if is_faculty:
             projects = Project.objects.filter(course=course)
         else:
-            projects = Project.objects.filter(course=course, activity__isnull=False) \
+            projects = Project.objects.filter(
+                course=course, activity__isnull=False) \
                 .annotate(response_status=Subquery(
                     Response.objects.filter(
                         activity__project=OuterRef('pk'),
@@ -183,11 +184,13 @@ class CourseDetailView(LoggedInCourseMixin, View):
         }
 
     def post(self, request, *args, **kwargs):
-        ctx = self.get_context(request, toggle_layout=True, pk=kwargs.get('pk'))
+        ctx = self.get_context(
+            request, toggle_layout=True, pk=kwargs.get('pk'))
         return render(request, self.template_name, ctx)
 
     def get(self, request, *args, **kwargs):
-        ctx = self.get_context(request, toggle_layout=False, pk=kwargs.get('pk'))
+        ctx = self.get_context(
+            request, toggle_layout=False, pk=kwargs.get('pk'))
         return render(request, self.template_name, ctx)
 
 
@@ -198,7 +201,8 @@ class CourseEditView(LoggedInFacultyMixin, UpdateView):
 
     def get_context_data(self, **kwargs):
         ctx = super().get_context_data(**kwargs)
-        ctx['object'].description = ctx['object'].get_detail('description', None)
+        ctx['object'].description = \
+            ctx['object'].get_detail('description', None)
         ctx['page_type'] = 'course'
         ctx['breadcrumb'] = {
             'Workspaces': reverse('course-list-view'),

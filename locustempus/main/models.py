@@ -339,8 +339,11 @@ class Feedback(models.Model):
     )
 
     def save(self, *args, **kwargs):
-        if not (self.response.status == 'SUBMITTED' or self.response.status == 'REVIEWED'):
-            raise Exception('Feedback can not be saved for a response that is not submitted or already reviewed')
+        if not (self.response.status == 'SUBMITTED' or
+                self.response.status == 'REVIEWED'):
+            raise Exception(
+                'Feedback can not be saved for a response '
+                'that is not submitted or already reviewed')
 
         if self.response.status == 'SUBMITTED':
             self.response.status = 'REVIEWED'

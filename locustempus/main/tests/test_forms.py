@@ -1,10 +1,7 @@
 """Tests for forms"""
 from django.test import TestCase
-from django.urls.base import reverse
 from locustempus.main.forms import CourseForm
-from locustempus.main.tests.factories import (
-    SandboxCourseFactory, CourseTestMixin, UserFactory,
-)
+from locustempus.main.tests.factories import CourseTestMixin
 
 
 class CourseModelFormTest(CourseTestMixin, TestCase):
