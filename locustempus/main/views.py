@@ -166,7 +166,7 @@ class CourseDetailView(LoggedInCourseMixin, View):
         if toggle_layout:
             is_grid = not request.session.get('project_grid_layout', False)
         else:
-            is_grid = request.session.get('project_grid_layout', False)
+            is_grid = request.session.get('project_grid_layout', True)
 
         request.session['project_grid_layout'] = is_grid
 
