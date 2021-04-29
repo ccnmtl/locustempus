@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load course_description from course_tools %}
+{% load widget_tweaks %}
 
 {% block title %}
 Edit {{ course.title }}
@@ -14,8 +16,17 @@ Edit {{ course.title }}
            <input data-cy="field-workspace-title" type="text" name="title" id="id_title" value="{{ object.title }}" required="required" class="form-control {% if form.title.errors %}is-invalid{% endif %}" />
         </div>
         <div class="form-group">
-            <label for="id_description">Description:</label>
-            <textarea name="description" cols="40" rows="3" class="form-control" maxlength="200" placeholder="{% if not object.description %}A brief summary of your workspace.{% endif %}" id="id_description">{{ object.description }}</textarea>
+            <label for="{{ form.description.id_for_label }}">Description:</label>
+            {% if form.description.errors %}
+                {{ form.description|add_class:"form-control is-invalid"|attr:"data-cy:workspace-description" }}
+                <div class="invalid-feedback">
+                    {% for error in form.description.errors %}
+                        {{ error }}
+                    {% endfor %}
+                </div>
+            {% else %}
+                <textarea name="id_description" cols="40" rows="3" class="form-control" maxlength="200" placeholder="A brief summary of your workspace." id="id_description" data-cy="field-workspace-description">{{ object | course_description }}</textarea>
+            {% endif %}
         </div>
         <div class="row">
             <div class="col-md-1 pr-0">

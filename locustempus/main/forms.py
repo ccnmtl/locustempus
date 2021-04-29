@@ -6,15 +6,19 @@ from django.core.validators import RegexValidator
 
 
 class CourseForm(forms.ModelForm):
-    description = forms.CharField(widget=forms.Textarea)
+    description = forms.CharField(widget=forms.Textarea, required=False)
 
-    def save(self):
-        course = super().save()
+    def save(self, commit=True):
+        course = super().save(commit=False)
         description = self.cleaned_data.get('description', None)
         if description:
+            # Regardless of commit, if there's a description we need to save
+            # the course before a description could be added
+            course.save()
             course.add_detail('description', description)
 
-        course.save()
+        if commit:
+            course.save()
 
         return course
 
