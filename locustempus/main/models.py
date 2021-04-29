@@ -203,6 +203,13 @@ class Activity(models.Model):
         null=True
     )
 
+    def submitted_response_count(self):
+        return self.responses.filter(
+            status__in=['SUBMITTED', 'REVIEWED']).count()
+
+    def feedback_count(self):
+        return self.responses.filter(status='REVIEWED').count()
+
 
 class Response(models.Model):
     def __init__(self, *args, **kwargs):
@@ -330,6 +337,13 @@ class Feedback(models.Model):
         related_name='+',
         null=True
     )
+
+    def save(self, *args, **kwargs):
+        if self.response.status != 'REVIEWED':
+            self.response.status = 'REVIEWED'
+            self.response.save()
+
+        super().save(*args, **kwargs)
 
     def submitted_at_formatted(self):
         # Note the shift from created_at -> submitted_at to better align

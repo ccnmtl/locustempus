@@ -12,6 +12,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.exceptions import PermissionDenied
 from django.db import connections
+from django.db.models import OuterRef, Subquery
 from django.http import (
     HttpRequest, HttpResponse, HttpResponseRedirect, Http404
 )
@@ -29,7 +30,7 @@ from lti_provider.models import LTICourseContext
 from locustempus.main.forms import (
     CourseForm, InviteUNIFormset, InviteEmailFormset
 )
-from locustempus.main.models import GuestUserAffil, Project
+from locustempus.main.models import GuestUserAffil, Project, Response, Activity
 from locustempus.main.management.commands.integrationserver import (
     reset_test_models
 )
@@ -144,20 +145,32 @@ class CourseDetailView(LoggedInCourseMixin, View):
     http_method_names = ['get', 'post']
 
     def get_projects(self, course, is_faculty):
-        projects = Project.objects.filter(course=course) if is_faculty \
-            else Project.objects.filter(course=course, activity__isnull=False)
+        if is_faculty:
+            projects = Project.objects.filter(course=course)
+        else:
+            projects = Project.objects.filter(course=course, activity__isnull=False) \
+                .annotate(response_status=Subquery(
+                    Response.objects.filter(
+                        activity__project=OuterRef('pk'),
+                        owners__in=[self.request.user]
+                    ).values('status')[:1]
+                ))
         return projects.order_by('title')
 
-    def post(self, request, *args, **kwargs):
-        course = get_object_or_404(Course, pk=kwargs.get('pk'))
+    def get_context(self, request, toggle_layout, pk):
+        course = get_object_or_404(Course, pk=pk)
         course.description = course.get_detail('description', None)
         is_faculty = course.is_true_faculty(self.request.user)
         projects = self.get_projects(course, is_faculty)
 
-        is_grid = not request.session.get('project_grid_layout', False)
+        if toggle_layout:
+            is_grid = not request.session.get('project_grid_layout', False)
+        else:
+            is_grid = request.session.get('project_grid_layout', False)
+
         request.session['project_grid_layout'] = is_grid
 
-        ctx = {
+        return {
             'course': course,
             'projects': projects,
             'is_faculty': is_faculty,
@@ -168,29 +181,13 @@ class CourseDetailView(LoggedInCourseMixin, View):
                 course.title: '',
             }
         }
+
+    def post(self, request, *args, **kwargs):
+        ctx = self.get_context(request, toggle_layout=True, pk=kwargs.get('pk'))
         return render(request, self.template_name, ctx)
 
     def get(self, request, *args, **kwargs):
-        course = get_object_or_404(Course, pk=kwargs.get('pk'))
-        course.description = course.get_detail('description', None)
-        is_faculty = course.is_true_faculty(self.request.user)
-        projects = self.get_projects(course, is_faculty)
-
-        is_grid = request.session.get('project_grid_layout', True)
-        if 'project_grid_layout' not in request.session:
-            request.session['project_grid_layout'] = is_grid
-
-        ctx = {
-            'course': course,
-            'projects': projects,
-            'is_faculty': is_faculty,
-            'page_type': 'course',
-            'project_grid_layout': is_grid,
-            'breadcrumb': {
-                'Workspaces': reverse('course-list-view'),
-                course.title: '',
-            }
-        }
+        ctx = self.get_context(request, toggle_layout=False, pk=kwargs.get('pk'))
         return render(request, self.template_name, ctx)
 
 
