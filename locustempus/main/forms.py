@@ -1,3 +1,4 @@
+from courseaffils.models import Course
 from django import forms
 from django.conf import settings
 from django.core.validators import RegexValidator
@@ -5,6 +6,29 @@ from django.forms.formsets import formset_factory
 from django_registration.forms import RegistrationForm
 
 from django_registration.signals import user_registered
+
+
+class CourseForm(forms.ModelForm):
+    description = forms.CharField(widget=forms.Textarea, required=False)
+
+    def save(self, commit=True):
+        course = super().save(commit=False)
+        description = self.cleaned_data.get('description', None)
+
+        if description is not None:
+            # Regardless of commit, if there's a description we need to save
+            # the course before a description could be added
+            course.save()
+            course.add_detail('description', description)
+
+        if commit:
+            course.save()
+
+        return course
+
+    class Meta:
+        model = Course
+        fields = ['title']
 
 
 class CourseRosterInviteUNIForm(forms.Form):

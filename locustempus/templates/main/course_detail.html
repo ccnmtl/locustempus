@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load course_description course_faculty_string from course_tools %}
 
 {% block title %}
 {{ course.title }}
@@ -64,6 +65,12 @@
 {% endif %}
 
 <div class="row dashboard-container" data-cy="project-list">
+    <div class="col-12">
+        <p>Authors: {{ course | course_faculty_string }}</p>
+        <p>Description: {{ course | course_description }}</p>
+        <p>Term: {% if course.info.termyear %}{{ course.info.termyear }}{% else %} None {% endif %}</p>
+        <p>User Role: You’re {% if user in course.faculty %}an Author.{% else %}a Contributor.{% endif %}</p>
+    </div>
     {% comment %}Projects cards{% endcomment %}
     {% if projects %}
         {% if project_grid_layout %}
@@ -84,10 +91,17 @@
                             {% endif %}
                             </li>
                             {% if user not in course.faculty and project.activity %}
-                            <li class="list-group-item lt-card__list-group-item text-muted">Responses TBD</li> {# not hooked up #}
+                                <li class="list-group-item lt-card__list-group-item text-muted">
+                                    Status: {{ project.response_status }} {# Could be: None, 'DRAFT', 'SUBMITTED', 'REVIEWED' #}
+                                </li>
                             {% endif %}
                             {% if user in course.faculty and project.activity %}
-                            <li class="list-group-item lt-card__list-group-item text-muted">Responses TBD</li> {# not hooked up #}
+                                <li class="list-group-item lt-card__list-group-item text-muted">
+                                    Responses: {{ project.activity.submitted_response_count }}
+                                </li>
+                                <li class="list-group-item lt-card__list-group-item text-muted">
+                                    Feedback: {{ project.activity.feedback_count }}
+                                </li>
                             {% endif %}
                             <li class="list-group-item lt-card__list-group-item text-muted">TBD</li> {# not hooked up #}
                         </ul>

@@ -88,10 +88,6 @@ class ResponseFactory(factory.DjangoModelFactory):
                 self.owners.add(
                     user, through_defaults={'activity': self.activity})
 
-    @factory.post_generation
-    def create_feedback(obj, create, extracted, **kwargs):
-        FeedbackFactory(response=obj)
-
 
 class CourseTestMixin(object):
     def setup_course(self) -> None:

@@ -8,7 +8,7 @@ from locustempus.main.permissions import (
 from locustempus.main.models import Response
 from locustempus.main.tests.factories import (
     CourseTestMixin, UserFactory, ProjectFactory, ActivityFactory,
-    ResponseFactory
+    ResponseFactory, FeedbackFactory
 )
 
 
@@ -231,7 +231,10 @@ class IsFeedbackFacultyOrStudentRecipientTest(CourseTestMixin, TestCase):
     def test_has_permissions_obj_get(self):
         """Tests GET permissions"""
         perm = IsFeedbackFacultyOrStudentRecipient()
-        feedback = self.sandbox_course_response.feedback
+        self.sandbox_course_response.status = \
+            self.sandbox_course_response.SUBMITTED
+        self.sandbox_course_response.save()
+        feedback = FeedbackFactory(response=self.sandbox_course_response)
         req = RequestFactory().get(
             reverse(
                 'api-feedback-detail',
@@ -322,10 +325,13 @@ class IsFeedbackFacultyOrStudentRecipientTest(CourseTestMixin, TestCase):
         p = ProjectFactory.create(course=self.sandbox_course)
         a = ActivityFactory.create(project=p)
         r = ResponseFactory.create(activity=a, owners=[self.student])
+        r.status = r.SUBMITTED
+        r.save()
+        f = FeedbackFactory(response=r)
         req = RequestFactory().patch(
             reverse(
                 'api-feedback-detail',
-                args=[r.feedback.pk]),
+                args=[f.pk]),
             {'feedback': 'foo'}
         )
 
@@ -365,10 +371,14 @@ class IsFeedbackFacultyOrStudentRecipientTest(CourseTestMixin, TestCase):
     def test_has_object_permissions_put(self):
         """Tests PUT permissions"""
         perm = IsFeedbackFacultyOrStudentRecipient()
+        self.sandbox_course_response.status = \
+            self.sandbox_course_response.SUBMITTED
+        self.sandbox_course_response.save()
+        f = FeedbackFactory(response=self.sandbox_course_response)
         req = RequestFactory().put(
             reverse(
                 'api-feedback-detail',
-                args=[self.sandbox_course_response.feedback.pk]),
+                args=[f.pk]),
             {'feedback': 'foo'}
         )
 
@@ -393,10 +403,14 @@ class IsFeedbackFacultyOrStudentRecipientTest(CourseTestMixin, TestCase):
     def test_has_object_permissions_delete(self):
         """Tests DELETE permissions"""
         perm = IsFeedbackFacultyOrStudentRecipient()
+        self.sandbox_course_response.status = \
+            self.sandbox_course_response.SUBMITTED
+        self.sandbox_course_response.save()
+        f = FeedbackFactory(response=self.sandbox_course_response)
         req = RequestFactory().delete(
             reverse(
                 'api-feedback-detail',
-                args=[self.sandbox_course_response.feedback.pk]))
+                args=[f.pk]))
 
         # Anon
         req.user = AnonymousUser()

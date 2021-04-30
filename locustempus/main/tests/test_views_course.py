@@ -47,10 +47,17 @@ class CourseTest(CourseTestMixin, TestCase):
         )
         response = self.client.post(
             reverse('course-create-view'),
-            {'title': 'A test course'}
+            {
+                'title': 'A test course',
+                'description': 'A test description'
+            }
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(response.url, "/dashboard/")
+        r2 = self.client.get(response.url)
+        desc = r2.context['courses'].get(title='A test course') \
+            .get_detail('description', None)
+        self.assertEqual('A test description', desc)
 
     # For CourseDetailView
     def test_detail_anon(self):
@@ -160,12 +167,19 @@ class CourseTest(CourseTestMixin, TestCase):
         )
         response = self.client.post(
             reverse('course-edit-view', args=[self.sandbox_course.pk]),
-            {'title': 'An edited course'}
+            {
+                'title': 'An edited course',
+                'description': 'An edited description'
+            }
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
             response.url,
             "/course/{}/".format(self.sandbox_course.pk))
+        self.assertEqual(
+            self.sandbox_course.get_detail('description', None),
+            'An edited description'
+        )
 
     def test_edit_faculty_not_in_course(self):
         alternate_course = SandboxCourseFactory.create()
@@ -199,7 +213,10 @@ class CourseTest(CourseTestMixin, TestCase):
         )
         response = self.client.post(
             reverse('course-edit-view', args=[self.sandbox_course.pk]),
-            {'title': 'An edited course'}
+            {
+                'title': 'An edited course',
+                'description': 'An edited description'
+            }
         )
         self.assertEqual(response.status_code, 302)
         self.assertEqual(
