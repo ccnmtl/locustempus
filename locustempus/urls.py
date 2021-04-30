@@ -1,11 +1,15 @@
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.urls import path
 from django.views.generic import TemplateView
 from django.views.static import serve
-from locustempus.main import views, viewsets
-from locustempus import design
+from django_registration.backends.activation.views import RegistrationView
 from rest_framework import routers
+
+from locustempus import design
+from locustempus.main.forms import CustomRegistrationForm
+from locustempus.main import views, viewsets
 
 
 admin.autodiscover()
@@ -25,6 +29,9 @@ router.register(r'event', viewsets.EventApiView, basename='api-event')
 
 urlpatterns = [
     url(r'^api/', include(router.urls)),
+    path('accounts/register/',
+         RegistrationView.as_view(form_class=CustomRegistrationForm),
+         name='django_registration_register'),
     url(r'^accounts/',
         include('django_registration.backends.activation.urls')),
     auth_urls,

@@ -1,7 +1,10 @@
 from django import forms
 from django.conf import settings
-from django.forms.formsets import formset_factory
 from django.core.validators import RegexValidator
+from django.forms.formsets import formset_factory
+from django_registration.forms import RegistrationForm
+
+from django_registration.signals import user_registered
 
 
 class CourseRosterInviteUNIForm(forms.Form):
@@ -37,3 +40,23 @@ InviteUNIFormset = formset_factory(
     CourseRosterInviteUNIForm, extra=1)
 InviteEmailFormset = formset_factory(
     CourseRosterInviteEmailForm, extra=1)
+
+
+class CustomRegistrationForm(RegistrationForm):
+    first_name = forms.CharField(required=False)
+    last_name = forms.CharField(required=False)
+
+
+def user_created(sender, user, request, **kwargs):
+    """
+    Called via signals when user registers. Creates different profiles and
+    associations
+    """
+    form = CustomRegistrationForm(request.POST)
+    # Update first and last name for user
+    user.first_name = form.data['first_name']
+    user.last_name = form.data['last_name']
+    user.save()
+
+
+user_registered.connect(user_created)
