@@ -65,10 +65,12 @@
 {% endif %}
 
 <div class="row dashboard-container" data-cy="project-list">
-    <p>Authors: {{ course | course_faculty_string }}</p>
-    <p>Description: {{ course | course_description }}</p>
-    <p>Term: {% if course.info.termyear %}{{ course.info.termyear }}{% else %} None {% endif %}</p>
-    <p>User Role: You’re {% if user in course.faculty %}an Author.{% else %}a Contributor.{% endif %}</p>
+    <div class="col-12">
+        <p>Authors: {{ course | course_faculty_string }}</p>
+        <p>Description: {{ course | course_description }}</p>
+        <p>Term: {% if course.info.termyear %}{{ course.info.termyear }}{% else %} None {% endif %}</p>
+        <p>User Role: You’re {% if user in course.faculty %}an Author.{% else %}a Contributor.{% endif %}</p>
+    </div>
     {% comment %}Projects cards{% endcomment %}
     {% if projects %}
         {% if project_grid_layout %}

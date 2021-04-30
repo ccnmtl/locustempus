@@ -25,7 +25,7 @@ Edit {{ course.title }}
                     {% endfor %}
                 </div>
             {% else %}
-                <textarea name="id_description" cols="40" rows="3" class="form-control" maxlength="200" placeholder="A brief summary of your workspace." id="id_description" data-cy="field-workspace-description">{{ object | course_description }}</textarea>
+                <textarea name="description" cols="40" rows="3" class="form-control" maxlength="200" placeholder="A brief summary of your workspace." id="{{ form.description.id_for_label }}" data-cy="field-workspace-description"></textarea>
             {% endif %}
         </div>
         <div class="row">

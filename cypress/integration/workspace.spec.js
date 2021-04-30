@@ -34,9 +34,13 @@ describe('Workspaces Stories', function() {
         // Create and save
         cy.get('[data-cy=course-create-button]').click();
         cy.get('[data-cy=field-workspace-title]').type('New Workspace');
+        cy.get('[data-cy=field-workspace-description]').type(
+            'A new workspace description');
         cy.get('[data-cy=save-workspace]').click();
         cy.title().should('equal', 'Workspaces – Locus Tempus');
         cy.get('[data-cy=workspace-cards]').contains('New Workspace');
+        cy.get('[data-cy=workspace-cards]').contains(
+            'A new workspace description');
         cy.get('[data-cy="create-workspaces-prompt"]').should('not.exist');
     });
 
@@ -80,8 +84,11 @@ describe('Workspaces Stories', function() {
         cy.get('[data-cy="edit-workspace"]').click();
         cy.get('[data-cy=field-workspace-title]')
             .clear().type('A New Workspace');
+        cy.get('[data-cy=field-workspace-description]')
+            .clear().type('An updated description');
         cy.get('[data-cy=save-workspace]').click();
         cy.title().should('equal', 'A New Workspace – Locus Tempus');
+        cy.get('[data-cy="project-list"]').contains('An updated description');
     });
 
     it('Delete the workspace details', function() {
