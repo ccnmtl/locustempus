@@ -11,7 +11,8 @@ class CourseForm(forms.ModelForm):
     def save(self, commit=True):
         course = super().save(commit=False)
         description = self.cleaned_data.get('description', None)
-        if description:
+
+        if description is not None:
             # Regardless of commit, if there's a description we need to save
             # the course before a description could be added
             course.save()
