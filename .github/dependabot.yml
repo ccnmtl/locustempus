@@ -1,0 +1,70 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  versioning-strategy: increase-if-necessary
+  ignore:
+  - dependency-name: react-map-gl
+    versions:
+    - 6.x
+  - dependency-name: "@danmarshall/deckgl-typings"
+    versions:
+    - 4.5.1
+    - 4.5.4
+    - 4.5.5
+    - 4.5.6
+    - 4.6.0
+    - 4.6.1
+    - 4.7.0
+    - 4.7.1
+    - 4.7.2
+    - 4.8.0
+  - dependency-name: cypress
+    versions:
+    - 6.7.0
+    - 6.7.1
+  - dependency-name: "@typescript-eslint/eslint-plugin"
+    versions:
+    - 4.16.0
+  - dependency-name: webpack
+    versions:
+    - 5.20.0
+    - 5.34.0
+  - dependency-name: "@types/node"
+    versions:
+    - 15.0.0
+  - dependency-name: postcss
+    versions:
+    - 8.2.11
+  - dependency-name: css-loader
+    versions:
+    - 5.2.3
+  - dependency-name: ts-loader
+    versions:
+    - 9.1.0
+- package-ecosystem: pip
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
+  open-pull-requests-limit: 10
+  ignore:
+  - dependency-name: decorator
+    versions:
+    - 5.0.0
+    - 5.0.1
+    - 5.0.2
+  - dependency-name: s3transfer
+    versions:
+    - 0.3.5
+  - dependency-name: sentry-sdk
+    versions:
+    - 0.20.0
+    - 0.20.1
+  - dependency-name: cryptography
+    versions:
+    - 3.3.2
