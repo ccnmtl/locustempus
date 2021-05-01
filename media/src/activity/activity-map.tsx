@@ -369,6 +369,7 @@ export const ActivityMap: React.FC = () => {
     const addEvent = (
         label: string, description: string, lat: number,
         lng: number, mediaObj: MediaObject | null): void => {
+        // TODO: check if the current user can add an event to the current active layer
         if (!activeLayer) {
             throw new Error('Add Event failed: no active layer is defined');
         }
@@ -863,7 +864,7 @@ export const ActivityMap: React.FC = () => {
                     updateProject={updateProject}
                     deleteProject={deleteProject}
                     isFaculty={isFaculty}
-                    layers={isFaculty ? projectLayerData : layerData}
+                    layers={layerData}
                     activeTab={activeTab}
                     setActiveTab={setActiveTab}
                     activity={activity}
@@ -878,7 +879,6 @@ export const ActivityMap: React.FC = () => {
                     toggleLayerVisibility={toggleLayerVisibility}
                     toggleResponseVisibility={toggleResponseVisibility}
                     projectLayers={projectLayerData}
-                    isProjectLayer={isProjectLayer}
                     showAddEventForm={showAddEventForm}
                     displayAddEventForm={displayAddEventForm}
                     activePosition={activePosition}

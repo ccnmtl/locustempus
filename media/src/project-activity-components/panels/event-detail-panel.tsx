@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { EventData, LayerData } from '../common';
+import React from 'react';
+import { EventData } from '../common';
 import { OverflowMenu } from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -7,7 +7,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 interface EventDetailPanelProps {
-    layers: Map<number, LayerData>;
+    activeLayerTitle: string;
     activeLayer: number | null;
     activeEventDetail: EventData | null;
     setActiveEventDetail(d: EventData | null): void;
@@ -20,18 +20,10 @@ interface EventDetailPanelProps {
 
 export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     {
-        layers, activeLayer, activeEventDetail, setActiveEventDetail,
-        setActiveEventEdit, deleteEvent, paneHeaderHeight, showEditMenu
+        activeLayer, activeEventDetail, setActiveEventDetail,
+        activeLayerTitle, setActiveEventEdit, deleteEvent, paneHeaderHeight,
+        showEditMenu
     }: EventDetailPanelProps) => {
-
-    const [activeLayerTitle, setActiveLayerTitle] = useState<string>('');
-
-    useEffect(() => {
-        if (activeLayer && layers.has(activeLayer)) {
-            const l = layers.get(activeLayer);
-            setActiveLayerTitle(l && l.title ? l.title : '');
-        }
-    }, [activeLayer, layers]);
 
     const handleBack = (e: React.MouseEvent<HTMLButtonElement>): void => {
         e.preventDefault();

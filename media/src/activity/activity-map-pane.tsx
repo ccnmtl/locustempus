@@ -35,7 +35,6 @@ export interface ActivityMapPaneProps {
     layerVisibility: Map<number, boolean>;
     toggleLayerVisibility(pk: number): void;
     toggleResponseVisibility(pk: number): void;
-    isProjectLayer(pk: number): boolean;
     showAddEventForm: boolean;
     displayAddEventForm(show: boolean, mockData?: EventData): void;
     activePosition: Position | null;
@@ -67,12 +66,12 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         deleteProject, layers, activity, updateActivity, deleteActivity,
         activeLayer, setActiveLayer, addLayer, deleteLayer,
         updateLayer,layerVisibility, toggleLayerVisibility,
-        toggleResponseVisibility, isProjectLayer, showAddEventForm,
-        displayAddEventForm, activePosition, addEvent, activeEvent,
-        setActiveEvent, activeEventDetail, setActiveEventDetail,
-        activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent,
-        projectLayers, responseData, updateResponse, createFeedback,
-        updateFeedback, responseLayers, activeTab, setActiveTab, setAlert
+        toggleResponseVisibility, showAddEventForm, displayAddEventForm,
+        activePosition, addEvent, activeEvent, setActiveEvent,
+        activeEventDetail, setActiveEventDetail, activeEventEdit,
+        setActiveEventEdit, deleteEvent, updateEvent, projectLayers,
+        responseData, updateResponse, createFeedback, updateFeedback,
+        responseLayers, activeTab, setActiveTab, setAlert
     }: ActivityMapPaneProps, forwardedRef) => {
 
     const projectPaneHeader = useRef<HTMLDivElement>(null);
@@ -81,6 +80,7 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
     const [showProjectEditPanel, setShowProjectEditPanel] =
         useState<boolean>(false);
     const [editMenuVis, setEditMenuVis] = useState<boolean>(false);
+    const [activeLayerTitle, setActiveLayerTitle] = useState<string>('');
 
     useEffect(() => {
         if (projectPaneHeader.current) {
@@ -95,6 +95,22 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         window.addEventListener('resize', resize);
         return (): void => window.removeEventListener('resize', resize);
     });
+
+    useEffect(() => {
+        if (activeLayer) {
+            if (projectLayers && projectLayers.has(activeLayer)) {
+                const l = projectLayers.get(activeLayer);
+                if (l) {
+                    setActiveLayerTitle(l.title);
+                }
+            } else if (layers.has(activeLayer)) {
+                const l = layers.get(activeLayer);
+                if (l) {
+                    setActiveLayerTitle(l.title);
+                }
+            }
+        }
+    }, [activeLayer]);
 
     const handleEdit = (): void => {
         setShowProjectEditPanel(true);
@@ -168,8 +184,8 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             returnTab={isFaculty ? 1 : 2}
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         1: <EventDetailPanel
-            layers={layers}
             activeLayer={activeLayer}
+            activeLayerTitle={activeLayerTitle}
             activeEventDetail={activeEventDetail}
             setActiveEventDetail={setActiveEventDetail}
             activeEventEdit={activeEventEdit}
