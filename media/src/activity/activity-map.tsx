@@ -369,13 +369,34 @@ export const ActivityMap: React.FC = () => {
     const addEvent = (
         label: string, description: string, lat: number,
         lng: number, mediaObj: MediaObject | null): void => {
-        // TODO: check if the current user can add an event to the current active layer
+        // Check if the current user can add an event to the current active layer
+        // If faculty and the active layer is not a project layer, use the first project layer
+        // If student and the active layer is not in layerData, is the first layer in layerData
         if (!activeLayer) {
             throw new Error('Add Event failed: no active layer is defined');
         }
+        let layerPk = activeLayer;
+        if (isFaculty && !projectLayerData.has(layerPk)) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const firstLayerPk = projectLayerData.keys().next().value;
+            if (typeof firstLayerPk == 'number') {
+                layerPk = firstLayerPk;
+            } else {
+                throw new Error('Add Event failed: no active layer can be found');
+            }
+        } else if (!isFaculty && !layerData.has(layerPk)) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+            const firstLayerPk = layerData.keys().next().value;
+            if (typeof firstLayerPk == 'number') {
+                layerPk = firstLayerPk;
+            } else {
+                throw new Error('Add Event failed: no active layer can be found');
+            }
+        }
+
         const data = {
             label: label,
-            layer: activeLayer,
+            layer: layerPk,
             description: description,
             datetime: null,
             location: {
@@ -386,16 +407,16 @@ export const ActivityMap: React.FC = () => {
         };
         void post<EventData>('/api/event/', data)
             .then((data) => {
-                if (activeLayer) {
+                if (layerPk) {
                     const updatedLayers = new Map(isFaculty ? projectLayerData : layerData);
-                    const layer = updatedLayers.get(activeLayer);
+                    const layer = updatedLayers.get(layerPk);
 
                     if (layer) {
                         const updatedLayer = {
                             ...layer,
                             events: [...layer.events, data]
                         };
-                        updatedLayers.set(activeLayer, updatedLayer);
+                        updatedLayers.set(layerPk, updatedLayer);
 
                         const setLayerDataFunc = isFaculty ? setProjectLayerData : setLayerData;
                         setLayerDataFunc(updatedLayers);
