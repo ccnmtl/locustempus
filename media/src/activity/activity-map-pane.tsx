@@ -80,6 +80,7 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
     const [showPane, setShowPane] = useState<boolean>(true);
     const [showProjectEditPanel, setShowProjectEditPanel] =
         useState<boolean>(false);
+    const [editMenuVis, setEditMenuVis] = useState<boolean>(false);
 
     useEffect(() => {
         if (projectPaneHeader.current) {
@@ -109,11 +110,32 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         setShowPane(!showPane);
     };
 
-    let editMenuVis = false;
-    if ((isFaculty && activeLayer && isProjectLayer(activeLayer)) ||
-        (!isFaculty && activeLayer && !isProjectLayer(activeLayer))) {
-        editMenuVis = true;
-    }
+    const layersHaveEvent = (eventPk: number, layers: LayerData[]): boolean => {
+        for (const layer of layers) {
+            for (const event of layer.events) {
+                if (event.pk == eventPk) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    useEffect(() => {
+        // If user is faculty/author, can edit if event is a project event
+        // If a student/contributor, can edit only if the event is in layerData
+        // Checking is potentially expensive, and only needs to happen when the active
+        // event changes, hence useEffect
+        let canEdit = false;
+        if (activeEvent) {
+            if (isFaculty) {
+                canEdit = layersHaveEvent(activeEvent.pk, [...projectLayers.values()]);
+            } else {
+                canEdit = layersHaveEvent(activeEvent.pk, [...layers.values()]);
+            }
+        }
+        setEditMenuVis(canEdit);
+    }, [activeEvent]);
 
 
     const DEFAULT_PANEL = 4;

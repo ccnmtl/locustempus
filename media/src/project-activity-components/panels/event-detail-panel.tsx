@@ -63,7 +63,7 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 </button>
             </div>
             <div className={'pane-content-body'}>
-                <div className='lt-pane-section__header'>
+                <div className='lt-pane-section__header' data-cy={'event-detail-header'}>
                     <h2>{activeEventDetail && activeEventDetail.label}</h2>
                     {showEditMenu && (
                         <OverflowMenu items={[
