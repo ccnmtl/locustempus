@@ -35,7 +35,6 @@ export interface ActivityMapPaneProps {
     layerVisibility: Map<number, boolean>;
     toggleLayerVisibility(pk: number): void;
     toggleResponseVisibility(pk: number): void;
-    isProjectLayer(pk: number): boolean;
     showAddEventForm: boolean;
     displayAddEventForm(show: boolean, mockData?: EventData): void;
     activePosition: Position | null;
@@ -67,12 +66,12 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         deleteProject, layers, activity, updateActivity, deleteActivity,
         activeLayer, setActiveLayer, addLayer, deleteLayer,
         updateLayer,layerVisibility, toggleLayerVisibility,
-        toggleResponseVisibility, isProjectLayer, showAddEventForm,
-        displayAddEventForm, activePosition, addEvent, activeEvent,
-        setActiveEvent, activeEventDetail, setActiveEventDetail,
-        activeEventEdit, setActiveEventEdit, deleteEvent, updateEvent,
-        projectLayers, responseData, updateResponse, createFeedback,
-        updateFeedback, responseLayers, activeTab, setActiveTab, setAlert
+        toggleResponseVisibility, showAddEventForm, displayAddEventForm,
+        activePosition, addEvent, activeEvent, setActiveEvent,
+        activeEventDetail, setActiveEventDetail, activeEventEdit,
+        setActiveEventEdit, deleteEvent, updateEvent, projectLayers,
+        responseData, updateResponse, createFeedback, updateFeedback,
+        responseLayers, activeTab, setActiveTab, setAlert
     }: ActivityMapPaneProps, forwardedRef) => {
 
     const projectPaneHeader = useRef<HTMLDivElement>(null);
@@ -80,6 +79,9 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
     const [showPane, setShowPane] = useState<boolean>(true);
     const [showProjectEditPanel, setShowProjectEditPanel] =
         useState<boolean>(false);
+    const [editMenuVis, setEditMenuVis] = useState<boolean>(false);
+    const [activeLayerTitle, setActiveLayerTitle] = useState<string>('');
+    const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);
 
     useEffect(() => {
         if (projectPaneHeader.current) {
@@ -95,6 +97,32 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         return (): void => window.removeEventListener('resize', resize);
     });
 
+    useEffect(() => {
+        if (activeLayer) {
+            if (projectLayers && projectLayers.has(activeLayer)) {
+                const l = projectLayers.get(activeLayer);
+                if (l) {
+                    setActiveLayerTitle(l.title);
+                }
+            } else if (layers.has(activeLayer)) {
+                const l = layers.get(activeLayer);
+                if (l) {
+                    setActiveLayerTitle(l.title);
+                }
+            } else {
+                outer:
+                for (const respLayers of [...responseLayers.values()]) {
+                    for (const layer of respLayers) {
+                        if (layer.pk == activeLayer) {
+                            setActiveLayerTitle(layer.title);
+                            break outer;
+                        }
+                    }
+                }
+            }
+        }
+    }, [activeLayer]);
+
     const handleEdit = (): void => {
         setShowProjectEditPanel(true);
     };
@@ -109,11 +137,32 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         setShowPane(!showPane);
     };
 
-    let editMenuVis = false;
-    if ((isFaculty && activeLayer && isProjectLayer(activeLayer)) ||
-        (!isFaculty && activeLayer && !isProjectLayer(activeLayer))) {
-        editMenuVis = true;
-    }
+    const layersHaveEvent = (eventPk: number, layers: LayerData[]): boolean => {
+        for (const layer of layers) {
+            for (const event of layer.events) {
+                if (event.pk == eventPk) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+
+    useEffect(() => {
+        // If user is faculty/author, can edit if event is a project event
+        // If a student/contributor, can edit only if the event is in layerData
+        // Checking is potentially expensive, and only needs to happen when the active
+        // event changes, hence useEffect
+        let canEdit = false;
+        if (activeEvent) {
+            if (isFaculty) {
+                canEdit = layersHaveEvent(activeEvent.pk, [...projectLayers.values()]);
+            } else {
+                canEdit = layersHaveEvent(activeEvent.pk, [...layers.values()]);
+            }
+        }
+        setEditMenuVis(canEdit);
+    }, [activeEvent]);
 
 
     const DEFAULT_PANEL = 4;
@@ -146,8 +195,8 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             returnTab={isFaculty ? 1 : 2}
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         1: <EventDetailPanel
-            layers={layers}
             activeLayer={activeLayer}
+            activeLayerTitle={activeLayerTitle}
             activeEventDetail={activeEventDetail}
             setActiveEventDetail={setActiveEventDetail}
             activeEventEdit={activeEventEdit}
@@ -200,6 +249,8 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             setActiveEventDetail={setActiveEventDetail}
             activeEventEdit={activeEventEdit}
             setActiveEventEdit={setActiveEventEdit}
+            activeResponse={activeResponse}
+            setActiveResponse={setActiveResponse}
             responseData={responseData}
             updateResponse={updateResponse}
             createFeedback={createFeedback}

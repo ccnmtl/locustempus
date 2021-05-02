@@ -72,6 +72,7 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
         useState<boolean>(false);
     const [projectPaneHeaderHeight, setProjectPaneHeaderHeight] = useState<number>(0);
     const [showPane, setShowPane] = useState<boolean>(true);
+    const [activeLayerTitle, setActiveLayerTitle] = useState<string>('');
 
     // Clear the query string param
     // This is done in this component so it could make use of the isNewProject
@@ -94,6 +95,17 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
         window.addEventListener('resize', resize);
         return (): void => window.removeEventListener('resize', resize);
     });
+
+    useEffect(() => {
+        if (activeLayer) {
+            if (layers.has(activeLayer)) {
+                const l = layers.get(activeLayer);
+                if (l) {
+                    setActiveLayerTitle(l.title);
+                }
+            }
+        }
+    }, [activeLayer]);
 
     const showDefaultMenu = (): void => {
         setActiveTab(0);
@@ -139,8 +151,8 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
             returnTab={1}
             paneHeaderHeight={projectPaneHeaderHeight}/>,
         1: <EventDetailPanel
-            layers={layers}
             activeLayer={activeLayer}
+            activeLayerTitle={activeLayerTitle}
             activeEventDetail={activeEventDetail}
             setActiveEventDetail={setActiveEventDetail}
             activeEventEdit={activeEventEdit}
