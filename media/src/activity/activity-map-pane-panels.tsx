@@ -43,6 +43,8 @@ interface DefaultPanelProps {
     responseLayers: Map<number, LayerData[]>;
     paneHeaderHeight: number;
     setAlert(alert: string | null): void;
+    activeResponse: ResponseData | null;
+    setActiveResponse(response: ResponseData | null): void;
 }
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
@@ -53,7 +55,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         activeLayer, setActiveLayer, activeEvent, setActiveEvent,
         setActiveEventDetail, activeEventEdit, projectLayers, responseData,
         updateResponse, createFeedback, updateFeedback, isFaculty,
-        responseLayers, paneHeaderHeight, setAlert
+        responseLayers, paneHeaderHeight, setAlert, activeResponse,
+        setActiveResponse
     }: DefaultPanelProps) => {
 
 
@@ -183,6 +186,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 createFeedback={createFeedback}
                                 updateFeedback={updateFeedback}
                                 responseLayers={responseLayers}
+                                activeResponse={activeResponse}
+                                setActiveResponse={setActiveResponse}
                                 layerVisibility={layerVisibility}
                                 toggleLayerVisibility={toggleLayerVisibility}
                                 toggleResponseVisibility={toggleResponseVisibility}
@@ -311,15 +316,17 @@ interface FacultySubPanelProps {
     setActiveEventDetail(d: EventData): void;
     activeEventEdit: EventData | null;
     setAlert(alert: string | null): void;
+    activeResponse: ResponseData | null;
+    setActiveResponse(response: ResponseData | null): void;
 }
 
 const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     responseData, createFeedback, updateFeedback, responseLayers,
-    toggleResponseVisibility, activeEvent, setActiveEvent, layerVisibility,
-    setActiveEventDetail, activeEventEdit, setAlert
+    activeResponse, setActiveResponse, toggleResponseVisibility, activeEvent,
+    setActiveEvent, layerVisibility, setActiveEventDetail, activeEventEdit,
+    setAlert, setActiveLayer, activeLayer
 }: FacultySubPanelProps) => {
 
-    const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);
     const [activeResponseLayers, setActiveResponseLayers] =
         useState<Map<number, LayerData>>(new Map());
     const [feedback, setFeedback] = useState<string>('');
@@ -398,6 +405,8 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                     setActiveEvent={setActiveEvent}
                     activeEvent={activeEvent}
                     setActiveEventDetail={setActiveEventDetail}
+                    activeLayer={activeLayer}
+                    setActiveLayer={setActiveLayer}
                     activeEventEdit={activeEventEdit} />
             </section>
 

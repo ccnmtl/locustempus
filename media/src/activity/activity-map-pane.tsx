@@ -81,6 +81,7 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         useState<boolean>(false);
     const [editMenuVis, setEditMenuVis] = useState<boolean>(false);
     const [activeLayerTitle, setActiveLayerTitle] = useState<string>('');
+    const [activeResponse, setActiveResponse] = useState<ResponseData | null>(null);
 
     useEffect(() => {
         if (projectPaneHeader.current) {
@@ -107,6 +108,16 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
                 const l = layers.get(activeLayer);
                 if (l) {
                     setActiveLayerTitle(l.title);
+                }
+            } else {
+                outer:
+                for (const respLayers of [...responseLayers.values()]) {
+                    for (const layer of respLayers) {
+                        if (layer.pk == activeLayer) {
+                            setActiveLayerTitle(layer.title);
+                            break outer;
+                        }
+                    }
                 }
             }
         }
@@ -238,6 +249,8 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             setActiveEventDetail={setActiveEventDetail}
             activeEventEdit={activeEventEdit}
             setActiveEventEdit={setActiveEventEdit}
+            activeResponse={activeResponse}
+            setActiveResponse={setActiveResponse}
             responseData={responseData}
             updateResponse={updateResponse}
             createFeedback={createFeedback}
