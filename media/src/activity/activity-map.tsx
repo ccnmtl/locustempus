@@ -218,13 +218,15 @@ export const ActivityMap: React.FC = () => {
             };
             void post<LayerData>('/api/layer/', newLayer)
                 .then((data) => {
-                    const layers = new Map(projectLayerData);
-                    layers.set(data.pk, data);
-                    setProjectLayerData(layers);
+                    setProjectLayerData((prev) => {
+                        prev.set(data.pk, data);
+                        return prev;
+                    });
 
-                    const layerVis = new Map(layerVisibility);
-                    layerVis.set(data.pk, true);
-                    setLayerVisibility(layerVis);
+                    setLayerVisibility((prev) => {
+                        prev.set(data.pk, true);
+                        return prev;
+                    });
 
                     setActiveLayer(data.pk);
                 });
@@ -236,13 +238,15 @@ export const ActivityMap: React.FC = () => {
             };
             void post<LayerData>('/api/layer/', newLayer)
                 .then((data) => {
-                    const layers = new Map(layerData);
-                    layers.set(data.pk, data);
-                    setLayerData(layers);
+                    setLayerData((prev) => {
+                        prev.set(data.pk, data);
+                        return prev;
+                    });
 
-                    const layerVis = new Map(layerVisibility);
-                    layerVis.set(data.pk, true);
-                    setLayerVisibility(layerVis);
+                    setLayerVisibility((prev) => {
+                        prev.set(data.pk, true);
+                        return prev;
+                    });
 
                     setActiveLayer(data.pk);
                 });
@@ -675,30 +679,24 @@ export const ActivityMap: React.FC = () => {
                 setActivity(await activityResponse.json());
             }
 
-            const layerVis = new Map<number, boolean>();
-
             // Fetch the Project layers
             const layers: LayerData[] = [];
             for (const layerUrl of projData.layers) {
                 layers.push(await get<LayerData>(layerUrl));
             }
 
-            if (layers.length > 0) {
-                const projLayers = layers.reduce((acc, val) => {
-                    // Set the layer visibility while we're here
-                    layerVis.set(val.pk, true);
-                    acc.set(val.pk, val);
-                    return acc;
-                }, new Map<number, LayerData>());
-                setProjectLayerData(projLayers);
-                layersForZoom = layersForZoom.concat([...projLayers.values()]);
-                setLayerVisibility(layerVis);
+            const projLayers = layers.reduce((acc, val) => {
+                // Set the layer visibility while we're here
+                acc.set(val.pk, val);
+                return acc;
+            }, new Map<number, LayerData>());
+            setProjectLayerData(projLayers);
+            layersForZoom = layersForZoom.concat([...projLayers.values()]);
 
-                // Sets the active layer for faculty while we have the layers
-                // in hand. An active layer for student responses will be set below
-                if (isFaculty) {
-                    setActiveLayer(layers[0].pk);
-                }
+            // Sets the active layer for faculty while we have the layers
+            // in hand. An active layer for student responses will be set below
+            if (isFaculty) {
+                setActiveLayer(layers[0].pk);
             }
 
             // Instantiate raster layers
@@ -761,7 +759,6 @@ export const ActivityMap: React.FC = () => {
                                     getColor: ICON_COLOR,
                                 })
                             );
-                            layerVis.set(layer.pk, true);
                         }
                     }
 
@@ -783,8 +780,6 @@ export const ActivityMap: React.FC = () => {
                         } else {
                             const lyrs = layers.reduce((acc, val) => {
                                 acc.set(val.pk, val);
-                                // Set the layer visibility
-                                layerVis.set(val.pk, true);
                                 return acc;
                             }, new Map<number, LayerData>());
                             setLayerData(lyrs);
@@ -805,6 +800,11 @@ export const ActivityMap: React.FC = () => {
                     }
                 }
             }
+            const layerVis = layersForZoom.reduce((acc, val) => {
+                acc.set(val.pk, true);
+                return acc;
+            }, new Map<number, boolean>());
+            setLayerVisibility(layerVis);
             const viewport = getBoundedViewport(layersForZoom, deckglMap, mapPane);
             setViewportState({
                 latitude: viewport.latitude,
