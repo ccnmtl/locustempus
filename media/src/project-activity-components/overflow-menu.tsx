@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect, ReactElement } from 'react';
+import ReactDOM from 'react-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons';
 
@@ -34,10 +35,27 @@ export const ConfirmableAction: React.FC<ConfirmableActionProps> = ({
                 setShowMenu(false);
             }
         };
-        /* eslint-disable-next-line scanjs-rules/call_addEventListener */
-        window.addEventListener('keyup', closeOnEsc);
-        return () => {window.removeEventListener('keyup', closeOnEsc);};
-    }, []);
+        if (showConfirmation) {
+            // Hey kids, this isn't cool, don't do this at home
+            // This hack adds a class so we can add extra styles to make the
+            // modal work in Safari. This modal needs to be refactored to live
+            // outside the pane, but this will do for now.
+            const pane = document.getElementById('pane-scroll-y');
+            if (pane) {
+                // TODO: when refactoring, don't forget to remove this style
+                pane.classList.add('overflow-fix');
+            }
+            /* eslint-disable-next-line scanjs-rules/call_addEventListener */
+            window.addEventListener('keyup', closeOnEsc);
+            return () => {
+                window.removeEventListener('keyup', closeOnEsc);
+                const p = document.getElementById('pane-scroll-y');
+                if (p) {
+                    p.classList.remove('overflow-fix');
+                }
+            };
+        }
+    }, [showConfirmation]);
 
     const handleCancel = (e: React.MouseEvent) => {
         e.preventDefault();
