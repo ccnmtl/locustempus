@@ -116,7 +116,12 @@
                 </ul>
             {% endif %}
                 <div class="col-6">
-                    <label for="id_password1">Create password</label>
+                    <label for="id_password1" class="m-0">Create password*</label>
+                    <div class="lt-helper mb-1">
+                        <div class="lt-helper--line" id="helper-field__username">
+                            *Required
+                        </div>
+                    </div>
                     <input
                         type="password"
                         class="form-control {% if form.password1.errors %}is-invalid{% endif %}"
@@ -126,7 +131,12 @@
                         value="{{form.data.password1}}">
                 </div>
                 <div class="col-6">
-                    <label for="id_password2">Confirm password</label>
+                    <label for="id_password2" class="m-0">Confirm password</label>
+                    <div class="lt-helper mb-1">
+                        <div class="lt-helper--line" id="helper-field__username">
+                            *Required
+                        </div>
+                    </div>
                     <input
                         type="password"
                         class="form-control {% if form.password2.errors %}is-invalid{% endif %}"
