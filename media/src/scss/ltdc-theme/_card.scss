@@ -11,9 +11,17 @@
         @extend %heading;
         @include font-size($h5-font-size);
     }
+    &__info-summary {
+        margin: -0.5rem 0 0.75rem 0 !important;
+        padding: 0 !important;
+        > * {
+            margin: 0 !important;
+            padding: 0 !important;
+            background-color: transparent !important;
+        }
+    }
     &__term {
         @extend .card-text;
-        margin-top: -0.5rem;
     }
     &__text {
         @extend .card-text;
@@ -34,3 +42,10 @@
         border-right: 1px solid transparent;
     }
 }
+
+// figcaption {
+//     margin: 0.625rem 1rem;
+//     .img__caption {
+//         padding-right: 1rem;
+//     }
+// }
