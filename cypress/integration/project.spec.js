@@ -43,7 +43,7 @@ describe('Project List Stories (Workspace Detail)', function() {
     });
 
     it('Creates and cancel project', function() {
-        cy.get('[data-cy="project-create-button"]').click();
+        cy.get('[data-cy="project-create-button"]').click({force: true});
 
         // creating a project takes the user to the project detail space
         cy.title().should('equal', 'Untitled project – Locus Tempus');
@@ -66,7 +66,7 @@ describe('Project List Stories (Workspace Detail)', function() {
     });
 
     it('Creates and saves project', function() {
-        cy.get('[data-cy="project-create-button"]').click();
+        cy.get('[data-cy="project-create-button"]').click({force: true});
         cy.get('[data-cy="loading-modal"]').should('be.visible');
 
         // creating a project takes the user to the project detail space
