@@ -53,7 +53,7 @@
 
 {% block content %}
 
-<div class="row pt-3 px-0 mt-0 mx-0">
+<div class="row pt-3 px-0 mt-0 mx-0" data-cy="workspace-summary-info">
     <div class="col-9">
         {% if course.info.termyear %}<div>Semester: {{ course.info.termyear }}</div>{% endif %}
         <div><b>Author:</b> {{ course|course_faculty_string }}</div>

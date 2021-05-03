@@ -88,7 +88,7 @@ describe('Workspaces Stories', function() {
             .clear().type('An updated description');
         cy.get('[data-cy=save-workspace]').click();
         cy.title().should('equal', 'A New Workspace – Locus Tempus');
-        cy.get('[data-cy="project-list"]').contains('An updated description');
+        cy.get('[data-cy="workspace-summary-info"]').contains('An updated description');
     });
 
     it('Delete the workspace details', function() {
