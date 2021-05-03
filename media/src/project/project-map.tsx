@@ -116,13 +116,15 @@ export const ProjectMap: React.FC = () => {
         };
         void post<LayerData>('/api/layer/', data)
             .then((data: LayerData) => {
-                const layers = new Map(layerData);
-                layers.set(data.pk, data);
-                setLayerData(layers);
+                setLayerData((prev) => {
+                    prev.set(data.pk, data);
+                    return prev;
+                });
 
-                const layerVis = new Map(layerVisibility);
-                layerVis.set(data.pk, true);
-                setLayerVisibility(layerVis);
+                setLayerVisibility((prev) => {
+                    prev.set(data.pk, true);
+                    return prev;
+                });
 
                 setActiveLayer(data.pk);
             });
@@ -135,9 +137,10 @@ export const ProjectMap: React.FC = () => {
                 updatedLayerData.delete(pk);
                 setLayerData(updatedLayerData);
 
-                const layerVis = new Map(layerVisibility);
-                layerVis.delete(pk);
-                setLayerVisibility(layerVis);
+                setLayerVisibility((prev) => {
+                    prev.delete(pk);
+                    return prev;
+                });
 
                 if (updatedLayerData.size === 0) {
                     // addLayer has a stale closure, so the fetch
@@ -150,6 +153,9 @@ export const ProjectMap: React.FC = () => {
                         .then((data) => {
                             setLayerData(new Map([[data.pk, data]]));
                             setActiveLayer(data.pk);
+                            const vis = new Map<number, boolean>();
+                            vis.set(data.pk, true);
+                            setLayerVisibility(vis);
                         });
                 } else {
                     // Set the first layer to be the active layer
