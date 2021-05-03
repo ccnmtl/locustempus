@@ -29,12 +29,6 @@ export const ConfirmableAction: React.FC<ConfirmableActionProps> = ({
     const [showConfirmation, setShowConfirmation] = useState<boolean>(false);
 
     useEffect(() => {
-        const closeOnEsc = (evt: KeyboardEvent): void => {
-            if (evt.code == 'Escape') {
-                setShowConfirmation(false);
-                setShowMenu(false);
-            }
-        };
         if (showConfirmation) {
             // Hey kids, this isn't cool, don't do this at home
             // This hack adds a class so we can add extra styles to make the
@@ -46,9 +40,7 @@ export const ConfirmableAction: React.FC<ConfirmableActionProps> = ({
                 pane.classList.add('overflow-fix');
             }
             /* eslint-disable-next-line scanjs-rules/call_addEventListener */
-            window.addEventListener('keyup', closeOnEsc);
             return () => {
-                window.removeEventListener('keyup', closeOnEsc);
                 const p = document.getElementById('pane-scroll-y');
                 if (p) {
                     p.classList.remove('overflow-fix');
@@ -56,6 +48,20 @@ export const ConfirmableAction: React.FC<ConfirmableActionProps> = ({
             };
         }
     }, [showConfirmation]);
+
+    useEffect(() => {
+        const closeOnEsc = (evt: KeyboardEvent): void => {
+            if (evt.code == 'Escape') {
+                setShowConfirmation(false);
+                setShowMenu(false);
+            }
+        };
+        /* eslint-disable-next-line scanjs-rules/call_addEventListener */
+        window.addEventListener('keyup', closeOnEsc);
+        return () => {
+            window.removeEventListener('keyup', closeOnEsc);
+        };
+    }, []);
 
     const handleCancel = (e: React.MouseEvent) => {
         e.preventDefault();
