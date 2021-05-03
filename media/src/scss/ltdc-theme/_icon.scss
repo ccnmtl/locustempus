@@ -14,12 +14,12 @@
 
 .lt-layout-toggle .lt-button {
     & .lt-icons {
-        filter: $cccccc;
-        -webkit-filter: $cccccc;
-        -moz-filter: $cccccc;
+        filter: $gray-600-svg;
+        -webkit-filter: $gray-600-svg;
+        -moz-filter: $gray-600-svg;
     }
     & .lt-button__label {
-        color: #cccccc;
+        color: $gray-600;
     }
 }
 
