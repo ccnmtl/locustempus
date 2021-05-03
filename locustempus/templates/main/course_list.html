@@ -28,14 +28,14 @@ Workspaces
 {% block content %}
 
 {% if courses %}
-<div class="pt-3 px-3">
+<div class="pt-3 px-3 text-right">
     <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="lt-button lt-button--solid">
         <span class='lt-icons lt-button__icon lt-button--svg'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create new workspace</span>
     </a>
 </div>
 {% endif %}
 
-<div class="row dashboard-container">
+<div class="row dashboard-container pt-0">
     {% if courses %}
         {% if course_grid_layout %}
             {% for course in courses %}
@@ -43,13 +43,22 @@ Workspaces
                 <div class="lt-card">
                     <div class="lt-card__body">
                         <h3 class="lt-card__title"><a data-cy="workspace-title-link" href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
-                        <p class="lt-card__term">Term: {% if course.info.termyear %}{{ course.info.termyear }}{% else %} None {% endif %}</p>
-                        <p class="lt-card_text">Authors: {{ course | course_faculty_string }}</p>
-                        <p class="lt-card__text text-muted">{{ course | course_description }}</p> {# not hooked up #}
-                        <p class="lt-card__text">You’re {% if user in course.faculty %}an Author.{% else %}a Contributor.{% endif %}</p>
-                        <ul class="list-group list-group-horizontal-sm lt-card__list-group">
-                            <li class="list-group-item lt-card__list-group-item">{{ course.projects.count }} Projects</li>
-                        </ul>
+                        <div class="lt-card__info-summary">
+                            <p class="lt-card__text">{% if course.info.termyear %}Semester: {{ course.info.termyear }}<br />{% endif %}
+                            Author: {{ course|course_faculty_string }}<br />
+                            {% with totalProject=course.projects.count %}
+                                <b>{{ totalProject }} Project{{ totalProject|pluralize }}</b>
+                            {% endwith %}
+                            </p>
+                            <p class="lt-card__text"><b>You’re {% if user in course.faculty %}an Author{% else %}a Contributor{% endif %}</b></p>
+                        </div>
+                        {% if course|course_description %}
+                            <p class="lt-card__text">{{ course|course_description }}</p>
+                        {% else %}
+                            <div class='lt-banner'>
+                                There’s no description for this Workspace.
+                            </div>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -59,7 +68,7 @@ Workspaces
                 <thead>
                     <tr>
                         <th scope="col">Workspace</th>
-                        <th scope="col">Term</th>
+                        <th scope="col">Semester</th>
                         <th scope="col">Authors</th>
                         <th scope="col" class="sorter-false">Description</th>
                         <th scope="col" class="text-nowrap">Your role</th>
@@ -70,14 +79,18 @@ Workspaces
                     {% for course in courses %}
                     <tr>
                         <td><a href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></td>
-                        <td>{% if course.info.termyear %}{{ course.info.termyear }}{% else %} None {% endif %}</td>
-                        <td>{% for fac in course.faculty %}{{ fac }}{% if not forloop.last%}, {% endif %}{% endfor %}</td>
-                        <td class="text-muted">Workspace description not implemented yet.</td> {# not hooked up #}
+                        <td>{% if course.info.termyear %}{{ course.info.termyear }}{% else %} &ndash; {% endif %}</td>
+                        <td>{{ course|course_faculty_string }}</td>
+                        <td>{% if course|course_description %}
+                            {{ course|course_description }}
+                        {% else %}
+                            <span class="text-muted font-italic">There’s no description for this Workspace.</span>
+                        {% endif %}</td>
                         <td>{% if user in course.faculty %}Author{% else %}Contributor{% endif %}</td>
                         <td class="text-nowrap">
-                            <ul class="list-group list-group-horizontal-sm lt-card__list-group m-0">
-                                <li class="list-group-item lt-card__list-group-item py-0">{{ course.projects.count }} Projects</li>
-                            </ul>
+                        {% with totalProject=course.projects.count %}
+                            {{ totalProject }} Project{{ totalProject|pluralize }}
+                        {% endwith %}
                         </td>
                     </tr>
                     {% endfor %}
