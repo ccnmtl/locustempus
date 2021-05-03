@@ -54,7 +54,7 @@
 {% block content %}
 
 {% if is_faculty and projects %}
-<div class="pt-3 px-3">
+<div class="pt-3 px-3 text-right" style="margin-bottom: -63px;">
     <form action="{% url 'course-project-create' course.pk %}" method="post">
         {% csrf_token %}
         <button data-cy="project-create-button" class="lt-button lt-button--solid">
@@ -64,12 +64,23 @@
 </div>
 {% endif %}
 
-<div class="row dashboard-container" data-cy="project-list">
-    <div class="col-12">
-        <p>Authors: {{ course | course_faculty_string }}</p>
-        <p>Description: {{ course | course_description }}</p>
-        <p>Term: {% if course.info.termyear %}{{ course.info.termyear }}{% else %} None {% endif %}</p>
-        <p>User Role: You’re {% if user in course.faculty %}an Author.{% else %}a Contributor.{% endif %}</p>
+<div class="row dashboard-container pt-0" data-cy="project-list">
+    <div class="col-12 pt-3 pb-2">
+        {% if course.info.termyear %}<div>Semester: {{ course.info.termyear }}</div>{% endif %}
+        <div><b>Author:</b> {{ course|course_faculty_string }}</div>
+        <div><b>Number of Projects:</b>
+        {% with totalProject=course.projects.count %}
+            {{ totalProject }} Project{{ totalProject|pluralize }}
+        {% endwith %}
+        </div>
+        <div><b>Description:</b>
+            {% if course|course_description %}
+                {{ course|course_description }}
+            {% else %}
+                There’s no description for this Workspace.
+            {% endif %}
+        </div>
+        <div><b>Your role:</b> {% if user in course.faculty %}Author{% else %}Contributor{% endif %}</div>
     </div>
     {% comment %}Projects cards{% endcomment %}
     {% if projects %}
@@ -79,31 +90,27 @@
                 <div class="lt-card" data-cy="project-card">
                     <div class="lt-card__body">
                         <h3 class="lt-card__title"><a data-cy="project-title-link"  href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></h3>
-                        <p class="lt-card__term">Created on {{ project.created_at }}</p>
+                        <p class="lt-card__text my-0">Created on {{ project.created_at }}</p>
+                        <p class="lt-card__text mt-0">{% if project.activity %}1 Activity{% else %}No Activity{% endif %}</p>
                         <p class="lt-card__text">{{ project.description|striptags|truncatechars:140}}</p>
                         <ul class="list-group list-group-horizontal-sm lt-card__list-group">
-                            <li class="list-group-item lt-card__list-group-item text-muted">Status TBD</li> {# not hooked up #}
-                            <li class="list-group-item lt-card__list-group-item">
-                            {% if project.activity %}
-                                1 Activity
-                            {% else %}
-                                No Activity
-                            {% endif %}
-                            </li>
                             {% if user not in course.faculty and project.activity %}
-                                <li class="list-group-item lt-card__list-group-item text-muted">
-                                    Status: {{ project.response_status }} {# Could be: None, 'DRAFT', 'SUBMITTED', 'REVIEWED' #}
+                                <li class="list-group-item lt-card__list-group-item">
+                                    Your Response status: {{ project.response_status|lower|capfirst }} {# Could be: None, 'DRAFT', 'SUBMITTED', 'REVIEWED' #}
                                 </li>
                             {% endif %}
                             {% if user in course.faculty and project.activity %}
-                                <li class="list-group-item lt-card__list-group-item text-muted">
-                                    Responses: {{ project.activity.submitted_response_count }}
+                                <li class="list-group-item lt-card__list-group-item">
+                                {% with totalResponses=project.activity.submitted_response_count %}
+                                    {{ totalResponses }} Response{{ totalResponses|pluralize }} submitted
+                                {% endwith %}
                                 </li>
-                                <li class="list-group-item lt-card__list-group-item text-muted">
-                                    Feedback: {{ project.activity.feedback_count }}
+                                <li class="list-group-item lt-card__list-group-item">
+                                {% with totalFeedback=project.activity.feedback_count %}
+                                    {{ totalFeedback }} Feedback{{ totalFeedback|pluralize }} sent
+                                {% endwith %}
                                 </li>
                             {% endif %}
-                            <li class="list-group-item lt-card__list-group-item text-muted">TBD</li> {# not hooked up #}
                         </ul>
                     </div>
                 </div>
@@ -116,9 +123,11 @@
                         <th scope="col">Project</th>
                         <th scope="col" class="text-nowrap">Date created</th>
                         <th scope="col" class="sorter-false">Description</th>
-                        <th scope="col">Status</th>
                         <th scope="col">Activity</th>
-                        <th scope="col" class="sorter-false text-nowrap">Other info</th>
+                        <th scope="col" class="text-nowrap">Responses status</th>
+                        {% if user in course.faculty %}
+                        <th scope="col" class="text-nowrap">Feedback status</th>
+                        {% endif %}
                     </tr>
                 </thead>
                 <tbody>
@@ -126,16 +135,38 @@
                     <tr>
                         <td><a href="{% url 'course-project-detail' course.pk project.pk %}">{{ project.title }}</a></td>
                         <td>{{ project.created_at }}</td>
-                        <td>{{ project.description|striptags|truncatechars:140}}</td>
-                        <td class="text-muted">Status TBD</td>
+                        <td>{% if project.description %}
+                            {{ project.description|striptags|truncatechars:140}}
+                        {% else %}
+                            &ndash;
+                        {% endif %}</td>
                         <td class="text-nowrap">
-                            {% if project.activity %}
-                                1 Activity
-                            {% else %}
-                                No Activity                       
-                            {% endif %}
+                            {% if project.activity %}1 Activity{% else %}No Activity{% endif %}
                         </td>
-                        <td class="text-muted">TBD</td>
+                        <td>
+                        {% if user not in course.faculty and project.activity %}
+                            {{ project.response_status|lower|capfirst }} {# Could be: None, 'DRAFT', 'SUBMITTED', 'REVIEWED' #}
+                        {% endif %}
+                        {% if user in course.faculty and project.activity %}
+                            {% with totalResponses=project.activity.submitted_response_count %}
+                                {{ totalResponses }} Response{{ totalResponses|pluralize }} submitted
+                            {% endwith %}
+                        {% endif %}
+                        {% if not project.activity %}
+                            &ndash;
+                        {% endif %}
+                        </td>
+                        {% if user in course.faculty %}
+                        <td>
+                        {% if project.activity %}
+                            {% with totalFeedback=project.activity.feedback_count %}
+                                {{ totalFeedback }} Feedback{{ totalFeedback|pluralize }} sent
+                            {% endwith %}
+                        {% else %}
+                            &ndash;
+                        {% endif %}
+                        </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
                 </tbody>
