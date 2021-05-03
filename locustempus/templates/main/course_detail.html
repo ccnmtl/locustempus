@@ -53,19 +53,8 @@
 
 {% block content %}
 
-{% if is_faculty and projects %}
-<div class="pt-3 px-3 text-right" style="margin-bottom: -63px;">
-    <form action="{% url 'course-project-create' course.pk %}" method="post">
-        {% csrf_token %}
-        <button data-cy="project-create-button" class="lt-button lt-button--solid">
-            <span class='lt-icons lt-button__icon lt-button--svg'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create New Project</span>
-        </button>
-    </form>
-</div>
-{% endif %}
-
-<div class="row dashboard-container pt-0" data-cy="project-list">
-    <div class="col-12 pt-3 pb-2">
+<div class="row pt-3 px-0 mt-0 mx-0">
+    <div class="col-9">
         {% if course.info.termyear %}<div>Semester: {{ course.info.termyear }}</div>{% endif %}
         <div><b>Author:</b> {{ course|course_faculty_string }}</div>
         <div><b>Number of Projects:</b>
@@ -82,6 +71,20 @@
         </div>
         <div><b>Your role:</b> {% if user in course.faculty %}Author{% else %}Contributor{% endif %}</div>
     </div>
+    {% if is_faculty and projects %}
+    <div class="col-3 text-right">
+        <form action="{% url 'course-project-create' course.pk %}" method="post">
+            {% csrf_token %}
+            <button data-cy="project-create-button" class="lt-button lt-button--solid">
+                <span class='lt-icons lt-button__icon lt-button--svg'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create New Project</span>
+            </button>
+        </form>
+    </div>
+    {% endif %}
+</div>
+
+
+<div class="row dashboard-container" data-cy="project-list">
     {% comment %}Projects cards{% endcomment %}
     {% if projects %}
         {% if project_grid_layout %}
