@@ -501,20 +501,13 @@ export const ActivityMap: React.FC = () => {
             });
     };
 
-    const updateResponse = (reflection?: string, status?: ResponseStatus): void => {
+    const updateResponse = (reflection: string, status: ResponseStatus): void => {
         if (!isFaculty && responseData.length == 1) {
             const responseDatum = responseData[0];
-            if (!reflection && !status) {
-                return;
-            }
             if (responseDatum) {
-                if (reflection) {
-                    responseDatum.reflection = reflection;
-                }
+                responseDatum.reflection = reflection;
+                responseDatum.status = status;
 
-                if (status) {
-                    responseDatum.status = status;
-                }
                 void put<ResponseData>(`/api/response/${responseDatum.pk}/`, responseDatum)
                     .then((data) => {
                         setResponseData([data]);

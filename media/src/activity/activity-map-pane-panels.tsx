@@ -74,7 +74,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
     useEffect(() => {
         // Only set a reflection if the user is not faculty/author
-        if (!isFaculty && responseData.length == 1 && responseData[0].reflection) {
+        if (!isFaculty && responseData.length == 1) {
             setReflection(responseData[0].reflection);
             // setReflectionSubmittedAt(responseData[0].submitted_at_formatted || '');
             setReflectionModifiedAt(responseData[0].modified_at_formatted || '');
