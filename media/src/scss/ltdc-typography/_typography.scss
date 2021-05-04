@@ -238,3 +238,13 @@ figcaption {
   color: $gray-600;
   font-weight: 500;
 }
+
+#cu-privacy-notice {
+    font-family: $heading-font-family !important;
+    font-size: ($font-size-base * 0.875) !important;
+    color: $white !important;
+    font-weight: 400 !important;
+    line-height: 1.5 !important;
+    -webkit-font-smoothing: antialiased !important;
+    moz-osx-font-smoothing: grayscale !important;
+}

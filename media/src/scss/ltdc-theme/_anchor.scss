@@ -15,3 +15,17 @@ a:not([class]) {
         box-shadow: $focus-box-shadow-primary;
     }
 }
+
+#cu-privacy-notice a:not([class]) {
+    &:hover {
+        text-decoration: underline;
+        background-color: transparent !important;
+    }
+    &:focus {
+        text-decoration: underline;
+        border-radius: 0.125rem;
+        //outline: 1px solid $link-color;
+        outline: 0;
+        box-shadow: $focus-box-shadow-primary;
+    }
+}
