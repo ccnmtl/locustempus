@@ -238,8 +238,9 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                         <div className={'lt-helper'}>
                                             <div className={'lt-helper--line'}
                                                 id={'helper-field__description'}>
-                                                TBD: A short instruction on what reflection is
-                                                about and some guidance on the length of text.
+                                                Use this text area to compose a summary, or
+                                                additional overall analysis of the event markers
+                                                as part of your response.
                                             </div>
                                         </div>
                                         <ReactQuill
@@ -419,8 +420,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 <div className={'lt-helper'}>
                     <div className={'lt-helper--line'}
                         id={'helper-field__description'}>
-                        TBD: A short instruction on what feedback is
-                        about and some guidance on the length of text.
+                        Write a feedback on this Contributor’s response.
                     </div>
                 </div>
                 <div className={'form-group pane-form-group'}>
