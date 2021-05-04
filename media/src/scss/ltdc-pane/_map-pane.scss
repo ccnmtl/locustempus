@@ -276,6 +276,10 @@ label, .label {
     background-color: #999;
 }
 
+#pane-scroll-y.overflow-fix {
+    overflow: visible !important;
+}
+
 .overflow-menu {
     position: relative;
 }
