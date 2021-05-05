@@ -1,0 +1,53 @@
+#cu-privacy-notice {
+    background: $gray-800 !important;
+    padding: 1rem 2rem !important;
+    z-index: 1200 !important;
+    border-radius: 0.25rem !important;
+    @include media-breakpoint-up(sm) {
+        width: 100% !important;
+        bottom: 0 !important;
+    }
+    @include media-breakpoint-up(md) {
+        width: 47rem !important;
+        bottom: 1rem !important;
+    }
+    @include media-breakpoint-up(lg) {
+        width: 60rem !important;
+        bottom: 1rem !important;
+    }
+    @include media-breakpoint-up(xl) {
+        width: 74rem !important;
+        bottom: 1rem !important;
+    }
+}
+
+#cu-privacy-notice-text {
+    align-self: center !important;
+}
+
+#cu-privacy-notice-button {
+    @extend .lt-button;
+    @include button-darkbg-typography;
+    background-color: $secondary1-dark !important;
+    border: 2px solid $secondary1-dark !important;
+}
+
+.cu-privacy-notice-close {
+    &:hover {
+        opacity: 1 !important;
+    }
+    &:focus {
+        opacity: 1 !important;
+    }
+    &:hover #cu-privacy-notice-button {
+        @include button-darkbg-typography;
+        background-color: $secondary2-dark !important;
+        border: 2px solid $secondary2-dark !important;
+    }
+    &:focus #cu-privacy-notice-button {
+        @include button-darkbg-typography;
+        background-color: $secondary2-dark !important;
+        border: 2px solid $secondary2-light !important;
+        box-shadow: $focus-box-shadow-primary !important;
+    }
+}
