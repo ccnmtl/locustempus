@@ -21,7 +21,19 @@
 
         <!-- Dublin Core Metadata, TBD -->
 
-        <!-- Open Graph, TBD -->
+        <!-- Open Graph -->
+        <meta property="og:title" content="Locus Tempus: A mapping application for spatial and temporal thinking" />
+        <meta property="og:type" content="website" />
+        <meta property="og:url" content="https://locustempus.ctl.columbia.edu" />
+        <meta property="og:description" content="Locus Tempus is a powerful application designed to facilitate map-based learning activities across disciplines. Locus Tempus features tools for authoring maps, inviting collaborators, and analyzing data spatially and temporally." />
+        <meta property="og:site_name" content="Locus Tempus" />
+        {% if page_type == "homepage" %}
+            <meta name="og:image" content="{{STATIC_URL}}img/lt-og-1200.png" />
+            <meta name="og:image:alt" content="A poster image for Locus Tempus, containing the app logo, its title, description, and web address." />
+        {% else %}
+            <meta name="og:image" content="{{STATIC_URL}}img/lt-apple-touch-icon.png" />
+            <meta name="og:image:alt" content="An avatar image for Locus Tempus, containing the app logo." />
+        {% endif %}
 
         <!-- Twitter, TBD -->
         <meta name="twitter:image" content="{{STATIC_URL}}img/favicon.png" />
