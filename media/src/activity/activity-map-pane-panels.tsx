@@ -336,10 +336,16 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
 
     useEffect(() => {
         // Populate feedback
-        if (activeResponse && activeResponse.feedback) {
-            setFeedback(activeResponse.feedback.body || '');
-            setFeedbackSubmittedDate(activeResponse.feedback.submitted_at_formatted || '');
-            setFeedbackModifiedDate(activeResponse.feedback.modified_at_formatted || '');
+        if (activeResponse) {
+            if (activeResponse.feedback) {
+                setFeedback(activeResponse.feedback.body);
+                setFeedbackSubmittedDate(activeResponse.feedback.submitted_at_formatted);
+                setFeedbackModifiedDate(activeResponse.feedback.modified_at_formatted);
+            } else {
+                setFeedback('');
+                setFeedbackSubmittedDate('');
+                setFeedbackModifiedDate('');
+            }
         }
 
         // Create a map of just the layers beloning to the active response
@@ -354,7 +360,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 );
             }
         }
-    }, [activeResponse, responseData]);
+    }, [activeResponse]);
 
     const handleFeedbackSubmission = (e: React.FormEvent) => {
         e.preventDefault();
