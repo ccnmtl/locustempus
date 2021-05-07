@@ -84,7 +84,7 @@
                 <div class="lt-menu-overflow btn-group">
                     <button type="button" class="lt-button dropdown-toggle" data-cy="authenticated-user-choices" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-user.svg" class="user-nav__icon" /></span>
-                        <span class="lt-button__label">
+                        <span class="lt-button__label d-none d-sm-inline-block">
                         {% if user.first_name %}
                           Hello, {{ user.first_name }}!
                         {% else %}
