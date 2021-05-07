@@ -1,15 +1,25 @@
 .loginbox {
-    width: 30rem;
-    margin: 4rem auto 4rem auto;
+    width: 100%;
+    margin: 3rem auto 4rem auto;
     padding: 0;
     border: 0;
     background-color: transparent;
+    @include media-breakpoint-up(sm) {
+        margin: 3rem auto 4rem auto;
+    }
+    @include media-breakpoint-up(md) {
+        width: 30rem;
+        margin: 4rem auto 4rem auto;
+    }
     &__content {
         background-color: $white;
         margin: 0;
-        padding: 2rem;
+        padding: 0;
         border-radius: 0.5rem;
         border: 0;
+        @include media-breakpoint-up(sm) {
+            padding: 2rem;
+        }
     }
     &__header {
         margin: 0;

@@ -16,6 +16,9 @@ main {
     }
     &--default {
         padding-top: 5.125rem;
-        margin: 0 2rem 5rem 2rem;
+        margin: 0 1rem 3rem 1rem;
+        @include media-breakpoint-up(sm) {
+            margin: 0 2rem 5rem 2rem;
+        }
     }
 }
