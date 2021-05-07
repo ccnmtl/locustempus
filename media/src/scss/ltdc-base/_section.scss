@@ -11,7 +11,7 @@
 /* --- Section: Hero --- */
 .section--hero {
     background-image: linear-gradient(rgba(65, 81, 108, 0.2), rgba(65, 81, 108, 0.2)), url("/media/img/lt-hero.jpg");
-    height: 25rem;
+    height: 35rem;
     padding: 0;
     background-position: center;
     background-repeat: no-repeat;
@@ -19,7 +19,7 @@
     position: relative;
     color: #333;
     @include media-breakpoint-up(sm) {
-        height: 35rem;
+        height: 40rem;
     }
     @include media-breakpoint-up(md) {
         height: 42rem;
@@ -27,43 +27,49 @@
 }
 
 .hero-text {
-    top: 50%;
-    left: 10%;
+    top: 10rem;
+    left: 0;
     // transform: translate(-5%, -40%);
     text-align: center;
     position: absolute;
+    padding: 2rem 0.5rem;
+    background-color: rgba($primary-lightest, 0.6);
     @include media-breakpoint-up(sm) {
         width: auto;
-        top: 14.25rem;
+        padding: 1.5rem 1rem;
+        top: 13.5rem;
         left: 0;
-        //transform: translate(-50%, -55%);
+        //transform: translate(0%, 100%);
     }
     @include media-breakpoint-up(md) {
         width: auto;
-        top: 14.25rem;
+        padding: 2rem 0;        
+        top: 13rem;
         left: 0;
-        //transform: translate(-33%, -55%);
+        //transform: translate(0%, 90%);
     }
     @include media-breakpoint-up(lg) {
         width: 40rem;
-        top: 14.25rem;
+        padding: 0;
+        top: 13.25rem;
         left: 0;
-        //transform: translate(-50%, -55%);
+        background-color: transparent;
+        //transform: translate(0%, 70%);
     }
     @include media-breakpoint-up(xl) {
         width: 49rem;
-        top: 13.25rem;
+        top: 12.75rem;
         left: 0;
-        //transform: translate(-50%, -55%);
+        //transform: translate(0%, 66%);
     }
     h1 {
         font-weight: 600;
         font-size: 2rem;
         @include media-breakpoint-up(sm) {
-            font-size: 2.5rem;
+            font-size: 2.275rem;
         }
         @include media-breakpoint-up(md) {
-            font-size: 3rem;
+            font-size: 2.875rem;
         }
         @include media-breakpoint-up(lg) {
             font-size: 3rem;
@@ -75,10 +81,13 @@
     p {
         font-weight: 400;
         font-size: 1.2rem;
+        padding: 1rem 0 0 0;
         @include media-breakpoint-up(sm) {
-            font-size: 1.625rem;
+            padding: 1rem 0;
+            font-size: 1.5rem;
         }
         @include media-breakpoint-up(md) {
+            padding: 1rem 0;
             font-size: 1.625rem;
         }
         @include media-breakpoint-up(lg) {
@@ -92,53 +101,56 @@
 }
 
 
-.hero-shadow {
+.hero-text-background {
     position: absolute;
+    //height: 20rem;
     width: 100%;
-    height: 16rem;
-    top: 15rem;
+    height: 100%;
+    top:0;
     left: 0;
-    background-color: $white;
-    opacity: 0.3;
+    background-color: $primary-lightest;
+    opacity: 0.6;
+    @include media-breakpoint-up(sm) {
+        //height: 20rem;
+        //top: 13rem;
+        //left: 0;
+        //transform: translate(0%, 63%);
+    }
+    @include media-breakpoint-up(md) {
+        //height: 22rem;
+        //top: 13rem;
+        //left: 0;
+        //transform: translate(0%, 65%);
+    }
 }
 
-
-.temp-marker {
-    position: absolute;
-    bottom: 0;
-    left: 0;
+.section-homepage {
+    padding: 2rem 15px;
+    border-top: 1px solid $gray-300;
+    @extend .container;
+    @include media-breakpoint-up(sm) {
+        padding: 4rem 0;
+    }
+    @include media-breakpoint-up(lg) {
+        border-top: none;
+    }
 }
 
-.section--pitch,
-.section--invitation {
-    @extend %section--homepage;
-    h2 {
-        text-align: center;
-        font-size: 2.125rem;
-        margin-bottom: 1rem;
-    }
-    p {
-        text-align: center;
-        font-size: 1.25rem;
-    }
+.section--bookends {
+    text-align: center;
 }
 
 .section--feature {
-    @extend %section--homepage;
     @extend .row;
     margin: auto;
+    text-align: center;
     h2 {
-        text-align: center;
-        font-size: 2.125rem;
-        margin-bottom: 1rem;
-        @include media-breakpoint-up(md) {
+        @include media-breakpoint-up(lg) {
             text-align: left;
         }
     }
     p {
-        text-align: center;
-        font-size: 1.25rem;
-        @include media-breakpoint-up(md) {
+        @include media-breakpoint-up(lg) {
             text-align: left;
         }
     }

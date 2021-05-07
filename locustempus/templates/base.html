@@ -76,15 +76,15 @@
             {% block usernav %}
             <div class="user-nav">
                 {% if request.user.is_anonymous %}
-                <a href="/accounts/login/?next=/" class="lt-button" data-cy="sign-in-small">
-                    <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-signin.svg" class="user-nav__icon" /></span>
+                <a href="/accounts/login/?next=/" class="lt-button d-none d-sm-inline-flex" data-cy="sign-in-small">
+                    <span class='lt-icons lt-button__icon d-none d-sm-inline-block'><img src="{{STATIC_URL}}img/icon-signin.svg" class="user-nav__icon" /></span>
                     <span class='lt-button__label'>Sign in</span>
                 </a>
                 {% else %}
                 <div class="lt-menu-overflow btn-group">
                     <button type="button" class="lt-button dropdown-toggle" data-cy="authenticated-user-choices" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
                         <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-user.svg" class="user-nav__icon" /></span>
-                        <span class='lt-button__label'>
+                        <span class="lt-button__label">
                         {% if user.first_name %}
                           Hello, {{ user.first_name }}!
                         {% else %}
@@ -92,7 +92,7 @@
                         {% endif %}
                         </span>
                     </button>
-                    <div class="lt-menu lt-menu-overflow--bootstrap dropdown-menu">
+                    <div class="lt-menu lt-menu-overflow--bootstrap dropdown-menu dropdown-menu-right dropdown-menu-md-left">
                         <ul class="lt-list">
                             <li class="lt-list-item">
                                 <a href="{% url 'course-list-view' %}" class="d-flex align-items-center justify-content-start lt-list-item__link"
@@ -177,7 +177,9 @@
         {% endif %}
 <!-- End Dashboard breadcrumb and navigation bar -->        
 
+<!-- Begin content block -->
         {% block content %}{% endblock %}
+<!-- End content block -->
 
     </main>
 
@@ -193,7 +195,6 @@
     </ul>
 
     <div itemscope itemtype="http://schema.org/EducationalOrganization" class='text-center'><a href="http://ctl.columbia.edu" target="_blank" itemprop="url" class='d-inline-block'><img src="{{STATIC_URL}}img/ctl-logo-color.svg" class="footer__logo" alt="" itemprop="logo" /><span class="sr-only" itemprop="name">Center for Teaching and Learning at Columbia University</span></a></div>
-
 </footer>
 {% endblock %}
 
