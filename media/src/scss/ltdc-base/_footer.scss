@@ -4,9 +4,13 @@ footer {
     padding-bottom: 4rem;
     .footer__logo {
         display: block;
-        width: 25rem;
-        margin: 3rem auto;
+        width: 15rem;
+        margin: 2rem auto;
         @extend .img-fluid;
+        @include media-breakpoint-up(sm) {
+            width: 25rem;
+            margin: 3rem auto;
+        }
     }
 }
 

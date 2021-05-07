@@ -46,7 +46,7 @@
     &--priority-outlined {
         @include button-lightbg-typography;
         background-color: transparent;
-        border: 1px solid $secondary1-medium;
+        border: 1px solid $secondary1-dark;
         &:hover {
             @include button-darkbg-typography;
             background-color: $secondary1-dark;
@@ -64,8 +64,12 @@
         }
     }
     &--lg {
-        min-width: 9rem;
-        padding: 1.5rem;
+        min-width: 3rem;
+        padding: 1rem;
+        @include media-breakpoint-up(sm) {
+            min-width: 9rem;
+            padding: 1.5rem;
+        }
     }
     &__icon {
         margin-left: -0.25rem;
@@ -278,45 +282,79 @@
 }
 
 .user-nav {
+    &__icon {
+        -webkit-filter: $white-svg;
+        filter: $white-svg;
+    }
+    .lt-button {
+        padding: 0.375rem 0.75rem;
+        @include media-breakpoint-up(sm) {
+            padding: 0.75rem 1rem;
+        }    
+    }
     .lt-button__label {
         color: $white;
         text-transform: none !important;
+        font-size: $font-size-base;
+    }
+    .lt-icons {
+        width: 1.5rem;
+        height: 1.5rem;
+        margin-right: 0;
+        @include media-breakpoint-up(sm) {
+            width: 1.25rem;
+            height: 1.25rem;
+            margin-right: 0.5rem;
+        }
+    }
+    .dropdown-toggle::after {
+        border-top-color: $white !important;
     }
 }
 
-.user-nav__icon {
-    -webkit-filter: $ffffff;
-    filter: $ffffff;
+
+.header--homepage .user-nav {
+    .lt-button {
+        margin-top: 1.25rem;
+        @include media-breakpoint-up(sm) {
+            margin-top: 0;
+        }
+    }
+    .lt-button__label {
+        font-size: 1rem;
+        transition: all 0.4s linear;
+        -webkit-transition: all 0.5s linear;
+        -moz-transition: all 0.5s linear;
+        @include media-breakpoint-up(sm) {
+            font-size: 1.25rem;
+        }
+    }
+    .dropdown-toggle .lt-icons {
+        width: 1.75rem;
+        height: 1.75rem;
+        transition: all 0.4s linear;
+        -webkit-transition: all 0.5s linear;
+        -moz-transition: all 0.5s linear;
+    }
 }
 
-.user-nav .dropdown-toggle::after {
-    border-top-color: #fff !important;
+.header--homepage.shrink .user-nav {
+    .lt-button {
+        margin-top: 0;
+    }
+    .lt-button__label {
+        font-size: $font-size-base;
+    }
+    .dropdown-toggle .lt-icons {
+        width: 1.5rem;
+        height: 1.5rem;
+        @include media-breakpoint-up(sm) {
+            width: 1.25rem;
+            height: 1.25rem;
+        }
+    }
 }
 
-.header--homepage .user-nav .lt-button__label {
-    font-size: 1.25rem;
-    transition: all 0.4s linear;
-    -webkit-transition: all 0.5s linear;
-    -moz-transition: all 0.5s linear;
-}
-
-.header--homepage.shrink .user-nav .lt-button__label,
-.user-nav .lt-button__label {
-    font-size: $font-size-base;
-}
-
-.header--homepage .user-nav .dropdown-toggle .lt-icons {
-    width: 1.75rem;
-    height: 1.75rem;
-    transition: all 0.4s linear;
-    -webkit-transition: all 0.5s linear;
-    -moz-transition: all 0.5s linear;
-}
-
-.header--homepage.shrink .user-nav .dropdown-toggle .lt-icons {
-    width: 1.25rem;
-    height: 1.25rem;
-}
 
 // nav-dashboard grid, list, manage buttons
 

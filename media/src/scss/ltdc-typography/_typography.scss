@@ -35,6 +35,19 @@ h6 {
   @include font-size($h6-font-size);
 }
 
+// Homepage
+
+.section-homepage {
+    h2 {
+        font-size: 2.125rem;
+        margin-bottom: 1rem;
+    }
+    p {
+        font-size: 1.25rem;
+    }
+}
+
+
 
 // Dashboard
 
@@ -157,14 +170,11 @@ h6 {
     .lt-button__label {
         text-transform: none;
         font-weight: 400;
-        font-size: 1.2rem;
+        font-size: 1.125rem;
         @include media-breakpoint-up(sm) {
-            font-size: 1.2rem;
+            font-size: 1.375rem;
         }
         @include media-breakpoint-up(md) {
-            font-size: 1.2rem;
-        }
-        @include media-breakpoint-up(lg) {
             font-size: 1.625rem;
         }
     }

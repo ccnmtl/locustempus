@@ -1,7 +1,16 @@
 header {
     @extend .fixed-top;
+    height: 3.25rem;
     background-color: $primary-dark;
-    height: 4.125rem;
+    @include media-breakpoint-up(sm) {
+        height: 4.125rem;
+    }
+    @include media-breakpoint-up(md) {
+        height: 4.125rem;
+    }
+    @include media-breakpoint-up(lg) {
+        height: 4.125rem;
+    }
 }
 
 .header {
@@ -12,6 +21,15 @@ header {
         -moz-transition: all 0.4s ease-in-out;
         height: 6.5rem;
         z-index: 999;
+        @include media-breakpoint-up(sm) {
+            height:6.5rem;
+        }
+        @include media-breakpoint-up(md) {
+            height:6.5rem;
+        }
+        @include media-breakpoint-up(lg) {
+            height:6.5rem;
+        }
     }
     &__shadow { /* .header__shadow */
         width: 100%;
@@ -23,16 +41,38 @@ header {
         opacity: 0.6;
     }
     &__logo { /* .header__logo */
-        height: 6.5rem;
+        height: 4rem;
+        margin-top: 1.25rem;
         transition: all 0.4s ease-in-out;
         -webkit-transition: all 0.4s ease-in-out;
         -moz-transition: all 0.4s ease-in-out;
+        @include media-breakpoint-up(sm) {
+            margin-top: 0;
+            height:6.5rem;
+        }
+        @include media-breakpoint-up(md) {
+            margin-top: 0;
+            height:6.5rem;
+        }
+        @include media-breakpoint-up(lg) {
+            margin-top: 0;
+            height:6.5rem;
+        }
     }
 }
 
 .header--homepage.shrink {
-    height: 4.125rem;
+    height: 3.25rem;
     background-color: $primary-dark;
+    @include media-breakpoint-up(sm) {
+        height: 4.125rem;
+    }
+    @include media-breakpoint-up(md) {
+        height: 4.125rem;
+    }
+    @include media-breakpoint-up(lg) {
+        height: 4.125rem;
+    }
 }
 
 .header--homepage.shrink .header__logo,
@@ -42,5 +82,15 @@ header {
 .header--roster .header__logo,
 .header--project .header__logo,
 .header--activity .header__logo {
-    height: 4.125rem;
+    margin-top: 0;
+    height: 3.25rem;
+    @include media-breakpoint-up(sm) {
+        height: 4.125rem;
+    }
+    @include media-breakpoint-up(md) {
+        height: 4.125rem;
+    }
+    @include media-breakpoint-up(lg) {
+        height: 4.125rem;
+    }
 }
