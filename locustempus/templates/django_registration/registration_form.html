@@ -20,7 +20,7 @@
 
 {% block content %}
 <div class="signupbox row">
-    <div class="col-7">
+    <div class="col-12 col-lg-7">
         <h2>Create an account</h2>
         <div class="lt-banner" role="banner">
             If you have a Columbia UNI, or a Locus Tempus account,
@@ -43,7 +43,7 @@
                 </div>
             </div>
             <div class="row mt-4 form-group {% if form.first_name.errors or form.last_name.errors %}has-error{% endif %}">
-                <div class="col">
+                <div class="col-12 col-sm-6">
                     <label for="id_first_name">First name</label>
                     <input type="text"
                         maxlength="50"
@@ -53,7 +53,7 @@
                         data-cy="first-name"
                         value="{{form.data.first_name}}">
                 </div>
-                <div class="col">
+                <div class="col-12 col-sm-6 mt-4 mt-sm-0">
                     <label for="id_last_name">Last name</label>
                     <input type="text"
                         maxlength="50"
@@ -115,7 +115,7 @@
                     <li>Please create and confirm your password.</li>
                 </ul>
             {% endif %}
-                <div class="col-6">
+                <div class="col-12 col-sm-6">
                     <label for="id_password1" class="m-0">Create password*</label>
                     <div class="lt-helper mb-1">
                         <div class="lt-helper--line" id="helper-field__username">
@@ -130,7 +130,7 @@
                         data-cy="password1"
                         value="{{form.data.password1}}">
                 </div>
-                <div class="col-6">
+                <div class="col-12 col-sm-6 mt-4 mt-sm-0">
                     <label for="id_password2" class="m-0">Confirm password</label>
                     <div class="lt-helper mb-1">
                         <div class="lt-helper--line" id="helper-field__username">
@@ -160,7 +160,7 @@
         </form>
 
     </div>
-    <div class="col-5 pt-5">
+    <div class="col-5 pt-5 d-none d-lg-block">
         <div class="create-prompt__decor w-100 mt-5">
             <img src="{{STATIC_URL}}img/prompt-signup.svg" />
         </div>
