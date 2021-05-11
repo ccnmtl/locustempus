@@ -49,9 +49,11 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                     <span className={'lt-icons lt-button-back__icon'}>
                         <FontAwesomeIcon icon={faArrowLeft}/>
                     </span>
-                    <span className={'lt-button-back__text'}>
-                        {activeLayerTitle && (<>Back to {activeLayerTitle}</>)}
-                    </span>
+                    <div className={'lt-button-back__clip'}>
+                        <span className={'lt-button-back__text'}>
+                            {activeLayerTitle && (<>Back to {activeLayerTitle}</>)}
+                        </span>
+                    </div>
                 </button>
             </div>
             <div className={'pane-content-body'}>
@@ -80,14 +82,17 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 {activeEventDetail && activeEventDetail.media.length > 0 && (
                     <figure className={'lt-pane-section__image'}>
                         <img src={activeEventDetail.media[0].url} />
-                        <figcaption>
-                            <span className={'img__caption'}>
-                                {activeEventDetail.media[0].caption}
-                            </span>
-                            <span className={'img__attr'}>
-                                {activeEventDetail.media[0].source}
-                            </span>
-                        </figcaption>
+                        {(activeEventDetail.media[0].caption != '' ||
+                            activeEventDetail.media[0].source != '') && (
+                            <figcaption>
+                                <span className={'img__caption'}>
+                                    {activeEventDetail.media[0].caption}
+                                </span>
+                                <span className={'img__attr'}>
+                                    {activeEventDetail.media[0].source}
+                                </span>
+                            </figcaption>
+                        )}
                     </figure>
                 )}
                 {activeEventDetail && (
