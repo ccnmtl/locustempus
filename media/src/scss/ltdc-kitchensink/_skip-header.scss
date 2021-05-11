@@ -5,13 +5,27 @@
     padding: 0.75em;
     color: #fff;
     text-align: center;
-    background-color: #666;
+    background: transparent;
     outline: 0;
+    z-index: 1000;
         &:hover {
             color: #fff;
+        }
+        &:active,
+        &:focus {
+            position: absolute;
+            display: block;
+            top: 0;
+            left: calc(50% - 6.25rem);
+            width: 12.5rem;
+            height: auto;
+            overflow: visible;
+            clip: auto;
+            white-space: normal;
         }
         &__text {
             padding: .5em;
             outline: 1px dotted;
+            background-color: $blue-800;
         }
 }
