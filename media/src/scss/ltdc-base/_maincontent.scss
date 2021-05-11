@@ -8,11 +8,14 @@ main {
     }
     &--project, &--activity {
         position: absolute;
-        top: 4rem;
+        top: 3.125rem;
         bottom: 0;
         padding-top: 0;
         width: 100%;
         z-index: 2;
+        @include media-breakpoint-up(sm) {
+            top: 4rem;
+        }
     }
     &--default {
         padding-top: 5.125rem;
