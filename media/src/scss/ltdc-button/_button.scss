@@ -136,6 +136,7 @@
     border: 0;
     padding: 0;
     margin: 0;
+    text-align: left;
     &__icon {
         margin-right: 8px;
         width: 1rem;
@@ -148,9 +149,21 @@
         height: 1rem !important;
         width: auto !important;
     }
+    &__clip {
+        display: inline-flex;
+        width: calc(100% - 5rem);
+        min-width: 10rem;
+    }
     &__text {
+        display: block;
         padding: 0;
         margin: 0;
+        text-align: left;
+        width: 100%;
+        max-height: 1.3rem;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
     }
 }
 
