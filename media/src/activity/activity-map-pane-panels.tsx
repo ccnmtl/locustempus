@@ -247,8 +247,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                             value={reflection}
                                             onChange={setReflection}/>
                                     </div>
-                                    <div className={'lt-pane-actions lt-pane-actions--response'}>
-                                        <div className={'lt-pane-actions__overlay'}></div>
+                                    <div className={'lt-pane-actions'}>
+                                        <div className={'lt-pane-actions__overlay overlay--response'}></div> {/* eslint-disable-line max-len */}
                                         <div className={'lt-pane-actions__buttons'}>
                                             {reflectionStatus === 'DRAFT' && (
                                                 <button
@@ -400,7 +400,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 </button>
             </div>
 
-            <h2>Response by {activeResponse.owners.join(', ')}</h2>
+            <h2 className={'pt-5'}>Response by {activeResponse.owners.join(', ')}</h2>
             <p className={'lt-date-display'}>
                 Last modified on {activeResponse.modified_at_formatted}
             </p>

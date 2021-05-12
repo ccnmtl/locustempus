@@ -146,6 +146,9 @@
         background-color: $surface-light;
         border-color: $surface-medium;
     }
+    &--project {
+        background-color: $primary-medium;
+    }
     .lt-button-back:hover,
     .lt-button-back:focus {
         background-color: $amber-600;
@@ -153,10 +156,14 @@
 }
 
 .pane-content-subheader {
+    //position: -webkit-sticky;
+    position: fixed;
     padding: 0.9375rem 1rem;
-    margin: -1rem -1rem 1rem -1rem;
+    margin: -1.6rem -1rem 1rem -1rem;
     border: 0;
+    width: calc(100% - 0.6rem);
     background-color: $primary-lightest;
+    z-index: 800;
     .lt-button-back:hover,
     .lt-button-back:focus {
         background-color: $primary-light;
@@ -533,15 +540,18 @@ padding-bottom: 0.5rem;
         position: absolute;
         top: 0;
         left: 0;
-        background-color: $surface-lighter;
         width: 100%;
         height: 100%;
         opacity: 1;
     }
-    &--response {
-        .lt-pane-actions__overlay {
-            background-color: $primary-lightest;
-        }
+    .overlay--event {
+        background-color: $surface-lighter;
+    }
+    .overlay--project {
+        background-color: $primary-lightest;
+    }
+    .overlay--response {
+        background-color: $primary-lightest;
     }
     &__buttons {
         position: absolute;

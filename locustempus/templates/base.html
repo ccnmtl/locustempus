@@ -26,7 +26,7 @@
         <meta property="og:title" content="Locus Tempus: A mapping application for spatial and temporal thinking" />
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://locustempus.ctl.columbia.edu" />
-        <meta property="og:description" content="Locus Tempus is a powerful application designed to facilitate map-based learning activities across disciplines. Locus Tempus features tools for authoring maps, inviting collaborators, and analyzing data spatially and temporally." />
+        <meta property="og:description" content="Locus Tempus is an open-source digital mapping tool designed to facilitate map-based learning activities across disciplines. Locus Tempus features tools for authoring maps, inviting collaborators, and analyzing data spatially and temporally." />
         <meta property="og:site_name" content="Locus Tempus" />
         {% if page_type == "homepage" %}
             <meta name="og:image" content="{{STATIC_URL}}img/lt-og-1200.png" />
@@ -236,10 +236,11 @@
 {% endif %}
 
 {% if request.user.is_impersonate %}
-<div class="alert alert-danger alert-dismissable" style="position: fixed; left: 0px; top: 75px">
-<button type="button" class="close" data-dismiss="alert" aria-hidden="true">&times;</button>
-You are impersonating.<br />
-<a class="btn" href="{% url 'impersonate-stop' %}">stop</a>
+<div class="alert alert-danger lt-impersonate">
+    You are impersonating.
+    <a href="{% url 'impersonate-stop' %}" class="lt-button lt-button--priority">
+        <span class='lt-button__label'>Stop</span>
+    </a>
 </div>
 {% endif %}
 

@@ -121,7 +121,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                         </div>
                       */}
                     <div className={'lt-pane-actions'}>
-                        <div className={'lt-pane-actions__overlay'}></div>
+                        <div className={'lt-pane-actions__overlay overlay--event'}></div>
                         <div className={'lt-pane-actions__buttons'}>
                             <button
                                 type={'button'}

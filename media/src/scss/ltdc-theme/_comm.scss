@@ -123,6 +123,19 @@
     border: 1px solid #e3e3e3;
 }
 
+.lt-impersonate {
+    position: fixed;
+    top: 0.5rem;
+    right: 20rem;
+    z-index: 1100;
+    padding: 0.5rem 1rem;
+    .lt-button {
+        padding: 0.5rem 1rem;
+        font-size: 0.875rem;
+        margin-left: 1rem;
+    }
+}
+
 
 @keyframes opacity-fade-out {
   0% {

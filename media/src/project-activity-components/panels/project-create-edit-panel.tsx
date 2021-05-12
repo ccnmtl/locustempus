@@ -77,7 +77,8 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
 
     return (
         <>
-            <div className={'pane-content-header'} style={{ top: paneHeaderHeight }}>
+            <div className={'pane-content-header pane-content-header--project'}
+                style={{ top: paneHeaderHeight }}>
                 <h2 data-cy='edit-project-header'>
                     {isNewProject ? 'Your project details' : 'Edit project details'}
                 </h2>
@@ -217,38 +218,36 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                         </div>
                     )}
                     <div className={'lt-pane-actions'}>
-                        <div className={'lt-pane-actions__overlay'}></div>
+                        <div className={'lt-pane-actions__overlay overlay--project'}></div>
                         <div className={'lt-pane-actions__buttons'}>
                             {isNewProject ? (
                                 <>
                                     <button
                                         data-cy="new-project-cancel"
-                                        type={'button'}
                                         onClick={handleNewProjectCancel}
-                                        className={'btn btn-danger mr-3'}>
-                                        Cancel
+                                        className={'lt-button lt-button--outlined mr-3'}>
+                                        <span className={'lt-button__label'}>Cancel</span>
                                     </button>
                                     <button
                                         data-cy="new-project-save"
                                         type={'submit'}
-                                        className={'btn btn-primary'}>
-                                        Next &raquo;
+                                        className={'lt-button lt-button--priority'}>
+                                        <span className={'lt-button__label'}>Save & Continue</span>
                                     </button>
                                 </>
                             ) : (
                                 <>
                                     <button
                                         data-cy="edit-project-cancel"
-                                        type={'button'}
                                         onClick={handleCancel}
-                                        className={'btn btn-danger mr-3'}>
-                                        Cancel
+                                        className={'lt-button lt-button--outlined mr-3'}>
+                                        <span className={'lt-button__label'}>Cancel</span>
                                     </button>
                                     <button
                                         data-cy="edit-project-save"
                                         type={'submit'}
-                                        className={'btn btn-primary'}>
-                                        Save
+                                        className={'lt-button lt-button--priority'}>
+                                        <span className={'lt-button__label'}>Save changes</span>
                                     </button>
                                 </>
                             )}
