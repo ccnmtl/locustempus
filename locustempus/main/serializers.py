@@ -166,6 +166,13 @@ class EventSerializer(serializers.ModelSerializer):
             else:
                 instance.media.set(
                     [MediaObject.objects.create(**m) for m in media_lst])
+        else:
+            # Handles the case where media should be deleted
+            # Implicitly there's no media object on the request, but there is
+            # a media object for the instance
+            current_media = instance.media.first()
+            if current_media:
+                current_media.delete()
 
         return instance
 

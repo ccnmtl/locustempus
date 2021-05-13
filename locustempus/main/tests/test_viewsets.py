@@ -413,6 +413,41 @@ class EventAPITest(CourseTestMixin, TestCase):
         )
         self.assertEqual(response.status_code, 204)
 
+    def test_event_media_delete(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        data = {
+            'label': 'An Event Label',
+            'layer': self.layer.pk,
+            'description': 'A short description.',
+            'location': {
+                'point': {'lat': 45.1, 'lng': 45.1},
+            },
+            'media': [{'url': 'https://some.bucket.example.com/img1.jpg'}]
+        }
+        r1 = self.client.post(
+            reverse('api-event-list'),
+            json.dumps(data),
+            content_type='application/json'
+        )
+
+        # Remove the media
+        data['media'] = None
+
+        r2 = self.client.put(
+            reverse(
+                'api-event-detail', args=[r1.json()['pk']]
+            ),
+            json.dumps(data),
+            content_type='application/json'
+        )
+        ret_data = r2.json()
+        self.assertListEqual(ret_data['media'], [])
+
 
 class ResponseAPITest(CourseTestMixin, TestCase):
     """
