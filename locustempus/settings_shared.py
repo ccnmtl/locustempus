@@ -36,6 +36,10 @@ MIDDLEWARE += [ # noqa
     'locustempus.main.middleware.WhoDidItMiddleware',
 ]
 
+TEMPLATES[0]['OPTIONS']['context_processors'].extend([  # noqa
+    'locustempus.utils.get_sentry_dsn',
+])
+
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.SessionAuthentication',
