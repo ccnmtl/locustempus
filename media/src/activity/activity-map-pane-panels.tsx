@@ -394,9 +394,11 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                     <span className={'lt-icons lt-button-back__icon'}>
                         <FontAwesomeIcon icon={faArrowLeft}/>
                     </span>
-                    <span className={'lt-button-back__text'}>
-                        Return to Responses
-                    </span>
+                    <div className={'lt-button-back__clip'}>
+                        <span className={'lt-button-back__text'}>
+                            Return to Responses
+                        </span>
+                    </div>
                 </button>
             </div>
 

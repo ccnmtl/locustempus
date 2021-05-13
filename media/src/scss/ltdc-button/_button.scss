@@ -137,6 +137,7 @@
     padding: 0;
     margin: 0;
     text-align: left;
+    overflow: hidden;
     &__icon {
         margin-right: 8px;
         width: 1rem;
@@ -151,8 +152,8 @@
     }
     &__clip {
         display: inline-flex;
-        width: calc(100% - 5rem);
-        min-width: 10rem;
+        max-width: calc(100% - 3rem);
+        min-width: 13rem;
     }
     &__text {
         display: block;
