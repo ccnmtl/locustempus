@@ -10,6 +10,13 @@ class IsLoggedInCourse(permissions.IsAuthenticated):
     If so, it then checks they are faculty or a student. If a student, it
     checks if an activity exists for the course.
     """
+    def has_permission(self, request, view):
+        # Runs on GET / requests
+        user = request.user
+        if user.is_anonymous:
+            return False
+        return True
+
     def has_object_permission(self, request, view, obj):
         return (
             obj.course.is_faculty(request.user) or

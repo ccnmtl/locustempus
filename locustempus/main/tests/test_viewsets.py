@@ -1,3 +1,4 @@
+from courseaffils.models import Course
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.urls.base import reverse
@@ -103,7 +104,89 @@ class ProjectAPITest(CourseTestMixin, TestCase):
     def setUp(self):
         self.setup_course()
 
-    def test_course_faculty(self):
+    def test_course_faculty_list(self):
+        """LIST request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        # Test that a list requests only returns projects the user
+        # is faculty for
+        r = self.client.get(reverse('api-project-list'))
+        self.assertEqual(r.status_code, 200)
+        for proj in r.data:
+            c = Course.objects.get(pk=proj['course']['pk'])
+            self.assertTrue(c.is_true_faculty(self.faculty))
+
+    def test_course_faculty_get(self):
+        """GET request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        project = self.sandbox_course.projects.first()
+        r = self.client.get(
+            reverse('api-project-detail', args=[project.pk]))
+        self.assertEqual(r.status_code, 200)
+
+    def test_course_faculty_post(self):
+        """POST request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        # Projects should not be created via the API
+        r = self.client.post(
+            reverse('api-project-list'),
+            {
+                'title': 'A Project Title',
+                'description': 'foo',
+                'base_map': 'some_map',
+                'layers': [],
+                'raster_layers': []
+            }
+        )
+        self.assertEqual(r.status_code, 400)
+
+    def test_course_faculty_put(self):
+        """PUT request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        project = self.sandbox_course.projects.first()
+        r1 = self.client.put(
+            reverse('api-project-detail', args=[project.pk]),
+            json.dumps({
+                'title': 'Updated Title',
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r1.status_code, 200)
+
+        # Try editing a project in a different course
+        r2 = self.client.put(
+            reverse('api-project-detail',
+                    args=[self.fake_course_project.pk]),
+            json.dumps({
+                'title': 'Updated Title'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r2.status_code, 404)
+
+    def test_course_faculty_delete(self):
+        """DELETE request"""
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
@@ -112,9 +195,15 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         )
 
         project = self.sandbox_course.projects.first()
-        response = self.client.get(
+        r1 = self.client.delete(
             reverse('api-project-detail', args=[project.pk]))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(r1.status_code, 204)
+
+        # Test deleting a project in a different course
+        r2 = self.client.delete(
+            reverse('api-project-detail',
+                    args=[self.fake_course_project.pk]))
+        self.assertEqual(r2.status_code, 404)
 
     def test_course_student(self):
         self.assertTrue(
@@ -127,7 +216,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         p1 = self.sandbox_course.projects.first()
         r1 = self.client.get(
             reverse('api-project-detail', args=[p1.pk]))
-        self.assertEqual(r1.status_code, 403)
+        self.assertEqual(r1.status_code, 404)
 
         p2 = self.sandbox_course.projects.last()
         r2 = self.client.get(
@@ -145,7 +234,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         project = self.sandbox_course.projects.first()
         response = self.client.get(
             reverse('api-project-detail', args=[project.pk]))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
 
     def test_non_course_user(self):
         user = UserFactory.create()
@@ -159,7 +248,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         project = self.sandbox_course.projects.first()
         response = self.client.get(
             reverse('api-project-detail', args=[project.pk]))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
 
     def test_anon(self):
         project = self.sandbox_course.projects.first()

@@ -1,4 +1,6 @@
 """The viewsets and views used for the API"""
+from courseaffils.views import get_courses_for_user, get_courses_for_instructor
+from django.db.models import Q
 from locustempus.main.models import (
     Layer, Project, Event, Activity, Response, Feedback
 )
@@ -16,18 +18,35 @@ from rest_framework.viewsets import ModelViewSet
 class ProjectApiView(ModelViewSet):
     """Retrieves a single project"""
     serializer_class = ProjectSerializer
-    queryset = Project.objects.all()
+    def get_queryset(self):
+        """
+        Users in a course MAY be able to view a project if:
+        A) They are faculty in the course
+        OR
+        B) They are in the course and the project has an activity
+        """
+        user = self.request.user
+        instructor_courses = get_courses_for_instructor(user)
+        user_courses = get_courses_for_user(user)
+        return Project.objects.filter(
+            (Q(course__in=instructor_courses)) |
+            (Q(course__in=user_courses) & Q(activity__isnull=False))
+        )
+
     permission_classes = [IsLoggedInCourse]
 
 
 class ActivityApiView(ModelViewSet):
     """Retrieves a single project"""
+    # Similar to Projects, only users in the course should be able to read
+    # activities. Only project authors can create, edit, or delete activities
     serializer_class = ActivitySerializer
     queryset = Activity.objects.all()
 
 
 class LayerApiView(ModelViewSet):
     """Retrieves a layer"""
+    # If an author in a course, can
     serializer_class = LayerSerializer
     queryset = Layer.objects.all()
 
