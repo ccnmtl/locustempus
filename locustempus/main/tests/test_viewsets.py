@@ -3,7 +3,7 @@ from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.urls.base import reverse
 import json
-from locustempus.main.models import Response, Layer, Event
+from locustempus.main.models import Response, Layer, Event, Project
 from locustempus.main.permissions import (
     IsLoggedInCourse, IsLoggedInFaculty
 )
@@ -240,6 +240,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         self.assertEqual(r2.status_code, 200)
 
     def test_course_student_post(self):
+        """POST request"""
         self.assertTrue(
             self.client.login(
                 username=self.student.username,
@@ -326,7 +327,8 @@ class ProjectAPITest(CourseTestMixin, TestCase):
             reverse('api-project-detail', args=[project.pk]))
         self.assertEqual(response.status_code, 404)
 
-    def test_non_course_user(self):
+    def test_non_course_user_list(self):
+        """GET / request"""
         user = UserFactory.create()
         self.assertTrue(
             self.client.login(
@@ -335,10 +337,82 @@ class ProjectAPITest(CourseTestMixin, TestCase):
             )
         )
 
-        project = self.sandbox_course.projects.first()
-        response = self.client.get(
-            reverse('api-project-detail', args=[project.pk]))
-        self.assertEqual(response.status_code, 404)
+        r = self.client.get(reverse('api-project-list'))
+        self.assertEqual(r.status_code, 200)
+        self.assertListEqual(r.data, [])
+
+    def test_non_course_user_get(self):
+        """GET request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for proj in Project.objects.all():
+            r = self.client.get(
+                reverse('api-project-detail', args=[proj.pk]))
+            self.assertEqual(r.status_code, 404)
+
+    def test_non_course_user_post(self):
+        """POST request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        # Projects should not be created via the API
+        r = self.client.post(
+            reverse('api-project-list'),
+            {
+                'title': 'A Project Title',
+                'description': 'foo',
+                'base_map': 'some_map',
+                'layers': [],
+                'raster_layers': []
+            }
+        )
+        self.assertEqual(r.status_code, 403)
+
+    def test_non_course_user_put(self):
+        """PUT request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for proj in Project.objects.all():
+            r = self.client.put(
+                reverse('api-project-detail', args=[proj.pk]),
+                json.dumps({
+                    'title': 'Updated Title',
+                }),
+                content_type='application/json'
+            )
+            self.assertEqual(r.status_code, 403)
+
+    def test_non_course_user_delete(self):
+        """DELETE request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for proj in Project.objects.all():
+            r = self.client.delete(
+                reverse('api-project-detail', args=[proj.pk]))
+            self.assertEqual(r.status_code, 403)
 
     def test_anon(self):
         project = self.sandbox_course.projects.first()
