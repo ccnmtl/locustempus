@@ -204,6 +204,7 @@
 {% if SENTRY_DSN %}
     <script src="https://browser.sentry-cdn.com/5.9.1/bundle.min.js" integrity="sha384-/x1aHz0nKRd6zVUazsV6CbQvjJvr6zQL2CHbQZf3yoLkezyEtZUpqUNnOLW9Nt3v" crossorigin="anonymous">
     </script>
+    <script>
      Sentry.init({ dsn: '{{ SENTRY_DSN }}'});
 
      {% if user.is_anonymous %}
@@ -216,8 +217,8 @@
      {% else %}
      Sentry.configureScope(function(scope) {
          scope.setUser({
-            "email": {{ user.email }},
-            "id": '{{ user.username }}'
+             "email": {% if user.email%}"{{ user.email }}"{% else %}""{% endif %},
+            "id": "{{ user.username }}"
          });
      });
      {% endif %}
