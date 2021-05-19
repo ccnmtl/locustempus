@@ -105,7 +105,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         self.setup_course()
 
     def test_course_faculty_list(self):
-        """LIST request"""
+        """GET / request"""
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
@@ -154,7 +154,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
                 'raster_layers': []
             }
         )
-        self.assertEqual(r.status_code, 400)
+        self.assertEqual(r.status_code, 403)
 
     def test_course_faculty_put(self):
         """PUT request"""
@@ -205,7 +205,23 @@ class ProjectAPITest(CourseTestMixin, TestCase):
                     args=[self.fake_course_project.pk]))
         self.assertEqual(r2.status_code, 404)
 
-    def test_course_student(self):
+    def test_course_student_list(self):
+        """GET / request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        r = self.client.get(reverse('api-project-list'))
+        self.assertEqual(r.status_code, 200)
+        for proj in r.data:
+            c = Course.objects.get(pk=proj['course']['pk'])
+            self.assertTrue(c.is_true_member(self.student))
+
+    def test_course_student_get(self):
+        """GET request"""
         self.assertTrue(
             self.client.login(
                 username=self.student.username,
@@ -222,6 +238,80 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         r2 = self.client.get(
             reverse('api-project-detail', args=[p2.pk]))
         self.assertEqual(r2.status_code, 200)
+
+    def test_course_student_post(self):
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        # Projects should not be created via the API
+        r = self.client.post(
+            reverse('api-project-list'),
+            {
+                'title': 'A Project Title',
+                'description': 'foo',
+                'base_map': 'some_map',
+                'layers': [],
+                'raster_layers': []
+            }
+        )
+        self.assertEqual(r.status_code, 403)
+
+
+    def test_course_student_put(self):
+        """PUT request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        # Try editing a project that the student can not see
+        p1 = self.sandbox_course.projects.first()
+        r1 = self.client.put(
+            reverse('api-project-detail', args=[p1.pk]),
+            json.dumps({
+                'title': 'Updated Title',
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r1.status_code, 403)
+
+        # Next try editing a project that the student CAN see
+        p2 = self.sandbox_course.projects.last()
+        r2 = self.client.put(
+            reverse('api-project-detail', args=[p2.pk]),
+            json.dumps({
+                'title': 'Updated Title',
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r2.status_code, 403)
+
+    def test_course_student_delete(self):
+        """DELETE request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        # Try deleting a project the student can not see
+        p1 = self.sandbox_course.projects.first()
+        r1 = self.client.delete(
+            reverse('api-project-detail', args=[p1.pk]))
+        self.assertEqual(r1.status_code, 403)
+
+        # Try deleting a project the student can see
+        p2 = self.sandbox_course.projects.last()
+        r2 = self.client.delete(
+            reverse('api-project-detail', args=[p2.pk]))
+        self.assertEqual(r2.status_code, 403)
 
     def test_superuser(self):
         self.assertTrue(

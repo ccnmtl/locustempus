@@ -15,14 +15,25 @@ class IsLoggedInCourse(permissions.IsAuthenticated):
         user = request.user
         if user.is_anonymous:
             return False
+
+        if request.method not in permissions.SAFE_METHODS:
+            return False
+
         return True
 
     def has_object_permission(self, request, view, obj):
-        return (
-            obj.course.is_faculty(request.user) or
-            (in_course(request.user.username, obj.course) and
-             hasattr(obj, 'activity'))
-        )
+        user = request.user
+        if user.is_anonymous:
+            return False
+
+        if request.method not in permissions.SAFE_METHODS:
+            return obj.course.is_faculty(request.user)
+        else:
+            return (
+                obj.course.is_faculty(request.user) or
+                (in_course(request.user.username, obj.course) and
+                 hasattr(obj, 'activity'))
+            )
 
 
 class IsLoggedInFaculty(permissions.IsAuthenticated):
