@@ -462,11 +462,47 @@ class ProjectAPITest(CourseTestMixin, TestCase):
                 reverse('api-project-detail', args=[proj.pk]))
             self.assertEqual(r.status_code, 404)
 
-    def test_anon(self):
+    def test_anon_list(self):
+        response = self.client.get(reverse('api-project-list'))
+        self.assertEqual(response.status_code, 403)
+
+    def test_anon_get(self):
         project = self.sandbox_course.projects.first()
         response = self.client.get(
             reverse('api-project-detail', args=[project.pk]))
         self.assertEqual(response.status_code, 403)
+
+    def test_anon_post(self):
+        # Projects should not be created via the API
+        r = self.client.post(
+            reverse('api-project-list'),
+            {
+                'title': 'A Project Title',
+                'description': 'foo',
+                'base_map': 'some_map',
+                'layers': [],
+                'raster_layers': []
+            }
+        )
+        self.assertEqual(r.status_code, 403)
+
+    def test_anon_put(self):
+        project = self.sandbox_course.projects.first()
+        r = self.client.put(
+            reverse('api-project-detail', args=[project.pk]),
+            json.dumps({
+                'title': 'Updated Title',
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r.status_code, 403)
+
+    def test_anon_delete(self):
+        project = self.sandbox_course.projects.first()
+        r = self.client.delete(
+            reverse('api-project-detail', args=[project.pk]))
+        self.assertEqual(r.status_code, 403)
+
 
 
 class LayerAPITest(CourseTestMixin, TestCase):
