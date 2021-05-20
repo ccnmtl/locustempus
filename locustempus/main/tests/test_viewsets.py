@@ -13,28 +13,76 @@ from locustempus.main.tests.factories import (
 from unittest.mock import MagicMock
 
 
+SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS')
+UNSAFE_METHODS = ('PUT', 'POST', 'PATCH', 'DELETE')
+METHODS = SAFE_METHODS + UNSAFE_METHODS
+
 class IsLoggedInCourseTest(CourseTestMixin, TestCase):
     """Unit tests for IsLoggedInCourse permission class"""
     def setUp(self):
         self.setup_course()
         self.perm = IsLoggedInCourse()
 
-    def test_faculty(self):
+    def test_auth_has_permission(self):
+        request = MagicMock(user=self.faculty)
+        view = MagicMock()
+
+        for method in ('GET', 'HEAD', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'):
+            request.method = method
+            self.assertTrue(
+                self.perm.has_permission(request, view))
+
+        request.method = 'POST'
+        self.assertFalse(
+            self.perm.has_permission(request, view))
+
+    def test_anon_has_permission(self):
+        request = MagicMock(user=AnonymousUser())
+        view = MagicMock()
+
+        for method in METHODS:
+            request.method
+            self.assertFalse(
+                self.perm.has_permission(request, view))
+
+    def test_faculty_object_permission(self):
         request = MagicMock(user=self.faculty)
         view = MagicMock()
         project = self.sandbox_course.projects.first()
-        self.assertTrue(
+
+        for method in ('GET', 'HEAD', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'):
+            request.method = method
+            self.assertTrue(
+                self.perm.has_object_permission(request, view, project))
+
+        request.method = 'POST'
+        self.assertFalse(
             self.perm.has_object_permission(request, view, project))
 
-    def test_student(self):
+    def test_student_object_permission(self):
         request = MagicMock(user=self.student)
         view = MagicMock()
+
+        # This project does not have an activity, and student
+        # should not be able to see it
         p1 = self.sandbox_course.projects.first()
+        for method in METHODS:
+            request.method = method
+            self.assertFalse(
+                self.perm.has_object_permission(request, view, p1))
+
+        # This project does have an activity, and student
+        # should be able to see it
         p2 = self.sandbox_course.projects.last()
-        self.assertFalse(
-            self.perm.has_object_permission(request, view, p1))
-        self.assertTrue(
-            self.perm.has_object_permission(request, view, p2))
+        for method in SAFE_METHODS:
+            request.method = method
+            self.assertTrue(
+                self.perm.has_object_permission(request, view, p2))
+
+        for method in UNSAFE_METHODS:
+            request.method = method
+            self.assertFalse(
+                self.perm.has_object_permission(request, view, p2))
 
     def test_superuser(self):
         request = MagicMock(user=self.superuser)
@@ -280,7 +328,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
             }),
             content_type='application/json'
         )
-        self.assertEqual(r1.status_code, 403)
+        self.assertEqual(r1.status_code, 404)
 
         # Next try editing a project that the student CAN see
         p2 = self.sandbox_course.projects.last()
@@ -306,7 +354,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         p1 = self.sandbox_course.projects.first()
         r1 = self.client.delete(
             reverse('api-project-detail', args=[p1.pk]))
-        self.assertEqual(r1.status_code, 403)
+        self.assertEqual(r1.status_code, 404)
 
         # Try deleting a project the student can see
         p2 = self.sandbox_course.projects.last()
@@ -397,7 +445,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
                 }),
                 content_type='application/json'
             )
-            self.assertEqual(r.status_code, 403)
+            self.assertEqual(r.status_code, 404)
 
     def test_non_course_user_delete(self):
         """DELETE request"""
@@ -412,7 +460,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         for proj in Project.objects.all():
             r = self.client.delete(
                 reverse('api-project-detail', args=[proj.pk]))
-            self.assertEqual(r.status_code, 403)
+            self.assertEqual(r.status_code, 404)
 
     def test_anon(self):
         project = self.sandbox_course.projects.first()
