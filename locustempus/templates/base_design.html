@@ -87,18 +87,18 @@
     <script>
      Sentry.init({ dsn: '{{ SENTRY_DSN }}'});
 
-     {% if user.is_anonymous %}
+     {% if request.user.is_anonymous %}
      Sentry.configureScope(function(scope) {
          scope.setUser({
-            "email": 'none',
-            "id": 'anonymous'
+            email: 'none',
+            id: 'anonymous'
          });
      });
      {% else %}
      Sentry.configureScope(function(scope) {
          scope.setUser({
-             "email": {% if user.email%}"{{ user.email }}"{% else %}""{% endif %},
-            "id": "{{ user.username }}"
+            email: {% if request.user.email %}'{{ request.user.email }}'{% else %}''{% endif %},
+            id: '{{ request.user.username }}'
          });
      });
      {% endif %}
