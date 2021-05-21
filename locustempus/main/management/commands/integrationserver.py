@@ -41,6 +41,14 @@ def reset_test_models():
         email='studentone@example.com'
     )
     c1.group.user_set.add(s1)
+    s1: User = UserFactory.create(
+        username='student-three',
+        first_name='Student',
+        last_name='Three',
+        email='studentthree@example.com'
+    )
+    c1.group.user_set.add(s1)
+
     f1: User = UserFactory.create(
         username='faculty-one',
         first_name='Faculty',
