@@ -32,10 +32,10 @@ Cypress.Commands.add('login_workspace', (username, password) => {
     cy.get('[data-cy="guest-login-submit"]').click();
 });
 
-Cypress.Commands.add('login_workspace_faculty', () => {
+Cypress.Commands.add('login_workspace_faculty', (facultyName) => {
     cy.visit('/accounts/logout/?next=/');
     cy.clearCookies();
-    cy.login_workspace('faculty-one', 'test');
+    cy.login_workspace(facultyName, 'test');
     cy.get('#cu-privacy-notice-button').click();
 
     // Quick check of the workspaces list page
@@ -52,10 +52,10 @@ Cypress.Commands.add('login_workspace_faculty', () => {
     cy.title().should('equal', 'Sandbox Workspace – Locus Tempus');
 });
 
-Cypress.Commands.add('login_workspace_student', () => {
+Cypress.Commands.add('login_workspace_student', (studentName) => {
     cy.visit('/accounts/logout/?next=/');
     cy.clearCookies();
-    cy.login_workspace('student-one', 'test');
+    cy.login_workspace(studentName, 'test');
     cy.get('#cu-privacy-notice-button').click();
 
     // Quick check of the workspaces list page

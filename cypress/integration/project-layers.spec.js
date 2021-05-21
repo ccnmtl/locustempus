@@ -9,7 +9,7 @@ describe('Project Layer Stories (Workspace Detail)', function() {
     // and create, edit, delete functionality.
 
     it('Verify the layers on the project detail page', function() {
-        cy.login_workspace_faculty();
+        cy.login_workspace_faculty('faculty-one');
 
         // Navigates to project detail
         cy.get('[data-cy="project-card"]')
@@ -87,7 +87,7 @@ describe('Project Layer Stories (Workspace Detail)', function() {
     });
 
     it('Add, edit, delete a layer', function() {
-        cy.login_workspace_faculty();
+        cy.login_workspace_faculty('faculty-one');
 
         // Navigates to project detail
         cy.get('[data-cy="project-card"]')

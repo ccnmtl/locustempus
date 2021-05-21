@@ -28,14 +28,14 @@ describe('Workspace Roster and Invite Stories', function() {
 
         cy.get('[data-cy="workspace-roster-invite"]').should('be.visible');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').should('have.length', 3);
+            .find('tr').should('have.length', 4);
 
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(1).find('td').eq(0).contains('Faculty');
+            .find('tr').eq(1).find('td').eq(0).contains('Author');
         cy.get('[data-cy="uni-roster-table"]')
             .find('tr').eq(1).find('td').eq(1).contains('One');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(1).find('td').eq(2).contains('faculty-one');
+            .find('tr').eq(1).find('td').eq(2).contains('author-one');
         cy.get('[data-cy="uni-roster-table"]')
             .find('tr').eq(1).find('td').eq(3).contains('Author');
         cy.get('[data-cy="uni-roster-table"]')
@@ -46,18 +46,33 @@ describe('Workspace Roster and Invite Stories', function() {
             .find('[data-cy="roster-remove"]');
 
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(2).find('td').eq(0).contains('Student');
+            .find('tr').eq(2).find('td').eq(0).contains('Faculty');
         cy.get('[data-cy="uni-roster-table"]')
             .find('tr').eq(2).find('td').eq(1).contains('One');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(2).find('td').eq(2).contains('student-one');
+            .find('tr').eq(2).find('td').eq(2).contains('faculty-one');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(2).find('td').eq(3).contains('Contributor');
+            .find('tr').eq(2).find('td').eq(3).contains('Author');
         cy.get('[data-cy="uni-roster-table"]')
             .find('tr').eq(2).find('td').eq(4)
+            .find('[data-cy="roster-demote"]');
+        cy.get('[data-cy="uni-roster-table"]')
+            .find('tr').eq(2).find('td').eq(4)
+            .find('[data-cy="roster-remove"]');
+
+        cy.get('[data-cy="uni-roster-table"]')
+            .find('tr').eq(3).find('td').eq(0).contains('Student');
+        cy.get('[data-cy="uni-roster-table"]')
+            .find('tr').eq(3).find('td').eq(1).contains('One');
+        cy.get('[data-cy="uni-roster-table"]')
+            .find('tr').eq(3).find('td').eq(2).contains('student-one');
+        cy.get('[data-cy="uni-roster-table"]')
+            .find('tr').eq(3).find('td').eq(3).contains('Contributor');
+        cy.get('[data-cy="uni-roster-table"]')
+            .find('tr').eq(3).find('td').eq(4)
             .find('[data-cy="roster-promote"]');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(2).find('td').eq(4)
+            .find('tr').eq(3).find('td').eq(4)
             .find('[data-cy="roster-remove"]');
     });
 
@@ -72,7 +87,7 @@ describe('Workspace Roster and Invite Stories', function() {
         cy.title().should('equal', 'Sandbox Workspace: Roster – Locus Tempus');
 
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(2).find('td').eq(4)
+            .find('tr').eq(3).find('td').eq(4)
             .find('[data-cy="roster-promote"]').click();
 
         // verify there is an alert confirming the promotion
@@ -81,14 +96,14 @@ describe('Workspace Roster and Invite Stories', function() {
 
         // and that the user's status has changed
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(2).find('td').eq(3).contains('Author');
+            .find('tr').eq(3).find('td').eq(3).contains('Author');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(2).find('td').eq(4)
+            .find('tr').eq(3).find('td').eq(4)
             .find('[data-cy="roster-demote"]');
 
         // okay, demote the student again
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(2).find('td').eq(4)
+            .find('tr').eq(3).find('td').eq(4)
             .find('[data-cy="roster-demote"]').click();
 
         // verify there is an alert confirming the promotion
@@ -96,9 +111,9 @@ describe('Workspace Roster and Invite Stories', function() {
         cy.get('.alert').contains('Student One is now Contributor');
 
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(2).find('td').eq(3).contains('Contributor');
+            .find('tr').eq(3).find('td').eq(3).contains('Contributor');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(2).find('td').eq(4)
+            .find('tr').eq(3).find('td').eq(4)
             .find('[data-cy="roster-promote"]');
     });
 
@@ -122,7 +137,7 @@ describe('Workspace Roster and Invite Stories', function() {
 
         cy.title().should('equal', 'Sandbox Workspace: Roster – Locus Tempus');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').should('have.length', 4);
+            .find('tr').should('have.length', 5);
 
         cy.get('.alert').should('be.visible');
         cy.get('.alert').contains(
@@ -131,23 +146,23 @@ describe('Workspace Roster and Invite Stories', function() {
             'An email notification was sent to studenttwo@example.com.');
 
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(3).find('td').eq(0).contains('Student');
+            .find('tr').eq(4).find('td').eq(0).contains('Student');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(3).find('td').eq(1).contains('Two');
+            .find('tr').eq(4).find('td').eq(1).contains('Two');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(3).find('td').eq(2).contains('student-two');
+            .find('tr').eq(4).find('td').eq(2).contains('student-two');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(3).find('td').eq(3).contains('Contributor');
+            .find('tr').eq(4).find('td').eq(3).contains('Contributor');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(3).find('td').eq(4)
+            .find('tr').eq(4).find('td').eq(4)
             .find('[data-cy="roster-promote"]');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(3).find('td').eq(4)
+            .find('tr').eq(4).find('td').eq(4)
             .find('[data-cy="roster-remove"]');
 
         // Remove the student
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').eq(3).find('td').eq(4)
+            .find('tr').eq(4).find('td').eq(4)
             .find('[data-cy="roster-remove"]').click();
 
         // verify there is an alert confirming the removal
@@ -155,7 +170,7 @@ describe('Workspace Roster and Invite Stories', function() {
         cy.get('.alert').contains(
             'Student Two is no longer a member of this workspace');
         cy.get('[data-cy="uni-roster-table"]')
-            .find('tr').should('have.length', 3);
+            .find('tr').should('have.length', 4);
     });
 
     // Invitations

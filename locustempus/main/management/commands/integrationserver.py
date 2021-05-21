@@ -50,6 +50,15 @@ def reset_test_models():
     c1.group.user_set.add(f1)
     c1.faculty_group.user_set.add(f1)
 
+    a1: User = UserFactory.create(
+        username='author-one',
+        first_name='Author',
+        last_name='One',
+        email='authorone@example.com'
+    )
+    c1.group.user_set.add(a1)
+    c1.faculty_group.user_set.add(a1)
+
     project = ProjectFactory.create(course=c1, title='Activity One')
     activity = ActivityFactory.create(project=project)
     ResponseFactory.create(
