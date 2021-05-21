@@ -39,7 +39,7 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="project-list"]')
             .find('[data-cy="project-card"]').should('have.length', 2);
         cy.get('[data-cy="project-card"]').contains('Project 0');
-        cy.get('[data-cy="project-card"]').contains('Project One');
+        cy.get('[data-cy="project-card"]').contains('Activity One');
     });
 
     it('Creates and cancel project', function() {
@@ -173,10 +173,6 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="edit-project-title"]').should('be.visible');
         // cy.get('[data-cy="edit-project-description"]').should('be.visible');
         cy.get('[data-cy="edit-project-basemap"').should('be.visible');
-
-        // @todo - select a different map layer & validate that is shown
-        // This is complicated as we've tried to remove any test
-        // dependency on Mapbox.
 
         // the cancel & "next", e.g. Save button should be visible
         cy.get('[data-cy="edit-project-cancel"]').should('be.visible');

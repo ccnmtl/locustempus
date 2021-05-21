@@ -50,14 +50,14 @@ def reset_test_models():
     c1.group.user_set.add(f1)
     c1.faculty_group.user_set.add(f1)
 
-    project = ProjectFactory.create(course=c1, title='Project One')
+    project = ProjectFactory.create(course=c1, title='Activity One')
     activity = ActivityFactory.create(project=project)
     ResponseFactory.create(
         activity=activity,
         owners=[s1]
     )
 
-    # Registrar Course
+    # Registrar Course - generates a project too
     c2: Course = RegistrarCourseFactory.create()
     s2: User = UserFactory.create(
         username='student-two',

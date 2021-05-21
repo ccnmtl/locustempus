@@ -97,17 +97,21 @@ export const Layer: React.FC<LayerProps> = (
         <div
             className={'lt-list-group ' +
                 (isActiveLayer ? 'lt-list-group--active' : '')}
-            onClick={handleSetActiveLayer}>
+            onClick={handleSetActiveLayer}
+            data-cy={key}>
             <div className={'lt-list-group__header'}>
                 {/* Layer title */}
-                <h2 className="lt-list-group__title order-2">{layer.title}</h2>
+                <h2 className="lt-list-group__title order-2" data-cy="lt-layer">
+                    {layer.title}
+                </h2>
                 {/* Layer show-hide and expand-collapse */}
                 <div className="lt-list-group__action leading order-1">
                     {layerVisibility && (
                         <button
                             onClick={handleLayerVisibility}
                             className={'lt-icon-button'}
-                            aria-label={layerVisibility ? 'Hide layer' : 'Show layer'}>
+                            aria-label={layerVisibility ? 'Hide layer' : 'Show layer'}
+                            data-cy={'layer-visibility'}>
                             <span className={'lt-icons lt-icon-button__icon'}
                                 aria-hidden='true'>
                                 <FontAwesomeIcon
@@ -118,7 +122,8 @@ export const Layer: React.FC<LayerProps> = (
                     <button
                         onClick={handleLayerCollapse}
                         className={'lt-icon-button'}
-                        aria-label={isLayerCollapsed ? 'Expand layer' : 'Collapse layer'}>
+                        aria-label={isLayerCollapsed ? 'Expand layer' : 'Collapse layer'}
+                        data-cy={'layer-toggle'}>
                         <span className={'lt-icons lt-icon-button__icon'}
                             aria-hidden='true'>
                             <FontAwesomeIcon
@@ -131,7 +136,8 @@ export const Layer: React.FC<LayerProps> = (
                         <button onClick={handleLayerMenu}
                             className={'lt-icon-button'}
                             aria-label={openLayerMenu ?
-                                'Hide more actions' : 'Show more actions'}>
+                                'Hide more actions' : 'Show more actions'}
+                            data-cy={'layer-menu'}>
                             <span
                                 className={'lt-icons lt-icon-button__icon'}
                                 aria-hidden='true'>
@@ -157,18 +163,21 @@ export const Layer: React.FC<LayerProps> = (
                                                 value={updatedLayerTitle}
                                                 onChange={handleUpdatedLayerTitle}
                                                 className={'form-control lt-menu-form__input-text'}
-                                                type="text"/>
+                                                type="text"
+                                                data-cy={'layer-update-title'}/>
                                             <div className={'lt-menu-form__button-group'}>
                                                 <button
                                                     type={'button'}
                                                     onClick={handleLayerMenu}
-                                                    className={'lt-button lt-button--outlined leading'}> {/* eslint-disable-line max-len */}
+                                                    className={'lt-button lt-button--outlined leading'}
+                                                    data-cy={'layer-rename-cancel'}> {/* eslint-disable-line max-len */}
                                                     <span className={'lt-button__label'}>
                                                         Cancel
                                                     </span>
                                                 </button>
                                                 <button type={'submit'}
-                                                    className={'lt-button lt-button--priority'}>
+                                                    className={'lt-button lt-button--priority'}
+                                                    data-cy={'layer-rename-save'}>
                                                     <span className={'lt-button__label'}>
                                                         Save
                                                     </span>
@@ -220,7 +229,8 @@ export const Layer: React.FC<LayerProps> = (
                                                 type="button"
                                                 onClick={(): void => {
                                                     setActiveEventDetail(val);}}
-                                                className={'lt-button btn-sm trailing'}>
+                                                className={'lt-button btn-sm trailing'}
+                                                data-cy={'event-detail-more'}>
                                                 <span className='lt-button__label'>More</span>
                                             </button>
                                         )}

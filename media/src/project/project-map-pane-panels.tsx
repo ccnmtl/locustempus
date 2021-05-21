@@ -58,6 +58,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 'nav-link active' : 'nav-link'}
                             href='#'
                             data-active-tab={idx}
+                            data-cy={el}
                             onClick={handleSetActiveTab}>{el}</a>
                         </li>
                     );
