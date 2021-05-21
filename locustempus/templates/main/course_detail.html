@@ -56,20 +56,20 @@
 <div class="row pt-3 px-0 mt-0 mx-0" data-cy="workspace-summary-info">
     <div class="col-9">
         {% if course.info.termyear %}<div>Semester: {{ course.info.termyear }}</div>{% endif %}
-        <div><b>Author:</b> {{ course|course_faculty_string }}</div>
-        <div><b>Number of Projects:</b>
-        {% with totalProject=course.projects.count %}
+        <div data-cy="course-faculty"><b>Author:</b> {{ course|course_faculty_string }}</div>
+        <div data-cy="number-of-projects"><b>Number of Projects:</b>
+        {% with totalProject=projects.count %}
             {{ totalProject }} Project{{ totalProject|pluralize }}
         {% endwith %}
         </div>
-        <div><b>Description:</b>
+        <div data-cy="course-description"><b>Description:</b>
             {% if course|course_description %}
                 {{ course|course_description }}
             {% else %}
                 There’s no description for this Workspace.
             {% endif %}
         </div>
-        <div><b>Your role:</b> {% if user in course.faculty %}Author{% else %}Contributor{% endif %}</div>
+        <div data-cy="course-role"><b>Your role:</b> {% if user in course.faculty %}Author{% else %}Contributor{% endif %}</div>
     </div>
     {% if is_faculty and projects %}
     <div class="col-3 text-right">

@@ -97,6 +97,12 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="project-list"]')
             .find('[data-cy="project-card"]').should('have.length', 3);
 
+        // Check workspace details are updated
+        cy.get('[data-cy="course-faculty"]').contains('Faculty One');
+        cy.get('[data-cy="course-faculty"]').contains('Author One');
+        cy.get('[data-cy="number-of-projects"]').contains('3');
+        cy.get('[data-cy="course-role"]').contains('Author');
+
         // Navigates to project detail
         cy.get('[data-cy="project-card"]').contains('My Project').click();
 
@@ -211,6 +217,12 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="project-list"]')
             .find('[data-cy="project-card"]').should('have.length', 1);
 
+        // Check workspace details are updated
+        cy.get('[data-cy="course-faculty"]').contains('Faculty One');
+        cy.get('[data-cy="course-faculty"]').contains('Author One');
+        cy.get('[data-cy="number-of-projects"]').contains('1');
+        cy.get('[data-cy="course-role"]').contains('Contributor');
+
         // Activity 
         cy.get('[data-cy="project-card"]')
             .contains('Activity One').should('be.visible');
@@ -222,6 +234,12 @@ describe('Project List Stories (Workspace Detail)', function() {
 
         cy.get('[data-cy="project-list"]')
             .find('[data-cy="project-card"]').should('have.length', 3);
+
+        // Check workspace details are updated
+        cy.get('[data-cy="course-faculty"]').contains('Faculty One');
+        cy.get('[data-cy="course-faculty"]').contains('Author One');
+        cy.get('[data-cy="number-of-projects"]').contains('3');
+        cy.get('[data-cy="course-role"]').contains('Author');
 
         // Navigates to project detail
         cy.get('[data-cy="project-card"]')
