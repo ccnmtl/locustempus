@@ -98,10 +98,10 @@ export const Layer: React.FC<LayerProps> = (
             className={'lt-list-group ' +
                 (isActiveLayer ? 'lt-list-group--active' : '')}
             onClick={handleSetActiveLayer}
-            data-cy={key}>
+            data-cy="layer">
             <div className={'lt-list-group__header'}>
                 {/* Layer title */}
-                <h2 className="lt-list-group__title order-2" data-cy="lt-layer">
+                <h2 className="lt-list-group__title order-2" data-cy="layer-title">
                     {layer.title}
                 </h2>
                 {/* Layer show-hide and expand-collapse */}
@@ -154,7 +154,8 @@ export const Layer: React.FC<LayerProps> = (
                                             <FontAwesomeIcon icon={faPencilAlt}/>
                                         </span>
                                         <form onSubmit={handleUpdateLayer}
-                                            className={'d-flex flex-column'}>
+                                            className={'d-flex flex-column'}
+                                            data-cy="layer-rename">
                                             <label
                                                 className={'lt-menu-form__label'}>
                                                 Rename layer:
@@ -164,13 +165,13 @@ export const Layer: React.FC<LayerProps> = (
                                                 onChange={handleUpdatedLayerTitle}
                                                 className={'form-control lt-menu-form__input-text'}
                                                 type="text"
-                                                data-cy={'layer-update-title'}/>
+                                                data-cy={'layer-rename-title'}/>
                                             <div className={'lt-menu-form__button-group'}>
                                                 <button
                                                     type={'button'}
                                                     onClick={handleLayerMenu}
-                                                    className={'lt-button lt-button--outlined leading'}
-                                                    data-cy={'layer-rename-cancel'}> {/* eslint-disable-line max-len */}
+                                                    data-cy={'layer-rename-cancel'}
+                                                    className={'lt-button lt-button--outlined leading'}> {/* eslint-disable-line max-len */}
                                                     <span className={'lt-button__label'}>
                                                         Cancel
                                                     </span>
@@ -186,7 +187,8 @@ export const Layer: React.FC<LayerProps> = (
                                         </form>
                                     </li>
                                     <li className={'lt-list-item lt-list-item--caution'}
-                                        role='menuitem'>
+                                        role='menuitem'
+                                        data-cy="layer-delete">
                                         <ConfirmableAction
                                             icon={<FontAwesomeIcon icon={faTrashAlt}/>}
                                             handler={handleDeleteLayer}
@@ -241,7 +243,7 @@ export const Layer: React.FC<LayerProps> = (
                     ) : (
                         <>
                             {isActiveLayer ? (
-                                <div className={'lt-banner-tip-prompt'}>
+                                <div data-cy="layer-prompt" className={'lt-banner-tip-prompt'}>
                                     <span className={'lt-icons lt-banner__icon'}>
                                         <FontAwesomeIcon icon={faLightbulb}/>
                                     </span>
