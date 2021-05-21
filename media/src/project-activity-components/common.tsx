@@ -69,6 +69,7 @@ export interface ProjectData {
     description: string;
     base_map: string;
     layers: string[];
+    aggregated_layers: string[];
     raster_layers: RasterLayerData[];
     coursePk: number;
     activity?: number;

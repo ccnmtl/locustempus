@@ -674,7 +674,7 @@ export const ActivityMap: React.FC = () => {
 
             // Fetch the Project layers
             const layers: LayerData[] = [];
-            for (const layerUrl of projData.layers) {
+            for (const layerUrl of projData.aggregated_layers) {
                 layers.push(await get<LayerData>(layerUrl));
             }
 

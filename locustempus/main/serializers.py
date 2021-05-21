@@ -6,6 +6,7 @@ from locustempus.main.models import (
     MediaObject, Feedback, RasterLayer
 )
 from rest_framework import serializers
+from rest_framework.reverse import reverse
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -34,12 +35,49 @@ class ProjectSerializer(serializers.ModelSerializer):
         many=True
     )
 
+    aggregated_layers = serializers.SerializerMethodField()
+
+    def get_aggregated_layers(self, obj):
+        # Returns project layers PLUS
+        # - If the current user is faculty, it adds nothing, just returns
+        #   the project layers
+        # - If the current user is a student AND there's an Activity, it
+        #   concats layers related to other student's response, excluding
+        #   the current user, but only if the other student's response is
+        #   submitted or reviewed
+        request = self.context['request']
+        user = request.user
+        course = obj.course
+
+        if course.is_true_faculty(user):
+            return [reverse('api-layer-detail', args=[lyr.pk], request=request)
+                    for lyr in obj.layers.all()]
+
+        elif hasattr(obj, 'activity') and course.is_true_member(user):
+            all_layers = [
+                reverse('api-layer-detail', args=[lyr.pk], request=request)
+                      for lyr in obj.layers.all()
+            ]
+            responses = obj.activity.responses.filter(
+                status__in=[Response.SUBMITTED, Response.REVIEWED]) \
+                .exclude(created_by=user)
+            for response in responses:
+                all_layers.extend([
+                    reverse('api-layer-detail', args=[lyr.pk], request=request) for lyr in response.layers.all()
+                ])
+
+            return all_layers
+        else:
+            # The permission classes should prevent a non-course user
+            # from getting this far, but just in case
+            return []
+
     class Meta:
         model = Project
         read_only_fields = ('activity', 'pk', 'course')
         fields = (
             'title', 'description', 'base_map', 'layers', 'raster_layers',
-            'activity', 'pk', 'course'
+            'activity', 'pk', 'course', 'aggregated_layers'
         )
 
 
