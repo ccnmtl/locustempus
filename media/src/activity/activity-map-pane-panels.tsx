@@ -473,7 +473,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 </div>
             </section>
         </>) : (<>
-            <section className={'lt-pane-section'}>
+            <section data-cy="activity-response-count" className={'lt-pane-section'}>
                 {responseData.length === 1 ? (
                     <p>There is {responseData.length} response to this activity.</p>
                 ) : (

@@ -214,7 +214,8 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
             ref={forwardedRef}
             className={'widget-pane widget-pane-' + (showPane ? 'expanded' : 'collapsed') }>
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
-                <header ref={projectPaneHeader} className='project-pane__header'>
+                <header ref={projectPaneHeader} className='project-pane__header'
+                    data-cy="project-header">
                     <h1 data-cy="project-title">{title}</h1>
                     <OverflowMenu items={[
                         {
