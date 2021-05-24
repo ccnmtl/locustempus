@@ -6,28 +6,9 @@
 // 18. https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Delete_Project
 
 describe('Project List Stories (Workspace Detail)', function() {
-    beforeEach(() => {
-        // Login
-        cy.visit('/accounts/logout/?next=/');
-        cy.clearCookies();
-        cy.login_workspace('faculty-one', 'test');
-        cy.get('#cu-privacy-notice-button').click();
-
-        // Quick check of the workspaces list page
-        cy.title().should('equal', 'Workspaces – Locus Tempus');
-        cy.get('[data-cy="workspace-title-link"]')
-            .should('be.visible');
-        cy.get('[data-cy="workspace-title-link"]')
-            .should('be.visible');
-        cy.get('[data-cy="workspace-title-link"]')
-            .contains('Sandbox Workspace');
-
-        // Navigate to the Sandbox Workspace
-        cy.get('[data-cy="workspace-title-link"]').click();
-        cy.title().should('equal', 'Sandbox Workspace – Locus Tempus');
-    }); 
-
     it('Verifies the workspace detail page', function() {
+        cy.login_workspace_faculty('faculty-one');
+
         // just a little...this is also done in the workspace-list.spec
         // this test focuses on projects
         cy.title().should('equal', 'Sandbox Workspace – Locus Tempus');
@@ -39,10 +20,11 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="project-list"]')
             .find('[data-cy="project-card"]').should('have.length', 2);
         cy.get('[data-cy="project-card"]').contains('Project 0');
-        cy.get('[data-cy="project-card"]').contains('Project One');
+        cy.get('[data-cy="project-card"]').contains('Activity One');
     });
 
     it('Creates and cancel project', function() {
+        cy.login_workspace_faculty('faculty-one');
         cy.get('[data-cy="project-create-button"]').click();
 
         // creating a project takes the user to the project detail space
@@ -66,6 +48,8 @@ describe('Project List Stories (Workspace Detail)', function() {
     });
 
     it('Creates and saves project', function() {
+        cy.login_workspace_faculty('faculty-one');
+
         cy.get('[data-cy="project-create-button"]').click();
         cy.get('[data-cy="loading-modal"]').should('be.visible');
 
@@ -106,22 +90,35 @@ describe('Project List Stories (Workspace Detail)', function() {
     });
 
     it('Interacts with the new project', function() {
+        cy.login_workspace_faculty('faculty-one');
+
         // Verify the new project shows up in the workspace
         cy.title().should('equal', 'Sandbox Workspace – Locus Tempus');
         cy.get('[data-cy="project-list"]')
             .find('[data-cy="project-card"]').should('have.length', 3);
 
+        // Check workspace details are updated
+        cy.get('[data-cy="course-faculty"]').contains('Faculty One');
+        cy.get('[data-cy="course-faculty"]').contains('Author One');
+        cy.get('[data-cy="number-of-projects"]').contains('3');
+        cy.get('[data-cy="course-role"]').contains('Author');
+
         // Navigates to project detail
-        cy.get('[data-cy="project-card"]')
-            .contains('My Project').click();
+        cy.get('[data-cy="project-card"]').contains('My Project').click();
 
         // wait for the loading icon to go away
         cy.get('[data-cy="loading-modal"]').should('be.visible');
         cy.get('[data-cy="loading-modal"]').should('not.exist');
 
+        // Check for Overview & Base Layers tabs, no response tab
+        cy.get('[data-cy="Overview"]').should('be.visible');
+        cy.get('[data-cy="Base Layers"]').should('be.visible');
+        cy.get('[data-cy="Responses"]').should('not.exist');
+
+        // Check for the basics on the Overview tab
         cy.get('[data-cy="project-title"]').contains('My Project');
         // cy.get('[data-cy="project-description"]')
-        //  .contains('Descriptive text');
+        //    .contains('Descriptive text');
         cy.get('[data-cy="create-activity"]').should('be.visible');
 
         // All the editing functionality is hidden
@@ -153,6 +150,8 @@ describe('Project List Stories (Workspace Detail)', function() {
     });
 
     it('Edit the project details', function() {
+        cy.login_workspace_faculty('faculty-one');
+
         // Navigate to project detail
         cy.get('[data-cy="project-card"]')
             .contains('My Project').click();
@@ -173,10 +172,6 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="edit-project-title"]').should('be.visible');
         // cy.get('[data-cy="edit-project-description"]').should('be.visible');
         cy.get('[data-cy="edit-project-basemap"').should('be.visible');
-
-        // @todo - select a different map layer & validate that is shown
-        // This is complicated as we've tried to remove any test
-        // dependency on Mapbox.
 
         // the cancel & "next", e.g. Save button should be visible
         cy.get('[data-cy="edit-project-cancel"]').should('be.visible');
@@ -215,11 +210,47 @@ describe('Project List Stories (Workspace Detail)', function() {
         cy.get('[data-cy="create-activity"]').should('be.visible');
     });
 
-    it('Shares the project with a contributor', function() {
-        // @todo
+    it('View the project dashboard as a contributor', function() {
+        // Workspace contributors cannot see projects
+        cy.login_workspace_student('student-one');
+
+        cy.get('[data-cy="project-list"]')
+            .find('[data-cy="project-card"]').should('have.length', 1);
+
+        // Check workspace details are updated
+        cy.get('[data-cy="course-faculty"]').contains('Faculty One');
+        cy.get('[data-cy="course-faculty"]').contains('Author One');
+        cy.get('[data-cy="number-of-projects"]').contains('1');
+        cy.get('[data-cy="course-role"]').contains('Contributor');
+
+        // Activity 
+        cy.get('[data-cy="project-card"]')
+            .contains('Activity One').should('be.visible');
+    });
+
+    it('View the project dashboard as a co-author', function() {
+        // Workspace co-authors can see projects
+        cy.login_workspace_faculty('author-one');
+
+        cy.get('[data-cy="project-list"]')
+            .find('[data-cy="project-card"]').should('have.length', 3);
+
+        // Check workspace details are updated
+        cy.get('[data-cy="course-faculty"]').contains('Faculty One');
+        cy.get('[data-cy="course-faculty"]').contains('Author One');
+        cy.get('[data-cy="number-of-projects"]').contains('3');
+        cy.get('[data-cy="course-role"]').contains('Author');
+
+        // Navigates to project detail
+        cy.get('[data-cy="project-card"]')
+            .contains('Activity One').should('be.visible');
+        cy.get('[data-cy="project-card"]')
+            .contains('Project 0').should('be.visible');
     });
 
     it('Delete the project', function() {
+        cy.login_workspace_faculty('faculty-one');
+
         // Navigate to project detail
         cy.get('[data-cy="project-card"]')
             .contains('My Amazing Project').click();

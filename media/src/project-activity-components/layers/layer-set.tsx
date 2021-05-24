@@ -41,7 +41,8 @@ export const LayerSet: React.FC<LayerSetProps> = (
             {addLayer && (
                 <div className={'d-flex justify-content-end'}>
                     <form onSubmit={handleCreateLayer}>
-                        <button type='submit' className={'lt-button lt-button--solid'}>
+                        <button data-cy={'add-layer'} type='submit'
+                            className={'lt-button lt-button--solid'}>
                             <span className={'lt-icons lt-button__icon'}>
                                 <FontAwesomeIcon icon={faLayerGroup}/>
                             </span>

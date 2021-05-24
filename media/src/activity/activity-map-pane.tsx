@@ -266,7 +266,8 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             ref={forwardedRef}
             className={'widget-pane widget-pane-' + (showPane ? 'expanded' : 'collapsed') }>
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
-                <header ref={projectPaneHeader} className='project-pane__header'>
+                <header ref={projectPaneHeader} className='project-pane__header'
+                    data-cy="activity-header">
                     <h1>{title}</h1>
                     {isFaculty && (
                         <OverflowMenu items={[

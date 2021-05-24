@@ -41,6 +41,14 @@ def reset_test_models():
         email='studentone@example.com'
     )
     c1.group.user_set.add(s1)
+    s1: User = UserFactory.create(
+        username='student-three',
+        first_name='Student',
+        last_name='Three',
+        email='studentthree@example.com'
+    )
+    c1.group.user_set.add(s1)
+
     f1: User = UserFactory.create(
         username='faculty-one',
         first_name='Faculty',
@@ -50,14 +58,23 @@ def reset_test_models():
     c1.group.user_set.add(f1)
     c1.faculty_group.user_set.add(f1)
 
-    project = ProjectFactory.create(course=c1, title='Project One')
+    a1: User = UserFactory.create(
+        username='author-one',
+        first_name='Author',
+        last_name='One',
+        email='authorone@example.com'
+    )
+    c1.group.user_set.add(a1)
+    c1.faculty_group.user_set.add(a1)
+
+    project = ProjectFactory.create(course=c1, title='Activity One')
     activity = ActivityFactory.create(project=project)
     ResponseFactory.create(
         activity=activity,
         owners=[s1]
     )
 
-    # Registrar Course
+    # Registrar Course - generates a project too
     c2: Course = RegistrarCourseFactory.create()
     s2: User = UserFactory.create(
         username='student-two',

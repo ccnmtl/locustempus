@@ -1,10 +1,12 @@
-from courseaffils.models import Course
 import datetime
-from django.contrib.auth.models import User, Group
-import factory
 from random import randrange
 
-from locustempus.main.models import Project, Activity, Response, Feedback
+from courseaffils.models import Course
+from django.contrib.auth.models import User, Group
+import factory
+
+from locustempus.main.models import (
+    Project, Activity, Response, Feedback, Layer)
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -52,6 +54,11 @@ class RegistrarCourseFactory(factory.DjangoModelFactory):
         ProjectFactory(course=obj)
 
 
+class LayerFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Layer
+
+
 class ProjectFactory(factory.DjangoModelFactory):
     class Meta:
         model = Project
@@ -59,6 +66,10 @@ class ProjectFactory(factory.DjangoModelFactory):
     description = factory.Sequence('A test description {}'.format)
     course = factory.SubFactory(SandboxCourseFactory)
     base_map = 'http://localhost:8888/style.json'
+
+    @factory.post_generation
+    def generate_layer(obj, create, extracted, **kwargs):
+        LayerFactory(title='Untitled Layer', content_object=obj)
 
 
 class ActivityFactory(factory.DjangoModelFactory):
