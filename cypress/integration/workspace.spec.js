@@ -5,10 +5,7 @@
 
 describe('Workspaces Stories', function() {
     beforeEach(() => {
-        cy.visit('/accounts/logout/?next=/');
-        cy.clearCookies();
-        cy.login_workspace('faculty-three', 'test');
-        cy.get('#cu-privacy-notice-button').click();
+        cy.login('faculty-three', 'test');
     });
 
     it('Verifies the empty workspaces page', function() {

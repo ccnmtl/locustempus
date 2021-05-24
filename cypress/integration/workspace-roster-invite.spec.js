@@ -5,10 +5,7 @@
 
 describe('Workspace Roster and Invite Stories', function() {
     beforeEach(() => {
-        cy.visit('/accounts/logout/?next=/');
-        cy.clearCookies();
-        cy.login_workspace('faculty-one', 'test');
-        cy.get('#cu-privacy-notice-button').click();
+        cy.login('faculty-one', 'test');
     });
 
     it('View the workspace roster page', function() {

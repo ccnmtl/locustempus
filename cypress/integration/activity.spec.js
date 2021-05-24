@@ -2,12 +2,12 @@
 // https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Edit_Activity
 // https://wiki.ctl.columbia.edu/index.php/Locus_Tempus:_First_Pass_QA_Script#Delete_Activity
 
-describe('Project Layer Stories (Workspace Detail)', function() {
+describe('Activity Stories', function() {
     // This test verifies basic project activity interaction. Basic project
     // functionality is in project.spec & project-layers.spec
 
     it('Create, edit, delete an activity', function() {
-        cy.login_workspace_faculty('faculty-one');
+        cy.login_workspace('faculty-one');
 
         // Navigates to project detail
         cy.get('[data-cy="project-card"]').contains('Project 0').click();
@@ -157,7 +157,7 @@ describe('Project Layer Stories (Workspace Detail)', function() {
     });
 
     it('View the activity as the author', function() {
-        cy.login_workspace_faculty('faculty-one');
+        cy.login_workspace('faculty-one');
 
         // Navigates to project detail
         cy.get('[data-cy="project-card"]').contains('Activity One').click();
@@ -231,7 +231,7 @@ describe('Project Layer Stories (Workspace Detail)', function() {
     });
 
     it('View the activity as the co-author', function() {
-        cy.login_workspace_faculty('author-one');
+        cy.login_workspace('author-one');
 
         // Navigates to project detail
         cy.get('[data-cy="project-card"]').contains('Activity One').click();
@@ -305,7 +305,7 @@ describe('Project Layer Stories (Workspace Detail)', function() {
     });
 
     it('View the activity as a contributor', function() {
-        cy.login_workspace_faculty('student-one');
+        cy.login_workspace('student-one');
 
         // Navigates to project detail
         cy.get('[data-cy="project-card"]').contains('Activity One').click();
@@ -345,7 +345,7 @@ describe('Project Layer Stories (Workspace Detail)', function() {
         cy.get('[data-cy="layer"]').eq(0)
             .find('[data-cy="layer-prompt"]').should('not.exist');
 
-        // Co-author can navigate to the responses tab
+        // Student does not see the responses tab, but does see a response tab
         cy.get('[data-cy="Responses (0)"]').should('not.exist')
         cy.get('[data-cy="Response"]').click();
         cy.get('[data-cy="activity-response-count"]').should('not.exist');
