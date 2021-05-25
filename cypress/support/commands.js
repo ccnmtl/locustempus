@@ -24,39 +24,21 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
-Cypress.Commands.add('login_workspace', (username, password) => {
+Cypress.Commands.add('login', (username, password) => {
+    cy.visit('/accounts/logout/?next=/');
+    cy.clearCookies();
+
     cy.visit('http://localhost:8000/dashboard/');
     cy.get('[data-cy="guest-login"]').click();
     cy.get('[data-cy="guest-login-username"]').type(username).blur();
     cy.get('[data-cy="guest-login-password"]').type(password).blur();
     cy.get('[data-cy="guest-login-submit"]').click();
+
+    cy.get('#cu-privacy-notice-button').click();
 });
 
-Cypress.Commands.add('login_workspace_faculty', (facultyName) => {
-    cy.visit('/accounts/logout/?next=/');
-    cy.clearCookies();
-    cy.login_workspace(facultyName, 'test');
-    cy.get('#cu-privacy-notice-button').click();
-
-    // Quick check of the workspaces list page
-    cy.title().should('equal', 'Workspaces – Locus Tempus');
-    cy.get('[data-cy="workspace-title-link"]')
-        .should('be.visible');
-    cy.get('[data-cy="workspace-title-link"]')
-        .should('be.visible');
-    cy.get('[data-cy="workspace-title-link"]')
-        .contains('Sandbox Workspace');
-
-    // Navigate to the Sandbox Workspace
-    cy.get('[data-cy="workspace-title-link"]').click();
-    cy.title().should('equal', 'Sandbox Workspace – Locus Tempus');
-});
-
-Cypress.Commands.add('login_workspace_student', (studentName) => {
-    cy.visit('/accounts/logout/?next=/');
-    cy.clearCookies();
-    cy.login_workspace(studentName, 'test');
-    cy.get('#cu-privacy-notice-button').click();
+Cypress.Commands.add('login_workspace', (userName) => {
+    cy.login(userName, 'test');
 
     // Quick check of the workspaces list page
     cy.title().should('equal', 'Workspaces – Locus Tempus');

@@ -7,7 +7,7 @@
 
 describe('Project List Stories (Workspace Detail)', function() {
     it('Verifies the workspace detail page', function() {
-        cy.login_workspace_faculty('faculty-one');
+        cy.login_workspace('faculty-one');
 
         // just a little...this is also done in the workspace-list.spec
         // this test focuses on projects
@@ -24,7 +24,7 @@ describe('Project List Stories (Workspace Detail)', function() {
     });
 
     it('Creates and cancel project', function() {
-        cy.login_workspace_faculty('faculty-one');
+        cy.login_workspace('faculty-one');
         cy.get('[data-cy="project-create-button"]').click();
 
         // creating a project takes the user to the project detail space
@@ -48,7 +48,7 @@ describe('Project List Stories (Workspace Detail)', function() {
     });
 
     it('Creates and saves project', function() {
-        cy.login_workspace_faculty('faculty-one');
+        cy.login_workspace('faculty-one');
 
         cy.get('[data-cy="project-create-button"]').click();
         cy.get('[data-cy="loading-modal"]').should('be.visible');
@@ -90,7 +90,7 @@ describe('Project List Stories (Workspace Detail)', function() {
     });
 
     it('Interacts with the new project', function() {
-        cy.login_workspace_faculty('faculty-one');
+        cy.login_workspace('faculty-one');
 
         // Verify the new project shows up in the workspace
         cy.title().should('equal', 'Sandbox Workspace – Locus Tempus');
@@ -150,7 +150,7 @@ describe('Project List Stories (Workspace Detail)', function() {
     });
 
     it('Edit the project details', function() {
-        cy.login_workspace_faculty('faculty-one');
+        cy.login_workspace('faculty-one');
 
         // Navigate to project detail
         cy.get('[data-cy="project-card"]')
@@ -212,7 +212,7 @@ describe('Project List Stories (Workspace Detail)', function() {
 
     it('View the project dashboard as a contributor', function() {
         // Workspace contributors cannot see projects
-        cy.login_workspace_student('student-one');
+        cy.login_workspace('student-one');
 
         cy.get('[data-cy="project-list"]')
             .find('[data-cy="project-card"]').should('have.length', 1);
@@ -230,7 +230,7 @@ describe('Project List Stories (Workspace Detail)', function() {
 
     it('View the project dashboard as a co-author', function() {
         // Workspace co-authors can see projects
-        cy.login_workspace_faculty('author-one');
+        cy.login_workspace('author-one');
 
         cy.get('[data-cy="project-list"]')
             .find('[data-cy="project-card"]').should('have.length', 3);
@@ -249,7 +249,7 @@ describe('Project List Stories (Workspace Detail)', function() {
     });
 
     it('Delete the project', function() {
-        cy.login_workspace_faculty('faculty-one');
+        cy.login_workspace('faculty-one');
 
         // Navigate to project detail
         cy.get('[data-cy="project-card"]')
