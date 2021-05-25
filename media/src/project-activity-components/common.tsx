@@ -107,6 +107,7 @@ export interface EventData {
 export interface LayerData {
     pk: number;
     title: string;
+    owner: string;
     events: EventData[];
 }
 

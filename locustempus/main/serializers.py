@@ -38,39 +38,43 @@ class ProjectSerializer(serializers.ModelSerializer):
     aggregated_layers = serializers.SerializerMethodField()
 
     def get_aggregated_layers(self, obj):
-        # Returns project layers PLUS
-        # - If the current user is faculty, it adds nothing, just returns
-        #   the project layers
-        # - If the current user is a student AND there's an Activity, it
-        #   concats layers related to other student's response, excluding
-        #   the current user, but only if the other student's response is
-        #   submitted or reviewed
+        # If:
+        # - the user is a contributor in the project's course
+        # - the project has an activity
+        # - the user has response for the activity
+        # - the status of the user's response is either submitted or reviewed
+        # THEN return a list of other contributor's submitted
+        #   or reviewed response layers
+
         request = self.context['request']
         user = request.user
         course = obj.course
 
-        if course.is_true_faculty(user):
-            return [reverse('api-layer-detail', args=[lyr.pk], request=request)
-                    for lyr in obj.layers.all()]
+        # Conditions
+        is_contributor = course.is_true_member(user) and \
+            not course.is_true_faculty(user)
+        has_activity = hasattr(obj, 'activity')
+        has_submitted_response = False
+        if has_activity:
+            has_submitted_response = Response.objects.filter(
+                activity=obj.activity,
+                owners__in=[user],
+                status__in=[Response.SUBMITTED, Response.REVIEWED]
+            ).exists()
 
-        elif hasattr(obj, 'activity') and course.is_true_member(user):
-            all_layers = [
-                reverse('api-layer-detail', args=[lyr.pk], request=request)
-                      for lyr in obj.layers.all()
-            ]
+        if is_contributor and has_activity and has_submitted_response:
+            aggregated_layers = []
             responses = obj.activity.responses.filter(
-                status__in=[Response.SUBMITTED, Response.REVIEWED]) \
-                .exclude(created_by=user)
+                status__in=[Response.SUBMITTED, Response.REVIEWED]
+            ).exclude(created_by=user)
             for response in responses:
-                all_layers.extend([
+                aggregated_layers.extend([
                     reverse('api-layer-detail', args=[lyr.pk], request=request) for lyr in response.layers.all()
                 ])
 
-            return all_layers
-        else:
-            # The permission classes should prevent a non-course user
-            # from getting this far, but just in case
-            return []
+            return aggregated_layers
+
+        return []
 
     class Meta:
         model = Project
@@ -238,6 +242,7 @@ class LayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Layer
+        read_only_fields = ('owner',)
         fields = (
-            'title', 'pk', 'content_object', 'events'
+            'title', 'pk', 'content_object', 'events', 'owner'
         )
