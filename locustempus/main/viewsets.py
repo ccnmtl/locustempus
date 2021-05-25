@@ -18,6 +18,7 @@ from rest_framework.viewsets import ModelViewSet
 class ProjectApiView(ModelViewSet):
     """Retrieves a single project"""
     serializer_class = ProjectSerializer
+
     def get_queryset(self):
         """
         Users in a course MAY be able to view a project if:

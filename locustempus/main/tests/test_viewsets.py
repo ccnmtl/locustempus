@@ -17,6 +17,7 @@ SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS')
 UNSAFE_METHODS = ('PUT', 'POST', 'PATCH', 'DELETE')
 METHODS = SAFE_METHODS + UNSAFE_METHODS
 
+
 class IsLoggedInCourseTest(CourseTestMixin, TestCase):
     """Unit tests for IsLoggedInCourse permission class"""
     def setUp(self):
@@ -309,7 +310,6 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         )
         self.assertEqual(r.status_code, 403)
 
-
     def test_course_student_put(self):
         """PUT request"""
         self.assertTrue(
@@ -502,7 +502,6 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         r = self.client.delete(
             reverse('api-project-detail', args=[project.pk]))
         self.assertEqual(r.status_code, 403)
-
 
 
 class LayerAPITest(CourseTestMixin, TestCase):
