@@ -85,12 +85,12 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                         {(activeEventDetail.media[0].caption != '' ||
                             activeEventDetail.media[0].source != '') && (
                             <figcaption>
-                                <span className={'img__caption'}>
+                                <div className={'img__caption'}>
                                     {activeEventDetail.media[0].caption}
-                                </span>
-                                <span className={'img__attr'}>
+                                </div>
+                                <div className={'img__attr'}>
                                     {activeEventDetail.media[0].source}
-                                </span>
+                                </div>
                             </figcaption>
                         )}
                     </figure>
