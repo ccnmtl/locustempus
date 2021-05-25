@@ -185,9 +185,9 @@ h6 {
 
 .lt-pane-actions .lt-button {
     .lt-button__label {
-        font-size: 1rem;
+        font-size: 0.875rem;
         @include media-breakpoint-up(sm) {
-            font-size: 1rem;
+            font-size: 0.875rem;
         }
         @include media-breakpoint-up(md) {
             font-size: 1rem;

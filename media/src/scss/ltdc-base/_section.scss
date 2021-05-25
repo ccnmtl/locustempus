@@ -249,7 +249,10 @@
 figcaption {
     margin: 0.625rem 1rem;
     .img__caption {
-        padding-right: 1rem;
+        margin-top: 0;
+    }
+    .img__attr {
+        margin-top: 0.25rem;
     }
 }
 

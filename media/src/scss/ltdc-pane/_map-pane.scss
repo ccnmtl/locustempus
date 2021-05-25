@@ -7,7 +7,7 @@
     margin: 0;
     padding: 0;
     width: calc(100% - 1.5rem);
-    height: 50%;
+    height: 55%;
     box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
     z-index: 1;
     background-color: transparent;
@@ -98,12 +98,12 @@
     position: sticky;
     background-color: $primary-light;
     height: auto;
-    padding: 0.5rem 0.5rem 0 0.5rem;
+    padding: 0.5rem;
     z-index: 1000;
     display: flex;
     flex-direction: row;
     @include media-breakpoint-up(md) {
-        padding: 0.75rem 1rem 0 1rem;
+        padding: 0.625rem 1rem 0.625rem 1rem;
     }
     @include media-breakpoint-up(lg) {
         padding: 1rem;
@@ -132,7 +132,7 @@
     @extend .elevation-6;
     position: -webkit-sticky;
     position: sticky;
-    padding: 0.9375rem 1rem;
+    padding: 0.5rem;
     margin: 0;
     border: 0;
     background-color: #efefef;
@@ -141,10 +141,15 @@
     display: flex;
     -ms-flex-wrap: wrap;
     flex-wrap: wrap;
+    @include media-breakpoint-up(md) {
+        padding: 0.625rem 1rem 0.625rem 1rem;
+    }
+    @include media-breakpoint-up(lg) {
+        padding: 0.9375rem 1rem;
+    }
     &--event {
         color: $on-surface;
         background-color: $surface-light;
-        border-color: $surface-medium;
     }
     &--project {
         background-color: $primary-medium;
@@ -181,8 +186,8 @@
 
 .pane-content-tabs .nav-item {
     margin: 0;
-    padding-left: 1rem;
-    padding-right: 1rem;
+    padding-left: 0;
+    padding-right: 0;
     background-color: $primary-light;
     text-align: center;
     border-bottom: 3px solid transparent;
@@ -192,6 +197,10 @@
     transition-duration: 300ms;
     -moz-transition-timing-function: ease-in;
     transition-timing-function: ease-in;
+    @include media-breakpoint-up(md) {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
 }
 
 .pane-content-tabs .nav-item:hover {
@@ -206,7 +215,7 @@
 
 .pane-content-tabs .nav-item .nav-link {
     text-align: center;
-    padding: 0.75rem 1rem;
+    padding: 0.5rem 1rem;
     border: 0;
     background-color: $primary-light;
     -moz-transition-property: background-color;
@@ -217,10 +226,16 @@
     transition-timing-function: ease-in;
     display: inline-block;
     margin-bottom: 0 !important;
+    @include media-breakpoint-up(md) {
+        padding: 0.75rem 1rem;
+    }
 }
 
 .pane-content-tabs .nav-item .nav-link:hover {
-    background-color: $primary-medium;
+    background-color: transparent;
+    @include media-breakpoint-up(lg) {
+        background-color: $primary-medium;
+    }
 }
 
 @keyframes background-fade {
@@ -532,10 +547,13 @@ padding-bottom: 0.5rem;
 
 .lt-pane-actions {
     margin: 0 0 0 -1rem;
-    padding: 2.5rem 0;
+    padding: 2rem 0;
     position: fixed;
     bottom: 0;
     width: calc(100% - 0.5rem);
+    @include media-breakpoint-up(md) {
+        padding: 2.5rem 0;
+    }
     &__overlay {
         position: absolute;
         top: 0;
@@ -546,9 +564,11 @@ padding-bottom: 0.5rem;
     }
     .overlay--event {
         background-color: $surface-lighter;
+        border-top: 1px solid $surface-light;
     }
     .overlay--project {
         background-color: $primary-lightest;
+        border-top: 1px solid $primary-light;
     }
     .overlay--response {
         background-color: $primary-lightest;
@@ -557,12 +577,15 @@ padding-bottom: 0.5rem;
         position: absolute;
         top: 0;
         left: 0;
-        padding: 1.25rem 0 0 0;
+        padding: 0.75rem 0 0 0;
         background-color: transparent;
         width: 100%;
         height: 100%;
         text-align: center;
         opacity: 1;
+        @include media-breakpoint-up(md) {
+            padding: 1.25rem 0 0 0;
+        }
     }
 
 }
