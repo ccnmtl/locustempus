@@ -3,15 +3,32 @@
 {% block title %}Page Not Found{% endblock %}
 
 {% block content %}
-<div class="row justify-content-md-center">
-    <div class="col-md-auto text-center my-5">
-        <h2>404: Page Not Found</h2>
+<div class="http-error-prompt row">
+    <div class="col-12 col-lg-5 pt-5">
+        <div class="http-error-prompt__decor text-center">
+            <img src="{{STATIC_URL}}img/prompt-404.svg" />
+        </div>
+    </div>
+    <div class="col-12 col-lg-7 text-center text-lg-left">
+        <h2>Error 404: Page not found</h2>
 
         <p>
           We're sorry. The page you're looking for doesn't exist at this address.
         </p>
 
-        <p><a href="/" class="btn btn-primary">Return Home</a></p>
+        <p>
+            <a href="/"
+                title="Return to Locus Tempus home"
+                class="lt-button lt-button--lg lt-button--priority mt-3 mr-3">
+                <span class='lt-button__label'>Return home</span>
+            </a>
+
+            <a href="mailto:ctl-locustempus@columbia.edu"
+                title="Send email to ctl-locustempus@columbia.edu"
+                class="lt-button lt-button--lg lt-button--solid mt-3">
+                <span class='lt-button__label'>Report problem</span>
+            </a>
+        </p>
 
     </div>
 </div>
