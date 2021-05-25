@@ -252,7 +252,8 @@ export const Layer: React.FC<LayerProps> = (
                                     </span>
                                 </div>
                             ) : (
-                                <div className={'lt-banner-tip-muted'} role="alert">
+                                <div data-cy="layer-prompt-muted"
+                                    className={'lt-banner-tip-muted'} role="alert">
                                     <span className={'lt-banner__text'}>
                                         {layer.title} is empty.
                                     </span>
