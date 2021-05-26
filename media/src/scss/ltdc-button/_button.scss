@@ -3,7 +3,7 @@
     @include button-typography;
     background-color: transparent;
     border: 1px solid transparent;
-    padding: 0.75rem 1rem;
+    padding: 0.575rem 0.875rem;
     border-radius: 0.25rem;
     display: inline-flex;
     position: relative;
@@ -11,6 +11,9 @@
     justify-content: center;
     vertical-align: middle;
     color: $secondary1-dark;
+    @include media-breakpoint-up(md) {
+        padding: 0.75rem 1rem;
+    }
     &--priority {
         @include button-darkbg-typography;
         background-color: $secondary1-dark;
@@ -84,6 +87,10 @@
         margin: 0;
         border: 0;
     }
+}
+
+.lt-pane-actions .lt-button {
+    padding: 0.75rem 1rem;
 }
 
 .lt-icon-button {
@@ -317,7 +324,7 @@
         text-transform: none !important;
         font-size: $font-size-base;
     }
-    .lt-icons {
+    .lt-button__avatar {
         width: 1.5rem;
         height: 1.5rem;
         margin-right: 0;
@@ -349,7 +356,7 @@
             font-size: 1.25rem;
         }
     }
-    .dropdown-toggle .lt-icons {
+    .dropdown-toggle .lt-button__avatar {
         width: 1.75rem;
         height: 1.75rem;
         transition: all 0.4s linear;

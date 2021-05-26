@@ -26,6 +26,20 @@
     padding-left: 1rem;
     padding-right: 1rem;
     height: 2.5rem;
+    &--greeting {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        position: relative;
+        padding-left: 1rem;
+        padding-right: 1rem;
+        height: 2rem;
+        font-weight: 500;
+        border-bottom: 1px dotted $border-color;
+        @include media-breakpoint-up(sm) {
+            display: none;
+        }
+    }
     &__icon {
         display: inline-block;
         margin-right: 0.25rem;
