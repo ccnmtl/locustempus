@@ -55,7 +55,10 @@ class Layer(models.Model):
     )
 
     def owner(self):
-        return self.created_by.get_full_name() or self.created_by.username
+        if self.created_by:
+            return self.created_by.get_full_name() or self.created_by.username
+        else:
+            return ''
 
 
 class RasterLayer(Layer):
