@@ -19,29 +19,63 @@
         {% block css %}{% endblock %}
 
         <!-- Standard Meta Data, TBD -->
+        <meta name="description" content="Locus Tempus is an open-source digital mapping tool that leverages a geospatial environment to engage students as repository builders, researchers and curators, that promotes spatial and temporal thinking across disciplines within a course context." />
+        <meta name="keywords" content="teaching, learning, education, mapping, geospatial, spatial thinking" />
+        <meta name="author" content="Center for Teaching and Learning at Columbia University" />
+        <meta name="copyright" content="Copyright (c) 2021 Center for Teaching and Learning at Columbia University - Code licensed GNU GPLv3">
 
         <!-- Dublin Core Metadata, TBD -->
+        <meta name="DC.Title" content="Locus Tempus: A mapping application for spatial and temporal thinking in classrooms." />
+        <meta name="DC.Description" content="Locus Tempus is an open-source digital mapping tool that leverages a geospatial environment to engage students as repository builders, researchers and curators, that promotes spatial and temporal thinking across disciplines within a course context." />
+        <meta name="DC.Rights" content="Copyright (c) 2021 Center for Teaching and Learning at Columbia University - Code licensed GNU GPLv3">
+        <meta name="DC.Publisher" content="Center for Teaching and Learning at Columbia University" />
+        <meta name="DC.Contributor" content="Center for Teaching and Learning at Columbia University" />
 
         <!-- Open Graph -->
-        <meta property="og:title" content="Locus Tempus: A mapping application for spatial and temporal thinking" />
+        <meta property="og:title" content="Locus Tempus: A mapping application for spatial and temporal thinking in classrooms." />
         <meta property="og:type" content="website" />
+        {% block urldescription %}
         <meta property="og:url" content="https://locustempus.ctl.columbia.edu" />
-        <meta property="og:description" content="Locus Tempus is an open-source digital mapping tool designed to facilitate map-based learning activities across disciplines. Locus Tempus features tools for authoring maps, inviting collaborators, and analyzing data spatially and temporally." />
+        <meta property="og:description" content="Locus Tempus is an open-source digital mapping tool that leverages a geospatial environment to engage students as repository builders, researchers and curators, that promotes spatial and temporal thinking across disciplines within a course context." />
+        {% endblock %}
         <meta property="og:site_name" content="Locus Tempus" />
         {% if page_type == "homepage" %}
             <meta name="og:image" content="{{STATIC_URL}}img/lt-og-1200.png" />
-            <meta name="og:image:alt" content="A poster image for Locus Tempus, containing the app logo, its title, description, and web address." />
+            <meta name="og:image:alt" content="A poster image for Locus Tempus, containing the app logo, its title, a brief description, and web address." />
         {% else %}
             <meta name="og:image" content="{{STATIC_URL}}img/lt-apple-touch-icon.png" />
             <meta name="og:image:alt" content="An avatar image for Locus Tempus, containing the app logo." />
         {% endif %}
 
         <!-- Twitter, TBD -->
-        <meta name="twitter:image" content="{{STATIC_URL}}img/favicon.png" />
+        {% if page_type == "homepage" %}
+            <meta name="twitter:card" content="summary_large_image" />
+            <meta name="twitter:image" content="{{STATIC_URL}}img/lt-og-1200.png" />
+            <meta name="twitter:image:alt" content="A poster image for Locus Tempus, containing the app logo, its title, a brief description, and web address." />
+        {% else %}
+            <meta name="twitter:card" content="summary" />
+            <meta name="twitter:image" content="{{STATIC_URL}}img/lt-apple-touch-icon.png" />
+            <meta name="twitter:image:alt" content="An avatar image for Locus Tempus, containing the app logo." />
+        {% endif %}
+        <meta name="twitter:site" content="@columbiactl" />
+        <meta name="twitter:title" content="Locus Tempus: A mapping application for spatial and temporal thinking in classrooms." />
+        <meta name="twitter:description" content="Locus Tempus is an open-source digital mapping tool that leverages a geospatial environment to engage students as repository builders, researchers and curators, that promotes spatial and temporal thinking across disciplines within a course context." />
 
         <!-- JSON Structured data, TBD -->
+        <script type="application/ld+json">
+            {
+                "@context": "http://schema.org",
+                "@type": "SoftwareApplication",
+                "url": "https://locustempus.ctl.columbia.edu",
+                "name": "Locus Tempus: A mapping application for spatial and temporal thinking in classrooms.",
+                "about": "Locus Tempus is an open-source digital mapping tool that leverages a geospatial environment to engage students as repository builders, researchers and curators, that promotes spatial and temporal thinking across disciplines within a course context.",
+                "keywords": "teaching, learning, education, mapping, geospatial, spatial thinking",
+                "image": "{{STATIC_URL}}img/lt-og-1200.png"
+            }
+        </script>
 
         <!-- Favicons, TBD -->
+        <link rel="apple-touch-icon" href="{{STATIC_URL}}img/lt-apple-touch-icon.png">
         <link rel="shortcut icon" href="{{STATIC_URL}}img/favicon.ico">
         <link rel="icon" href="{{STATIC_URL}}img/favicon.ico">
         <link rel="icon" type="image/png" href="{{STATIC_URL}}img/favicon.png">

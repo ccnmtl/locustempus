@@ -11,7 +11,7 @@ describe('Sign-In Stories', function() {
     it('Sign In', function() {
         // Navigate to the home page
         cy.visit('/');
-        cy.title().should('equal', 'Home page – Locus Tempus');
+        cy.title().should('equal', 'A mapping application for spatial and temporal thinking in classrooms – Locus Tempus');
         cy.get('#cu-privacy-notice-button').click();
         cy.get('[data-cy="see-workspaces"]').should('not.exist');
         cy.get('[data-cy="authenticated-user-choices"]').should('not.exist');
@@ -27,7 +27,7 @@ describe('Sign-In Stories', function() {
         cy.visit('/');
 
         // Navigate to login via the small Sign In button in the corner
-        cy.title().should('equal', 'Home page – Locus Tempus');
+        cy.title().should('equal', 'A mapping application for spatial and temporal thinking in classrooms – Locus Tempus');
         cy.get('[data-cy="sign-in-small"]').should('exist');
         cy.get('[data-cy="sign-in-small"]').click();
         cy.title().should('equal', 'Sign in – Locus Tempus');
@@ -63,7 +63,7 @@ describe('Sign-In Stories', function() {
         cy.get('[data-cy="guest-login-submit"]').click();
 
         // Navigate to the dashboard
-        cy.title().should('equal', 'Home page – Locus Tempus');
+        cy.title().should('equal', 'A mapping application for spatial and temporal thinking in classrooms – Locus Tempus');
         cy.get('[data-cy="sign-in-small"]').should('not.exist');
         cy.get('[data-cy="sign-in-large"]').should('not.exist');
         cy.get('[data-cy="authenticated-user-choices"]').should('be.visible');
@@ -82,7 +82,7 @@ describe('Sign-In Stories', function() {
 
         // Verify logo navigates to the home page
         cy.get('[data-cy="app-logo"]').click();
-        cy.title().should('equal', 'Home page – Locus Tempus');
+        cy.title().should('equal', 'A mapping application for spatial and temporal thinking in classrooms – Locus Tempus');
 
         // Sign out
         cy.get('[data-cy="authenticated-user-choices"]').click();
@@ -91,7 +91,7 @@ describe('Sign-In Stories', function() {
         cy.get('[data-cy="sign-out"]').click();
 
         // Verify signed out state
-        cy.title().should('equal', 'Home page – Locus Tempus');
+        cy.title().should('equal', 'A mapping application for spatial and temporal thinking in classrooms – Locus Tempus');
         cy.get('[data-cy="see-workspaces"]').should('not.exist');
         cy.get('[data-cy="authenticated-user-choices"]').should('not.exist');
         cy.get('[data-cy="sign-in-large"]').should('exist');
@@ -101,7 +101,7 @@ describe('Sign-In Stories', function() {
     it('Forgot Password', function() {
         // Navigate to the home page
         cy.visit('/')
-        cy.title().should('equal', 'Home page – Locus Tempus');
+        cy.title().should('equal', 'A mapping application for spatial and temporal thinking in classrooms – Locus Tempus');
         cy.get('#cu-privacy-notice-button').click();
         cy.get('[data-cy="sign-in-small"]').should('exist');
         cy.get('[data-cy="sign-in-small"]').click();
