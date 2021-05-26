@@ -12,6 +12,7 @@ from locustempus.main.tests.factories import (
     CourseTestMixin, UserFactory, LayerFactory, ResponseFactory
 )
 from unittest.mock import MagicMock
+from waffle.testutils import override_flag
 
 
 SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS')
@@ -504,6 +505,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
             reverse('api-project-detail', args=[project.pk]))
         self.assertEqual(r.status_code, 403)
 
+    @override_flag('share_response_layers', active=True)
     def test_faculty_aggregated_layers(self):
         """Checks that aggregated_layers are empty for faculty"""
         self.assertTrue(
@@ -534,6 +536,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         self.assertListEqual(r2.data['aggregated_layers'], [])
 
 
+    @override_flag('share_response_layers', active=True)
     def test_student_aggregated_layers(self):
         """
         Checks that a student who has not submitted

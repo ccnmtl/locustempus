@@ -7,6 +7,7 @@ from locustempus.main.models import (
 )
 from rest_framework import serializers
 from rest_framework.reverse import reverse
+from waffle import flag_is_active
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -49,6 +50,9 @@ class ProjectSerializer(serializers.ModelSerializer):
         request = self.context['request']
         user = request.user
         course = obj.course
+
+        if not flag_is_active(request, 'share_response_layers'):
+            return []
 
         # Conditions
         is_contributor = course.is_true_member(user) and \

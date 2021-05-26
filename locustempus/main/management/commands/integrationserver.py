@@ -19,10 +19,17 @@ from locustempus.main.tests.factories import (
     UserFactory, SandboxCourseFactory, RegistrarCourseFactory,
     ProjectFactory, ActivityFactory, ResponseFactory
 )
+from waffle.models import Flag
 
 
 def reset_test_models():
     call_command('flush', verbosity=0, interactive=False)
+    # Enable some flags
+    Flag.objects.create(
+        name='share_response_layers',
+        everyone=True
+    )
+
     # Create some models
     UserFactory.create(
         username='superuser',
