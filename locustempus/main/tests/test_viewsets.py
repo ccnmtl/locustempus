@@ -1,7 +1,6 @@
 from courseaffils.models import Course
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
-from django.test.client import RequestFactory
 from django.urls.base import reverse
 import json
 from locustempus.main.models import Response, Layer, Event, Project
@@ -535,7 +534,6 @@ class ProjectAPITest(CourseTestMixin, TestCase):
             reverse('api-project-detail', args=[project.pk]))
         self.assertListEqual(r2.data['aggregated_layers'], [])
 
-
     @override_flag('share_response_layers', active=True)
     def test_student_aggregated_layers(self):
         """
@@ -597,7 +595,8 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         r2 = self.client.get(
             reverse('api-project-detail', args=[project.pk]))
 
-        # Assert that we can only see the layer related to the submitted response
+        # Assert that we can only see the layer related
+        # to the submitted response
         self.assertListEqual(
             r2.data['aggregated_layers'],
             ['http://testserver' + reverse(

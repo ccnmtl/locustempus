@@ -73,7 +73,11 @@ class ProjectSerializer(serializers.ModelSerializer):
             ).exclude(created_by=user)
             for response in responses:
                 aggregated_layers.extend([
-                    reverse('api-layer-detail', args=[lyr.pk], request=request) for lyr in response.layers.all()
+                    reverse(
+                        'api-layer-detail',
+                        args=[lyr.pk],
+                        request=request
+                    ) for lyr in response.layers.all()
                 ])
 
             return aggregated_layers
