@@ -44,10 +44,14 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
     }, new Map<string, Map<number, LayerData>>());
     return (
         <>
-            <hr/>
             {[...groupByOwner.entries()].map(([owner, layers], idx) => {
                 return (<React.Fragment key={idx}>
-                    <div><h2>Response by {owner}</h2></div>
+                    <hr/>
+                    <div>
+                        <h2 data-cy={'collaborator-response-name'}>
+                            Response by {owner}
+                        </h2>
+                    </div>
                     <LayerSet
                         layers={layers}
                         addLayer={undefined}
