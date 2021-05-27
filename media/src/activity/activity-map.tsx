@@ -598,6 +598,7 @@ export const ActivityMap: React.FC = () => {
         // Set the active event
         setActiveEvent(info.object);
         // TODO If a student event, then find the response and open that up
+        // eslint-disable-next-line max-len
         setActiveTab(projectLayerData.has(info.object.layer) || fellowContributorLayerData.has(info.object.layer) ? 1 : 2);
 
         // Returning true prevents event from bubling to map canvas

@@ -1,8 +1,5 @@
 import React  from 'react';
-import { Layer } from './layer';
 import { LayerSet } from './layer-set';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import {LayerData, EventData } from '../common';
 
 interface AggregatedLayerSetProps {
