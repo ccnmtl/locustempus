@@ -6,7 +6,7 @@ from locustempus.main.models import (
 )
 from locustempus.main.permissions import (
     IsLoggedInCourse, IsResponseOwnerOrFaculty,
-    IsFeedbackFacultyOrStudentRecipient
+    IsFeedbackFacultyOrStudentRecipient, ActivityPermission
 )
 from locustempus.main.serializers import (
     LayerSerializer, ProjectSerializer, EventSerializer, ActivitySerializer,
@@ -42,7 +42,18 @@ class ActivityApiView(ModelViewSet):
     # Similar to Projects, only users in the course should be able to read
     # activities. Only project authors can create, edit, or delete activities
     serializer_class = ActivitySerializer
-    queryset = Activity.objects.all()
+    permission_classes = [ActivityPermission]
+
+    def get_queryset(self):
+        """
+        A user can GET / Activityies if the user is in the
+        course group for the related Course object
+        """
+        user = self.request.user
+        courses = get_courses_for_user(user)
+        return Activity.objects.filter(
+            project__course__in=courses
+        )
 
 
 class LayerApiView(ModelViewSet):
