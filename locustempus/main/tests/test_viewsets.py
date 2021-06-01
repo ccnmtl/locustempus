@@ -869,23 +869,53 @@ class ActivityAPITest(CourseTestMixin, TestCase):
 
     def test_anon_get_list(self):
         """GET / request"""
-        pass
+        r = self.client.get(reverse('api-activity-list'))
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(r.data), 0)
 
     def test_anon_get(self):
         """GET request"""
-        pass
+        for project in Project.objects.filter(activity__isnull=True):
+            resp = self.client.post(
+                reverse('api-activity-list'),
+                {
+                    'project': project.pk,
+                    'instructions': 'some instructions'
+                }
+            )
+            self.assertEqual(resp.status_code, 403)
 
     def test_anon_post(self):
         """POST request"""
-        pass
+        for project in Project.objects.filter(activity__isnull=True):
+            resp = self.client.post(
+                reverse('api-activity-list'),
+                {
+                    'project': project.pk,
+                    'instructions': 'some instructions'
+                }
+            )
+            self.assertEqual(resp.status_code, 403)
 
     def test_anon_put(self):
         """PUT request"""
-        pass
+        for activity in Activity.objects.all():
+            resp = self.client.put(
+                reverse('api-activity-detail', args=[activity.pk]),
+                json.dumps({
+                    'project': activity.project.pk,
+                    'instructions': 'updated instructions'
+                }),
+                content_type='application/json'
+            )
+            self.assertEqual(resp.status_code, 403)
 
     def test_anon_delete(self):
         """DELETE request"""
-        pass
+        for activity in Activity.objects.all():
+            resp = self.client.delete(
+                reverse('api-activity-detail', args=[activity.pk]))
+            self.assertEqual(resp.status_code, 403)
 
 
 class LayerAPITest(CourseTestMixin, TestCase):
