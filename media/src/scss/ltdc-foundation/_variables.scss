@@ -69,6 +69,7 @@ $amber-800-svg: invert(50%) sepia(81%) saturate(834%) hue-rotate(360deg) brightn
 $gray-400-svg:  invert(86%) sepia(0%) saturate(121%) hue-rotate(166deg) brightness(91%) contrast(85%);
 $gray-500-svg:  invert(84%) sepia(0%) saturate(42%) hue-rotate(203deg) brightness(77%) contrast(82%);
 $gray-600-svg:  invert(49%) sepia(0%) saturate(2%) hue-rotate(197deg) brightness(94%) contrast(94%);
+$muted-svg:     invert(4%) sepia(22%) saturate(0%) hue-rotate(182deg) brightness(91%) contrast(81%);
 $error-svg:     invert(7%) sepia(95%) saturate(6321%) hue-rotate(343deg) brightness(105%) contrast(107%);
 $black-svg:     invert(0%) grayscale(0%) brightness(0%);
 $white-svg: invert(100%) grayscale(100%) brightness(100%);
@@ -129,3 +130,6 @@ $on-surface-muted:     $gray-600 !default;
 $on-error:       #b00020 !default;
 $error-surface:  #f8d7da !default;
 $error-surface-alt:  #FFEBEE !default;
+
+$on-muted:       $gray-900 !default;
+$muted-surface:  $gray-400 !default;

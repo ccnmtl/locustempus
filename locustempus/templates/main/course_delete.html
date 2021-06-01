@@ -5,11 +5,31 @@ Delete Workspace
 {% endblock %}
 
 {% block content %}
+<div class="dashboard-container">
+
+<h2 class="h3">Delete "{{ course.title }}"?</h2>
 
 <form action="." method="post">
     {% csrf_token %}
-    <p>Are you sure you want to delete "{{ course.title }}"</p>
-    <input data-cy="delete-workspace" type="submit" value="Confirm">
-    <a data-cy="cancel-delete-workspace" href="{% url 'course-detail-view' course.pk %}">Cancel</a>
+    <p><span class="text-danger"><strong>Are you sure you want to delete "{{ course.title }}"?</strong></span></p>
+    
+    <p>All of the following  will be deleted:</p>
+    <ul>
+        <li>Its projects</li>
+        <li>Its activities</li>
+        <li>Your work in this workspace</li>
+        <li>Its contributors</li>
+        <li>Contributors work and responses</li>
+    </ul>
+    <div class="mt-5">
+    <button data-cy="delete-workspace" type="submit" class="lt-button lt-button--priority lt-button--caution mr-5">
+        <span class='lt-icons lt-button__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-trash.svg" /></span>
+        <span class="lt-button__label">Delete workspace</span>
+    </button>
+    <a data-cy="cancel-delete-workspace" href="{% url 'course-detail-view' course.pk %}" class="lt-button lt-button--solid">
+        <span class="lt-button__label">No, take me back!</span>
+    </a>
+    </div>
 </form>
+</div>
 {% endblock %}
