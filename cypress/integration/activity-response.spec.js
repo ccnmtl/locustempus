@@ -93,7 +93,7 @@ describe('Activity Response Stories', function() {
         cy.get('[data-cy="reflection"]')
             .find('.ql-editor').should('be.visible');
 
-        // There should be no feedback 
+        // There should be no feedback
         cy.get('[data-cy="feedback"]')
             .contains('There is no feedback for your response');
 
@@ -186,7 +186,7 @@ describe('Activity Response Stories', function() {
 
         // The layer is appearing with visibility off
         // Bug opened. Update this test to check that the "eye" icon is visible
-        // rather than the "eye-slash" icon when the bug is fixed. 
+        // rather than the "eye-slash" icon when the bug is fixed.
         cy.get('[data-cy="layer"]').eq(0)
             .find('[data-icon="eye-slash"]').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
@@ -327,24 +327,6 @@ describe('Activity Response Stories', function() {
             .should('not.contain', 'Use this space to craft your response');
     });
 
-    it('View the submitted response as a fellow contributor', function() {
-        // Verify student three cannot see the response
-        // @todo - this behavior is changing. Update the test when that happens
-        cy.login_workspace('student-three');
-
-        // Navigates to project detail
-        cy.get('[data-cy="project-card"]').contains('Activity One').click();
-
-        // Wait for the loading icon to go away
-        cy.get('[data-cy="loading-modal"]').should('be.visible');
-        cy.get('[data-cy="loading-modal"]').should('not.exist');
-
-        // Verify Student One's layer is not in Base Layers
-        cy.get('[data-cy="Base Layers"]').click();
-        cy.get('[data-cy="layer-title"]')
-            .contains('First Layer').should('not.exist');
-    });
-
     it('View the submitted response as faculty', function() {
         // Verify faculty can see the response
         cy.login_workspace('faculty-one');
@@ -455,6 +437,39 @@ describe('Activity Response Stories', function() {
         // @todo - the buttons should change here, but they aren't doing that
         // A bug was opened. When that's fixed, add additional confirmation
         // tests.
+    });
+
+    it('View the submitted response as a fellow contributor', function() {
+        // Verify student three cannot see the response
+        // @todo - this behavior is changing. Update the test when that happens
+        cy.login_workspace('student-three');
+
+        // Navigates to project detail
+        cy.get('[data-cy="project-card"]').contains('Activity One').click();
+
+        // Wait for the loading icon to go away
+        cy.get('[data-cy="loading-modal"]').should('be.visible');
+        cy.get('[data-cy="loading-modal"]').should('not.exist');
+
+        // Verify Student One's layer is not in Base Layers
+        cy.get('[data-cy="Base Layers"]').click();
+        cy.get('[data-cy="layer-title"]')
+            .contains('First Layer').should('not.exist');
+
+        // Now student-three submitts a response, should now see
+        // student-one's layer
+        // Navigate to the response tab
+        cy.get('[data-cy="Response"]').click();
+        cy.get('[data-cy="submit-or-update-response"]').click();
+
+        cy.reload();
+
+        // Verify Student One's layer is not in Base Layers
+        cy.get('[data-cy="Base Layers"]').click();
+        cy.get('[data-cy="collaborator-response-name"]')
+            .contains('Response by Student One').should('exist');
+        cy.get('[data-cy="layer-title"]')
+            .contains('First Layer').should('exist');
     });
 
     it('Check the feedback', function() {

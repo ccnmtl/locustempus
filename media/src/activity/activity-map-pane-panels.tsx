@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LayerSet } from '../project-activity-components/layers/layer-set';
+import { AggregatedLayerSet } from '../project-activity-components/layers/aggregated-layer-set';
 import { Activity } from '../project-activity-components/panels/activity';
 import { LayerData, EventData } from '../project-activity-components/common';
 import {
@@ -19,6 +20,7 @@ interface DefaultPanelProps {
     description: string;
     layers: Map<number, LayerData>;
     projectLayers:  Map<number, LayerData>;
+    fellowContributorLayers: Map<number, LayerData>;
     activity: ActivityData | null;
     updateActivity(instructions: string, pk: number): void;
     deleteActivity(pk: number): void;
@@ -53,10 +55,10 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         updateActivity, deleteActivity, deleteLayer, updateLayer,
         layerVisibility, toggleLayerVisibility, toggleResponseVisibility,
         activeLayer, setActiveLayer, activeEvent, setActiveEvent,
-        setActiveEventDetail, activeEventEdit, projectLayers, responseData,
-        updateResponse, createFeedback, updateFeedback, isFaculty,
-        responseLayers, paneHeaderHeight, setAlert, activeResponse,
-        setActiveResponse
+        setActiveEventDetail, activeEventEdit, projectLayers,
+        fellowContributorLayers, responseData, updateResponse, createFeedback,
+        updateFeedback, isFaculty, responseLayers, paneHeaderHeight, setAlert,
+        activeResponse, setActiveResponse
     }: DefaultPanelProps) => {
 
 
@@ -177,6 +179,18 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             activeEvent={activeEvent}
                             setActiveEventDetail={setActiveEventDetail}
                             activeEventEdit={activeEventEdit} />
+                        {!isFaculty && (
+                            <AggregatedLayerSet
+                                layers={fellowContributorLayers}
+                                toggleLayerVisibility={toggleLayerVisibility}
+                                layerVisibility={layerVisibility}
+                                activeLayer={activeLayer}
+                                setActiveLayer={setActiveLayer}
+                                setActiveEvent={setActiveEvent}
+                                activeEvent={activeEvent}
+                                setActiveEventDetail={setActiveEventDetail}
+                                activeEventEdit={activeEventEdit} />
+                        )}
                     </div>
                 )}
                 {activeTab == RESPONSE && (

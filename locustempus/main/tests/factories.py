@@ -150,13 +150,13 @@ class CourseTestMixin(object):
         # access to this courses resources
         self.fake_student: User = UserFactory.create(
             first_name='Student',
-            last_name='One',
-            email='studentone@example.com'
+            last_name='Fake',
+            email='fakestudent@example.com'
         )
         self.fake_faculty: User = UserFactory.create(
             first_name='Faculty',
-            last_name='One',
-            email='facultyone@example.com'
+            last_name='Fake',
+            email='fakefaculty@example.com'
         )
         self.fake_course: Course = SandboxCourseFactory.create()
         self.fake_course.group.user_set.add(self.fake_student)

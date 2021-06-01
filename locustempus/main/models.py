@@ -54,6 +54,12 @@ class Layer(models.Model):
         null=True
     )
 
+    def owner(self):
+        if self.created_by:
+            return self.created_by.get_full_name() or self.created_by.username
+        else:
+            return ''
+
 
 class RasterLayer(Layer):
     url = models.CharField(max_length=2048)

@@ -6,6 +6,8 @@ from locustempus.main.models import (
     MediaObject, Feedback, RasterLayer
 )
 from rest_framework import serializers
+from rest_framework.reverse import reverse
+from waffle import flag_is_active
 
 
 class CourseSerializer(serializers.ModelSerializer):
@@ -34,12 +36,60 @@ class ProjectSerializer(serializers.ModelSerializer):
         many=True
     )
 
+    aggregated_layers = serializers.SerializerMethodField()
+
+    def get_aggregated_layers(self, obj):
+        # If:
+        # - the user is a contributor in the project's course
+        # - the project has an activity
+        # - the user has response for the activity
+        # - the status of the user's response is either submitted or reviewed
+        # THEN return a list of other contributor's submitted
+        #   or reviewed response layers
+
+        request = self.context['request']
+        user = request.user
+        course = obj.course
+
+        if not flag_is_active(request, 'share_response_layers'):
+            return []
+
+        # Conditions
+        is_contributor = course.is_true_member(user) and \
+            not course.is_true_faculty(user)
+        has_activity = hasattr(obj, 'activity')
+        has_submitted_response = False
+        if has_activity:
+            has_submitted_response = Response.objects.filter(
+                activity=obj.activity,
+                owners__in=[user],
+                status__in=[Response.SUBMITTED, Response.REVIEWED]
+            ).exists()
+
+        if is_contributor and has_activity and has_submitted_response:
+            aggregated_layers = []
+            responses = obj.activity.responses.filter(
+                status__in=[Response.SUBMITTED, Response.REVIEWED]
+            ).exclude(created_by=user)
+            for response in responses:
+                aggregated_layers.extend([
+                    reverse(
+                        'api-layer-detail',
+                        args=[lyr.pk],
+                        request=request
+                    ) for lyr in response.layers.all()
+                ])
+
+            return aggregated_layers
+
+        return []
+
     class Meta:
         model = Project
         read_only_fields = ('activity', 'pk', 'course')
         fields = (
             'title', 'description', 'base_map', 'layers', 'raster_layers',
-            'activity', 'pk', 'course'
+            'activity', 'pk', 'course', 'aggregated_layers'
         )
 
 
@@ -200,6 +250,7 @@ class LayerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Layer
+        read_only_fields = ('owner',)
         fields = (
-            'title', 'pk', 'content_object', 'events'
+            'title', 'pk', 'content_object', 'events', 'owner'
         )

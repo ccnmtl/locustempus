@@ -8,9 +8,10 @@ from locustempus.main.permissions import (
     IsLoggedInCourse, IsLoggedInFaculty
 )
 from locustempus.main.tests.factories import (
-    CourseTestMixin, UserFactory
+    CourseTestMixin, UserFactory, LayerFactory, ResponseFactory
 )
 from unittest.mock import MagicMock
+from waffle.testutils import override_flag
 
 
 SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS')
@@ -502,6 +503,105 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         r = self.client.delete(
             reverse('api-project-detail', args=[project.pk]))
         self.assertEqual(r.status_code, 403)
+
+    @override_flag('share_response_layers', active=True)
+    def test_faculty_aggregated_layers(self):
+        """Checks that aggregated_layers are empty for faculty"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        project = self.sandbox_course.projects.first()
+        # Add layer to draft response
+        LayerFactory(
+            title='Untitled Response Layer',
+            content_object=self.sandbox_course_response
+        )
+        self.assertEqual(
+            self.sandbox_course_response.status,
+            Response.DRAFT
+        )
+        r1 = self.client.get(
+            reverse('api-project-detail', args=[project.pk]))
+        self.assertListEqual(r1.data['aggregated_layers'], [])
+
+        # Create a submission
+        self.sandbox_course_response.status = Response.SUBMITTED
+        self.sandbox_course_response.save()
+        r2 = self.client.get(
+            reverse('api-project-detail', args=[project.pk]))
+        self.assertListEqual(r2.data['aggregated_layers'], [])
+
+    @override_flag('share_response_layers', active=True)
+    def test_student_aggregated_layers(self):
+        """
+        Checks that a student who has not submitted
+        yet can not see other student/contributor's layers.
+
+        Then it checks that once a student submits, they can see
+        other submitted responses.
+        """
+        # Setup a student, add to course, create a submitted response
+        student = UserFactory.create(
+            first_name='Student',
+            last_name='Fake',
+            email='fakestudent@example.com'
+        )
+        self.sandbox_course.group.user_set.add(student)
+        student_response = ResponseFactory.create(
+            activity=self.sandbox_course_activity,
+            owners=[student],
+            status=Response.SUBMITTED
+        )
+        student_layer = LayerFactory.create(
+            title='Untitled Response Layer',
+            content_object=student_response
+        )
+
+        # Setup another student, add to course, but creates a draft response
+        stu = UserFactory.create(
+            first_name='Stu',
+            last_name='The Fake Student',
+            email='fakestudentstu@example.com'
+        )
+        self.sandbox_course.group.user_set.add(student)
+        stu_response = ResponseFactory.create(
+            activity=self.sandbox_course_activity,
+            owners=[stu],
+            status=Response.DRAFT
+        )
+        LayerFactory.create(
+            title='Stu\'s Untitled Response Layer',
+            content_object=stu_response
+        )
+
+        # Now login as test user and confirm user can not see layers
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        project = self.sandbox_course.projects.last()
+        r1 = self.client.get(
+            reverse('api-project-detail', args=[project.pk]))
+        self.assertListEqual(r1.data['aggregated_layers'], [])
+
+        # Now student submits their response
+        self.sandbox_course_response.status = Response.SUBMITTED
+        self.sandbox_course_response.save()
+        r2 = self.client.get(
+            reverse('api-project-detail', args=[project.pk]))
+
+        # Assert that we can only see the layer related
+        # to the submitted response
+        self.assertListEqual(
+            r2.data['aggregated_layers'],
+            ['http://testserver' + reverse(
+                'api-layer-detail', args=[student_layer.pk])]
+        )
 
 
 class LayerAPITest(CourseTestMixin, TestCase):
