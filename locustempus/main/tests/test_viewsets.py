@@ -796,19 +796,76 @@ class ActivityAPITest(CourseTestMixin, TestCase):
 
     def test_non_course_user_get(self):
         """GET request"""
-        pass
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.get(
+                reverse('api-activity-detail', args=[activity.pk]))
+            self.assertEqual(resp.status_code, 404)
 
     def test_non_course_user_post(self):
         """POST request"""
-        pass
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for project in Project.objects.filter(activity__isnull=True):
+            resp = self.client.post(
+                reverse('api-activity-list'),
+                {
+                    'project': project.pk,
+                    'instructions': 'some instructions'
+                }
+            )
+            self.assertEqual(resp.status_code, 403)
 
     def test_non_course_user_put(self):
         """PUT request"""
-        pass
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.put(
+                reverse('api-activity-detail', args=[activity.pk]),
+                json.dumps({
+                    'project': activity.project.pk,
+                    'instructions': 'updated instructions'
+                }),
+                content_type='application/json'
+            )
+            self.assertEqual(resp.status_code, 404)
+
 
     def test_non_course_user_delete(self):
         """DELETE request"""
-        pass
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.delete(
+                reverse('api-activity-detail', args=[activity.pk]))
+            self.assertEqual(resp.status_code, 404)
+
 
     def test_anon_get_list(self):
         """GET / request"""
