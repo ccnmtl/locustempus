@@ -1,8 +1,9 @@
+from courseaffils.models import Course
 from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.urls.base import reverse
 import json
-from locustempus.main.models import Response, Layer, Event
+from locustempus.main.models import Response, Layer, Event, Project
 from locustempus.main.permissions import (
     IsLoggedInCourse, IsLoggedInFaculty
 )
@@ -12,28 +13,77 @@ from locustempus.main.tests.factories import (
 from unittest.mock import MagicMock
 
 
+SAFE_METHODS = ('GET', 'HEAD', 'OPTIONS')
+UNSAFE_METHODS = ('PUT', 'POST', 'PATCH', 'DELETE')
+METHODS = SAFE_METHODS + UNSAFE_METHODS
+
+
 class IsLoggedInCourseTest(CourseTestMixin, TestCase):
     """Unit tests for IsLoggedInCourse permission class"""
     def setUp(self):
         self.setup_course()
         self.perm = IsLoggedInCourse()
 
-    def test_faculty(self):
+    def test_auth_has_permission(self):
+        request = MagicMock(user=self.faculty)
+        view = MagicMock()
+
+        for method in ('GET', 'HEAD', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'):
+            request.method = method
+            self.assertTrue(
+                self.perm.has_permission(request, view))
+
+        request.method = 'POST'
+        self.assertFalse(
+            self.perm.has_permission(request, view))
+
+    def test_anon_has_permission(self):
+        request = MagicMock(user=AnonymousUser())
+        view = MagicMock()
+
+        for method in METHODS:
+            request.method
+            self.assertFalse(
+                self.perm.has_permission(request, view))
+
+    def test_faculty_object_permission(self):
         request = MagicMock(user=self.faculty)
         view = MagicMock()
         project = self.sandbox_course.projects.first()
-        self.assertTrue(
+
+        for method in ('GET', 'HEAD', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'):
+            request.method = method
+            self.assertTrue(
+                self.perm.has_object_permission(request, view, project))
+
+        request.method = 'POST'
+        self.assertFalse(
             self.perm.has_object_permission(request, view, project))
 
-    def test_student(self):
+    def test_student_object_permission(self):
         request = MagicMock(user=self.student)
         view = MagicMock()
+
+        # This project does not have an activity, and student
+        # should not be able to see it
         p1 = self.sandbox_course.projects.first()
+        for method in METHODS:
+            request.method = method
+            self.assertFalse(
+                self.perm.has_object_permission(request, view, p1))
+
+        # This project does have an activity, and student
+        # should be able to see it
         p2 = self.sandbox_course.projects.last()
-        self.assertFalse(
-            self.perm.has_object_permission(request, view, p1))
-        self.assertTrue(
-            self.perm.has_object_permission(request, view, p2))
+        for method in SAFE_METHODS:
+            request.method = method
+            self.assertTrue(
+                self.perm.has_object_permission(request, view, p2))
+
+        for method in UNSAFE_METHODS:
+            request.method = method
+            self.assertFalse(
+                self.perm.has_object_permission(request, view, p2))
 
     def test_superuser(self):
         request = MagicMock(user=self.superuser)
@@ -103,7 +153,89 @@ class ProjectAPITest(CourseTestMixin, TestCase):
     def setUp(self):
         self.setup_course()
 
-    def test_course_faculty(self):
+    def test_course_faculty_list(self):
+        """GET / request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        # Test that a list requests only returns projects the user
+        # is faculty for
+        r = self.client.get(reverse('api-project-list'))
+        self.assertEqual(r.status_code, 200)
+        for proj in r.data:
+            c = Course.objects.get(pk=proj['course']['pk'])
+            self.assertTrue(c.is_true_faculty(self.faculty))
+
+    def test_course_faculty_get(self):
+        """GET request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        project = self.sandbox_course.projects.first()
+        r = self.client.get(
+            reverse('api-project-detail', args=[project.pk]))
+        self.assertEqual(r.status_code, 200)
+
+    def test_course_faculty_post(self):
+        """POST request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        # Projects should not be created via the API
+        r = self.client.post(
+            reverse('api-project-list'),
+            {
+                'title': 'A Project Title',
+                'description': 'foo',
+                'base_map': 'some_map',
+                'layers': [],
+                'raster_layers': []
+            }
+        )
+        self.assertEqual(r.status_code, 403)
+
+    def test_course_faculty_put(self):
+        """PUT request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        project = self.sandbox_course.projects.first()
+        r1 = self.client.put(
+            reverse('api-project-detail', args=[project.pk]),
+            json.dumps({
+                'title': 'Updated Title',
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r1.status_code, 200)
+
+        # Try editing a project in a different course
+        r2 = self.client.put(
+            reverse('api-project-detail',
+                    args=[self.fake_course_project.pk]),
+            json.dumps({
+                'title': 'Updated Title'
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r2.status_code, 404)
+
+    def test_course_faculty_delete(self):
+        """DELETE request"""
         self.assertTrue(
             self.client.login(
                 username=self.faculty.username,
@@ -112,11 +244,33 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         )
 
         project = self.sandbox_course.projects.first()
-        response = self.client.get(
+        r1 = self.client.delete(
             reverse('api-project-detail', args=[project.pk]))
-        self.assertEqual(response.status_code, 200)
+        self.assertEqual(r1.status_code, 204)
 
-    def test_course_student(self):
+        # Test deleting a project in a different course
+        r2 = self.client.delete(
+            reverse('api-project-detail',
+                    args=[self.fake_course_project.pk]))
+        self.assertEqual(r2.status_code, 404)
+
+    def test_course_student_list(self):
+        """GET / request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        r = self.client.get(reverse('api-project-list'))
+        self.assertEqual(r.status_code, 200)
+        for proj in r.data:
+            c = Course.objects.get(pk=proj['course']['pk'])
+            self.assertTrue(c.is_true_member(self.student))
+
+    def test_course_student_get(self):
+        """GET request"""
         self.assertTrue(
             self.client.login(
                 username=self.student.username,
@@ -127,12 +281,86 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         p1 = self.sandbox_course.projects.first()
         r1 = self.client.get(
             reverse('api-project-detail', args=[p1.pk]))
-        self.assertEqual(r1.status_code, 403)
+        self.assertEqual(r1.status_code, 404)
 
         p2 = self.sandbox_course.projects.last()
         r2 = self.client.get(
             reverse('api-project-detail', args=[p2.pk]))
         self.assertEqual(r2.status_code, 200)
+
+    def test_course_student_post(self):
+        """POST request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        # Projects should not be created via the API
+        r = self.client.post(
+            reverse('api-project-list'),
+            {
+                'title': 'A Project Title',
+                'description': 'foo',
+                'base_map': 'some_map',
+                'layers': [],
+                'raster_layers': []
+            }
+        )
+        self.assertEqual(r.status_code, 403)
+
+    def test_course_student_put(self):
+        """PUT request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        # Try editing a project that the student can not see
+        p1 = self.sandbox_course.projects.first()
+        r1 = self.client.put(
+            reverse('api-project-detail', args=[p1.pk]),
+            json.dumps({
+                'title': 'Updated Title',
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r1.status_code, 404)
+
+        # Next try editing a project that the student CAN see
+        p2 = self.sandbox_course.projects.last()
+        r2 = self.client.put(
+            reverse('api-project-detail', args=[p2.pk]),
+            json.dumps({
+                'title': 'Updated Title',
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r2.status_code, 403)
+
+    def test_course_student_delete(self):
+        """DELETE request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        # Try deleting a project the student can not see
+        p1 = self.sandbox_course.projects.first()
+        r1 = self.client.delete(
+            reverse('api-project-detail', args=[p1.pk]))
+        self.assertEqual(r1.status_code, 404)
+
+        # Try deleting a project the student can see
+        p2 = self.sandbox_course.projects.last()
+        r2 = self.client.delete(
+            reverse('api-project-detail', args=[p2.pk]))
+        self.assertEqual(r2.status_code, 403)
 
     def test_superuser(self):
         self.assertTrue(
@@ -145,9 +373,10 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         project = self.sandbox_course.projects.first()
         response = self.client.get(
             reverse('api-project-detail', args=[project.pk]))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(response.status_code, 404)
 
-    def test_non_course_user(self):
+    def test_non_course_user_list(self):
+        """GET / request"""
         user = UserFactory.create()
         self.assertTrue(
             self.client.login(
@@ -156,16 +385,123 @@ class ProjectAPITest(CourseTestMixin, TestCase):
             )
         )
 
+        r = self.client.get(reverse('api-project-list'))
+        self.assertEqual(r.status_code, 200)
+        self.assertListEqual(r.data, [])
+
+    def test_non_course_user_get(self):
+        """GET request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for proj in Project.objects.all():
+            r = self.client.get(
+                reverse('api-project-detail', args=[proj.pk]))
+            self.assertEqual(r.status_code, 404)
+
+    def test_non_course_user_post(self):
+        """POST request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        # Projects should not be created via the API
+        r = self.client.post(
+            reverse('api-project-list'),
+            {
+                'title': 'A Project Title',
+                'description': 'foo',
+                'base_map': 'some_map',
+                'layers': [],
+                'raster_layers': []
+            }
+        )
+        self.assertEqual(r.status_code, 403)
+
+    def test_non_course_user_put(self):
+        """PUT request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for proj in Project.objects.all():
+            r = self.client.put(
+                reverse('api-project-detail', args=[proj.pk]),
+                json.dumps({
+                    'title': 'Updated Title',
+                }),
+                content_type='application/json'
+            )
+            self.assertEqual(r.status_code, 404)
+
+    def test_non_course_user_delete(self):
+        """DELETE request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for proj in Project.objects.all():
+            r = self.client.delete(
+                reverse('api-project-detail', args=[proj.pk]))
+            self.assertEqual(r.status_code, 404)
+
+    def test_anon_list(self):
+        response = self.client.get(reverse('api-project-list'))
+        self.assertEqual(response.status_code, 403)
+
+    def test_anon_get(self):
         project = self.sandbox_course.projects.first()
         response = self.client.get(
             reverse('api-project-detail', args=[project.pk]))
         self.assertEqual(response.status_code, 403)
 
-    def test_anon(self):
+    def test_anon_post(self):
+        # Projects should not be created via the API
+        r = self.client.post(
+            reverse('api-project-list'),
+            {
+                'title': 'A Project Title',
+                'description': 'foo',
+                'base_map': 'some_map',
+                'layers': [],
+                'raster_layers': []
+            }
+        )
+        self.assertEqual(r.status_code, 403)
+
+    def test_anon_put(self):
         project = self.sandbox_course.projects.first()
-        response = self.client.get(
+        r = self.client.put(
+            reverse('api-project-detail', args=[project.pk]),
+            json.dumps({
+                'title': 'Updated Title',
+            }),
+            content_type='application/json'
+        )
+        self.assertEqual(r.status_code, 403)
+
+    def test_anon_delete(self):
+        project = self.sandbox_course.projects.first()
+        r = self.client.delete(
             reverse('api-project-detail', args=[project.pk]))
-        self.assertEqual(response.status_code, 403)
+        self.assertEqual(r.status_code, 403)
 
 
 class LayerAPITest(CourseTestMixin, TestCase):

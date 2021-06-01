@@ -10,7 +10,30 @@ class IsLoggedInCourse(permissions.IsAuthenticated):
     If so, it then checks they are faculty or a student. If a student, it
     checks if an activity exists for the course.
     """
+    def has_permission(self, request, view):
+        # Runs on GET / requests
+        user = request.user
+        if user.is_anonymous:
+            return False
+
+        # New projects can not be created the API
+        if request.method == 'POST':
+            return False
+
+        return True
+
     def has_object_permission(self, request, view, obj):
+        user = request.user
+        if user.is_anonymous:
+            return False
+
+        # has_permission should prevent a POST from reaching this point
+        if request.method == 'POST':
+            return False
+
+        if request.method not in permissions.SAFE_METHODS:
+            return obj.course.is_faculty(request.user)
+
         return (
             obj.course.is_faculty(request.user) or
             (in_course(request.user.username, obj.course) and
