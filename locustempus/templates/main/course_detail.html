@@ -37,6 +37,7 @@
             </div>
         </div>
         {% endif %}
+        {% if projects %}
         <form method="post" class="lt-layout-toggle">
             {% csrf_token %}
             <button type="submit" class="lt-button mr-1 {% if project_grid_layout %}active{% endif %}" {% if project_grid_layout %}disabled{% endif %}>
@@ -48,6 +49,7 @@
                 <span class='lt-button__label'>List</span>
             </button>
         </form>
+        {% endif %}
     </div>
 {% endblock %}
 
@@ -183,10 +185,11 @@
             </div>
             <div class="create-prompt__content">
                 <div class="create-prompt__alert" role="alert">
-                  There are no Projects in this Workspace
+                  There are no Projects in this Workspace.
                 </div>
+                <p class="mt-4 mx-auto w-50">A Project is space where you prepare, and have your Workspace team members collaboratively work on a map.</p>
                 <p class="create-prompt__instructions">
-                You can start by creating one
+                You can start by creating one.
                 </p>
             <form action="{% url 'course-project-create' course.pk %}" method="post">
                 {% csrf_token %}
@@ -203,7 +206,7 @@
             </div>
             <div class="create-prompt__content">
                 <div class="create-prompt__alert" role="alert">
-                  There are no shared Projects in this Workspace
+                  There are no shared Projects in this Workspace.
                 </div>
             </div>
         </div>
