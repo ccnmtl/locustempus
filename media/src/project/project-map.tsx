@@ -524,7 +524,7 @@ export const ProjectMap: React.FC = () => {
                             <div className={'mapboxgl-popup-text'}>
                                 <h2>{activeEvent.label}</h2>
                                 <div className={'event-attr'}>by {activeEvent.owner}</div>
-                                <div className={'event-summary'}
+                                <div className={'event-summary lt-quill-rendered'}
                                     dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
                             </div>
                         </Popup>

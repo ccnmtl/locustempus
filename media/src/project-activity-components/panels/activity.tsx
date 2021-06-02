@@ -99,6 +99,7 @@ export const Activity: React.FC<ActivityProps> = (
                     </div>
                 ) : (
                     <div data-cy="activity-instructions"
+                        className={'lt-quill-rendered'}
                         dangerouslySetInnerHTML={{__html: activity.instructions}}/>
                 )}
             </>

@@ -99,7 +99,7 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                     <section className={'lt-pane-section'}>
                         <div className={'event-attr'}>By {activeEventDetail.owner}</div>
 
-                        <div dangerouslySetInnerHTML={
+                        <div className={'lt-quill-rendered'} dangerouslySetInnerHTML={
                             {__html: activeEventDetail.description}}/>
                         <hr className={'w-75 mt-5'} />
                     </section>
