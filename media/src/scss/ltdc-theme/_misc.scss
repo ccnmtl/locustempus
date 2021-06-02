@@ -1,0 +1,10 @@
+.create-workspace-container {
+    border-top: 1px solid $border-color;
+    border-left: 0;
+    margin-top: 1rem;
+    @include media-breakpoint-up(lg) {
+        margin-top: 0;
+        border-top: 0;
+        border-left: 1px solid $border-color;
+    }
+}

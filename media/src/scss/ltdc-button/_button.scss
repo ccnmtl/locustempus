@@ -74,6 +74,22 @@
             padding: 1.5rem;
         }
     }
+    &--caution {
+        color: $on-error;
+        &:hover,
+        &:focus {
+            color: $on-error;
+            background-color: $error-surface-alt;
+        }
+    }
+    &--muted {
+        color: $on-muted;
+        &:hover,
+        &:focus {
+            color: $on-muted;
+            background-color: $muted-surface;
+        }
+    }
     &__icon {
         margin-left: -0.25rem;
         margin-right: 0.5rem;
@@ -86,6 +102,51 @@
         padding: 0;
         margin: 0;
         border: 0;
+    }
+}
+
+.lt-button--caution {
+    color: $on-error;
+     .lt-icons,
+     .lt-icons:hover {
+        filter: $error-svg !important;
+        -webkit-filter: $error-svg !important;
+        -moz-filter: $error-svg !important;
+    }
+    &.lt-button--priority {
+        @include button-darkbg-typography;
+        border-color: $on-error;
+        background-color: $on-error;
+         .lt-icons {
+            filter: $white-svg;
+            -webkit-filter: $white-svg;
+            -moz-filter: $white-svg;
+        }
+    }
+    &.lt-button--solid {
+        color: $on-error !important;
+        border-color: $error-surface;
+        background-color: $error-surface;
+    }
+}
+
+.lt-button--muted {
+    color: $on-muted;
+     .lt-icons,
+     .lt-icons:hover {
+        filter: $muted-svg !important;
+        -webkit-filter: $muted-svg !important;
+        -moz-filter: $muted-svg !important;
+    }
+    &.lt-button--solid {
+        color: $on-muted !important;
+        border-color: $muted-surface;
+        background-color: $muted-surface;
+         .lt-icons {
+            filter: $muted-svg;
+            -webkit-filter: $muted-svg;
+            -moz-filter: $muted-svg;
+        }
     }
 }
 

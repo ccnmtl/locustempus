@@ -9,14 +9,15 @@ Edit {{ course.title }}
 {% block content %}
 
 <div class="dashboard-container">
+    
     <form action="." method="post">
         {% csrf_token %}
         <div class="form-group">
-           <label for="{{ form.title.id_for_label }}">Title:</label>
+           <label for="{{ form.title.id_for_label }}">Title</label>
            <input data-cy="field-workspace-title" type="text" name="title" id="id_title" value="{{ object.title }}" required="required" class="form-control {% if form.title.errors %}is-invalid{% endif %}" />
         </div>
         <div class="form-group">
-            <label for="{{ form.description.id_for_label }}">Description:</label>
+            <label for="{{ form.description.id_for_label }}">Description</label>
             {% if form.description.errors %}
                 {{ form.description|add_class:"form-control is-invalid"|attr:"data-cy:workspace-description" }}
                 <div class="invalid-feedback">
@@ -25,21 +26,38 @@ Edit {{ course.title }}
                     {% endfor %}
                 </div>
             {% else %}
-                <textarea name="description" cols="40" rows="3" class="form-control" maxlength="200" placeholder="A brief summary of your workspace. (200 characters)" id="{{ form.description.id_for_label }}" data-cy="field-workspace-description">{{object.description}}</textarea>
+                {% if not object.description %}
+                    <div class="lt-helper">
+                        <div class="lt-helper--line">
+                            Provide a brief summary of your workspace (&leq; 200 characters).
+                        </div>
+                    </div>
+                {% endif %}
+                <textarea name="description" cols="40" rows="3" class="form-control" maxlength="200" id="{{ form.description.id_for_label }}" data-cy="field-workspace-description">{{object.description}}</textarea>
             {% endif %}
         </div>
-        <div class="row">
-            <div class="col-md-1 pr-0">
-                <button data-cy="save-workspace" type="submit" class="btn btn-primary">Save</button>
-            </div>
-            <div class="col-md-1 pr-0">
-                 <a data-cy="cancel-save-workspace" class="btn btn-block btn-secondary" href="/course/{{ course.pk }}/">Cancel</a>
-            </div>
+        <div>
+            <a
+                data-cy="cancel-save-workspace"
+                href="/course/{{ course.pk }}/"
+                class="lt-button lt-button--outlined mr-3">
+                <span class="lt-button__label">Cancel</span>
+            </a>
+            <button
+                data-cy="save-workspace"
+                type="submit"
+                class="lt-button lt-button--priority">
+                <span class="lt-button__label">Save changes</span>
+            </button>
         </div>
     </form>
-    
-<h2 class="mt-5">Delete Workspace</h2>
-
-    <a href="{% url 'course-delete-view' course.pk %}">Delete Course</a>
+    <hr class="mt-5" />
+    <h2 class="h5 mb-3 mt-3">Delete Workspace</h2>
+    <p><span class="text-danger"><strong>Caution:</strong></span>
+    Deleting workspace "{{ course.title }}" will remove all of its projects, collaborators and their work. Are you sure about this?</p>
+    <a href="{% url 'course-delete-view' course.pk %}" class="lt-button lt-button--caution">
+        <span class='lt-icons lt-button__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-trash.svg" /></span>
+        <span class="lt-button__label">Delete Workspace</span>
+    </a>
 </div>
 {% endblock %}
