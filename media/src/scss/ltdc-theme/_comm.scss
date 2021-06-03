@@ -144,6 +144,12 @@
     text-align: center;
 }
 
+.device-compatibility {
+    z-index: 1999;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 
 @keyframes opacity-fade-out {
   0% {

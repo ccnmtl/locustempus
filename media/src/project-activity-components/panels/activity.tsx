@@ -99,6 +99,7 @@ export const Activity: React.FC<ActivityProps> = (
                     </div>
                 ) : (
                     <div data-cy="activity-instructions"
+                        className={'lt-quill-rendered'}
                         dangerouslySetInnerHTML={{__html: activity.instructions}}/>
                 )}
             </>
@@ -134,7 +135,10 @@ export const Activity: React.FC<ActivityProps> = (
                 ) : (
                     <>
                         <div className={'lt-banner mb-3'} role={'banner'}>
-                            There is no activity assigned on this project.
+                            There is no activity assigned on this project.<br />
+                            An Activity is a collaboration on this project among members in your
+                            workspace. You can add instructions here for contributors on what they
+                            will be working on.
                         </div>
                         <button
                             data-cy={'create-activity'}

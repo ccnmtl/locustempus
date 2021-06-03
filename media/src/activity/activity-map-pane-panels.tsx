@@ -144,7 +144,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                     <div className='fade-load'>
                         {description ? (
                             <section className={'lt-pane-section'}>
-                                <div dangerouslySetInnerHTML={{__html: description}}/>
+                                <div className={'lt-quill-rendered'}
+                                    dangerouslySetInnerHTML={{__html: description}}/>
                             </section>
                         ) : (<>
                             {isFaculty && (
@@ -306,7 +307,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                                 Last modified on {feedbackModifiedDate}
                                             </>)}
                                         </p>
-                                        <div dangerouslySetInnerHTML={{__html: feedback}}/>
+                                        <div className={'lt-quill-rendered'}
+                                            dangerouslySetInnerHTML={{__html: feedback}}/>
                                     </>
                                 ) : (
                                     <p className={'lt-date-display'}>
@@ -443,7 +445,8 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
 
             <section data-cy="contributor-reflection" className={'lt-pane-section'}>
                 <h3>Reflection</h3>
-                <div dangerouslySetInnerHTML={{__html: activeResponse.reflection}}/>
+                <div className={'lt-quill-rendered'}
+                    dangerouslySetInnerHTML={{__html: activeResponse.reflection}}/>
             </section>
             <section className={'lt-pane-section lt-pane-section__feedback'}>
                 <h3 data-cy="feedback-for-contributor">
