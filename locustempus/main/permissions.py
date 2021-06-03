@@ -50,7 +50,8 @@ class ActivityPermission(permissions.IsAuthenticated):
         if request.method == 'POST':
             # Check that user is faculty in the project
             try:
-                proj = Project.objects.get(pk=request.data.get('project', None))
+                proj = Project.objects.get(
+                    pk=request.data.get('project', None))
                 return proj.course.is_true_faculty(user)
             except Project.DoesNotExist:
                 return False

@@ -850,7 +850,6 @@ class ActivityAPITest(CourseTestMixin, TestCase):
             )
             self.assertEqual(resp.status_code, 404)
 
-
     def test_non_course_user_delete(self):
         """DELETE request"""
         user = UserFactory.create()
@@ -866,12 +865,10 @@ class ActivityAPITest(CourseTestMixin, TestCase):
                 reverse('api-activity-detail', args=[activity.pk]))
             self.assertEqual(resp.status_code, 404)
 
-
     def test_anon_get_list(self):
         """GET / request"""
         r = self.client.get(reverse('api-activity-list'))
-        self.assertEqual(r.status_code, 200)
-        self.assertEqual(len(r.data), 0)
+        self.assertEqual(r.status_code, 403)
 
     def test_anon_get(self):
         """GET request"""
