@@ -3,7 +3,9 @@ from django.contrib.auth.models import AnonymousUser
 from django.test import TestCase
 from django.urls.base import reverse
 import json
-from locustempus.main.models import Response, Layer, Event, Project
+from locustempus.main.models import (
+    Activity, Response, Layer, Event, Project
+)
 from locustempus.main.permissions import (
     IsLoggedInCourse, IsLoggedInFaculty
 )
@@ -602,6 +604,315 @@ class ProjectAPITest(CourseTestMixin, TestCase):
             ['http://testserver' + reverse(
                 'api-layer-detail', args=[student_layer.pk])]
         )
+
+
+class ActivityAPITest(CourseTestMixin, TestCase):
+    def setUp(self):
+        self.setup_course()
+
+    def test_faculty_get_list(self):
+        """GET / request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        r = self.client.get(reverse('api-activity-list'))
+        self.assertEqual(r.status_code, 200)
+        for activity in r.data:
+            proj = Project.objects.get(pk=activity['project'])
+            self.assertTrue(proj.course.is_true_faculty(self.faculty))
+
+    def test_faculty_get(self):
+        """GET request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.get(
+                reverse('api-activity-detail', args=[activity.pk]))
+            in_course = activity.project.course.is_true_member(self.faculty)
+            self.assertEqual(resp.status_code, 200 if in_course else 404)
+
+    def test_faculty_post(self):
+        """POST request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        for project in Project.objects.filter(activity__isnull=True):
+            resp = self.client.post(
+                reverse('api-activity-list'),
+                {
+                    'project': project.pk,
+                    'instructions': 'some instructions'
+                }
+            )
+            is_faculty = project.course.is_true_faculty(self.faculty)
+            self.assertEqual(resp.status_code, 201 if is_faculty else 403)
+
+    def test_faculty_put(self):
+        """PUT request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.put(
+                reverse('api-activity-detail', args=[activity.pk]),
+                json.dumps({
+                    'project': activity.project.pk,
+                    'instructions': 'updated instructions'
+                }),
+                content_type='application/json'
+            )
+            is_faculty = activity.project.course.is_true_faculty(self.faculty)
+            self.assertEqual(resp.status_code, 200 if is_faculty else 404)
+
+    def test_faculty_delete(self):
+        """DELETE request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.delete(
+                reverse('api-activity-detail', args=[activity.pk]))
+            is_faculty = activity.project.course.is_true_faculty(self.faculty)
+            self.assertEqual(resp.status_code, 204 if is_faculty else 404)
+
+    def test_student_get_list(self):
+        """GET / request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        r = self.client.get(reverse('api-activity-list'))
+        self.assertEqual(r.status_code, 200)
+        for activity in r.data:
+            proj = Project.objects.get(pk=activity['project'])
+            self.assertTrue(proj.course.is_true_member(self.faculty))
+
+    def test_student_get(self):
+        """GET request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.get(
+                reverse('api-activity-detail', args=[activity.pk]))
+            in_course = activity.project.course.is_true_member(self.student)
+            self.assertEqual(resp.status_code, 200 if in_course else 404)
+
+    def test_student_post(self):
+        """POST request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        for project in Project.objects.filter(activity__isnull=True):
+            resp = self.client.post(
+                reverse('api-activity-list'),
+                {
+                    'project': project.pk,
+                    'instructions': 'some instructions'
+                }
+            )
+            self.assertEqual(resp.status_code, 403)
+
+    def test_student_put(self):
+        """PUT request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.put(
+                reverse('api-activity-detail', args=[activity.pk]),
+                json.dumps({
+                    'project': activity.project.pk,
+                    'instructions': 'updated instructions'
+                }),
+                content_type='application/json'
+            )
+            in_course = activity.project.course.is_true_member(self.student)
+            self.assertEqual(resp.status_code, 403 if in_course else 404)
+
+    def test_student_delete(self):
+        """DELETE request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.delete(
+                reverse('api-activity-detail', args=[activity.pk]))
+            in_course = activity.project.course.is_true_member(self.student)
+            self.assertEqual(resp.status_code, 403 if in_course else 404)
+
+    def test_non_course_user_get_list(self):
+        """GET / request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+        r = self.client.get(reverse('api-activity-list'))
+        self.assertEqual(r.status_code, 200)
+        self.assertEqual(len(r.data), 0)
+
+    def test_non_course_user_get(self):
+        """GET request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.get(
+                reverse('api-activity-detail', args=[activity.pk]))
+            self.assertEqual(resp.status_code, 404)
+
+    def test_non_course_user_post(self):
+        """POST request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for project in Project.objects.filter(activity__isnull=True):
+            resp = self.client.post(
+                reverse('api-activity-list'),
+                {
+                    'project': project.pk,
+                    'instructions': 'some instructions'
+                }
+            )
+            self.assertEqual(resp.status_code, 403)
+
+    def test_non_course_user_put(self):
+        """PUT request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.put(
+                reverse('api-activity-detail', args=[activity.pk]),
+                json.dumps({
+                    'project': activity.project.pk,
+                    'instructions': 'updated instructions'
+                }),
+                content_type='application/json'
+            )
+            self.assertEqual(resp.status_code, 404)
+
+    def test_non_course_user_delete(self):
+        """DELETE request"""
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for activity in Activity.objects.all():
+            resp = self.client.delete(
+                reverse('api-activity-detail', args=[activity.pk]))
+            self.assertEqual(resp.status_code, 404)
+
+    def test_anon_get_list(self):
+        """GET / request"""
+        r = self.client.get(reverse('api-activity-list'))
+        self.assertEqual(r.status_code, 403)
+
+    def test_anon_get(self):
+        """GET request"""
+        for project in Project.objects.filter(activity__isnull=True):
+            resp = self.client.post(
+                reverse('api-activity-list'),
+                {
+                    'project': project.pk,
+                    'instructions': 'some instructions'
+                }
+            )
+            self.assertEqual(resp.status_code, 403)
+
+    def test_anon_post(self):
+        """POST request"""
+        for project in Project.objects.filter(activity__isnull=True):
+            resp = self.client.post(
+                reverse('api-activity-list'),
+                {
+                    'project': project.pk,
+                    'instructions': 'some instructions'
+                }
+            )
+            self.assertEqual(resp.status_code, 403)
+
+    def test_anon_put(self):
+        """PUT request"""
+        for activity in Activity.objects.all():
+            resp = self.client.put(
+                reverse('api-activity-detail', args=[activity.pk]),
+                json.dumps({
+                    'project': activity.project.pk,
+                    'instructions': 'updated instructions'
+                }),
+                content_type='application/json'
+            )
+            self.assertEqual(resp.status_code, 403)
+
+    def test_anon_delete(self):
+        """DELETE request"""
+        for activity in Activity.objects.all():
+            resp = self.client.delete(
+                reverse('api-activity-detail', args=[activity.pk]))
+            self.assertEqual(resp.status_code, 403)
 
 
 class LayerAPITest(CourseTestMixin, TestCase):
