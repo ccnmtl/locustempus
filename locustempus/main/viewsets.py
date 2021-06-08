@@ -6,7 +6,7 @@ from locustempus.main.models import (
 )
 from locustempus.main.permissions import (
     IsLoggedInCourse, IsResponseOwnerOrFaculty,
-    IsFeedbackFacultyOrStudentRecipient, ActivityPermission
+    IsFeedbackFacultyOrStudentRecipient, ActivityPermission, LayerPermission
 )
 from locustempus.main.serializers import (
     LayerSerializer, ProjectSerializer, EventSerializer, ActivitySerializer,
@@ -18,6 +18,7 @@ from rest_framework.viewsets import ModelViewSet
 class ProjectApiView(ModelViewSet):
     """Retrieves a single project"""
     serializer_class = ProjectSerializer
+    _lt_model_cls = Project
 
     def get_queryset(self):
         """
@@ -60,6 +61,7 @@ class LayerApiView(ModelViewSet):
     """Retrieves a layer"""
     # If an author in a course, can
     serializer_class = LayerSerializer
+    permission_classes = [LayerPermission]
 
     def get_queryset(self):
         """
@@ -114,6 +116,7 @@ class ResponseApiView(ModelViewSet):
     """Retrieves responses"""
     serializer_class = ResponseSerializer
     permission_classes = [IsResponseOwnerOrFaculty]
+    _lt_model_cls = Response
 
     def get_queryset(self):
         """

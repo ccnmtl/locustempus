@@ -7,7 +7,8 @@ from locustempus.main.models import (
     Activity, Response, Layer, Event, Project
 )
 from locustempus.main.permissions import (
-    IsLoggedInCourse, IsLoggedInFaculty
+    IsLoggedInCourse, IsLoggedInFaculty, layer_permission_helper,
+    layer_permission_helper_faculty, layer_permission_helper_student
 )
 from locustempus.main.tests.factories import (
     CourseTestMixin, UserFactory, LayerFactory, ResponseFactory
@@ -1010,6 +1011,172 @@ class LayerAPITest(CourseTestMixin, TestCase):
             reverse('api-layer-detail', args=[layer.pk])
         )
         self.assertEqual(response.status_code, 204)
+
+    def test_faculty_get_list(self):
+        """GET / request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        r = self.client.get(reverse('api-layer-list'))
+        self.assertEqual(r.status_code, 200)
+        for lyr in r.data:
+            layer = Layer.objects.get(pk=lyr['pk'])
+            self.assertTrue(layer_permission_helper(layer, self.faculty))
+
+    def test_faculty_get(self):
+        """GET request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        for layer in Layer.objects.all():
+            is_faculty_layer = layer_permission_helper_faculty(
+                layer, self.faculty)
+            resp = self.client.get(
+                reverse('api-layer-detail', args=[layer.pk]))
+            self.assertEqual(
+                resp.status_code, 200 if is_faculty_layer else 404)
+
+    def test_faculty_post(self):
+        """POST request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        for project in Project.objects.all():
+            resp = self.client.post(
+                reverse('api-layer-list'),
+                {
+                    'title': 'Some title',
+                    'content_object': reverse(
+                        'api-project-detail', args=[project.pk])
+                }
+            )
+            is_faculty = project.course.is_true_faculty(self.faculty)
+            self.assertEqual(resp.status_code, 201 if is_faculty else 403)
+
+    def test_faculty_put(self):
+        """PUT request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        for layer in Layer.objects.all():
+            content_object = ''
+            if isinstance(layer.content_object, Project):
+                content_object = reverse(
+                    'api-project-detail', args=[layer.content_object.pk])
+            elif isinstance(layer.content_object, Response):
+                content_object = reverse(
+                    'api-response-detail', args=[layer.content_object.pk])
+            else:
+                raise Exception(
+                    'layer.content_object must be either a Project or Response')
+
+            resp = self.client.put(
+                reverse('api-layer-detail', args=[layer.pk]),
+                json.dumps({
+                    'title': 'A different title',
+                    'content_object': content_object
+                }),
+                content_type='application/json'
+            )
+            self.assertEqual(
+                resp.status_code,
+                200 if layer_permission_helper_faculty(
+                    layer, self.faculty) else 404
+            )
+
+    def test_faculty_delete(self):
+        """DELETE request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+
+        for layer in Layer.objects.all():
+            resp = self.client.delete(
+                reverse('api-layer-detail', args=[layer.pk])
+            )
+            self.assertEqual(
+                resp.status_code,
+                204 if layer_permission_helper_faculty(
+                    layer, self.faculty) else 404
+            )
+
+    def test_student_get_list(self):
+        """GET / request"""
+        pass
+
+    def test_student_get(self):
+        """GET request"""
+        pass
+
+    def test_student_post(self):
+        """POST request"""
+        pass
+
+    def test_student_put(self):
+        """PUT request"""
+        pass
+
+    def test_student_delete(self):
+        """DELETE request"""
+        pass
+
+    def test_non_course_user_get_list(self):
+        """GET / request"""
+        pass
+
+    def test_non_course_user_get(self):
+        """GET request"""
+        pass
+
+    def test_non_course_user_post(self):
+        """POST request"""
+        pass
+
+    def test_non_course_user_put(self):
+        """PUT request"""
+        pass
+
+    def test_non_course_user_delete(self):
+        """DELETE request"""
+        pass
+
+    def test_anon_get_list(self):
+        """GET / request"""
+        pass
+
+    def test_anon_get(self):
+        """GET request"""
+        pass
+
+    def test_anon_post(self):
+        """POST request"""
+        pass
+
+    def test_anon_put(self):
+        """PUT request"""
+        pass
+
+    def test_anon_delete(self):
+        """DELETE request"""
+        pass
 
 
 class EventAPITest(CourseTestMixin, TestCase):
