@@ -1120,23 +1120,114 @@ class LayerAPITest(CourseTestMixin, TestCase):
 
     def test_student_get_list(self):
         """GET / request"""
-        pass
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        r = self.client.get(reverse('api-layer-list'))
+        self.assertEqual(r.status_code, 200)
+        for lyr in r.data:
+            layer = Layer.objects.get(pk=lyr['pk'])
+            self.assertTrue(layer_permission_helper(layer, self.student))
 
     def test_student_get(self):
         """GET request"""
-        pass
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        for layer in Layer.objects.all():
+            is_student_layer = layer_permission_helper_student(
+                layer, self.student)
+            resp = self.client.get(
+                reverse('api-layer-detail', args=[layer.pk]))
+            self.assertEqual(
+                resp.status_code, 200 if is_student_layer else 404)
 
     def test_student_post(self):
         """POST request"""
-        pass
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        for response in Response.objects.all():
+            resp = self.client.post(
+                reverse('api-layer-list'),
+                {
+                    'title': 'Some title',
+                    'content_object': reverse(
+                        'api-response-detail', args=[response.pk])
+                }
+            )
+            is_response_owner = self.student in response.owners.all()
+            self.assertEqual(resp.status_code, 201 if is_response_owner else 403)
 
     def test_student_put(self):
         """PUT request"""
-        pass
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        for layer in Layer.objects.all():
+            content_object = ''
+            if isinstance(layer.content_object, Project):
+                content_object = reverse(
+                    'api-project-detail', args=[layer.content_object.pk])
+            elif isinstance(layer.content_object, Response):
+                content_object = reverse(
+                    'api-response-detail', args=[layer.content_object.pk])
+            else:
+                raise Exception(
+                    'layer.content_object must be either a Project or Response')
+
+            resp = self.client.put(
+                reverse('api-layer-detail', args=[layer.pk]),
+                json.dumps({
+                    'title': 'A different title',
+                    'content_object': content_object
+                }),
+                content_type='application/json'
+            )
+            has_response = isinstance(layer.content_object, Response)
+            is_response_owner = has_response \
+                and self.student in layer.content_object.owners.all()
+            self.assertIn(
+                resp.status_code,
+                [200] if is_response_owner else [403, 404]
+            )
+
 
     def test_student_delete(self):
         """DELETE request"""
-        pass
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+
+        for layer in Layer.objects.all():
+            resp = self.client.delete(
+                reverse('api-layer-detail', args=[layer.pk])
+            )
+            has_response = isinstance(layer.content_object, Response)
+            is_response_owner = has_response \
+                and self.student in layer.content_object.owners.all()
+            self.assertIn(
+                resp.status_code,
+                [204] if is_response_owner else [403, 404]
+            )
 
     def test_non_course_user_get_list(self):
         """GET / request"""

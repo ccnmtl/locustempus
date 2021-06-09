@@ -91,6 +91,10 @@ class ResponseFactory(factory.DjangoModelFactory):
     activity = factory.SubFactory(ActivityFactory)
 
     @factory.post_generation
+    def generate_layer(obj, create, extracted, **kwargs):
+        LayerFactory(title='Untitled Layer', content_object=obj)
+
+    @factory.post_generation
     def owners(self, create, extracted, **kwargs):
         if not create:
             return
