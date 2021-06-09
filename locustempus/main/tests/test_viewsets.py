@@ -1231,43 +1231,181 @@ class LayerAPITest(CourseTestMixin, TestCase):
 
     def test_non_course_user_get_list(self):
         """GET / request"""
-        pass
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+        r = self.client.get(reverse('api-layer-list'))
+        self.assertEqual(r.status_code, 200)
+        self.assertListEqual(r.data, [])
 
     def test_non_course_user_get(self):
         """GET request"""
-        pass
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for layer in Layer.objects.all():
+            resp = self.client.get(
+                reverse('api-layer-detail', args=[layer.pk]))
+            self.assertEqual(resp.status_code, 404)
 
     def test_non_course_user_post(self):
         """POST request"""
-        pass
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for project in Project.objects.all():
+            resp = self.client.post(
+                reverse('api-layer-list'),
+                {
+                    'title': 'Some title',
+                    'content_object': reverse(
+                        'api-project-detail', args=[project.pk])
+                }
+            )
+            self.assertEqual(resp.status_code, 403)
+
+        for response in Response.objects.all():
+            resp = self.client.post(
+                reverse('api-layer-list'),
+                {
+                    'title': 'Some title',
+                    'content_object': reverse(
+                        'api-response-detail', args=[response.pk])
+                }
+            )
+            self.assertEqual(resp.status_code, 403)
+
 
     def test_non_course_user_put(self):
         """PUT request"""
-        pass
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for layer in Layer.objects.all():
+            content_object = ''
+            if isinstance(layer.content_object, Project):
+                content_object = reverse(
+                    'api-project-detail', args=[layer.content_object.pk])
+            elif isinstance(layer.content_object, Response):
+                content_object = reverse(
+                    'api-response-detail', args=[layer.content_object.pk])
+            else:
+                raise Exception(
+                    'layer.content_object must be either a Project or Response')
+
+            resp = self.client.put(
+                reverse('api-layer-detail', args=[layer.pk]),
+                json.dumps({
+                    'title': 'A different title',
+                    'content_object': content_object
+                }),
+                content_type='application/json'
+            )
+            self.assertEqual(resp.status_code, 404)
 
     def test_non_course_user_delete(self):
         """DELETE request"""
-        pass
+        user = UserFactory.create()
+        self.assertTrue(
+            self.client.login(
+                username=user.username,
+                password='test'
+            )
+        )
+
+        for layer in Layer.objects.all():
+            resp = self.client.delete(
+                reverse('api-layer-detail', args=[layer.pk])
+            )
+            self.assertEqual(resp.status_code, 404)
+
 
     def test_anon_get_list(self):
         """GET / request"""
-        pass
+        r = self.client.get(reverse('api-layer-list'))
+        self.assertEqual(r.status_code, 403)
 
     def test_anon_get(self):
         """GET request"""
-        pass
+        for layer in Layer.objects.all():
+            resp = self.client.get(
+                reverse('api-layer-detail', args=[layer.pk]))
+            self.assertEqual(resp.status_code, 403)
 
     def test_anon_post(self):
         """POST request"""
-        pass
+        for project in Project.objects.all():
+            resp = self.client.post(
+                reverse('api-layer-list'),
+                {
+                    'title': 'Some title',
+                    'content_object': reverse(
+                        'api-project-detail', args=[project.pk])
+                }
+            )
+            self.assertEqual(resp.status_code, 403)
+
+        for response in Response.objects.all():
+            resp = self.client.post(
+                reverse('api-layer-list'),
+                {
+                    'title': 'Some title',
+                    'content_object': reverse(
+                        'api-response-detail', args=[response.pk])
+                }
+            )
+            self.assertEqual(resp.status_code, 403)
 
     def test_anon_put(self):
         """PUT request"""
-        pass
+        for layer in Layer.objects.all():
+            content_object = ''
+            if isinstance(layer.content_object, Project):
+                content_object = reverse(
+                    'api-project-detail', args=[layer.content_object.pk])
+            elif isinstance(layer.content_object, Response):
+                content_object = reverse(
+                    'api-response-detail', args=[layer.content_object.pk])
+            else:
+                raise Exception(
+                    'layer.content_object must be either a Project or Response')
+
+            resp = self.client.put(
+                reverse('api-layer-detail', args=[layer.pk]),
+                json.dumps({
+                    'title': 'A different title',
+                    'content_object': content_object
+                }),
+                content_type='application/json'
+            )
+            self.assertEqual(resp.status_code, 403)
 
     def test_anon_delete(self):
         """DELETE request"""
-        pass
+        for layer in Layer.objects.all():
+            resp = self.client.delete(
+                reverse('api-layer-detail', args=[layer.pk])
+            )
+            self.assertEqual(resp.status_code, 403)
 
 
 class EventAPITest(CourseTestMixin, TestCase):
