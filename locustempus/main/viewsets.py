@@ -1,6 +1,6 @@
 """The viewsets and views used for the API"""
 from courseaffils.views import get_courses_for_user, get_courses_for_instructor
-from django.db.models import Q, Exists, OuterRef, Value, BooleanField
+from django.db.models import Q, Exists, OuterRef
 from locustempus.main.models import (
     Layer, Project, Event, Activity, Response, Feedback
 )

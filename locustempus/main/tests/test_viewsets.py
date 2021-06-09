@@ -1083,7 +1083,7 @@ class LayerAPITest(CourseTestMixin, TestCase):
                     'api-response-detail', args=[layer.content_object.pk])
             else:
                 raise Exception(
-                    'layer.content_object must be either a Project or Response')
+                    'content_object must be either a Project or Response')
 
             resp = self.client.put(
                 reverse('api-layer-detail', args=[layer.pk]),
@@ -1168,7 +1168,9 @@ class LayerAPITest(CourseTestMixin, TestCase):
                 }
             )
             is_response_owner = self.student in response.owners.all()
-            self.assertEqual(resp.status_code, 201 if is_response_owner else 403)
+            self.assertEqual(
+                resp.status_code,
+                201 if is_response_owner else 403)
 
     def test_student_put(self):
         """PUT request"""
@@ -1189,7 +1191,7 @@ class LayerAPITest(CourseTestMixin, TestCase):
                     'api-response-detail', args=[layer.content_object.pk])
             else:
                 raise Exception(
-                    'layer.content_object must be either a Project or Response')
+                    'content_object must be either a Project or Response')
 
             resp = self.client.put(
                 reverse('api-layer-detail', args=[layer.pk]),
@@ -1206,7 +1208,6 @@ class LayerAPITest(CourseTestMixin, TestCase):
                 resp.status_code,
                 [200] if is_response_owner else [403, 404]
             )
-
 
     def test_student_delete(self):
         """DELETE request"""
@@ -1289,7 +1290,6 @@ class LayerAPITest(CourseTestMixin, TestCase):
             )
             self.assertEqual(resp.status_code, 403)
 
-
     def test_non_course_user_put(self):
         """PUT request"""
         user = UserFactory.create()
@@ -1310,7 +1310,7 @@ class LayerAPITest(CourseTestMixin, TestCase):
                     'api-response-detail', args=[layer.content_object.pk])
             else:
                 raise Exception(
-                    'layer.content_object must be either a Project or Response')
+                    'content_object must be either a Project or Response')
 
             resp = self.client.put(
                 reverse('api-layer-detail', args=[layer.pk]),
@@ -1337,7 +1337,6 @@ class LayerAPITest(CourseTestMixin, TestCase):
                 reverse('api-layer-detail', args=[layer.pk])
             )
             self.assertEqual(resp.status_code, 404)
-
 
     def test_anon_get_list(self):
         """GET / request"""
@@ -1387,7 +1386,7 @@ class LayerAPITest(CourseTestMixin, TestCase):
                     'api-response-detail', args=[layer.content_object.pk])
             else:
                 raise Exception(
-                    'layer.content_object must be either a Project or Response')
+                    'content_object must be either a Project or Response')
 
             resp = self.client.put(
                 reverse('api-layer-detail', args=[layer.pk]),
