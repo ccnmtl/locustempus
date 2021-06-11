@@ -6,6 +6,13 @@
 
 
 {% block content %}
+<div class="device-compatibility alert alert-danger alert-dismissible fade show d-block d-sm-none" role="alert">
+  Locus Tempus experience is optimal on larger screen devices, such as tablets, laptops, or desktop computers.
+  <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+    <span aria-hidden="true">&times;</span>
+  </button>
+</div>
+
     {% if project.activity %}
         <div id="activity-map-container" data-maptoken="{{ token }}" data-activitypk="{{ project.activity.pk }}" data-projectpk="{{ project.pk }}" data-isfaculty="{{ is_faculty }}"></div>
     {% else %}

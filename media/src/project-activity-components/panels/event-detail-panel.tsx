@@ -85,12 +85,12 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                         {(activeEventDetail.media[0].caption != '' ||
                             activeEventDetail.media[0].source != '') && (
                             <figcaption>
-                                <span className={'img__caption'}>
+                                <div className={'img__caption'}>
                                     {activeEventDetail.media[0].caption}
-                                </span>
-                                <span className={'img__attr'}>
+                                </div>
+                                <div className={'img__attr'}>
                                     {activeEventDetail.media[0].source}
-                                </span>
+                                </div>
                             </figcaption>
                         )}
                     </figure>
@@ -99,7 +99,7 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                     <section className={'lt-pane-section'}>
                         <div className={'event-attr'}>By {activeEventDetail.owner}</div>
 
-                        <div dangerouslySetInnerHTML={
+                        <div className={'lt-quill-rendered'} dangerouslySetInnerHTML={
                             {__html: activeEventDetail.description}}/>
                         <hr className={'w-75 mt-5'} />
                     </section>

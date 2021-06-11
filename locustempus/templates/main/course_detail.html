@@ -27,7 +27,7 @@
                         <span class="lt-list-item__primary-text">Manage Roster</span>
                         </a>
                     </li>
-                    <li class="lt-list-item border-top">
+                    <li class="lt-list-item lt-list-item--caution border-top">
                         <a data-cy="delete-workspace" href="{% url 'course-delete-view' course.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
                         <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-trash.svg" class="active" /></span>
                         <span class="lt-list-item__primary-text">Delete Workspace</span>
@@ -37,6 +37,7 @@
             </div>
         </div>
         {% endif %}
+        {% if projects %}
         <form method="post" class="lt-layout-toggle">
             {% csrf_token %}
             <button type="submit" class="lt-button mr-1 {% if project_grid_layout %}active{% endif %}" {% if project_grid_layout %}disabled{% endif %}>
@@ -48,6 +49,7 @@
                 <span class='lt-button__label'>List</span>
             </button>
         </form>
+        {% endif %}
     </div>
 {% endblock %}
 
@@ -56,20 +58,20 @@
 <div class="row pt-3 px-0 mt-0 mx-0" data-cy="workspace-summary-info">
     <div class="col-9">
         {% if course.info.termyear %}<div>Semester: {{ course.info.termyear }}</div>{% endif %}
-        <div><b>Author:</b> {{ course|course_faculty_string }}</div>
-        <div><b>Number of Projects:</b>
-        {% with totalProject=course.projects.count %}
+        <div data-cy="course-faculty"><b>Author:</b> {{ course|course_faculty_string }}</div>
+        <div data-cy="number-of-projects"><b>Number of Projects:</b>
+        {% with totalProject=projects.count %}
             {{ totalProject }} Project{{ totalProject|pluralize }}
         {% endwith %}
         </div>
-        <div><b>Description:</b>
+        <div data-cy="course-description"><b>Description:</b>
             {% if course|course_description %}
                 {{ course|course_description }}
             {% else %}
                 There’s no description for this Workspace.
             {% endif %}
         </div>
-        <div><b>Your role:</b> {% if user in course.faculty %}Author{% else %}Contributor{% endif %}</div>
+        <div data-cy="course-role"><b>Your role:</b> {% if user in course.faculty %}Author{% else %}Contributor{% endif %}</div>
     </div>
     {% if is_faculty and projects %}
     <div class="col-3 text-right">
@@ -183,10 +185,11 @@
             </div>
             <div class="create-prompt__content">
                 <div class="create-prompt__alert" role="alert">
-                  There are no Projects in this Workspace
+                  There are no Projects in this Workspace.
                 </div>
+                <p class="mt-4 mx-auto w-50">A Project is space where you prepare, and have your Workspace team members collaboratively work on a map.</p>
                 <p class="create-prompt__instructions">
-                You can start by creating one
+                You can start by creating one.
                 </p>
             <form action="{% url 'course-project-create' course.pk %}" method="post">
                 {% csrf_token %}
@@ -203,7 +206,7 @@
             </div>
             <div class="create-prompt__content">
                 <div class="create-prompt__alert" role="alert">
-                  There are no shared Projects in this Workspace
+                  There are no shared Projects in this Workspace.
                 </div>
             </div>
         </div>

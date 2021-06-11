@@ -1,0 +1,67 @@
+.lt-colors {
+    &--primary-4 {
+        height: 3.25rem;;  
+        background-color: $primary-4;      
+    }
+    &--primary-3 {
+        height: 3.25rem;;        
+        background-color: $primary-3;      
+    }
+    &--primary-2 {
+        height: 3.25rem;;
+        background-color: $primary-2;      
+    }
+    &--primary-1 {
+        height: 3.25rem;;        
+        background-color: $primary-1;      
+    }
+    &--secondary-a5 {
+        height: 3.25rem;;  
+        background-color: $secondary-a5;      
+    }
+    &--secondary-a4 {
+        height: 3.25rem;;  
+        background-color: $secondary-a4;      
+    }
+    &--secondary-a3 {
+        height: 3.25rem;;        
+        background-color: $secondary-a3;      
+    }
+    &--secondary-a2 {
+        height: 3.25rem;;        
+        background-color: $secondary-a2;      
+    }
+    &--secondary-a1 {
+        height: 3.25rem;;
+        background-color: $secondary-a1;      
+    }
+    &--secondary-b5 {
+        height: 3.25rem;;  
+        background-color: $secondary-b5;      
+    }
+    &--secondary-b4 {
+        height: 3.25rem;;  
+        background-color: $secondary-b4;      
+    }
+    &--secondary-b3 {
+        height: 3.25rem;;        
+        background-color: $secondary-b3;      
+    }
+    &--secondary-b2 {
+        height: 3.25rem;;
+        background-color: $secondary-b2;      
+    }
+    &--secondary-b1 {
+        height: 3.25rem;;        
+        background-color: $secondary-b1;      
+    }
+    &--example {
+        background-color: $gray-050;
+        text-align: center;
+        img {
+            margin-top: 2rem;
+            width: 27rem;
+            @extend .elevation-2;
+        }
+    }
+}

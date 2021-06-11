@@ -58,6 +58,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 'nav-link active' : 'nav-link'}
                             href='#'
                             data-active-tab={idx}
+                            data-cy={el}
                             onClick={handleSetActiveTab}>{el}</a>
                         </li>
                     );
@@ -69,7 +70,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                         <section data-cy={'project-description'}
                             className={'lt-pane-section lt-pane-section__description'}>
                             {description ? (
-                                <div dangerouslySetInnerHTML={{__html: description}}/>
+                                <div className={'lt-quill-rendered'}
+                                    dangerouslySetInnerHTML={{__html: description}}/>
                             ) : (
                                 <div className={'lt-banner'} role={'banner'}>
                                     There is no description for this project.

@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { LayerSet } from '../project-activity-components/layers/layer-set';
+import { AggregatedLayerSet } from '../project-activity-components/layers/aggregated-layer-set';
 import { Activity } from '../project-activity-components/panels/activity';
 import { LayerData, EventData } from '../project-activity-components/common';
 import {
@@ -19,6 +20,7 @@ interface DefaultPanelProps {
     description: string;
     layers: Map<number, LayerData>;
     projectLayers:  Map<number, LayerData>;
+    fellowContributorLayers: Map<number, LayerData>;
     activity: ActivityData | null;
     updateActivity(instructions: string, pk: number): void;
     deleteActivity(pk: number): void;
@@ -53,10 +55,10 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         updateActivity, deleteActivity, deleteLayer, updateLayer,
         layerVisibility, toggleLayerVisibility, toggleResponseVisibility,
         activeLayer, setActiveLayer, activeEvent, setActiveEvent,
-        setActiveEventDetail, activeEventEdit, projectLayers, responseData,
-        updateResponse, createFeedback, updateFeedback, isFaculty,
-        responseLayers, paneHeaderHeight, setAlert, activeResponse,
-        setActiveResponse
+        setActiveEventDetail, activeEventEdit, projectLayers,
+        fellowContributorLayers, responseData, updateResponse, createFeedback,
+        updateFeedback, isFaculty, responseLayers, paneHeaderHeight, setAlert,
+        activeResponse, setActiveResponse
     }: DefaultPanelProps) => {
 
 
@@ -128,6 +130,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 'nav-link active' : 'nav-link'}
                             href='#'
                             data-active-tab={idx}
+                            data-cy={el}
                             onClick={handleSetActiveTab}>{el}</a>
                         </li>
                     );
@@ -141,7 +144,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                     <div className='fade-load'>
                         {description ? (
                             <section className={'lt-pane-section'}>
-                                <div dangerouslySetInnerHTML={{__html: description}}/>
+                                <div className={'lt-quill-rendered'}
+                                    dangerouslySetInnerHTML={{__html: description}}/>
                             </section>
                         ) : (<>
                             {isFaculty && (
@@ -176,6 +180,18 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             activeEvent={activeEvent}
                             setActiveEventDetail={setActiveEventDetail}
                             activeEventEdit={activeEventEdit} />
+                        {!isFaculty && (
+                            <AggregatedLayerSet
+                                layers={fellowContributorLayers}
+                                toggleLayerVisibility={toggleLayerVisibility}
+                                layerVisibility={layerVisibility}
+                                activeLayer={activeLayer}
+                                setActiveLayer={setActiveLayer}
+                                setActiveEvent={setActiveEvent}
+                                activeEvent={activeEvent}
+                                setActiveEventDetail={setActiveEventDetail}
+                                activeEventEdit={activeEventEdit} />
+                        )}
                     </div>
                 )}
                 {activeTab == RESPONSE && (
@@ -199,7 +215,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 activeEventEdit={activeEventEdit}
                                 setAlert={setAlert}/>
                         ) : (<>
-                            <section className={'lt-pane-section pb-0 mb-0 border-0'}>
+                            <section className={'lt-pane-section pb-0 mb-0 border-0'}
+                                data-cy="reflection-status">
                                 {reflectionStatus === 'SUBMITTED' ? (
                                     <p className={'lt-date-display'}>
                                         Last saved on {reflectionModifiedAt}
@@ -231,7 +248,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                     setActiveEventDetail={setActiveEventDetail}
                                     activeEventEdit={activeEventEdit} />
                             </section>
-                            <section className={'lt-pane-section'}>
+                            <section className={'lt-pane-section'}
+                                data-cy="reflection">
                                 <h2>Reflection</h2>
                                 <form onSubmit={handleSubmitResponse}>
                                     <div className={'form-group pane-form-group'}>
@@ -253,13 +271,15 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                             {reflectionStatus === 'DRAFT' && (
                                                 <button
                                                     className={'lt-button lt-button--solid mr-3'}
-                                                    onClick={handleReflectionSaveDraft}>
+                                                    onClick={handleReflectionSaveDraft}
+                                                    data-cy="save-as-draft">
                                                     <span className={'lt-button__label'}>Save as draft</span> {/* eslint-disable-line max-len */}
                                                 </button>
                                             )}
                                             <button
                                                 type={'submit'}
-                                                className={'lt-button lt-button--priority'}>
+                                                className={'lt-button lt-button--priority'}
+                                                data-cy="submit-or-update-response">
                                                 <span className={'lt-button__label'}>
                                                     {reflectionStatus === 'DRAFT' ? (
                                                         <>Submit response</>
@@ -273,11 +293,12 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 </form>
                             </section>
                             <section
-                                className={'lt-pane-section lt-pane-section__feedback'}>
+                                className={'lt-pane-section lt-pane-section__feedback'}
+                                data-cy="feedback">
                                 <h2>Feedback for you</h2>
                                 {feedback ? (
                                     <>
-                                        <p className={'lt-date-display'}>
+                                        <p className={'lt-date-display'} data-cy="feedback-status">
                                             From {feedbackSubmittedBy}<br />
                                             {feedbackSubmittedDate == feedbackModifiedDate ? (
                                                 <>Submitted on {feedbackSubmittedDate}</>
@@ -286,7 +307,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                                 Last modified on {feedbackModifiedDate}
                                             </>)}
                                         </p>
-                                        <div dangerouslySetInnerHTML={{__html: feedback}}/>
+                                        <div className={'lt-quill-rendered'}
+                                            dangerouslySetInnerHTML={{__html: feedback}}/>
                                     </>
                                 ) : (
                                     <p className={'lt-date-display'}>
@@ -394,14 +416,18 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                     <span className={'lt-icons lt-button-back__icon'}>
                         <FontAwesomeIcon icon={faArrowLeft}/>
                     </span>
-                    <span className={'lt-button-back__text'}>
-                        Return to Responses
-                    </span>
+                    <div className={'lt-button-back__clip'} data-cy="go-back">
+                        <span className={'lt-button-back__text'}>
+                            Return to Responses
+                        </span>
+                    </div>
                 </button>
             </div>
 
-            <h2 className={'pt-5'}>Response by {activeResponse.owners.join(', ')}</h2>
-            <p className={'lt-date-display'}>
+            <h2 className={'pt-5'} data-cy="response-by">
+                Response by {activeResponse.owners.join(', ')}
+            </h2>
+            <p className={'lt-date-display'} data-cy="response-modified">
                 Last modified on {activeResponse.modified_at_formatted}
             </p>
 
@@ -417,19 +443,22 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                     activeEventEdit={activeEventEdit} />
             </section>
 
-            <section className={'lt-pane-section'}>
+            <section data-cy="contributor-reflection" className={'lt-pane-section'}>
                 <h3>Reflection</h3>
-                <div dangerouslySetInnerHTML={{__html: activeResponse.reflection}}/>
+                <div className={'lt-quill-rendered'}
+                    dangerouslySetInnerHTML={{__html: activeResponse.reflection}}/>
             </section>
             <section className={'lt-pane-section lt-pane-section__feedback'}>
-                <h3>Feedback for {activeResponse.owners.join(', ')}</h3>
+                <h3 data-cy="feedback-for-contributor">
+                    Feedback for {activeResponse.owners.join(', ')}
+                </h3>
                 <div className={'lt-helper'}>
                     <div className={'lt-helper--line'}
                         id={'helper-field__description'}>
                         Write a feedback on this Contributor’s response.
                     </div>
                 </div>
-                <div className={'form-group pane-form-group'}>
+                <div data-cy="feedback" className={'form-group pane-form-group'}>
                     <form onSubmit={handleFeedbackSubmission}>
                         {feedbackSubmittedDate && feedbackModifiedDate ? (
                             <p className={'lt-date-display'}>
@@ -452,11 +481,13 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                         <div className={'text-center mt-3'}>
                             <button
                                 onClick={handleFeedbackCancel}
-                                className={'lt-button lt-button--outlined mr-3'}>
+                                className={'lt-button lt-button--outlined mr-3'}
+                                data-cy="cancel-feedback">
                                 <span className={'lt-button__label'}>Cancel</span>
                             </button>
                             <button type={'submit'}
-                                className={'lt-button lt-button--priority'}>
+                                className={'lt-button lt-button--priority'}
+                                data-cy="send-feedback">
                                 <span className={'lt-button__label'}>
                                     {feedbackSubmittedDate ? (
                                         <>Update feedback</>
@@ -470,7 +501,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                 </div>
             </section>
         </>) : (<>
-            <section className={'lt-pane-section'}>
+            <section data-cy="activity-response-count" className={'lt-pane-section'}>
                 {responseData.length === 1 ? (
                     <p>There is {responseData.length} response to this activity.</p>
                 ) : (
@@ -497,9 +528,10 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                     <section
                         className={'lt-response-summary d-flex'}
                         aria-labelledby={`response-${el.pk}`}
-                        key={el.pk}>
+                        key={el.pk}
+                        data-cy="response-summary">
                         <div className={'d-flex flex-column'}>
-                            <h3 id={`response-${el.pk}`}>
+                            <h3 id={`response-${el.pk}`} data-cy="contributor">
                                 {el.owners.join(', ')}
                             </h3>
                             <p
@@ -521,7 +553,8 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                             </button></li>
                             <li><button
                                 onClick={(): void => {setActiveResponse(el);}}
-                                className={'lt-icon-button'}>
+                                className={'lt-icon-button'}
+                                data-cy="open-response">
                                 <span className={'lt-icons lt-icon-button__icon'}
                                     aria-hidden='true'>
                                     <FontAwesomeIcon icon={faLayerGroup}/>

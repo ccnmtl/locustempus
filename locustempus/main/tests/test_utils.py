@@ -1,5 +1,6 @@
 from django.core import mail
 from django.test.testcases import TestCase
+from django.urls.base import reverse
 
 from locustempus.main.tests.factories import UserFactory
 from locustempus.main.utils import send_template_email
@@ -17,3 +18,8 @@ class UtilTest(TestCase):
             self.assertEquals(mail.outbox[0].from_email,
                               'locustempus@example.com')
             self.assertTrue(mail.outbox[0].to, ['abc123@columbia.edu'])
+
+    def test_sentry_dsn_processor(self):
+        with self.settings(SENTRY_DSN='foo'):
+            r = self.client.get(reverse('index-view'))
+            self.assertEqual('foo', r.context['SENTRY_DSN'])

@@ -22,3 +22,5 @@ if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
             'ATOMIC_REQUESTS': True,
         }
     }
+    WAFFLE_FLAG_DEFAULT = True
+    WAFFLE_CREATE_MISSING_FLAGS = True

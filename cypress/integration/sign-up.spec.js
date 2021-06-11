@@ -4,7 +4,7 @@ describe('Sign-Up Stories', function() {
     it('Sign Up', function() {
         // Navigate to the home page
         cy.visit('/');
-        cy.title().should('equal', 'Home page – Locus Tempus');
+        cy.title().should('equal', 'A mapping application for spatial and temporal thinking in classrooms – Locus Tempus');
         cy.get('#cu-privacy-notice-button').click();
 
         // Navigate to the sign up page

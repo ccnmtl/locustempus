@@ -94,25 +94,26 @@
     background-color: $yellow-100;
     border: 1px solid $surface-medium;
     .lt-banner__icon {
-        //filter: invert(62%) sepia(35%) saturate(5159%) hue-rotate(2deg) brightness(104%) contrast(102%);
         filter: $amber-800-svg;
         -webkit-filter: $amber-800-svg;
         -moz-filter: $amber-800-svg;
     }
-    
     &::after {
-        background-color: inherit;
-        border-right: inherit;
-        border-bottom: inherit;
-        content: "";
-        display: block;
-        height: 0.8rem;
-        width: 0.8rem;
-        position: absolute;
-        left: calc(100% - 0.4rem);
-        top: calc(50% - 0.4rem);
-        webkit-transform: rotate(-45deg);
-        transform: rotate(-45deg);
+        display: none;
+        @include media-breakpoint-up(lg) {
+            background-color: inherit;
+            border-right: inherit;
+            border-bottom: inherit;
+            content: "";
+            display: block;
+            height: 0.8rem;
+            width: 0.8rem;
+            position: absolute;
+            left: calc(100% - 0.4rem);
+            top: calc(50% - 0.4rem);
+            webkit-transform: rotate(-45deg);
+            transform: rotate(-45deg);
+        }
     }
 }
 
@@ -136,6 +137,19 @@
     }
 }
 
+.lt-license {
+    max-width: 30rem;
+    padding: 0 1rem;
+    margin: 1rem auto 2rem auto;
+    text-align: center;
+}
+
+.device-compatibility {
+    z-index: 1999;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
 
 @keyframes opacity-fade-out {
   0% {

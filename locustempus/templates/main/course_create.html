@@ -8,49 +8,81 @@ Create New Workspace
 {% block content %}
 
 <div class="dashboard-container">
+    <div class="row mt-3">
+        <div class="col-12 col-lg-5 col-xl-4">
+            <h2 class="h4 mb-4">Activate Locus Tempus on CourseWorks</h2>
+            <div class="w-100 mb-4"><img src="{{STATIC_URL}}img/courseworks-logo.png" class="img-fluid" /></div>
+            <p><strong>Is your class on CourseWorks@Columbia?</strong> If so, you can activate Locus Tempus there. Once you have activated Locus Tempus, your Workspace will be created, and your students will be provisioned accounts on this site. You can use this option so you can continue to focus on using CourseWorks as your main portal for online components of your class.</p>
+            <p>
+            <a href="https://courseworks.columbia.edu"
+                rel="noopener noreferrer"
+                target="_blank"
+                title="Go to CourseWorks@Columbia to activate Locus Tempus"
+                class="lt-button lt-button--priority">
+                <span class='lt-button__label'>Go to CourseWorks@Columbia</span>
+            </a>
+            </p>
+        </div>
+        <div class="col-12 col-lg-6 col-xl-6 offset-lg-1 create-workspace-container">
+            <h2 class="h4 mb-4 mt-3 mt-lg-0">Create your own Workspace</h2>
 
-<p>Create a sandbox course and create a new project to get started.</p>
-
-
-    <form action="." method="post">
-        {% csrf_token %}
-        {{ form.non_field_errors }}
-        <div class="form-group">
-            <label for="{{ form.title.id_for_label }}">Title:</label>
-            {% if form.title.errors %}
-                {{ form.title|add_class:"form-control is-invalid"|attr:"data-cy:workspace-title" }}
-                <div class="invalid-feedback">
-                    {% for error in form.title.errors %}
-                        {{ error }}
-                    {% endfor %}
+            <form action="." method="post">
+                {% csrf_token %}
+                {{ form.non_field_errors }}
+                <div class="form-group">
+                    <label for="{{ form.title.id_for_label }}">Title</label>
+                    <div class="lt-helper">
+                        <div class="lt-helper--line">
+                            Name your new workspace.
+                        </div>
+                    </div>
+                    {% if form.title.errors %}
+                        {{ form.title|add_class:"form-control is-invalid"|attr:"data-cy:workspace-title" }}
+                        <div class="invalid-feedback">
+                            {% for error in form.title.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.title|add_class:"form-control"|attr:"data-cy:field-workspace-title" }}
+                    {% endif %}
                 </div>
-            {% else %}
-                {{ form.title|add_class:"form-control"|attr:"data-cy:field-workspace-title" }}
-            {% endif %}
-        </div>
-        <div class="form-group">
-            <label for="{{ form.description.id_for_label }}">Description:</label>
-            {% if form.description.errors %}
-                {{ form.description|add_class:"form-control is-invalid"|attr:"data-cy:workspace-description" }}
-                <div class="invalid-feedback">
-                    {% for error in form.description.errors %}
-                        {{ error }}
-                    {% endfor %}
+                <div class="form-group">
+                    <label for="{{ form.description.id_for_label }}">Description</label>
+                    <div class="lt-helper">
+                        <div class="lt-helper--line">
+                            Provide a brief summary of your workspace (&leq; 200 characters).
+                            You can return later to fill this out.
+                        </div>
+                    </div>
+                    {% if form.description.errors %}
+                        {{ form.description|add_class:"form-control is-invalid"|attr:"data-cy:workspace-description" }}
+                        <div class="invalid-feedback">
+                            {% for error in form.description.errors %}
+                                {{ error }}
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <textarea name="description" cols="40" rows="3" class="form-control" maxlength="200" id="{{ form.description.id_for_label }}" data-cy="field-workspace-description"></textarea>
+                    {% endif %}
                 </div>
-            {% else %}
-                <textarea name="description" cols="40" rows="3" class="form-control" maxlength="200" placeholder="A brief summary of your workspace." id="{{ form.description.id_for_label }}" data-cy="field-workspace-description"></textarea>
-            {% endif %}
+                <div>
+                    <a
+                        data-cy="cancel-create-workspace"
+                        href="/dashboard/"
+                        class="lt-button lt-button--outlined mr-3">
+                        <span class="lt-button__label">Cancel</span>
+                    </a>
+                    <button
+                        data-cy="save-workspace"
+                        type="submit"
+                        class="lt-button lt-button--priority">
+                        <span class="lt-button__label">Save Workspace</span>
+                    </button>
+                </div>
+            </form>
         </div>
-        <div class="row">
-            <div class="col-md-2 pr-0">
-                <button type="submit" class="btn btn-primary" data-cy="save-workspace">Save Workspace</button>
-            </div>
-            <div class="col-md-2 pr-0">
-                 <a data-cy="cancel-create-workspace" class="btn btn-block btn-secondary" href="/dashboard/">Cancel</a>
-            </div>
-        </div>
-    </form>
-
+    </div>
 </div>
 
 {% endblock %}

@@ -3,7 +3,7 @@
     @include button-typography;
     background-color: transparent;
     border: 1px solid transparent;
-    padding: 0.75rem 1rem;
+    padding: 0.575rem 0.875rem;
     border-radius: 0.25rem;
     display: inline-flex;
     position: relative;
@@ -11,6 +11,9 @@
     justify-content: center;
     vertical-align: middle;
     color: $secondary1-dark;
+    @include media-breakpoint-up(md) {
+        padding: 0.75rem 1rem;
+    }
     &--priority {
         @include button-darkbg-typography;
         background-color: $secondary1-dark;
@@ -71,6 +74,22 @@
             padding: 1.5rem;
         }
     }
+    &--caution {
+        color: $on-error;
+        &:hover,
+        &:focus {
+            color: $on-error;
+            background-color: $error-surface-alt;
+        }
+    }
+    &--muted {
+        color: $on-muted;
+        &:hover,
+        &:focus {
+            color: $on-muted;
+            background-color: $muted-surface;
+        }
+    }
     &__icon {
         margin-left: -0.25rem;
         margin-right: 0.5rem;
@@ -84,6 +103,55 @@
         margin: 0;
         border: 0;
     }
+}
+
+.lt-button--caution {
+    color: $on-error;
+     .lt-icons,
+     .lt-icons:hover {
+        filter: $error-svg !important;
+        -webkit-filter: $error-svg !important;
+        -moz-filter: $error-svg !important;
+    }
+    &.lt-button--priority {
+        @include button-darkbg-typography;
+        border-color: $on-error;
+        background-color: $on-error;
+         .lt-icons {
+            filter: $white-svg;
+            -webkit-filter: $white-svg;
+            -moz-filter: $white-svg;
+        }
+    }
+    &.lt-button--solid {
+        color: $on-error !important;
+        border-color: $error-surface;
+        background-color: $error-surface;
+    }
+}
+
+.lt-button--muted {
+    color: $on-muted;
+     .lt-icons,
+     .lt-icons:hover {
+        filter: $muted-svg !important;
+        -webkit-filter: $muted-svg !important;
+        -moz-filter: $muted-svg !important;
+    }
+    &.lt-button--solid {
+        color: $on-muted !important;
+        border-color: $muted-surface;
+        background-color: $muted-surface;
+         .lt-icons {
+            filter: $muted-svg;
+            -webkit-filter: $muted-svg;
+            -moz-filter: $muted-svg;
+        }
+    }
+}
+
+.lt-pane-actions .lt-button {
+    padding: 0.75rem 1rem;
 }
 
 .lt-icon-button {
@@ -137,6 +205,7 @@
     padding: 0;
     margin: 0;
     text-align: left;
+    overflow: hidden;
     &__icon {
         margin-right: 8px;
         width: 1rem;
@@ -151,8 +220,8 @@
     }
     &__clip {
         display: inline-flex;
-        width: calc(100% - 5rem);
-        min-width: 10rem;
+        max-width: calc(100% - 3rem);
+        min-width: 13rem;
     }
     &__text {
         display: block;
@@ -316,7 +385,7 @@
         text-transform: none !important;
         font-size: $font-size-base;
     }
-    .lt-icons {
+    .lt-button__avatar {
         width: 1.5rem;
         height: 1.5rem;
         margin-right: 0;
@@ -348,7 +417,7 @@
             font-size: 1.25rem;
         }
     }
-    .dropdown-toggle .lt-icons {
+    .dropdown-toggle .lt-button__avatar {
         width: 1.75rem;
         height: 1.75rem;
         transition: all 0.4s linear;

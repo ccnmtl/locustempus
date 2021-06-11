@@ -185,9 +185,9 @@ h6 {
 
 .lt-pane-actions .lt-button {
     .lt-button__label {
-        font-size: 1rem;
+        font-size: 0.875rem;
         @include media-breakpoint-up(sm) {
-            font-size: 1rem;
+            font-size: 0.875rem;
         }
         @include media-breakpoint-up(md) {
             font-size: 1rem;
@@ -260,4 +260,8 @@ figcaption {
     line-height: 1.5 !important;
     -webkit-font-smoothing: antialiased !important;
     moz-osx-font-smoothing: grayscale !important;
+}
+
+.lt-license {
+    font-size: ($font-size-base * 0.875);
 }

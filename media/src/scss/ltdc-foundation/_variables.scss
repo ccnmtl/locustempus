@@ -69,6 +69,7 @@ $amber-800-svg: invert(50%) sepia(81%) saturate(834%) hue-rotate(360deg) brightn
 $gray-400-svg:  invert(86%) sepia(0%) saturate(121%) hue-rotate(166deg) brightness(91%) contrast(85%);
 $gray-500-svg:  invert(84%) sepia(0%) saturate(42%) hue-rotate(203deg) brightness(77%) contrast(82%);
 $gray-600-svg:  invert(49%) sepia(0%) saturate(2%) hue-rotate(197deg) brightness(94%) contrast(94%);
+$muted-svg:     invert(4%) sepia(22%) saturate(0%) hue-rotate(182deg) brightness(91%) contrast(81%);
 $error-svg:     invert(7%) sepia(95%) saturate(6321%) hue-rotate(343deg) brightness(105%) contrast(107%);
 $black-svg:     invert(0%) grayscale(0%) brightness(0%);
 $white-svg: invert(100%) grayscale(100%) brightness(100%);
@@ -92,6 +93,25 @@ $secondary1-light:   $green-050 !default;
 $secondary2-dark:     $green-700 !default;
 $secondary2-medium:   $green-200 !default;
 $secondary2-light:    $green-100 !default;
+
+// Theme (to replace the current one soon)
+
+$primary-4:     $blue-900 !default;
+$primary-3:     $blue-200 !default;
+$primary-2:     $blue-100 !default;
+$primary-1:     $blue-050 !default;
+
+$secondary-a5:   $amber-800 !default;
+$secondary-a4:   $amber-400 !default;
+$secondary-a3:   $amber-200 !default;
+$secondary-a2:   $amber-100 !default;
+$secondary-a1:   $amber-050 !default;
+
+$secondary-b5:   $green-700 !default;
+$secondary-b4:   $green-600 !default;
+$secondary-b3:   $green-200 !default;
+$secondary-b2:   $green-100 !default;
+$secondary-b1:   $green-050 !default;
 
 $link-color: $blue-a400 !default;
 $link-hover-color: $blue-900 !default;
@@ -129,3 +149,6 @@ $on-surface-muted:     $gray-600 !default;
 $on-error:       #b00020 !default;
 $error-surface:  #f8d7da !default;
 $error-surface-alt:  #FFEBEE !default;
+
+$on-muted:       $gray-900 !default;
+$muted-surface:  $gray-400 !default;

@@ -1,5 +1,5 @@
 from courseaffils.lib import in_course
-from locustempus.main.models import Activity, Response
+from locustempus.main.models import Activity, Response, Project
 from rest_framework import permissions
 
 
@@ -10,12 +10,69 @@ class IsLoggedInCourse(permissions.IsAuthenticated):
     If so, it then checks they are faculty or a student. If a student, it
     checks if an activity exists for the course.
     """
+    def has_permission(self, request, view):
+        # Runs on GET / requests
+        user = request.user
+        if user.is_anonymous:
+            return False
+
+        # New projects can not be created the API
+        if request.method == 'POST':
+            return False
+
+        return True
+
     def has_object_permission(self, request, view, obj):
+        user = request.user
+        if user.is_anonymous:
+            return False
+
+        # has_permission should prevent a POST from reaching this point
+        if request.method == 'POST':
+            return False
+
+        if request.method not in permissions.SAFE_METHODS:
+            return obj.course.is_faculty(request.user)
+
         return (
             obj.course.is_faculty(request.user) or
             (in_course(request.user.username, obj.course) and
              hasattr(obj, 'activity'))
         )
+
+
+class ActivityPermission(permissions.IsAuthenticated):
+    def has_permission(self, request, view):
+        user = request.user
+        if user.is_anonymous:
+            return False
+
+        if request.method == 'POST':
+            # Check that user is faculty in the project
+            try:
+                proj = Project.objects.get(
+                    pk=request.data.get('project', None))
+                return proj.course.is_true_faculty(user)
+            except Project.DoesNotExist:
+                return False
+
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        """
+        An authenticated user may GET an activity if they are in the course.
+        An authenticated user may POST, PUT, DELETE an activity if they are
+        faculty in the course.
+        """
+        user = request.user
+        course = obj.project.course
+        in_course = course.is_true_member(user)
+        is_faculty = course.is_true_faculty(user)
+
+        if request.method in permissions.SAFE_METHODS:
+            return in_course
+
+        return is_faculty
 
 
 class IsLoggedInFaculty(permissions.IsAuthenticated):

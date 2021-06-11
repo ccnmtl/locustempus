@@ -24,6 +24,7 @@ export interface ActivityMapPaneProps {
     isFaculty: boolean;
     layers: Map<number, LayerData>;
     projectLayers:  Map<number, LayerData>;
+    fellowContributorLayers:  Map<number, LayerData>;
     activity: ActivityData | null;
     updateActivity(instructions: string, pk: number): void;
     deleteActivity(pk: number): void;
@@ -70,8 +71,9 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         activePosition, addEvent, activeEvent, setActiveEvent,
         activeEventDetail, setActiveEventDetail, activeEventEdit,
         setActiveEventEdit, deleteEvent, updateEvent, projectLayers,
-        responseData, updateResponse, createFeedback, updateFeedback,
-        responseLayers, activeTab, setActiveTab, setAlert
+        fellowContributorLayers, responseData, updateResponse,
+        createFeedback, updateFeedback, responseLayers, activeTab,
+        setActiveTab, setAlert
     }: ActivityMapPaneProps, forwardedRef) => {
 
     const projectPaneHeader = useRef<HTMLDivElement>(null);
@@ -233,6 +235,7 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             description={description}
             layers={layers}
             projectLayers={projectLayers}
+            fellowContributorLayers={fellowContributorLayers}
             activity={activity}
             updateActivity={updateActivity}
             deleteActivity={deleteActivity}
@@ -266,7 +269,8 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             ref={forwardedRef}
             className={'widget-pane widget-pane-' + (showPane ? 'expanded' : 'collapsed') }>
             <div className='widget-pane-content project-pane' id='pane-scroll-y'>
-                <header ref={projectPaneHeader} className='project-pane__header'>
+                <header ref={projectPaneHeader} className='project-pane__header'
+                    data-cy="activity-header">
                     <h1>{title}</h1>
                     {isFaculty && (
                         <OverflowMenu items={[

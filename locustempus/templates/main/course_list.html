@@ -10,6 +10,7 @@ Workspaces
 {% endblock %}
 
 {% block page_actions %}
+{% if courses %}
 <div class="lt-dashboard_actions">
     <form method="post" class="lt-layout-toggle">
         {% csrf_token %}
@@ -23,6 +24,7 @@ Workspaces
         </button>
     </form>
 </div>
+{% endif %}
 {% endblock %}
 
 {% block content %}
@@ -106,10 +108,11 @@ Workspaces
             </div>
             <div class="create-prompt__content">
                 <div class="create-prompt__alert" role="alert">
-                  You don’t have any Workspaces
+                  You don’t have any Workspaces.
                 </div>
+                <p class="mt-4 mx-auto w-50">A Workspace is place where you can invite contributors to visualize, to collaborate in activities, and to analyze the events and locations on Project maps.</p>
                 <p class="create-prompt__instructions">
-                You can start by creating one
+                You can start by creating one.
                 </p>
                 <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="lt-button lt-button--solid">
                     <span class='lt-icons lt-button__icon lt-button--svg'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create new workspace</span>

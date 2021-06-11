@@ -47,8 +47,11 @@ export const Activity: React.FC<ActivityProps> = (
     if (activity) {
         return (
             <>
-                <div className='lt-pane-section__header'>
-                    <h2>Activity instructions</h2>
+                <div className='lt-pane-section__header'
+                    data-cy="activity">
+                    <h2 data-cy="activity-instructions-header">
+                        Activity instructions
+                    </h2>
                     {isFaculty && (
                         <OverflowMenu items={[
                             {
@@ -82,18 +85,22 @@ export const Activity: React.FC<ActivityProps> = (
                             <div className={'text-center mt-3'}>
                                 <button
                                     onClick={(): void => setShowEditForm(false)}
-                                    className={'lt-button lt-button--outlined mr-3'}>
+                                    className={'lt-button lt-button--outlined mr-3'}
+                                    data-cy="edit-activity-cancel">
                                     <span className={'lt-button__label'}>Cancel</span>
                                 </button>
                                 <button type={'submit'}
-                                    className={'lt-button lt-button--priority'}>
+                                    className={'lt-button lt-button--priority'}
+                                    data-cy="edit-activity-save">
                                     <span className={'lt-button__label'}>Save changes</span>
                                 </button>
                             </div>
                         </form>
                     </div>
                 ) : (
-                    <div dangerouslySetInnerHTML={{__html: activity.instructions}}/>
+                    <div data-cy="activity-instructions"
+                        className={'lt-quill-rendered'}
+                        dangerouslySetInnerHTML={{__html: activity.instructions}}/>
                 )}
             </>
         );
@@ -103,7 +110,7 @@ export const Activity: React.FC<ActivityProps> = (
                 <h2>Activity</h2>
                 {showCreateForm ? (
                     <div className={'form-group pane-form-group'}>
-                        <form onSubmit={handleCreateActivity}>
+                        <form onSubmit={handleCreateActivity} data-cy="create-activity-form">
                             <label htmlFor={'activity-form__instructions'}>
                                 Instructions
                             </label>
@@ -113,11 +120,13 @@ export const Activity: React.FC<ActivityProps> = (
                             <div className={'text-center mt-3'}>
                                 <button
                                     onClick={(): void => setShowCreateForm(false)}
-                                    className={'lt-button lt-button--outlined mr-3'}>
+                                    className={'lt-button lt-button--outlined mr-3'}
+                                    data-cy="create-activity-cancel">
                                     <span className={'lt-button__label'}>Cancel</span>
                                 </button>
                                 <button type={'submit'}
-                                    className={'lt-button lt-button--priority'}>
+                                    className={'lt-button lt-button--priority'}
+                                    data-cy="create-activity-save">
                                     <span className={'lt-button__label'}>Create</span>
                                 </button>
                             </div>
@@ -126,7 +135,10 @@ export const Activity: React.FC<ActivityProps> = (
                 ) : (
                     <>
                         <div className={'lt-banner mb-3'} role={'banner'}>
-                            There is no activity assigned on this project.
+                            There is no activity assigned on this project.<br />
+                            An Activity is a collaboration on this project among members in your
+                            workspace. You can add instructions here for contributors on what they
+                            will be working on.
                         </div>
                         <button
                             data-cy={'create-activity'}

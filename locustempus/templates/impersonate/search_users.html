@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block title %}
+Impersonate A User
+{% endblock %}
+
+{% block content %}
+
+<div class="signupbox row mt-3">
+    <div class="col-12 col-md-6">
+    <h1 class="h2 mb-3">Impersonate A User</h1>
+    <form action="{% url 'impersonate-search' %}" method="GET">
+        <label for="impersonate-field">Search user by UNI, username, or name:</label>
+        <input type="text" name="q" id="impersonate-field" value="{% if query %}{{ query }}{% endif %}" class="form-control">
+        {{redirect_field}}
+        <button
+            class="lt-button lt-button--priority mt-3"
+            type="submit"
+            data-cy="sign-up-submit">
+            <span class='lt-button__label'>Search</span>
+        </button>
+    </form>
+    {% if query and page.object_list %}
+        <h2 class="h5 mt-5 mb-3">Matching users:</h2>
+
+          <ul>
+            {% for user in page.object_list %}
+                {% if user.is_superuser %}
+                    <li>{{ user.username }} is a Superuser (can’t impersonate)</li>
+                {% else %}
+                    <li>{{ user }} - <a href="{% url 'impersonate-start' user.pk %}{{redirect}}">Impersonate</a></li>
+                {% endif %}
+            {% endfor %}
+          </ul>
+    {% endif %}
+
+    {% if query and page.has_previous %}
+    <a href="{% url 'impersonate-search' %}?page={{ page.previous_page_number }}&q={{ query|urlencode }}">Previous Page</a> &nbsp; 
+    {% endif %}
+
+    {% if query and page.has_next %}
+    <a href="{% url 'impersonate-search' %}?page={{ page.next_page_number }}&q={{ query|urlencode }}">Next Page</a> &nbsp; 
+    {% endif %}
+    </div>
+    <div class="col-5 d-none d-md-block">
+        <div class="create-prompt__decor w-100">
+            <img src="{{STATIC_URL}}img/prompt-impersonate.svg" />
+        </div>
+    </div>
+</div>
+
+
+{% endblock %}

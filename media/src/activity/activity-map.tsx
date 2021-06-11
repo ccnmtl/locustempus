@@ -88,6 +88,11 @@ export const ActivityMap: React.FC = () => {
     // projectLayerData holds Layers belonging to the base project
     const [projectLayerData, setProjectLayerData] = useState<Map<number, LayerData>>(new Map());
 
+    // fellowContributorLayerData holds layers of other contributors, used only
+    // when a contributor is viewing
+    const [fellowContributorLayerData, setFellowContributorLayerData] =
+        useState<Map<number, LayerData>>(new Map());
+
     // layerData holds Layers created by the student when responding
     // TODO: rename this to better reflect what it does
     const [layerData, setLayerData] = useState<Map<number, LayerData>>(new Map());
@@ -593,7 +598,8 @@ export const ActivityMap: React.FC = () => {
         // Set the active event
         setActiveEvent(info.object);
         // TODO If a student event, then find the response and open that up
-        setActiveTab(projectLayerData.has(info.object.layer) ? 1 : 2);
+        // eslint-disable-next-line max-len
+        setActiveTab(projectLayerData.has(info.object.layer) || fellowContributorLayerData.has(info.object.layer) ? 1 : 2);
 
         // Returning true prevents event from bubling to map canvas
         return true;
@@ -607,6 +613,7 @@ export const ActivityMap: React.FC = () => {
     const mapLayers = [
         ...layerData.values(),
         ...projectLayerData.values(),
+        ...fellowContributorLayerData.values(),
         ...flattenedResponseLayers
     ].reduce(
         (acc: IconLayer<EventData>[], layer: LayerData) => {
@@ -791,6 +798,20 @@ export const ActivityMap: React.FC = () => {
                                 setActiveLayer(data.pk);
                             });
                     }
+
+                    // Get aggregated layers of other student's work
+                    // Fetch the Project layers
+                    const aggLayerData: LayerData[] = [];
+                    for (const layerUrl of projData.aggregated_layers) {
+                        aggLayerData.push(await get<LayerData>(layerUrl));
+                    }
+
+                    const aggLayers = aggLayerData.reduce((acc, val) => {
+                        acc.set(val.pk, val);
+                        return acc;
+                    }, new Map<number, LayerData>());
+                    setFellowContributorLayerData(aggLayers);
+                    layersForZoom = layersForZoom.concat([...aggLayers.values()]);
                 }
             }
             const layerVis = layersForZoom.reduce((acc, val) => {
@@ -858,7 +879,7 @@ export const ActivityMap: React.FC = () => {
                             <div className={'mapboxgl-popup-text'}>
                                 <h2>{activeEvent.label}</h2>
                                 <div className={'event-attr'}>by {activeEvent.owner}</div>
-                                <div className={'event-summary'}
+                                <div className={'event-summary lt-quill-rendered'}
                                     dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
                             </div>
                         </Popup>
@@ -893,6 +914,7 @@ export const ActivityMap: React.FC = () => {
                     toggleLayerVisibility={toggleLayerVisibility}
                     toggleResponseVisibility={toggleResponseVisibility}
                     projectLayers={projectLayerData}
+                    fellowContributorLayers={fellowContributorLayerData}
                     showAddEventForm={showAddEventForm}
                     displayAddEventForm={displayAddEventForm}
                     activePosition={activePosition}

@@ -1,10 +1,12 @@
-from courseaffils.models import Course
 import datetime
-from django.contrib.auth.models import User, Group
-import factory
 from random import randrange
 
-from locustempus.main.models import Project, Activity, Response, Feedback
+from courseaffils.models import Course
+from django.contrib.auth.models import User, Group
+import factory
+
+from locustempus.main.models import (
+    Project, Activity, Response, Feedback, Layer)
 
 
 class UserFactory(factory.DjangoModelFactory):
@@ -52,6 +54,11 @@ class RegistrarCourseFactory(factory.DjangoModelFactory):
         ProjectFactory(course=obj)
 
 
+class LayerFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Layer
+
+
 class ProjectFactory(factory.DjangoModelFactory):
     class Meta:
         model = Project
@@ -59,6 +66,10 @@ class ProjectFactory(factory.DjangoModelFactory):
     description = factory.Sequence('A test description {}'.format)
     course = factory.SubFactory(SandboxCourseFactory)
     base_map = 'http://localhost:8888/style.json'
+
+    @factory.post_generation
+    def generate_layer(obj, create, extracted, **kwargs):
+        LayerFactory(title='Untitled Layer', content_object=obj)
 
 
 class ActivityFactory(factory.DjangoModelFactory):
@@ -133,3 +144,27 @@ class CourseTestMixin(object):
         self.sandbox_course_activity = a2
         self.sandbox_course_response = ResponseFactory.create(
             activity=a2, owners=[self.student])
+
+        # Fake Course: A course with unrelated faculty and students. Used
+        # to test that the faculty and student users above don't have
+        # access to this courses resources
+        self.fake_student: User = UserFactory.create(
+            first_name='Student',
+            last_name='Fake',
+            email='fakestudent@example.com'
+        )
+        self.fake_faculty: User = UserFactory.create(
+            first_name='Faculty',
+            last_name='Fake',
+            email='fakefaculty@example.com'
+        )
+        self.fake_course: Course = SandboxCourseFactory.create()
+        self.fake_course.group.user_set.add(self.fake_student)
+        self.fake_course.group.user_set.add(self.fake_faculty)
+        self.fake_course.faculty_group.user_set.add(self.fake_faculty)
+        p3 = ProjectFactory.create(course=self.fake_course)
+        self.fake_course_project = p3
+        a3 = ActivityFactory.create(project=p3)
+        self.fake_course_activity = a3
+        self.fake_course_response = ResponseFactory.create(
+            activity=a3, owners=[self.fake_student])
