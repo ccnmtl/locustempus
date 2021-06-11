@@ -35,7 +35,7 @@ path.py==12.0.1  # ipython
 backports.shutil_get_terminal_size==1.0.0  # ipython
 wcwidth==0.2.5  # ipython
 prompt_toolkit==2.0.10  # ipython
-pygments==2.7.4  # ipython
+pygments==2.9.0  # ipython
 scandir==1.10.0  # ipython
 ipython==7.8.0
 coverage==5.5
