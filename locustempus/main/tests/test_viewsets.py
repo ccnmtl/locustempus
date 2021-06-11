@@ -558,7 +558,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
             owners=[student],
             status=Response.SUBMITTED
         )
-        student_layer = LayerFactory.create(
+        LayerFactory.create(
             title='Untitled Response Layer',
             content_object=student_response
         )
@@ -600,11 +600,22 @@ class ProjectAPITest(CourseTestMixin, TestCase):
 
         # Assert that we can only see the layer related
         # to the submitted response
-        self.assertListEqual(
-            r2.data['aggregated_layers'],
-            ['http://testserver' + reverse(
-                'api-layer-detail', args=[student_layer.pk])]
-        )
+        for lyr in r2.data['aggregated_layers']:
+            pk = lyr.split('/')[-2]
+            layer = Layer.objects.get(pk=int(pk))
+            # First assert that the layer is related to a Response and that
+            # the response is related to our specific activity
+            self.assertTrue(
+                isinstance(layer.content_object, Response) and
+                layer.content_object.activity == self.sandbox_course_activity
+            )
+            # The student needs to own the related Response or the Response
+            # needs to be submitted or reviewed
+            self.assertTrue(
+                self.student in layer.content_object.owners.all() or
+                layer.content_object.status in [
+                    Response.SUBMITTED, Response.REVIEWED]
+            )
 
 
 class ActivityAPITest(CourseTestMixin, TestCase):
