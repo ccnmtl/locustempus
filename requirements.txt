@@ -93,7 +93,7 @@ django-markwhat==1.6.2
 gunicorn==19.10.0
 django-infranil==1.1.0
 django-flatblocks==1.0.0
-django-storages==1.9.1
+django-storages==1.11.1
 
 djangorestframework==3.10.3
 rest-framework-generic-relations==2.0.0
