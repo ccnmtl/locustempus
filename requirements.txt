@@ -40,7 +40,7 @@ scandir==1.10.0  # ipython
 ipython==7.8.0
 coverage==5.5
 pyasn1==0.4.8
-cryptography<3.3.2  # pyOpenSSL
+cryptography<3.4.8  # pyOpenSSL
 pyOpenSSL==20.0.1
 ndg-httpsclient==0.5.1
 urllib3==1.26.5  # requests
@@ -54,7 +54,7 @@ lazy-object-proxy==1.6.0
 pylint==2.4.3
 six==1.16.0
 ipaddress==1.0.23  # faker
-faker==3.0.1  # factory_boy
+faker==8.8.0  # factory_boy
 factory_boy==2.12.0
 ldap3==2.9
 sqlparse==0.3.1
