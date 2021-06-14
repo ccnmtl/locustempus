@@ -13,11 +13,11 @@ pyflakes==2.3.1
 mccabe==0.6.1
 configparser==5.0.2
 pycodestyle==2.7.0
-importlib-metadata==2.1.1  # for flake8
+importlib-metadata==4.5.0  # for flake8
 typing_extensions==3.10.0.0
-zipp==3.1.0  # for flake8
+zipp==3.4.1  # for flake8
 flake8==3.9.2
-tornado==6.0.3
+tornado==6.1
 beautifulsoup4==4.9.3
 cssselect==1.1.0
 lxml==4.6.3
@@ -31,10 +31,10 @@ pexpect==4.8.0  # ipython
 pathlib2==2.3.5  # ipython
 pickleshare==0.7.5  # ipython
 simplegeneric==0.8.1  # ipython
-path.py==12.0.1  # ipython
+path.py==12.5.0  # ipython
 backports.shutil_get_terminal_size==1.0.0  # ipython
 wcwidth==0.2.5  # ipython
-prompt_toolkit==2.0.10  # ipython
+prompt_toolkit==3.0.18  # ipython
 pygments==2.9.0  # ipython
 scandir==1.10.0  # ipython
 ipython==7.8.0
@@ -48,7 +48,7 @@ chardet==4.0.0  # requests
 idna==3.2  # requests
 certifi==2021.5.30  # requests
 requests==2.25.1
-astroid==2.3.2
+astroid==2.5.8
 wrapt==1.12.1
 lazy-object-proxy==1.6.0
 pylint==2.4.3
@@ -57,7 +57,7 @@ ipaddress==1.0.23  # faker
 faker==8.8.0  # factory_boy
 factory_boy==2.12.0
 ldap3==2.9
-sqlparse==0.3.1
+sqlparse==0.4.1
 s3transfer==0.4.2
 jmespath==0.10.0
 
@@ -89,7 +89,7 @@ django-stagingcontext==0.1.0
 django-ga-context==0.1.0
 django-impersonate==1.7.3
 django-markwhat==1.6.2
-gunicorn==19.10.0
+gunicorn==20.1.0
 django-infranil==1.1.0
 django-flatblocks==1.0.0
 django-storages==1.11.1
