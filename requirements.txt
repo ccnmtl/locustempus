@@ -23,7 +23,7 @@ cssselect==1.1.0
 lxml==4.6.3
 fuzzywuzzy==0.18.0
 sure==1.4.11
-traitlets==4.3.3  # ipython
+traitlets==5.0.5  # ipython
 ipython_genutils==0.2.0  # ipython
 decorator==5.0.9  # ipython
 ptyprocess==0.7.0  # ipython
