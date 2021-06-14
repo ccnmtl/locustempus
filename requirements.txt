@@ -15,9 +15,9 @@ configparser==5.0.2
 pycodestyle==2.7.0
 importlib-metadata==2.1.1  # for flake8
 typing_extensions==3.10.0.0
-zipp==3.1.0  # for flake8
+zipp==3.4.1  # for flake8
 flake8==3.9.2
-tornado==6.0.3
+tornado==6.1
 beautifulsoup4==4.9.3
 cssselect==1.1.0
 lxml==4.6.3
@@ -42,7 +42,7 @@ ipaddress==1.0.23  # faker
 faker==8.8.0  # factory_boy
 factory_boy==2.12.0
 ldap3==2.9
-sqlparse==0.3.1
+sqlparse==0.4.1
 s3transfer==0.4.2
 jmespath==0.10.0
 
