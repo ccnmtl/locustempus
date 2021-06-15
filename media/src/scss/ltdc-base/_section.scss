@@ -184,10 +184,18 @@
     }
     &__image {
         display: block;
-        margin: 0 -1rem 1rem -1rem;
+        margin: 0 0 1rem 0;
+        @include media-breakpoint-up(lg) {
+            margin: 0 -1rem 1rem -1rem;
+        }
     }
     &__image img {
-        width: 100%;
+        width: auto;
+        max-height: 24rem;
+        @include media-breakpoint-up(lg) {
+            width: 100%;
+            max-height: none;
+        }
     }
     &__thumbnail {
         display: block;
@@ -223,7 +231,10 @@
 }
 
 figcaption {
-    margin: 0.625rem 1rem;
+    margin: 0.625rem 0;
+    @include media-breakpoint-up(lg) {
+        margin: 0.625rem 1rem;
+    }
     .img__caption {
         margin-top: 0;
     }

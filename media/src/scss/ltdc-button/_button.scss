@@ -221,7 +221,16 @@
     &__clip {
         display: inline-flex;
         max-width: calc(100% - 3rem);
-        min-width: 13rem;
+        min-width: 10rem;
+        @include media-breakpoint-up(sm) {
+            max-width: 30rem;
+        }
+        @include media-breakpoint-up(md) {
+            max-width: 40rem;
+        }
+        @include media-breakpoint-up(lg) {
+            max-width: 25rem;
+        }
     }
     &__text {
         display: block;
