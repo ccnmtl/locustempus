@@ -7,7 +7,7 @@ from locustempus.main.models import (
     Activity, Response, Layer, Event, Project
 )
 from locustempus.main.permissions import (
-    IsLoggedInCourse, IsLoggedInFaculty, layer_permission_helper,
+    IsLoggedInCourse, IsLoggedInFaculty, LayerPermission,
     layer_permission_helper_faculty, layer_permission_helper_student
 )
 from locustempus.main.tests.factories import (
@@ -1035,7 +1035,8 @@ class LayerAPITest(CourseTestMixin, TestCase):
         self.assertEqual(r.status_code, 200)
         for lyr in r.data:
             layer = Layer.objects.get(pk=lyr['pk'])
-            self.assertTrue(layer_permission_helper(layer, self.faculty))
+            self.assertTrue(
+                LayerPermission().layer_permission_helper(layer, self.faculty))
 
     def test_faculty_get(self):
         """GET request"""
@@ -1141,7 +1142,8 @@ class LayerAPITest(CourseTestMixin, TestCase):
         self.assertEqual(r.status_code, 200)
         for lyr in r.data:
             layer = Layer.objects.get(pk=lyr['pk'])
-            self.assertTrue(layer_permission_helper(layer, self.student))
+            self.assertTrue(
+                LayerPermission().layer_permission_helper(layer, self.student))
 
     def test_student_get(self):
         """GET request"""

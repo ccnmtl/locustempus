@@ -76,77 +76,6 @@ class ActivityPermission(permissions.IsAuthenticated):
         return is_faculty
 
 
-def layer_permission_helper(layer, user):
-    """
-    Checks all the possible conditions for a user to be able
-    to read a layer.
-
-    Project Layer:
-    - If the Layer is associated with a Project, and the user is faculty in
-      Layer => Project => Course
-    - If the Layer is associated with a Project, the user is a student in
-      Layer => Project => Course, and the Project has an Activity
-
-    Response Layer:
-    - If the Layer is associated with a Response, and the user is an owner
-      of the Response
-    - If the Layer is associated with a Response, the Response state is not
-      "Draft", and the user is faculty in Layer => Response => Activity =>
-      Project => Course
-    - If the Layer is associated with a Response, the Response state is not
-      "Draft", the user is owner of a Response related to Layer => Response
-      => Activity, the state of the user's Response is not "Draft", and the
-      user is a student in Layer => Response => Activity => Project =>
-      Course
-    """
-    # Project Layer
-    if isinstance(layer.content_object, Project):
-        project = layer.content_object
-        course = project.course
-        is_student = not course.is_true_faculty(user) \
-            and course.is_true_member(user)
-
-        if course.is_true_faculty(user):
-            return True
-
-        if is_student and hasattr(project, 'activity'):
-            return True
-
-    # Response Layer
-    if isinstance(layer.content_object, Response):
-        response = layer.content_object
-        activity = response.activity
-        project = activity.project
-        course = project.course
-
-        # Predicates
-        is_not_draft = response.status in [
-            Response.SUBMITTED, Response.REVIEWED]
-        is_faculty = course.is_true_faculty(user)
-        is_student = not course.is_true_faculty(user) \
-            and course.is_true_member(user)
-
-        if user in response.owners.all():
-            return True
-
-        if is_not_draft and is_faculty:
-            return True
-
-        if is_not_draft and is_student:
-            try:
-                student_response = Response.objects.get(
-                    activity=activity, owners__in=[user])
-            except Response.DoesNotExist:
-                return False
-
-            student_has_submitted = student_response.status in [
-                Response.SUBMITTED, Response.REVIEWED
-            ]
-            return student_has_submitted
-
-    return False
-
-
 def layer_permission_helper_faculty(layer, user):
     """
     Checks all the possible conditions for a faculty user to be able
@@ -249,6 +178,77 @@ def layer_permission_helper_student(layer, user):
 
 
 class LayerPermission(permissions.IsAuthenticated):
+    def layer_permission_helper(self, layer, user):
+        """
+        Checks all the possible conditions for a user to be able
+        to read a layer.
+
+        Project Layer:
+        - If the Layer is associated with a Project, and the user is faculty in
+          Layer => Project => Course
+        - If the Layer is associated with a Project, the user is a student in
+          Layer => Project => Course, and the Project has an Activity
+
+        Response Layer:
+        - If the Layer is associated with a Response, and the user is an owner
+          of the Response
+        - If the Layer is associated with a Response, the Response state is not
+          "Draft", and the user is faculty in Layer => Response => Activity =>
+          Project => Course
+        - If the Layer is associated with a Response, the Response state is not
+          "Draft", the user is owner of a Response related to Layer => Response
+          => Activity, the state of the user's Response is not "Draft", and the
+          user is a student in Layer => Response => Activity => Project =>
+          Course
+        """
+        # Project Layer
+        if isinstance(layer.content_object, Project):
+            project = layer.content_object
+            course = project.course
+            is_faculty = course.is_true_faculty(user)
+            is_student = not is_faculty \
+                and course.is_true_member(user)
+
+            if is_faculty:
+                return True
+
+            if is_student and hasattr(project, 'activity'):
+                return True
+
+        # Response Layer
+        if isinstance(layer.content_object, Response):
+            response = layer.content_object
+            activity = response.activity
+            project = activity.project
+            course = project.course
+
+            # Predicates
+            is_not_draft = response.status in [
+                Response.SUBMITTED, Response.REVIEWED]
+            is_faculty = course.is_true_faculty(user)
+            is_student = not is_faculty \
+                and course.is_true_member(user)
+
+            if user in response.owners.all():
+                return True
+
+            if is_not_draft and is_faculty:
+                return True
+
+            if is_not_draft and is_student:
+                try:
+                    student_response = Response.objects.get(
+                        activity=activity, owners__in=[user])
+                except Response.DoesNotExist:
+                    return False
+
+                student_has_submitted = student_response.status in [
+                    Response.SUBMITTED, Response.REVIEWED
+                ]
+                return student_has_submitted
+
+        return False
+
     def has_permission(self, request, view):
         user = request.user
         if user.is_anonymous:
@@ -281,7 +281,10 @@ class LayerPermission(permissions.IsAuthenticated):
     def has_object_permission(self, request, view, obj):
         user = request.user
 
-        if request.method in ['PUT', 'DELETE']:
+        if request.method in permissions.SAFE_METHODS:
+            return self.layer_permission_helper(obj, user)
+
+        else:
             if isinstance(obj.content_object, Project):
                 return obj.content_object.course.is_true_faculty(user)
 
@@ -289,9 +292,6 @@ class LayerPermission(permissions.IsAuthenticated):
                 return user in obj.content_object.owners.all()
 
             return False
-
-        if request.method in permissions.SAFE_METHODS:
-            return layer_permission_helper(obj, user)
 
         return False
 
