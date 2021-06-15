@@ -469,7 +469,7 @@ class LayerPermissionTest(CourseTestMixin, TestCase):
 
         # Check with unrelated faculty
         self.assertFalse(
-            self.layer_permission_helper(layer, self.fake_faculty))
+            self.layer_permission_helper(layer, self.alt_faculty))
 
         # Check with anon user
         self.assertFalse(
@@ -493,7 +493,7 @@ class LayerPermissionTest(CourseTestMixin, TestCase):
 
         # Check with non-course student
         self.assertFalse(
-            self.layer_permission_helper(layer, self.fake_student))
+            self.layer_permission_helper(layer, self.alt_student))
 
         # Check after removing the activity
         layer.content_object.activity.delete()
@@ -528,7 +528,7 @@ class LayerPermissionTest(CourseTestMixin, TestCase):
 
         # Check non-course student
         self.assertFalse(
-            self.layer_permission_helper(layer, self.fake_student))
+            self.layer_permission_helper(layer, self.alt_student))
 
     def test_layer_permission_helper_submitted_response(self):
         """
@@ -557,7 +557,7 @@ class LayerPermissionTest(CourseTestMixin, TestCase):
 
         # Check non-course student
         self.assertFalse(
-            self.layer_permission_helper(layer, self.fake_student))
+            self.layer_permission_helper(layer, self.alt_student))
 
     def test_layer_permission_helper_response_classmate(self):
         """
@@ -630,7 +630,7 @@ class LayerPermissionTest(CourseTestMixin, TestCase):
 
         # Check that authed user outside the course can not
         # create a Project layer
-        req.user = self.fake_student
+        req.user = self.alt_student
         self.assertFalse(perm.has_permission(req, None))
 
     def test_has_permission_post_response(self):
@@ -658,7 +658,7 @@ class LayerPermissionTest(CourseTestMixin, TestCase):
 
         # Check that authed user outside the course can not
         # create a Response layer
-        req.user = self.fake_student
+        req.user = self.alt_student
         self.assertFalse(perm.has_permission(req, None))
 
     def test_has_object_permission_get(self):
@@ -706,7 +706,7 @@ class LayerPermissionTest(CourseTestMixin, TestCase):
             perm.has_object_permission(req, None, layer))
 
         # Project Layer: non-course user
-        req.user = self.fake_student
+        req.user = self.alt_student
         self.assertFalse(
             perm.has_object_permission(req, None, layer))
 
@@ -784,7 +784,7 @@ class LayerPermissionTest(CourseTestMixin, TestCase):
             perm.has_object_permission(req, None, layer))
 
         # Project Layer: non-course user
-        req.user = self.fake_student
+        req.user = self.alt_student
         self.assertFalse(
             perm.has_object_permission(req, None, layer))
 
@@ -855,7 +855,7 @@ class LayerPermissionTest(CourseTestMixin, TestCase):
             perm.has_object_permission(req, None, layer))
 
         # Project Layer: non-course user
-        req.user = self.fake_student
+        req.user = self.alt_student
         self.assertFalse(
             perm.has_object_permission(req, None, layer))
 

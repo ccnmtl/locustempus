@@ -149,26 +149,26 @@ class CourseTestMixin(object):
         self.sandbox_course_response = ResponseFactory.create(
             activity=a2, owners=[self.student])
 
-        # Fake Course: A course with unrelated faculty and students. Used
+        # Alt Course: A course with unrelated faculty and students. Used
         # to test that the faculty and student users above don't have
         # access to this courses resources
-        self.fake_student: User = UserFactory.create(
+        self.alt_student: User = UserFactory.create(
             first_name='Student',
             last_name='Fake',
             email='fakestudent@example.com'
         )
-        self.fake_faculty: User = UserFactory.create(
+        self.alt_faculty: User = UserFactory.create(
             first_name='Faculty',
             last_name='Fake',
             email='fakefaculty@example.com'
         )
-        self.fake_course: Course = SandboxCourseFactory.create()
-        self.fake_course.group.user_set.add(self.fake_student)
-        self.fake_course.group.user_set.add(self.fake_faculty)
-        self.fake_course.faculty_group.user_set.add(self.fake_faculty)
-        p3 = ProjectFactory.create(course=self.fake_course)
-        self.fake_course_project = p3
+        self.alt_course: Course = SandboxCourseFactory.create()
+        self.alt_course.group.user_set.add(self.alt_student)
+        self.alt_course.group.user_set.add(self.alt_faculty)
+        self.alt_course.faculty_group.user_set.add(self.alt_faculty)
+        p3 = ProjectFactory.create(course=self.alt_course)
+        self.alt_course_project = p3
         a3 = ActivityFactory.create(project=p3)
-        self.fake_course_activity = a3
-        self.fake_course_response = ResponseFactory.create(
-            activity=a3, owners=[self.fake_student])
+        self.alt_course_activity = a3
+        self.alt_course_response = ResponseFactory.create(
+            activity=a3, owners=[self.alt_student])

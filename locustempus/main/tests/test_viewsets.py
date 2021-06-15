@@ -230,7 +230,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         # Try editing a project in a different course
         r2 = self.client.put(
             reverse('api-project-detail',
-                    args=[self.fake_course_project.pk]),
+                    args=[self.alt_course_project.pk]),
             json.dumps({
                 'title': 'Updated Title'
             }),
@@ -255,7 +255,7 @@ class ProjectAPITest(CourseTestMixin, TestCase):
         # Test deleting a project in a different course
         r2 = self.client.delete(
             reverse('api-project-detail',
-                    args=[self.fake_course_project.pk]))
+                    args=[self.alt_course_project.pk]))
         self.assertEqual(r2.status_code, 404)
 
     def test_course_student_list(self):
