@@ -438,7 +438,8 @@ class IsFeedbackFacultyOrStudentRecipientTest(CourseTestMixin, TestCase):
 class LayerPermissionTest(CourseTestMixin, TestCase):
     def setUp(self):
         self.setup_course()
-        self.layer_permission_helper = LayerPermission().layer_permission_helper
+        self.layer_permission_helper = \
+            LayerPermission().layer_permission_helper
         self.anon = AnonymousUser()
         self.classmate = UserFactory.create(
             first_name='Student',
@@ -662,7 +663,8 @@ class LayerPermissionTest(CourseTestMixin, TestCase):
         self.assertFalse(perm.has_permission(req, None))
 
     def test_has_object_permission_get(self):
-        with patch.object(LayerPermission, 'layer_permission_helper') as mock_layer_permission_helper:
+        with patch.object(LayerPermission, 'layer_permission_helper') \
+                as mock_layer_permission_helper:
             perm = LayerPermission()
             layer = LayerFactory.create(
                 title='A Layer Title',
@@ -679,6 +681,7 @@ class LayerPermissionTest(CourseTestMixin, TestCase):
             self.assertTrue(mock_layer_permission_helper.called)
 
     def test_has_object_permission_post(self):
+        # In reality, POST to an existing object should 405
         # Project Layer: Faculty
         perm = LayerPermission()
         layer = LayerFactory.create(

@@ -7,11 +7,11 @@ from locustempus.main.models import (
     Activity, Response, Layer, Event, Project
 )
 from locustempus.main.permissions import (
-    IsLoggedInCourse, IsLoggedInFaculty, LayerPermission,
-    layer_permission_helper_faculty, layer_permission_helper_student
+    IsLoggedInCourse, IsLoggedInFaculty, LayerPermission
 )
 from locustempus.main.tests.factories import (
-    CourseTestMixin, UserFactory, LayerFactory, ResponseFactory
+    CourseTestMixin, UserFactory, LayerFactory, ResponseFactory,
+    ProjectFactory
 )
 from unittest.mock import MagicMock
 from waffle.testutils import override_flag
@@ -930,6 +930,21 @@ class ActivityAPITest(CourseTestMixin, TestCase):
 class LayerAPITest(CourseTestMixin, TestCase):
     def setUp(self):
         self.setup_course()
+        self.anon = AnonymousUser()
+        self.classmate = UserFactory.create(
+            first_name='Student',
+            last_name='Two',
+            email='studenttwo@example.com'
+        )
+        self.registrar_course.group.user_set.add(self.classmate)
+        self.classmate_response = ResponseFactory.create(
+            activity=self.sandbox_course_activity,
+            owners=[self.classmate]
+        )
+        self.classmate_layer = LayerFactory.create(
+            title='Classmate layer',
+            content_object=self.classmate_response
+        )
 
     def test_layer_create(self):
         self.assertTrue(
@@ -1047,13 +1062,39 @@ class LayerAPITest(CourseTestMixin, TestCase):
             )
         )
 
-        for layer in Layer.objects.all():
-            is_faculty_layer = layer_permission_helper_faculty(
-                layer, self.faculty)
-            resp = self.client.get(
-                reverse('api-layer-detail', args=[layer.pk]))
-            self.assertEqual(
-                resp.status_code, 200 if is_faculty_layer else 404)
+        # Project layer
+        layer_one = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.sandbox_course_project
+        )
+        r1 = self.client.get(
+            reverse('api-layer-detail', args=[layer_one.pk]))
+        self.assertEqual(r1.status_code, 200)
+
+        # Project layer belonging to a different course
+        layer_two = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.alt_course_project
+        )
+        r2 = self.client.get(
+            reverse('api-layer-detail', args=[layer_two.pk]))
+        self.assertEqual(r2.status_code, 404)
+
+        # Unsubmitted Response layer
+        layer_three = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.sandbox_course_response
+        )
+        r3 = self.client.get(
+            reverse('api-layer-detail', args=[layer_three.pk]))
+        self.assertEqual(r3.status_code, 404)
+
+        # Submitted Response layer
+        self.sandbox_course_response.status = Response.SUBMITTED
+        self.sandbox_course_response.save()
+        r4 = self.client.get(
+            reverse('api-layer-detail', args=[layer_three.pk]))
+        self.assertEqual(r4.status_code, 200)
 
     def test_faculty_post(self):
         """POST request"""
@@ -1064,17 +1105,45 @@ class LayerAPITest(CourseTestMixin, TestCase):
             )
         )
 
-        for project in Project.objects.all():
-            resp = self.client.post(
-                reverse('api-layer-list'),
-                {
-                    'title': 'Some title',
-                    'content_object': reverse(
-                        'api-project-detail', args=[project.pk])
-                }
-            )
-            is_faculty = project.course.is_true_faculty(self.faculty)
-            self.assertEqual(resp.status_code, 201 if is_faculty else 403)
+        # Post a layer related to the faculty's course
+        r1 = self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-project-detail',
+                    args=[self.sandbox_course_project.pk])
+            }
+        )
+        self.assertEqual(r1.status_code, 201)
+
+        # Post a layer not related to the faculty's course
+        r2 = self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-project-detail', args=[self.alt_course_project.pk])
+            }
+        )
+        self.assertEqual(r2.status_code, 403)
+
+        # Post to an existing layer
+        layer = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.sandbox_course_project
+        )
+        r3 = self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'Some title',
+                'pk': layer.pk,
+                'content_object': reverse(
+                    'api-project-detail',
+                    args=[self.sandbox_course_project.pk])
+            }
+        )
+        self.assertEqual(r3.status_code, 201)
 
     def test_faculty_put(self):
         """PUT request"""
@@ -1085,31 +1154,76 @@ class LayerAPITest(CourseTestMixin, TestCase):
             )
         )
 
-        for layer in Layer.objects.all():
-            content_object = ''
-            if isinstance(layer.content_object, Project):
-                content_object = reverse(
-                    'api-project-detail', args=[layer.content_object.pk])
-            elif isinstance(layer.content_object, Response):
-                content_object = reverse(
-                    'api-response-detail', args=[layer.content_object.pk])
-            else:
-                raise Exception(
-                    'content_object must be either a Project or Response')
+        # Put to a Project layer
+        l1 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.sandbox_course_project
+        )
+        r1 = self.client.put(
+            reverse('api-layer-detail', kwargs={'pk': l1.pk}),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-project-detail',
+                    kwargs={'pk': self.sandbox_course_project.pk}
+                )
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(r1.status_code, 200)
 
-            resp = self.client.put(
-                reverse('api-layer-detail', args=[layer.pk]),
-                json.dumps({
-                    'title': 'A different title',
-                    'content_object': content_object
-                }),
-                content_type='application/json'
-            )
-            self.assertEqual(
-                resp.status_code,
-                200 if layer_permission_helper_faculty(
-                    layer, self.faculty) else 404
-            )
+        # Put to a Response layer
+        l2 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.sandbox_course_response
+        )
+        r2 = self.client.put(
+            reverse('api-layer-detail', kwargs={'pk': l2.pk}),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-project-detail',
+                    kwargs={'pk': self.sandbox_course_response.pk}
+                )
+            }
+        )
+        self.assertEqual(r2.status_code, 404)
+
+        # Put to another course's Project layer
+        l3 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.alt_course_project
+        )
+        r3 = self.client.put(
+            reverse('api-layer-detail', kwargs={'pk': l3.pk}),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-project-detail',
+                    kwargs={'pk': self.alt_course_project.pk}
+                )
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(r3.status_code, 404)
+
+        # Put to another course's Response layer
+        l4 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.alt_course_response
+        )
+        r4 = self.client.put(
+            reverse('api-layer-detail', kwargs={'pk': l4.pk}),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-project-detail',
+                    kwargs={'pk': self.alt_course_response.pk}
+                )
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(r4.status_code, 404)
 
     def test_faculty_delete(self):
         """DELETE request"""
@@ -1120,15 +1234,41 @@ class LayerAPITest(CourseTestMixin, TestCase):
             )
         )
 
-        for layer in Layer.objects.all():
-            resp = self.client.delete(
-                reverse('api-layer-detail', args=[layer.pk])
-            )
-            self.assertEqual(
-                resp.status_code,
-                204 if layer_permission_helper_faculty(
-                    layer, self.faculty) else 404
-            )
+        # Delete a Project layer
+        l1 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.sandbox_course_project
+        )
+        r1 = self.client.delete(
+            reverse('api-layer-detail', kwargs={'pk': l1.pk}))
+        self.assertEqual(r1.status_code, 204)
+
+        # Delete a Response layer
+        l2 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.sandbox_course_response
+        )
+        r2 = self.client.delete(
+            reverse('api-layer-detail', kwargs={'pk': l2.pk}))
+        self.assertEqual(r2.status_code, 404)
+
+        # Delete a different course's Project layer
+        l3 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.alt_course_project
+        )
+        r3 = self.client.delete(
+            reverse('api-layer-detail', kwargs={'pk': l3.pk}))
+        self.assertEqual(r3.status_code, 404)
+
+        # Delete a different course's Response layer
+        l4 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.alt_course_response
+        )
+        r4 = self.client.delete(
+            reverse('api-layer-detail', kwargs={'pk': l4.pk}))
+        self.assertEqual(r4.status_code, 404)
 
     def test_student_get_list(self):
         """GET / request"""
@@ -1154,13 +1294,89 @@ class LayerAPITest(CourseTestMixin, TestCase):
             )
         )
 
-        for layer in Layer.objects.all():
-            is_student_layer = layer_permission_helper_student(
-                layer, self.student)
-            resp = self.client.get(
-                reverse('api-layer-detail', args=[layer.pk]))
-            self.assertEqual(
-                resp.status_code, 200 if is_student_layer else 404)
+        # Check that a student can get a Project layer
+        l1 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.sandbox_course_project
+        )
+        r1 = self.client.get(
+            reverse('api-layer-detail', kwargs={'pk': l1.pk}))
+        self.assertEqual(r1.status_code, 200)
+
+        # Check that a student can not get a Project layer if an Activity
+        # does not exist
+        proj = ProjectFactory.create(course=self.sandbox_course)
+        l2 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=proj
+        )
+        r2 = self.client.get(
+            reverse('api-layer-detail', kwargs={'pk': l2.pk}))
+        self.assertEqual(r2.status_code, 404)
+
+        # Check that a student can not get a Project layer from an
+        # unrelated course
+        l3 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.alt_course_project
+        )
+        r3 = self.client.get(
+            reverse('api-layer-detail', kwargs={'pk': l3.pk}))
+        self.assertEqual(r3.status_code, 404)
+
+        # Check that a student can get a Response layer owned by them
+        l4 = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.sandbox_course_response
+        )
+        r4 = self.client.get(
+            reverse('api-layer-detail', kwargs={'pk': l4.pk}))
+        self.assertEqual(r4.status_code, 200)
+
+        # Check that a student can not get a Response layer if owned
+        # by a classmate, and the classmate's Response is still
+        # in a draft status
+        self.assertEqual(self.classmate_response.status, Response.DRAFT)
+        self.assertEqual(self.sandbox_course_response.status, Response.DRAFT)
+        r5 = self.client.get(
+            reverse('api-layer-detail',
+                    kwargs={'pk': self.classmate_layer.pk}))
+        self.assertEqual(r5.status_code, 404)
+
+        # Check that a student can not get a Response layer if owned
+        # by a classmate, the classmate's Response is not in a draft
+        # status, but the student's Response is in a draft status
+        self.classmate_response.status = Response.SUBMITTED
+        self.classmate_response.save()
+        self.assertEqual(self.classmate_response.status, Response.SUBMITTED)
+        self.assertEqual(self.sandbox_course_response.status, Response.DRAFT)
+        r6 = self.client.get(
+            reverse('api-layer-detail',
+                    kwargs={'pk': self.classmate_layer.pk}))
+        self.assertEqual(r6.status_code, 404)
+
+        # Check that a student can get a Response layer if owned
+        # by a classmate, the classmate's Response is not in a draft
+        # status, and the student's Response is not in a draft status
+        self.sandbox_course_response.status = Response.SUBMITTED
+        self.sandbox_course_response.save()
+        self.assertEqual(self.classmate_response.status, Response.SUBMITTED)
+        self.assertEqual(
+            self.sandbox_course_response.status, Response.SUBMITTED)
+        r7 = self.client.get(
+            reverse('api-layer-detail',
+                    kwargs={'pk': self.classmate_layer.pk}))
+        self.assertEqual(r7.status_code, 200)
+
+        # Check that a student can not get a Response layer from an
+        # unrelated course
+        alt_layer = LayerFactory.create(
+            title='A Layer Title',
+            content_object=self.alt_course_response
+        )
+        r8 = self.client.get(
+            reverse('api-layer-detail', kwargs={'pk': alt_layer.pk}))
+        self.assertEqual(r8.status_code, 404)
 
     def test_student_post(self):
         """POST request"""
@@ -1171,19 +1387,66 @@ class LayerAPITest(CourseTestMixin, TestCase):
             )
         )
 
-        for response in Response.objects.all():
-            resp = self.client.post(
-                reverse('api-layer-list'),
-                {
-                    'title': 'Some title',
-                    'content_object': reverse(
-                        'api-response-detail', args=[response.pk])
-                }
-            )
-            is_response_owner = self.student in response.owners.all()
-            self.assertEqual(
-                resp.status_code,
-                201 if is_response_owner else 403)
+        # Check that student can post to a Response they own
+        r1 = self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-response-detail',
+                    args=[self.sandbox_course_response.pk])
+            }
+        )
+        self.assertEqual(r1.status_code, 201)
+
+        # Check that student can not post to a Response that they
+        # do not own
+        r2 = self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-response-detail',
+                    args=[self.classmate_response.pk])
+            }
+        )
+        self.assertEqual(r2.status_code, 403)
+
+        # Check that student can not post to a Project in their course
+        r3 = self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-response-detail',
+                    args=[self.sandbox_course_project.pk])
+            }
+        )
+        self.assertEqual(r3.status_code, 403)
+
+        # Check that student can not post to a Project outside their course
+        r4 = self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-response-detail',
+                    args=[self.alt_course_project.pk])
+            }
+        )
+        self.assertEqual(r4.status_code, 403)
+
+        # Check that student can not post to a Response outside their course
+        r5 = self.client.post(
+            reverse('api-layer-list'),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-response-detail',
+                    args=[self.alt_course_response.pk])
+            }
+        )
+        self.assertEqual(r5.status_code, 403)
 
     def test_student_put(self):
         """PUT request"""
@@ -1194,33 +1457,91 @@ class LayerAPITest(CourseTestMixin, TestCase):
             )
         )
 
-        for layer in Layer.objects.all():
-            content_object = ''
-            if isinstance(layer.content_object, Project):
-                content_object = reverse(
-                    'api-project-detail', args=[layer.content_object.pk])
-            elif isinstance(layer.content_object, Response):
-                content_object = reverse(
-                    'api-response-detail', args=[layer.content_object.pk])
-            else:
-                raise Exception(
-                    'content_object must be either a Project or Response')
+        # Check that student can put to a Layer related to a Response they own
+        layer = LayerFactory.create(
+            title='Student layer',
+            content_object=self.sandbox_course_response
+        )
+        r1 = self.client.put(
+            reverse('api-layer-detail', kwargs={'pk': layer.pk}),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-response-detail',
+                    args=[self.sandbox_course_response.pk])
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(r1.status_code, 200)
 
-            resp = self.client.put(
-                reverse('api-layer-detail', args=[layer.pk]),
-                json.dumps({
-                    'title': 'A different title',
-                    'content_object': content_object
-                }),
-                content_type='application/json'
-            )
-            has_response = isinstance(layer.content_object, Response)
-            is_response_owner = has_response \
-                and self.student in layer.content_object.owners.all()
-            self.assertIn(
-                resp.status_code,
-                [200] if is_response_owner else [403, 404]
-            )
+        # Check that student can not put to a Layer related to a Response that
+        # they do not own
+        r2 = self.client.put(
+            reverse('api-layer-detail',
+                    kwargs={'pk': self.classmate_layer.pk}),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-response-detail',
+                    args=[self.classmate_response.pk])
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(r2.status_code, 404)
+
+        # Check that student can not put to a Layer related to a Project in
+        # their course
+        proj_layer = LayerFactory.create(
+            title='Student layer',
+            content_object=self.sandbox_course_project
+        )
+        r3 = self.client.put(
+            reverse('api-layer-detail', kwargs={'pk': proj_layer.pk}),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-response-detail',
+                    args=[self.sandbox_course_project.pk])
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(r3.status_code, 403)
+
+        # Check that student can not put to a Layer related to a Project
+        # outside their course
+        alt_layer = LayerFactory.create(
+            title='Student layer',
+            content_object=self.alt_course_project
+        )
+        r4 = self.client.put(
+            reverse('api-layer-detail', kwargs={'pk': alt_layer.pk}),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-response-detail',
+                    args=[self.alt_course_project.pk])
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(r4.status_code, 404)
+
+        # Check that student can not put to a Layer related to a Response
+        # outside their course
+        alt_response_layer = LayerFactory.create(
+            title='Student layer',
+            content_object=self.alt_course_response
+        )
+        r5 = self.client.put(
+            reverse('api-layer-detail', kwargs={'pk': alt_response_layer.pk}),
+            {
+                'title': 'Some title',
+                'content_object': reverse(
+                    'api-response-detail',
+                    args=[self.alt_course_response.pk])
+            },
+            content_type='application/json'
+        )
+        self.assertEqual(r5.status_code, 404)
 
     def test_student_delete(self):
         """DELETE request"""
@@ -1231,20 +1552,57 @@ class LayerAPITest(CourseTestMixin, TestCase):
             )
         )
 
-        for layer in Layer.objects.all():
-            resp = self.client.delete(
-                reverse('api-layer-detail', args=[layer.pk])
-            )
-            has_response = isinstance(layer.content_object, Response)
-            is_response_owner = has_response \
-                and self.student in layer.content_object.owners.all()
-            self.assertIn(
-                resp.status_code,
-                [204] if is_response_owner else [403, 404]
-            )
+        # Check that student can delete a Layer related to a Response they
+        # own
+        layer = LayerFactory.create(
+            title='Student layer',
+            content_object=self.sandbox_course_response
+        )
+        r1 = self.client.delete(
+            reverse('api-layer-detail', kwargs={'pk': layer.pk}))
+        self.assertEqual(r1.status_code, 204)
+
+        # Check that student can not delete a Layer related to a Response that
+        # they do not own
+        r2 = self.client.delete(
+            reverse('api-layer-detail',
+                    kwargs={'pk': self.classmate_layer.pk}))
+        self.assertEqual(r2.status_code, 404)
+
+        # Check that student can not delete a Layer related to a Project in
+        # their course
+        proj_layer = LayerFactory.create(
+            title='Student layer',
+            content_object=self.sandbox_course_project
+        )
+        r3 = self.client.delete(
+            reverse('api-layer-detail', kwargs={'pk': proj_layer.pk}))
+        self.assertEqual(r3.status_code, 403)
+
+        # Check that student can not delete a Layer related to a Project
+        # outside their course
+        alt_layer = LayerFactory.create(
+            title='Student layer',
+            content_object=self.alt_course_project
+        )
+        r4 = self.client.delete(
+            reverse('api-layer-detail', kwargs={'pk': alt_layer.pk}))
+        self.assertEqual(r4.status_code, 404)
+
+        # Check that student can not delete a Layer related to a Response
+        # outside their course
+        alt_response_layer = LayerFactory.create(
+            title='Student layer',
+            content_object=self.alt_course_response
+        )
+        r5 = self.client.put(
+            reverse('api-layer-detail', kwargs={'pk': alt_response_layer.pk}))
+        self.assertEqual(r5.status_code, 404)
 
     def test_non_course_user_get_list(self):
         """GET / request"""
+        # An authed user, but not a member of any course, should be able to
+        # make a request to the API, but the reply should be empty
         user = UserFactory.create()
         self.assertTrue(
             self.client.login(
@@ -1255,101 +1613,6 @@ class LayerAPITest(CourseTestMixin, TestCase):
         r = self.client.get(reverse('api-layer-list'))
         self.assertEqual(r.status_code, 200)
         self.assertListEqual(r.data, [])
-
-    def test_non_course_user_get(self):
-        """GET request"""
-        user = UserFactory.create()
-        self.assertTrue(
-            self.client.login(
-                username=user.username,
-                password='test'
-            )
-        )
-
-        for layer in Layer.objects.all():
-            resp = self.client.get(
-                reverse('api-layer-detail', args=[layer.pk]))
-            self.assertEqual(resp.status_code, 404)
-
-    def test_non_course_user_post(self):
-        """POST request"""
-        user = UserFactory.create()
-        self.assertTrue(
-            self.client.login(
-                username=user.username,
-                password='test'
-            )
-        )
-
-        for project in Project.objects.all():
-            resp = self.client.post(
-                reverse('api-layer-list'),
-                {
-                    'title': 'Some title',
-                    'content_object': reverse(
-                        'api-project-detail', args=[project.pk])
-                }
-            )
-            self.assertEqual(resp.status_code, 403)
-
-        for response in Response.objects.all():
-            resp = self.client.post(
-                reverse('api-layer-list'),
-                {
-                    'title': 'Some title',
-                    'content_object': reverse(
-                        'api-response-detail', args=[response.pk])
-                }
-            )
-            self.assertEqual(resp.status_code, 403)
-
-    def test_non_course_user_put(self):
-        """PUT request"""
-        user = UserFactory.create()
-        self.assertTrue(
-            self.client.login(
-                username=user.username,
-                password='test'
-            )
-        )
-
-        for layer in Layer.objects.all():
-            content_object = ''
-            if isinstance(layer.content_object, Project):
-                content_object = reverse(
-                    'api-project-detail', args=[layer.content_object.pk])
-            elif isinstance(layer.content_object, Response):
-                content_object = reverse(
-                    'api-response-detail', args=[layer.content_object.pk])
-            else:
-                raise Exception(
-                    'content_object must be either a Project or Response')
-
-            resp = self.client.put(
-                reverse('api-layer-detail', args=[layer.pk]),
-                json.dumps({
-                    'title': 'A different title',
-                    'content_object': content_object
-                }),
-                content_type='application/json'
-            )
-            self.assertEqual(resp.status_code, 404)
-
-    def test_non_course_user_delete(self):
-        """DELETE request"""
-        user = UserFactory.create()
-        self.assertTrue(
-            self.client.login(
-                username=user.username,
-                password='test'
-            )
-        )
-
-        for layer in Layer.objects.all():
-            resp = self.client.delete(
-                reverse('api-layer-detail', args=[layer.pk])
-            )
-            self.assertEqual(resp.status_code, 404)
 
     def test_anon_get_list(self):
         """GET / request"""
