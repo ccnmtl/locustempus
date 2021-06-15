@@ -29,3 +29,16 @@ a:not([class]) {
         box-shadow: $focus-box-shadow-primary;
     }
 }
+
+header a.navbar-brand {
+    &:hover {
+        background-color: $blue-800;
+    }
+    &:focus {
+        background-color: $blue-800;
+        box-shadow: $focus-box-shadow-bright;
+        border: 0;
+        border-radius: 0.125rem;
+        outline: 0;
+    }
+}
