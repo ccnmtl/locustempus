@@ -36,7 +36,7 @@
         <meta id="csrf-token" name="csrf-token" content="{{csrf_token}}">
 
     </head>
-    <body class="{% block bodyclass %}{% endblock %}" id="{% block bodyid %}{% endblock %}">
+    <body class="{% block bodyclass %}{% endblock %}">
 
     {% block topnavbar %}
     <header class="header--default">
@@ -74,7 +74,7 @@
         </li>
     </ul>
 
-    <span itemscope itemtype="http://schema.org/EducationalOrganization"><a href="http://ctl.columbia.edu" target="_blank" itemprop="url"><img src="{{STATIC_URL}}img/ctl-logo-white.svg" class="footer__logo" alt="" itemprop="logo" /><span class="sr-only" itemprop="name">Center for Teaching and Learning at Columbia University</span></a></span>
+    <span itemscope itemtype="http://schema.org/EducationalOrganization"><a href="http://ctl.columbia.edu" rel="noopener noreferrer" target="_blank" itemprop="url"><img src="{{STATIC_URL}}img/ctl-logo-white.svg" class="footer__logo" alt="" itemprop="logo" /><span class="sr-only" itemprop="name">Center for Teaching and Learning at Columbia University</span></a></span>
 
 </footer>
 {% endblock %}

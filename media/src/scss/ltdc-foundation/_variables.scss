@@ -24,7 +24,9 @@ $green-100:  #c8e6c9 !default;
 $green-200:  #a5d6a7 !default;
 $green-600:  #28a745 !default;
 $green-700:  #388e3c !default;
+$green-800:  #2e7d32 !default;
 $green-900:  #1b5e20 !default;
+$green-a11y: #218739 !default;
 
 $amber-050:  #fff8e1 !default;
 $amber-100:  #ffecb3 !default;
@@ -86,7 +88,7 @@ $primary-medium:  $blue-200 !default;
 $primary-light:   $blue-100 !default;
 $primary-lightest:   $blue-050 !default;
 
-$secondary1-dark:    $green-600 !default;
+$secondary1-dark:    $green-a11y !default;
 $secondary1-medium:  $green-100 !default;
 $secondary1-light:   $green-050 !default;
 
@@ -113,16 +115,17 @@ $secondary-b3:   $green-200 !default;
 $secondary-b2:   $green-100 !default;
 $secondary-b1:   $green-050 !default;
 
-$link-color: $blue-a400 !default;
+$link-color: $blue-a700 !default;
 $link-hover-color: $blue-900 !default;
 $link-focus-color: $blue-900 !default;
 
 $focus-box-shadow-primary: 0 0 0 0.1875rem rgba($blue-a400, 0.5) !default;
 $focus-box-shadow-secondary: 0 0 0 0.1875rem rgba($green-600, 0.5) !default;
+$focus-box-shadow-bright: 0 0 0 0.1875rem rgba($gray-050, 0.6) !default;
 
 $border-color: #d0d0d0 !default;
 
-$helper-color: $gray-999 !default;
+$helper-color: $gray-600 !default;
 $banner-color: $gray-666 !default;
 
 $surface-dark: $amber-800 !default;
