@@ -221,7 +221,16 @@
     &__clip {
         display: inline-flex;
         max-width: calc(100% - 3rem);
-        min-width: 13rem;
+        min-width: 10rem;
+        @include media-breakpoint-up(sm) {
+            max-width: 30rem;
+        }
+        @include media-breakpoint-up(md) {
+            max-width: 40rem;
+        }
+        @include media-breakpoint-up(lg) {
+            max-width: 25rem;
+        }
     }
     &__text {
         display: block;
@@ -378,7 +387,14 @@
         padding: 0.375rem 0.75rem;
         @include media-breakpoint-up(sm) {
             padding: 0.75rem 1rem;
-        }    
+        }
+        &:hover {
+            background-color: $blue-800;
+        }
+        &:focus {
+            box-shadow: 0 0 0 0.2rem rgba($gray-050, 0.6);
+            background-color: $blue-800;
+        }
     }
     .lt-button__label {
         color: $white;

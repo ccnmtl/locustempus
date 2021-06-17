@@ -42,9 +42,9 @@ Impersonate A User
     <a href="{% url 'impersonate-search' %}?page={{ page.next_page_number }}&q={{ query|urlencode }}">Next Page</a> &nbsp; 
     {% endif %}
     </div>
-    <div class="col-5 d-none d-md-block">
+    <div class="col-5 d-none d-md-block" aria-hidden="true">
         <div class="create-prompt__decor w-100">
-            <img src="{{STATIC_URL}}img/prompt-impersonate.svg" />
+            <img src="{{STATIC_URL}}img/prompt-impersonate.svg" alt="" />
         </div>
     </div>
 </div>

@@ -9,27 +9,27 @@
     <div class="lt-dashboard_actions">
         {% if is_faculty %}
         <div class="lt-menu-overflow">
-            <button type="button" data-cy="manage-workspace" class="lt-button mr-4 dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
-                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-cog.svg" class="active" /></span>
+            <button type="button" data-cy="manage-workspace" class="lt-button mr-0 mr-lg-4 dropdown-toggle" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false">
+                <span class='lt-icons lt-button__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-cog.svg" class="active" alt="" /></span>
                 <span class='lt-button__label'>Manage</span>
             </button>
             <div class="lt-menu lt-menu-overflow--bootstrap dropdown-menu">
                 <ul class="lt-list">
                     <li class="lt-list-item">
                         <a data-cy="edit-workspace" href="{% url 'course-edit-view' course.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
-                        <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-pencil.svg" class="active" /></span>
+                        <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-pencil.svg" class="active" alt="" /></span>
                         <span class="lt-list-item__primary-text">Edit Workspace</span>
                         </a>
                     </li>
                     <li class="lt-list-item">
                         <a data-cy="manage-workspace-roster" href="{% url 'course-roster-view' course.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
-                        <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-roster.svg" class="active" /></span>
+                        <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-roster.svg" class="active" alt="" /></span>
                         <span class="lt-list-item__primary-text">Manage Roster</span>
                         </a>
                     </li>
                     <li class="lt-list-item lt-list-item--caution border-top">
                         <a data-cy="delete-workspace" href="{% url 'course-delete-view' course.pk %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
-                        <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-trash.svg" class="active" /></span>
+                        <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-trash.svg" class="active" alt="" /></span>
                         <span class="lt-list-item__primary-text">Delete Workspace</span>
                         </a>
                     </li>
@@ -41,11 +41,11 @@
         <form method="post" class="lt-layout-toggle">
             {% csrf_token %}
             <button type="submit" class="lt-button mr-1 {% if project_grid_layout %}active{% endif %}" {% if project_grid_layout %}disabled{% endif %}>
-                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" /></span>
+                <span class='lt-icons lt-button__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-grid.svg" alt="" /></span>
                 <span class='lt-button__label'>Grid</span>
             </button>
             <button type="submit" class="lt-button {% if not project_grid_layout %}active{% endif %}" {% if not project_grid_layout %}disabled{% endif %}>
-                <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" /></span>
+                <span class='lt-icons lt-button__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-list.svg" alt="" /></span>
                 <span class='lt-button__label'>List</span>
             </button>
         </form>
@@ -78,7 +78,7 @@
         <form action="{% url 'course-project-create' course.pk %}" method="post">
             {% csrf_token %}
             <button data-cy="project-create-button" class="lt-button lt-button--solid">
-                <span class='lt-icons lt-button__icon lt-button--svg'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create New Project</span>
+                <span class='lt-icons lt-button__icon lt-button--svg' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-plus-circle.svg" alt="" /></span><span class='lt-button__label'>Create New Project</span>
             </button>
         </form>
     </div>
@@ -180,8 +180,8 @@
     {% else %}
         {% if is_faculty %}
         <div class="create-prompt" data-cy="create-projects-prompt">
-            <div class="create-prompt__decor">
-                <img src="{{STATIC_URL}}img/prompt-project.svg" />
+            <div class="create-prompt__decor" aria-hidden="true">
+                <img src="{{STATIC_URL}}img/prompt-project.svg" alt="" />
             </div>
             <div class="create-prompt__content">
                 <div class="create-prompt__alert" role="alert">
@@ -194,15 +194,15 @@
             <form action="{% url 'course-project-create' course.pk %}" method="post">
                 {% csrf_token %}
                 <button data-cy="project-create-button" class="lt-button lt-button--solid">
-                    <span class='lt-icons lt-button__icon lt-button--svg'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create New Project</span>
+                    <span class='lt-icons lt-button__icon lt-button--svg' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-plus-circle.svg" alt="" /></span><span class='lt-button__label'>Create New Project</span>
                 </button>
             </form>
             </div>
         </div>
         {% else %}
         <div class="create-prompt">
-            <div class="create-prompt__decor">
-                <img src="{{STATIC_URL}}img/prompt-project.svg" />
+            <div class="create-prompt__decor" aria-hidden="true">
+                <img src="{{STATIC_URL}}img/prompt-project.svg" alt="" />
             </div>
             <div class="create-prompt__content">
                 <div class="create-prompt__alert" role="alert">

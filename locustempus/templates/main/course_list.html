@@ -15,11 +15,11 @@ Workspaces
     <form method="post" class="lt-layout-toggle">
         {% csrf_token %}
         <button type="submit" class="lt-button mr-1 {% if course_grid_layout %}active{% endif %}" {% if course_grid_layout %}disabled{% endif %}>
-            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-grid.svg" /></span>
+            <span class='lt-icons lt-button__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-grid.svg" alt="" /></span>
             <span class='lt-button__label'>Grid</span>
         </button>
         <button type="submit" class="lt-button {% if not course_grid_layout %}active{% endif %}" {% if not course_grid_layout %}disabled{% endif %}>
-            <span class='lt-icons lt-button__icon'><img src="{{STATIC_URL}}img/icon-list.svg" /></span>
+            <span class='lt-icons lt-button__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-list.svg" alt="" /></span>
             <span class='lt-button__label'>List</span>
         </button>
     </form>
@@ -28,11 +28,18 @@ Workspaces
 {% endblock %}
 
 {% block content %}
+<h1 class="sr-only">
+    {% if request.user.first_name %}
+        {{ request.user.first_name }}’s Workspaces
+    {% else %}
+        {{ request.user.username }}’s Workspaces
+    {% endif %}  
+</h1>
 
 {% if courses %}
 <div class="pt-3 px-3 text-right">
     <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="lt-button lt-button--solid">
-        <span class='lt-icons lt-button__icon lt-button--svg'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create new workspace</span>
+        <span class='lt-icons lt-button__icon lt-button--svg' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-plus-circle.svg" alt="" /></span><span class='lt-button__label'>Create new workspace</span>
     </a>
 </div>
 {% endif %}
@@ -44,7 +51,7 @@ Workspaces
             <div class="col-md-6 col-xl-4 py-2" data-cy="workspace-cards">
                 <div class="lt-card">
                     <div class="lt-card__body">
-                        <h3 class="lt-card__title"><a data-cy="workspace-title-link" href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h3>
+                        <h2 class="lt-card__title"><a data-cy="workspace-title-link" href="{% url 'course-detail-view' course.pk %}">{{ course.title }}</a></h2>
                         <div class="lt-card__info-summary">
                             <p class="lt-card__text">{% if course.info.termyear %}Semester: {{ course.info.termyear }}<br />{% endif %}
                             Author: {{ course|course_faculty_string }}<br />
@@ -103,8 +110,8 @@ Workspaces
 
     {% if not courses %}
         <div class="create-prompt" data-cy="create-workspaces-prompt">
-            <div class="create-prompt__decor">
-                <img src="{{STATIC_URL}}img/prompt-workspace.svg" />
+            <div class="create-prompt__decor" aria-hidden="true">
+                <img src="{{STATIC_URL}}img/prompt-workspace.svg" alt="" />
             </div>
             <div class="create-prompt__content">
                 <div class="create-prompt__alert" role="alert">
@@ -115,7 +122,7 @@ Workspaces
                 You can start by creating one.
                 </p>
                 <a href="{% url 'course-create-view' %}" data-cy="course-create-button" class="lt-button lt-button--solid">
-                    <span class='lt-icons lt-button__icon lt-button--svg'><img src="{{STATIC_URL}}img/icon-plus-circle.svg" /></span><span class='lt-button__label'>Create new workspace</span>
+                    <span class='lt-icons lt-button__icon lt-button--svg' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-plus-circle.svg" alt="" /></span><span class='lt-button__label'>Create new workspace</span>
                 </a>
             </div>
         </div>
