@@ -23,21 +23,6 @@ cssselect==1.1.0
 lxml==4.6.3
 fuzzywuzzy==0.18.0
 sure==1.4.11
-traitlets==4.3.3  # ipython
-ipython_genutils==0.2.0  # ipython
-decorator==5.0.9  # ipython
-ptyprocess==0.7.0  # ipython
-pexpect==4.8.0  # ipython
-pathlib2==2.3.5  # ipython
-pickleshare==0.7.5  # ipython
-simplegeneric==0.8.1  # ipython
-path.py==12.5.0  # ipython
-backports.shutil_get_terminal_size==1.0.0  # ipython
-wcwidth==0.2.5  # ipython
-prompt_toolkit==3.0.18  # ipython
-pygments==2.9.0  # ipython
-scandir==1.10.0  # ipython
-ipython==7.8.0
 coverage==5.5
 pyasn1==0.4.8
 cryptography<3.4.8  # pyOpenSSL
