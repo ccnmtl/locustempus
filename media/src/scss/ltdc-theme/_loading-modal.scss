@@ -9,7 +9,7 @@
     &__indicator {
         position: absolute;
         top: 30%;
-        left: 50%;
+        left: calc(50% - 3rem);
         border: 2rem solid #ff9933;
         border-radius: 50%;
         border-top: 1.5rem solid #339933;
@@ -23,7 +23,7 @@
     &__text {
         position: absolute;
         top: calc(30% + 130px);
-        left: calc(50% - 30px);
+        left: calc(50% - 5rem);
         font-family: $heading-font-family;
         font-weight: $heading-font-weight;
         line-height: $heading-line-height;
