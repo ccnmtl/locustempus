@@ -9,7 +9,7 @@ from locustempus.main.models import (
     Project, Activity, Response, Feedback, Layer)
 
 
-class UserFactory(factory.DjangoModelFactory):
+class UserFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = User
     username = factory.Sequence('user{}'.format)
@@ -17,13 +17,13 @@ class UserFactory(factory.DjangoModelFactory):
     email = 'foo@bar.com'
 
 
-class GroupFactory(factory.DjangoModelFactory):
+class GroupFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Group
     name = factory.Sequence('group {}'.format)
 
 
-class SandboxCourseFactory(factory.DjangoModelFactory):
+class SandboxCourseFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Course
     title = factory.Sequence('course {}'.format)
@@ -35,7 +35,7 @@ class SandboxCourseFactory(factory.DjangoModelFactory):
         ProjectFactory(course=obj)
 
 
-class RegistrarCourseFactory(factory.DjangoModelFactory):
+class RegistrarCourseFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Course
     title = factory.Sequence('course {}'.format)
@@ -54,12 +54,12 @@ class RegistrarCourseFactory(factory.DjangoModelFactory):
         ProjectFactory(course=obj)
 
 
-class LayerFactory(factory.DjangoModelFactory):
+class LayerFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Layer
 
 
-class ProjectFactory(factory.DjangoModelFactory):
+class ProjectFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Project
     title = factory.Sequence('Project {}'.format)
@@ -72,20 +72,20 @@ class ProjectFactory(factory.DjangoModelFactory):
         LayerFactory(title='Untitled Layer', content_object=obj)
 
 
-class ActivityFactory(factory.DjangoModelFactory):
+class ActivityFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Activity
     project = factory.SubFactory(ProjectFactory)
     instructions = factory.Faker('paragraph')
 
 
-class FeedbackFactory(factory.DjangoModelFactory):
+class FeedbackFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Feedback
     body = factory.Faker('paragraph')
 
 
-class ResponseFactory(factory.DjangoModelFactory):
+class ResponseFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Response
     activity = factory.SubFactory(ActivityFactory)
