@@ -1,3 +1,4 @@
+from django.urls import resolve
 from courseaffils.lib import in_course
 from locustempus.main.models import Activity, Response, Project
 from rest_framework import permissions
@@ -73,6 +74,125 @@ class ActivityPermission(permissions.IsAuthenticated):
             return in_course
 
         return is_faculty
+
+
+class LayerPermission(permissions.IsAuthenticated):
+    def layer_permission_helper(self, layer, user):
+        """
+        Checks all the possible conditions for a user to be able
+        to read a layer.
+
+        Project Layer:
+        - If the Layer is associated with a Project, and the user is faculty in
+          Layer => Project => Course
+        - If the Layer is associated with a Project, the user is a student in
+          Layer => Project => Course, and the Project has an Activity
+
+        Response Layer:
+        - If the Layer is associated with a Response, and the user is an owner
+          of the Response
+        - If the Layer is associated with a Response, the Response state is not
+          "Draft", and the user is faculty in Layer => Response => Activity =>
+          Project => Course
+        - If the Layer is associated with a Response, the Response state is not
+          "Draft", the user is owner of a Response related to Layer => Response
+          => Activity, the state of the user's Response is not "Draft", and the
+          user is a student in Layer => Response => Activity => Project =>
+          Course
+        """
+        # Project Layer
+        if isinstance(layer.content_object, Project):
+            project = layer.content_object
+            course = project.course
+            is_faculty = course.is_true_faculty(user)
+            is_student = not is_faculty \
+                and course.is_true_member(user)
+
+            if is_faculty:
+                return True
+
+            if is_student and hasattr(project, 'activity'):
+                return True
+
+        # Response Layer
+        if isinstance(layer.content_object, Response):
+            response = layer.content_object
+            activity = response.activity
+            project = activity.project
+            course = project.course
+
+            # Predicates
+            is_not_draft = response.status in [
+                Response.SUBMITTED, Response.REVIEWED]
+            is_faculty = course.is_true_faculty(user)
+            is_student = not is_faculty \
+                and course.is_true_member(user)
+
+            if user in response.owners.all():
+                return True
+
+            if is_not_draft and is_faculty:
+                return True
+
+            if is_not_draft and is_student:
+                try:
+                    student_response = Response.objects.get(
+                        activity=activity, owners__in=[user])
+                except Response.DoesNotExist:
+                    return False
+
+                student_has_submitted = student_response.status in [
+                    Response.SUBMITTED, Response.REVIEWED
+                ]
+                return student_has_submitted
+
+        return False
+
+    def has_permission(self, request, view):
+        user = request.user
+        if user.is_anonymous:
+            return False
+
+        if request.method == 'POST':
+            view, args, kwargs = resolve(request.data['content_object'])
+            model_cls = view.cls._lt_model_cls
+            if model_cls is Project:
+                try:
+                    proj = model_cls.objects.get(pk=kwargs['pk'])
+                except Project.DoesNotExist:
+                    return False
+
+                return proj.course.is_true_faculty(user)
+
+            if model_cls is Response:
+                try:
+                    response = Response.objects.get(pk=kwargs['pk'])
+                except Response.DoesNotExist:
+                    return False
+
+                return user in response.owners.all()
+
+            # Anyone else trying to POST should be blocked
+            return False
+
+        return True
+
+    def has_object_permission(self, request, view, obj):
+        user = request.user
+
+        if request.method in permissions.SAFE_METHODS:
+            return self.layer_permission_helper(obj, user)
+
+        else:
+            if isinstance(obj.content_object, Project):
+                return obj.content_object.course.is_true_faculty(user)
+
+            if isinstance(obj.content_object, Response):
+                return user in obj.content_object.owners.all()
+
+            return False
+
+        return False
 
 
 class IsLoggedInFaculty(permissions.IsAuthenticated):

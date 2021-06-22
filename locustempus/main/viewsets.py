@@ -1,12 +1,12 @@
 """The viewsets and views used for the API"""
 from courseaffils.views import get_courses_for_user, get_courses_for_instructor
-from django.db.models import Q
+from django.db.models import Q, Exists, OuterRef
 from locustempus.main.models import (
     Layer, Project, Event, Activity, Response, Feedback
 )
 from locustempus.main.permissions import (
     IsLoggedInCourse, IsResponseOwnerOrFaculty,
-    IsFeedbackFacultyOrStudentRecipient, ActivityPermission
+    IsFeedbackFacultyOrStudentRecipient, ActivityPermission, LayerPermission
 )
 from locustempus.main.serializers import (
     LayerSerializer, ProjectSerializer, EventSerializer, ActivitySerializer,
@@ -18,6 +18,7 @@ from rest_framework.viewsets import ModelViewSet
 class ProjectApiView(ModelViewSet):
     """Retrieves a single project"""
     serializer_class = ProjectSerializer
+    _lt_model_cls = Project
 
     def get_queryset(self):
         """
@@ -60,7 +61,49 @@ class LayerApiView(ModelViewSet):
     """Retrieves a layer"""
     # If an author in a course, can
     serializer_class = LayerSerializer
-    queryset = Layer.objects.all()
+    permission_classes = [LayerPermission]
+
+    def get_queryset(self):
+        """
+        Authenticated users can access a layer if any:
+        (Project Layers)
+        - If the Layer is associated with a Project, and the user is faculty in
+          Layer => Project => Course
+        - If the Layer is associated with a Project, the user is a student in
+          Layer => Project => Course, and the Project has an Activity
+        (Response Layers)
+        - If the Layer is associated with a Response, and the user is an owner
+          of the Response
+        - If the Layer is associated with a Response, the Response state is not
+          "Draft", and the user is faculty in Layer => Response => Activity =>
+          Project => Course
+        - If the Layer is associated with a Response, the Response state is not
+          "Draft", the user is owner of a Response related to Layer => Response
+          => Activity, the state of the user's Response is not "Draft", and the
+          user is a student in Layer => Response => Activity => Project =>
+          Course
+        """
+        user = self.request.user
+        instructor_courses = get_courses_for_instructor(user)
+        user_courses = get_courses_for_user(user)
+        user_owned_response = Response.objects.filter(
+            activity=OuterRef('response__activity__pk'),
+            owners__in=[user],
+            status__in=[Response.SUBMITTED, Response.REVIEWED]
+        )
+        return Layer.objects.annotate(
+            user_has_related_response=Exists(user_owned_response)
+        ).filter(
+            (Q(project__course__in=instructor_courses)) |
+            (Q(project__course__in=user_courses) &
+             Q(project__activity__isnull=False)) |
+            (Q(response__owners__in=[user])) |
+            (Q(response__status__in=[Response.SUBMITTED, Response.REVIEWED]) &
+             Q(response__activity__project__course__in=instructor_courses)) |
+            (Q(response__status__in=[Response.SUBMITTED, Response.REVIEWED]) &
+             Q(user_has_related_response=True) &
+             Q(response__activity__project__course__in=user_courses))
+        )
 
 
 class EventApiView(ModelViewSet):
@@ -73,6 +116,7 @@ class ResponseApiView(ModelViewSet):
     """Retrieves responses"""
     serializer_class = ResponseSerializer
     permission_classes = [IsResponseOwnerOrFaculty]
+    _lt_model_cls = Response
 
     def get_queryset(self):
         """
