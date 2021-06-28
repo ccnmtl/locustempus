@@ -2,7 +2,6 @@ import re
 
 from courseaffils.columbia import WindTemplate, CanvasTemplate
 from courseaffils.models import Course
-from courseaffils.views import get_courses_for_user
 from django.conf import settings
 from django.contrib import messages
 from django.contrib.auth.mixins import (
@@ -34,7 +33,7 @@ from locustempus.main.models import GuestUserAffil, Project, Response
 from locustempus.main.management.commands.integrationserver import (
     reset_test_models
 )
-from locustempus.main.utils import send_template_email
+from locustempus.main.utils import get_courses_for_user, send_template_email
 from locustempus.mixins import (
     LoggedInCourseMixin, LoggedInFacultyMixin
 )
