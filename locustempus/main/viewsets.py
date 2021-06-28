@@ -1,5 +1,4 @@
 """The viewsets and views used for the API"""
-from courseaffils.views import get_courses_for_user, get_courses_for_instructor
 from django.db.models import Q, Exists, OuterRef
 from locustempus.main.models import (
     Layer, Project, Event, Activity, Response, Feedback
@@ -11,6 +10,9 @@ from locustempus.main.permissions import (
 from locustempus.main.serializers import (
     LayerSerializer, ProjectSerializer, EventSerializer, ActivitySerializer,
     ResponseSerializer, FeedbackSerializer
+)
+from locustempus.main.utils import (
+    get_courses_for_user, get_courses_for_instructor
 )
 from rest_framework.viewsets import ModelViewSet
 
