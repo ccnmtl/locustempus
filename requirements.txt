@@ -36,7 +36,7 @@ requests==2.25.1
 astroid==2.5.8
 wrapt==1.12.1
 lazy-object-proxy==1.6.0
-pylint==2.8.3
+pylint==2.9.1
 six==1.16.0
 ipaddress==1.0.23  # faker
 faker==8.8.1  # factory_boy
@@ -120,6 +120,6 @@ django-stubs==1.2.0
 
 django-widget-tweaks==1.4.8
 confusable_homoglyphs==3.2.0
-django-registration==3.1.2
+django-registration==3.2
 
 distro==1.5.0
