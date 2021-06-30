@@ -36,6 +36,7 @@
     padding-left: 0 !important;
 }
 
+.ql-editor p,
 .ql-editor p > *,
 .ql-editor ul > *,
 .ql-editor ol > *,
@@ -44,6 +45,7 @@
     background: transparent !important;
 }
 
+.lt-quill-rendered p,
 .lt-quill-rendered p > * {
     background: transparent !important;
     font-family: $font-family-base !important;
@@ -52,4 +54,22 @@
     line-height: 1.5 !important;
     -webkit-font-smoothing: antialiased !important;
     moz-osx-font-smoothing: grayscale !important;
+}
+
+.lt-quill-rendered a,
+.ql-editor a {
+    color: $link-color !important;
+    text-decoration: none;
+    &:hover {
+        color: $link-hover-color !important;
+        text-decoration: underline;
+        background-color: $primary-lightest;
+    }
+    &:focus {
+        color: $link-focus-color !important;
+        text-decoration: underline;
+        border-radius: 0.125rem;
+        outline: 0;
+        box-shadow: $focus-box-shadow-primary;
+    }
 }
