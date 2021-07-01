@@ -22,7 +22,7 @@ beautifulsoup4==4.9.3
 cssselect==1.1.0
 lxml==4.6.3
 fuzzywuzzy==0.18.0
-sure==1.4.11
+sure==2.0.0
 coverage==5.5
 pyasn1==0.4.8
 cryptography<3.4.8  # pyOpenSSL
@@ -36,7 +36,7 @@ requests==2.25.1
 astroid==2.5.8
 wrapt==1.12.1
 lazy-object-proxy==1.6.0
-pylint==2.8.3
+pylint==2.9.3
 six==1.16.0
 ipaddress==1.0.23  # faker
 faker==8.8.1  # factory_boy
