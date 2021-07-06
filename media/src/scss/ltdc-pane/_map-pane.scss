@@ -203,7 +203,8 @@
     }
 }
 
-.pane-content-tabs .nav-item:hover {
+.pane-content-tabs .nav-item:hover,
+.pane-content-tabs .nav-item:focus-within {
     border-bottom-width: 3px;
     border-bottom-style: solid;
     border-bottom-color: #ccc;
@@ -216,7 +217,8 @@
 .pane-content-tabs .nav-item .nav-link {
     text-align: center;
     padding: 0.5rem 1rem;
-    border: 0;
+    border: 1px solid transparent;
+    border-bottom: none;
     background-color: $primary-light;
     -moz-transition-property: background-color;
     transition-property: background-color;
@@ -235,6 +237,16 @@
     background-color: transparent;
     @include media-breakpoint-up(lg) {
         background-color: $primary-medium;
+    }
+}
+
+.pane-content-tabs .nav-item .nav-link:focus {
+    background-color: transparent;
+    @include media-breakpoint-up(lg) {
+        background-color: $primary-medium;
+        outline: 0;
+        border: 1px dotted $primary-4;
+        border-bottom: none;
     }
 }
 
