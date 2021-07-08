@@ -28,7 +28,7 @@
                 <div class="input-group uni-invite-input-group">
                     {% if form.invitee.errors %}
                     {{ form.invitee|add_class:"form-control is-invalid" }}
-                    <button class="btn btn-danger" data-cy="remove-uni">
+                    <button class="btn btn-danger uni-invite-form-group__button--delete" data-cy="remove-uni">
                         Clear 
                     </button>
                     <div class="invalid-feedback">
@@ -38,7 +38,7 @@
                     </div>
                     {% else %}
                     {{ form.invitee|add_class:"form-control" }}
-                    <button class="btn btn-danger" data-cy="remove-uni">
+                    <button class="btn btn-danger uni-invite-form-group__button--delete" data-cy="remove-uni">
                         Clear 
                     </button>
                     {% endif %}
@@ -57,7 +57,7 @@
                 <div class="input-group email-invite-input-group">
                     {% if form.invitee.errors %}
                     {{ form.invitee|add_class:"form-control is-invalid" }}
-                    <button class="btn btn-danger" data-cy="remove-email">
+                    <button class="btn btn-danger email-invite-form-group__button--delete" data-cy="remove-email">
                         Clear 
                     </button>
                     <div class="invalid-feedback">
@@ -67,7 +67,7 @@
                     </div>
                     {% else %}
                     {{ form.invitee|add_class:"form-control" }}
-                    <button class="btn btn-danger" data-cy="remove-email">
+                    <button class="btn btn-danger email-invite-form-group__button--delete" data-cy="remove-email">
                         Clear 
                     </button>
                     {% endif %}
@@ -87,7 +87,7 @@
         <div style="display:none">
             <div id="uni-invite-form-template" class="input-group uni-invite-input-group">
                 {{ uni_formset.empty_form.invitee|add_class:"form-control" }}
-                <button class="btn btn-danger" data-cy="remove-uni">Clear</button>
+                <button class="btn btn-danger uni-invite-form-group__button--delete" data-cy="remove-uni">Clear</button>
             </div>
         </div>
 
@@ -95,7 +95,7 @@
         <div style="display:none">
             <div id="email-invite-form-template" class="input-group email-invite-input-group">
                 {{ email_formset.empty_form.invitee|add_class:"form-control" }}
-                <button class="btn btn-danger" data-cy="remove-email">Clear</button>
+                <button class="btn btn-danger email-invite-form-group__button--delete" data-cy="remove-email">Clear</button>
             </div>
         </div>
 
