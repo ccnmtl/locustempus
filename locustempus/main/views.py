@@ -494,7 +494,13 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
             'uni_formset': self.uni_formset(prefix='uni'),
             'email_formset': self.email_formset(prefix='email'),
             'page_type': 'roster',
-            'template_title': 'Invite Contributor'
+            'template_title': 'Invite Contributor',
+            'breadcrumb': {
+                'Workspaces': reverse('course-list-view'),
+                course.title: reverse('course-detail-view', args=[course.pk]),
+                'Roster': reverse('course-roster-view', args=[course.pk]),
+                'Invite': ''
+            }
         })
 
     def post(self, request, *args, **kwargs) -> HttpResponse:
@@ -515,7 +521,17 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
                 return render(request, self.template_name, {
                     'course': course,
                     'uni_formset': self.uni_formset(prefix='uni'),
-                    'email_formset': self.email_formset(prefix='email')
+                    'email_formset': self.email_formset(prefix='email'),
+                    'page_type': 'roster',
+                    'template_title': 'Invite Contributor',
+                    'breadcrumb': {
+                        'Workspaces': reverse('course-list-view'),
+                        course.title:
+                            reverse('course-detail-view', args=[course.pk]),
+                        'Roster':
+                            reverse('course-roster-view', args=[course.pk]),
+                        'Invite': ''
+                    }
                 })
 
             self.handle_unis(course, unis)
@@ -527,7 +543,15 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
         return render(request, self.template_name, {
             'course': course,
             'uni_formset': uni_formset,
-            'email_formset': email_formset
+            'email_formset': email_formset,
+            'page_type': 'roster',
+            'template_title': 'Invite Contributor',
+            'breadcrumb': {
+                'Workspaces': reverse('course-list-view'),
+                course.title: reverse('course-detail-view', args=[course.pk]),
+                'Roster': reverse('course-roster-view', args=[course.pk]),
+                'Invite': ''
+            }
         })
 
 
