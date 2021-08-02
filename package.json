@@ -31,7 +31,6 @@
     "eslint-plugin-react": "^7.20.6",
     "eslint-plugin-scanjs-rules": "~0.2.1",
     "eslint-plugin-security": "~1.4.0",
-    "file-loader": "^6.0.0",
     "mini-css-extract-plugin": "^2.1.0",
     "mocha": "~9.0.0",
     "postcss-loader": "^6.1.0",
