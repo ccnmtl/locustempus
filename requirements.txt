@@ -13,7 +13,7 @@ pyflakes==2.3.1
 mccabe==0.6.1
 configparser==5.0.2
 pycodestyle==2.7.0
-importlib-metadata==4.6.0  # for flake8
+importlib-metadata==4.6.3  # for flake8
 typing_extensions==3.10.0.0
 zipp==3.5.0  # for flake8
 flake8==3.9.2
@@ -96,7 +96,7 @@ oauth2==1.9.0.post1
 oauthlib==3.1.1
 httplib2==0.19.1
 pylti==0.7.0
-django-lti-provider==0.4.3
+django-lti-provider==0.4.4
 
 pyparsing==2.4.7
 edtf==4.0.1 # pyup: <4.0.0
