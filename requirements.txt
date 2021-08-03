@@ -96,7 +96,7 @@ oauth2==1.9.0.post1
 oauthlib==3.1.1
 httplib2==0.19.1
 pylti==0.7.0
-django-lti-provider==0.4.3
+django-lti-provider==0.4.4
 
 pyparsing==2.4.7
 edtf==4.0.1 # pyup: <4.0.0
