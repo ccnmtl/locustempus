@@ -53,7 +53,7 @@
     "@types/node": "^16.0.1",
     "@types/react": "^17.0.0",
     "@types/react-dom": "^17.0.0",
-    "@types/react-map-gl": "^5.2.3",
+    "@types/react-map-gl": "^6.1.0",
     "bootstrap": "^4.5.0",
     "deck.gl": "^8.1.7",
     "install": "^0.13.0",
