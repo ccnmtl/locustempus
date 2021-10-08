@@ -52,7 +52,7 @@ boto3>=1.9.198,<1.19.0
 
 python-dateutil==2.8.2
 
-djangowind==1.2.3
+djangowind==1.2.4
 django-indexer==0.3.0
 django-templatetag-sugar==1.0
 django-paging==0.2.5
