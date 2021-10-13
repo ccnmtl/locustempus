@@ -30,7 +30,7 @@ pyOpenSSL==21.0.0
 ndg-httpsclient==0.5.1
 urllib3==1.26.7  # requests
 chardet==4.0.0  # requests
-idna==3.2  # requests
+idna==3.3  # requests
 certifi==2021.10.8  # requests
 requests==2.26.0
 astroid==2.8.0
