@@ -91,7 +91,6 @@ export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPanePro
                 setProjectPaneHeaderHeight(projectPaneHeader.current.clientHeight);
             }
         };
-        /* eslint-disable-next-line scanjs-rules/call_addEventListener */
         window.addEventListener('resize', resize);
         return (): void => window.removeEventListener('resize', resize);
     });

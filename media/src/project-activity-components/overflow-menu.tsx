@@ -38,7 +38,6 @@ export const ConfirmableAction: React.FC<ConfirmableActionProps> = ({
                 // TODO: when refactoring, don't forget to remove this style
                 pane.classList.add('overflow-fix');
             }
-            /* eslint-disable-next-line scanjs-rules/call_addEventListener */
             return () => {
                 const p = document.getElementById('pane-scroll-y');
                 if (p) {
@@ -55,7 +54,6 @@ export const ConfirmableAction: React.FC<ConfirmableActionProps> = ({
                 setShowMenu(false);
             }
         };
-        /* eslint-disable-next-line scanjs-rules/call_addEventListener */
         window.addEventListener('keyup', closeOnEsc);
         return () => {
             window.removeEventListener('keyup', closeOnEsc);
@@ -160,7 +158,6 @@ export const OverflowMenu: React.FC<OverflowMenuProps> = ({items}: OverflowMenuP
                 }
             }
         };
-        /* eslint-disable-next-line scanjs-rules/call_addEventListener */
         document.addEventListener('click', closeMenu);
         return () => {
             document.removeEventListener('click', closeMenu);

@@ -138,7 +138,6 @@ export const ActivityMap: React.FC = () => {
     useEffect(() => {
         if (alertString) {
             window.clearTimeout(alertTimeoutId.current);
-            // eslint-disable-next-line scanjs-rules/call_setTimeout
             alertTimeoutId.current = window.setTimeout(() => setAlert(null), ALERT_DURUATION);
         }
     }, [alertString]);
