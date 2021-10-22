@@ -8,6 +8,8 @@ updates:
   open-pull-requests-limit: 10
   versioning-strategy: increase-if-necessary
   ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
   - dependency-name: react-map-gl
     versions:
     - 6.x
@@ -53,6 +55,8 @@ updates:
     time: "10:00"
   open-pull-requests-limit: 10
   ignore:
+  - dependency-name: "*"
+    update-types: ["version-update:semver-patch"]
   - dependency-name: decorator
     versions:
     - 5.0.0
