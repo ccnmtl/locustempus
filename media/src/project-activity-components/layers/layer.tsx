@@ -44,7 +44,6 @@ export const Layer: React.FC<LayerProps> = (
                     setOpenLayerMenu(false);
                 }
             };
-            /* eslint-disable-next-line scanjs-rules/call_addEventListener */
             document.addEventListener('click', closeMenu);
             return () => {
                 document.removeEventListener('click', closeMenu);

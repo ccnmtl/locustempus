@@ -94,7 +94,6 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
                 setProjectPaneHeaderHeight(projectPaneHeader.current.clientHeight);
             }
         };
-        /* eslint-disable-next-line scanjs-rules/call_addEventListener */
         window.addEventListener('resize', resize);
         return (): void => window.removeEventListener('resize', resize);
     });
