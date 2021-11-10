@@ -11,7 +11,7 @@ statsd==3.3.0
 pep8==1.7.1
 pyflakes==2.4.0
 mccabe==0.6.1
-configparser==5.0.2
+configparser==5.1.0
 pycodestyle==2.8.0
 importlib-metadata==4.8.1  # for flake8
 typing_extensions==3.10.0.2
@@ -23,7 +23,7 @@ cssselect==1.1.0
 lxml==4.6.3
 fuzzywuzzy==0.18.0
 sure==2.0.0
-coverage==6.0.2
+coverage==6.1.1
 pyasn1==0.4.8
 cryptography<35.0.1  # pyOpenSSL
 pyOpenSSL==21.0.0
@@ -39,7 +39,7 @@ lazy-object-proxy==1.6.0
 pylint==2.11.1
 six==1.16.0
 ipaddress==1.0.23  # faker
-faker==9.5.2  # factory_boy
+faker==9.8.0  # factory_boy
 factory_boy==3.2.0
 ldap3==2.9.1
 sqlparse==0.4.2
@@ -62,7 +62,7 @@ rcssmin==1.0.6  # django-compressor
 rjsmin==1.1.0  # django-compressor
 django-compressor==2.4.1
 django-statsd-mozilla==0.4.0
-django-bootstrap4==3.0.1
+django-bootstrap4==21.1
 django-debug-toolbar==3.2.2
 django-waffle==2.2.1
 django-jenkins==0.110.0
@@ -101,7 +101,7 @@ django-lti-provider==0.4.7
 pyparsing==2.4.7
 edtf==4.0.1 # pyup: <4.0.0
 
-pbr==5.6.0 # bandit
+pbr==5.7.0 # bandit
 pyyaml==6.0 # bandit
 stevedore==3.5.0  # bandit
 bandit==1.7.0
