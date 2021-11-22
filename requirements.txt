@@ -33,7 +33,7 @@ chardet==4.0.0  # requests
 idna==3.3  # requests
 certifi==2021.10.8  # requests
 requests==2.26.0
-astroid==2.8.3
+astroid==2.9.0
 wrapt==1.13.2
 lazy-object-proxy==1.6.0
 pylint==2.11.1
