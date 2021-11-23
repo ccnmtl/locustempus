@@ -1,7 +1,7 @@
 Django>=2.2.13,<3
 django-s3sign==0.2.1
 pytz==2021.3
-httplib2==0.20.1
+httplib2==0.20.2
 feedparser==6.0.8
 Markdown==3.3.4 # pyup: < 3
 psycopg2==2.8.6
@@ -94,7 +94,6 @@ django-cacheds3storage==0.2.2
 nameparser==1.0.6
 oauth2==1.9.0.post1
 oauthlib==3.1.1
-httplib2==0.20.1
 pylti==0.7.0
 django-lti-provider==0.4.7
 
