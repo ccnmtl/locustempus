@@ -36,7 +36,7 @@ requests==2.26.0
 astroid==2.9.0
 wrapt==1.13.2
 lazy-object-proxy==1.6.0
-pylint==2.11.1
+pylint==2.12.1
 six==1.16.0
 ipaddress==1.0.23  # faker
 faker==9.8.0  # factory_boy
