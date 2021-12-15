@@ -35,7 +35,7 @@ certifi==2021.10.8  # requests
 requests==2.26.0
 astroid==2.9.0
 wrapt==1.13.2
-lazy-object-proxy==1.6.0
+lazy-object-proxy==1.7.0
 pylint==2.12.1
 six==1.16.0
 ipaddress==1.0.23  # faker
