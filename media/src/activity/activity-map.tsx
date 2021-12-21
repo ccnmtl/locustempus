@@ -675,7 +675,7 @@ export const ActivityMap: React.FC = () => {
                 if (!activityResponse.ok) {
                     throw new Error('Activity data not loaded.');
                 }
-                setActivity(await activityResponse.json());
+                setActivity(await activityResponse.json()); // eslint-disable-line @typescript-eslint/no-unsafe-argument, max-len
             }
 
             // Fetch the Project layers
@@ -846,7 +846,7 @@ export const ActivityMap: React.FC = () => {
                     ]}
                     ref={deckglMap}
                     viewState={viewportState}
-                    onViewStateChange={e => setViewportState(e.viewState)}
+                    onViewStateChange={e => setViewportState(e.viewState)} // eslint-disable-line @typescript-eslint/no-unsafe-argument, max-len
                     width={'100%'}
                     height={'100%'}
                     controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
