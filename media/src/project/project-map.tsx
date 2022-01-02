@@ -487,11 +487,11 @@ export const ProjectMap: React.FC = () => {
             {projectData && (
                 <DeckGL
                     layers={[
-                        ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
+                        ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
                         ...mapLayers
                     ]}
                     viewState={viewportState}
-                    onViewStateChange={e => setViewportState(e.viewState)}
+                    onViewStateChange={e => setViewportState(e.viewState)} // eslint-disable-line @typescript-eslint/no-unsafe-argument, max-len
                     width={'100%'}
                     height={'100%'}
                     controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
