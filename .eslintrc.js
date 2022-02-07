@@ -43,6 +43,8 @@ module.exports = {
         "no-trailing-spaces": ["error"],
         "key-spacing": ["error", { "beforeColon": false }],
         "func-call-spacing": ["error", "never"],
+        //https://github.com/yannickcr/eslint-plugin-react/issues/2654
+        'react/prop-types': [0],
 
         'security/detect-buffer-noassert': 1,
         'security/detect-child-process': 1,
