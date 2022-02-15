@@ -14,7 +14,7 @@ mccabe==0.7.0
 configparser==5.2.0
 pycodestyle==2.8.0
 importlib-metadata<4.12 # for flake8
-typing_extensions==4.0.0
+typing_extensions==4.1.1
 zipp==3.6.0  # for flake8
 flake8==4.0.1
 tornado==6.1
@@ -39,7 +39,7 @@ lazy-object-proxy==1.7.1
 pylint==2.12.1
 six==1.16.0
 ipaddress==1.0.23  # faker
-faker==12.1.0  # factory_boy
+faker==12.3.0  # factory_boy
 factory_boy==3.2.0
 ldap3==2.9.1
 sqlparse==0.4.2
@@ -48,7 +48,7 @@ jmespath==0.10.0
 
 
 botocore>=1.13.0,<1.24.0
-boto3>=1.9.198,<1.21.0
+boto3>=1.9.198,<1.22.0
 
 python-dateutil==2.8.2
 
