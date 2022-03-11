@@ -34,7 +34,7 @@ idna==3.3  # requests
 certifi==2021.10.8  # requests
 requests==2.27.0
 astroid==2.10.0
-wrapt==1.13.2
+wrapt==1.14.0
 lazy-object-proxy==1.7.1
 pylint==2.12.1
 six==1.16.0
