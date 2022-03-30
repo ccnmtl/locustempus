@@ -116,7 +116,7 @@ class CourseCreateView(LoginRequiredMixin, CreateView):
         return reverse('course-list-view')
 
     def form_valid(self, form) -> HttpResponse:
-        assert isinstance(self.request.user, User)
+        assert isinstance(self.request.user, User)  # nosec
         title = form.cleaned_data['title']
 
         student_grp_name = '{}-group-{}'.format(title, uuid4())
@@ -433,7 +433,7 @@ class CourseRosterInviteUser(LoggedInFacultyMixin, View):
         Add a list of guest users to a course from a list of email addresses.
         """
         site = get_current_site(self.request)
-        assert isinstance(self.request.user, User)
+        assert isinstance(self.request.user, User)  # nosec
         for addr in email_addrs:
             try:
                 user = User.objects.get(email=addr)
@@ -571,7 +571,7 @@ class LTICourseCreate(LoginRequiredMixin, View):
             data, settings.SERVER_EMAIL)
 
     def thank_faculty(self, course: Course) -> None:
-        assert isinstance(self.request.user, User)
+        assert isinstance(self.request.user, User)  # nosec
         user = self.request.user
         send_template_email(
             'Locus Tempus Course Connected',
@@ -586,7 +586,7 @@ class LTICourseCreate(LoginRequiredMixin, View):
         return (group, faculty_group)
 
     def groups_from_sis_course_id(self, attrs) -> Tuple[Group, Group]:
-        assert isinstance(self.request.user, User)
+        assert isinstance(self.request.user, User)  # nosec
         user = self.request.user
         st_affil = WindTemplate.to_string(attrs)
         group, created = Group.objects.get_or_create(name=st_affil)
