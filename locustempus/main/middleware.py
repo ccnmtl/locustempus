@@ -5,7 +5,7 @@ https://github.com/Atomidata/django-audit-log/
     blob/master/audit_log/middleware.py
 """
 from django.db.models import signals
-from django.utils.functional import curry
+from functools import partial as curry
 
 
 class WhoDidItMiddleware(object):

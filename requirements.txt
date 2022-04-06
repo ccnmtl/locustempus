@@ -1,4 +1,5 @@
-Django>=2.2.13,<3
+Django==3.2.12
+asgiref==3.4.1
 django-s3sign==0.2.1
 pytz==2022.1
 httplib2==0.20.2
@@ -109,7 +110,7 @@ django-contact-us==0.4.4
 
 entrypoints==0.4
 
-django-courseaffils==2.2.5
+django-courseaffils==2.2.6
 
 mypy==0.942
 mypy-extensions==0.4.3
@@ -125,4 +126,3 @@ confusable_homoglyphs==3.2.0
 django-registration==3.2
 
 distro==1.7.0
-
