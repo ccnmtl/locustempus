@@ -1,5 +1,5 @@
 {% extends "base.html" %}
-{% load i18n admin_static %}
+{% load i18n static %}
 {% block title %}Sign up for an account{% endblock %}
 
 {% block content %}
@@ -8,7 +8,7 @@
         <h1 class="h2">Create an account</h1>
         <div class="lt-banner" role="alert">
             If you have a Columbia UNI, or a Locus Tempus account,
-            <a href="/accounts/login/?next=/">sign in instead</a>. 
+            <a href="/accounts/login/?next=/">sign in instead</a>.
             Need help to <a href="{% url "password_reset" %}">reset your password</a>?
         </div>
 
