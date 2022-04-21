@@ -501,6 +501,6 @@ describe('Activity Response Stories', function() {
         cy.get('input[type="checkbox"]').check().should('be.checked');
         cy.get('[name="action"]').select('delete_selected');
         cy.get('.button').contains('Go').click();
-        cy.get('input').contains('Yes').click();
+        cy.get('input[value="Yes, I’m sure"]').click();
     });
 });
