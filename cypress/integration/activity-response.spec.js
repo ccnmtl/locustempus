@@ -178,6 +178,7 @@ describe('Activity Response Stories', function() {
         cy.get('[data-cy="confirm-dialog-okay"]').click({force: true});
 
         cy.log('a new, untitled empty layer is automagically created');
+        cy.wait(500); // prevents a detached dom issue
         cy.get('[data-cy="layer"]').should('have.length', 1);
         cy.get('[data-cy="layer"]').eq(0).find('[data-cy="layer-title"]')
             .contains('Untitled Layer').should('be.visible');
