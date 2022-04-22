@@ -16,6 +16,7 @@ PROJECT_APPS = [
 
 USE_TZ = True
 
+# A note on installed apps, Django 3+ has automatic appconfig discovery.
 INSTALLED_APPS += [  # noqa
     'bootstrap4',
     'infranil',
@@ -23,7 +24,6 @@ INSTALLED_APPS += [  # noqa
     'courseaffils',
     'lti_provider',
     'locustempus.main',
-    'locustempus.design',
     'widget_tweaks',
     'django_registration',
     'rest_framework',
@@ -57,6 +57,7 @@ THUMBNAIL_SUBDIR = "thumbs"
 LOGIN_REDIRECT_URL = "/"
 
 ACCOUNT_ACTIVATION_DAYS = 7
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
