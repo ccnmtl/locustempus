@@ -62,7 +62,7 @@
     "precss": "^4.0.0",
     "react": "~16.14.0",
     "react-dom": "~16.14.0",
-    "react-map-gl": "^5.3.4",
+    "react-map-gl": "^7.0.12",
     "react-quill": "^2.0.0-beta.2",
     "tablesorter": "^2.31.3",
     "ts-loader": "^9.0.0",
