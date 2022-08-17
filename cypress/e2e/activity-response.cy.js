@@ -341,7 +341,7 @@ describe('Activity Response Stories', function() {
 
         // Verify 1 Responses are showing
         cy.get('[data-cy="Responses (1)"]').should('be.visible');
-        cy.get('[data-cy="Responses (1)"]').click();
+        cy.get('[data-cy="Responses (1)"]').click({force: true});
 
         cy.get('[data-cy="activity-response-count"]')
             .contains('There is 1 response to this activity');
@@ -380,7 +380,7 @@ describe('Activity Response Stories', function() {
 
         // collapse
         cy.get('[data-cy="layer"]').eq(0)
-            .find('[data-icon="angle-down"]').click();
+            .find('[data-icon="angle-down"]').click({force: true});
         cy.get('[data-cy="layer"]').eq(0)
             .find('[data-cy="layer-prompt-muted"]').should('not.exist');
         cy.get('[data-cy="layer"]').eq(0)
