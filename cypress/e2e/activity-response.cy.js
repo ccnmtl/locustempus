@@ -380,7 +380,7 @@ describe('Activity Response Stories', function() {
 
         // collapse
         cy.get('[data-cy="layer"]').eq(0)
-            .find('[data-icon="angle-down"]').click();
+            .find('[data-icon="angle-down"]').click({force: true});
         cy.get('[data-cy="layer"]').eq(0)
             .find('[data-cy="layer-prompt-muted"]').should('not.exist');
         cy.get('[data-cy="layer"]').eq(0)
