@@ -1,7 +1,7 @@
 [![Actions Status](https://github.com/ccnmtl/locustempus/workflows/build-and-test/badge.svg)](https://github.com/ccnmtl/locustempus/actions)
 
 # Locus Tempus
-## Quick Start 
+## Quick Start
 Use `make dev`. This is equivalent to running Django's `./manage.py runserver` in one shell and Webpack in another. The output from both will be printed to the shell. Use CTR-C to exit.
 
 To test, use `make all`. This is what Travis and Jenkins runs to build the project.
@@ -49,7 +49,6 @@ Selected explanations of various make targets
 
 #### django.mk Make Targets
 - `make test`: runs all Python tests
-- `make mypy`: runs MyPy type checking
 - `make runserver`: runs Django's dev server, using local database settings
 - `make integrationserver`: runs Django's dev server, except that it uses a test database populated with data created from factory methods
 
@@ -58,7 +57,7 @@ Selected explanations of various make targets
 - `make jstest`: Runs Mocha tests on project js files.
 - `make js-typecheck`: Runs TypeScript to type check the JS/TS code. It runs the TypeScript compiler but does not emit compiled code.
 - `make webpack`: Runs Webpack in watch mode, watches files and rebuilds on change.
-- `make cypress-run`: Runs Cypress tests in headless mode, does not bring up test server. Use this when you want to run headless Cypress tests against a running test server. 
+- `make cypress-run`: Runs Cypress tests in headless mode, does not bring up test server. Use this when you want to run headless Cypress tests against a running test server.
 - `make cypress-open`: Runs Cypress tests in headed mode, does not bring up test server. Use this when you want to run Cypress during dev.
 - `make cypress-test`: Runs Cypress tests in headless mode, uses `make integrationserver`. Use this for CI testing, or if you'd like to run Cypress tests before creating a PR.
 - `make cypress-watch`: Runs `make integrationserver`, `make webpack`, and `make cypress-open` all at once. It will only output text from Cypress; so it's not as useful as `make dev`.

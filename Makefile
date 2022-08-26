@@ -1,27 +1,17 @@
 APP=locustempus
 JS_FILES=media/src
 
-all: jenkins mypy js-typecheck cypress-test
+all: jenkins js-typecheck cypress-test
 .PHONY: all
 
 include *.mk
 
-ifeq ($(TRAVIS),true)
-	MYPY ?= mypy
-else
-	MYPY ?= $(VE)/bin/mypy
-endif
-
 test-travis:
 	$(MANAGE) test --settings=$(APP).settings_travis --noinput
-.PHONY: test-travis 
+.PHONY: test-travis
 
-travis: check flake8 test-travis eslint bandit mypy js-typecheck cypress-test-travis
-.PHONY: travis 
-
-mypy: $(PY_SENTINAL)
-	$(MYPY)
-.PHONY: mypy
+travis: check flake8 test-travis eslint bandit js-typecheck cypress-test-travis
+.PHONY: travis
 
 tileserver: $(PY_SENTINAL)
 	cd tiles && ../$(VE)/bin/python3 ./server.py
@@ -29,7 +19,7 @@ tileserver: $(PY_SENTINAL)
 
 integrationserver: check
 	$(MANAGE) integrationserver --addrport $(INTERFACE):$(RUNSERVER_PORT) --noinput
-.PHONY: integrationserver 
+.PHONY: integrationserver
 
 integrationserver-travis: check
 	$(MANAGE) integrationserver --addrport $(INTERFACE):$(RUNSERVER_PORT) --noinput --settings=$(APP).settings_travis
@@ -65,7 +55,7 @@ cypress-test-travis: js-build
 .PHONY: cypress-test-travis
 
 cypress-watch: $(JS_SENTINAL)
-	npm run cypress:watch 
+	npm run cypress:watch
 .PHONY: cypress-watch
 
 dev:

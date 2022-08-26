@@ -16,7 +16,6 @@ media/build
 node_modules
 uploads
 reports
-.mypy_cache
 cypress/videos
 cypress/screenshots/
 cypress/fixtures/
