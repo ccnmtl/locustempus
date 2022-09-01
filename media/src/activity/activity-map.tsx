@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
 import {
-    _MapContext as MapContext, StaticMap, NavigationControl, Popup
+    _MapContext as MapContext, StaticMap, NavigationControl, Popup, MapRequest
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
@@ -831,6 +831,17 @@ export const ActivityMap: React.FC = () => {
         getData().finally(() => {setIsDataLoading(false);});
     }, []);
 
+    const transformRequestFunc = (url?: string, resourceType?: string) => {
+        console.log('transformRequest called', url);
+        if (!url) {
+            url = '';
+        }
+        const request: MapRequest = {
+            url: 'https://example.com/',
+            headers: {'referer': 'http://localhost:8000'}
+        };
+        return request;
+    };
     return (
         <>
             {(isMapLoading || isDataLoading) && <LoadingModal />}
@@ -860,6 +871,7 @@ export const ActivityMap: React.FC = () => {
                         preventStyleDiffing={true}
                         mapStyle={projectData.base_map}
                         mapboxApiAccessToken={TOKEN}
+                        transformRequest={transformRequestFunc}
                         onLoad={(): void => { setIsMapLoading(false); }}/>
                     {activeEvent && layerVisibility.get(activeEvent.layer) &&
                         !activeEventDetail && !showAddEventForm && (
