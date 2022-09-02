@@ -832,13 +832,16 @@ export const ActivityMap: React.FC = () => {
     }, []);
 
     const transformRequestFunc = (url?: string, resourceType?: string) => {
-        console.log('transformRequest called', url);
+        console.log('transformRequest called from activity', url);
         if (!url) {
             url = '';
         }
         const request: MapRequest = {
             url: 'https://example.com/',
-            headers: {'referer': 'http://localhost:8000'}
+            headers: {
+                'Referer': 'http://localhost:8000',
+                'X-Test-Header': 'abc'
+            }
         };
         return request;
     };
