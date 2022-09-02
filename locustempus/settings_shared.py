@@ -141,3 +141,5 @@ if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
         'django.contrib.auth.hashers.MD5PasswordHasher',
     )
     DEFAULT_BASE_MAP = 'http://localhost:8888/style.json'
+
+SECURE_REFERRER_POLICY = 'origin'
