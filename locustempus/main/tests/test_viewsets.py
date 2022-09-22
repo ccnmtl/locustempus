@@ -11,7 +11,7 @@ from locustempus.main.permissions import (
 )
 from locustempus.main.tests.factories import (
     CourseTestMixin, UserFactory, LayerFactory, ResponseFactory,
-    ProjectFactory
+    ProjectFactory, ActivityFactory
 )
 from unittest.mock import MagicMock
 from waffle.testutils import override_flag
@@ -1874,6 +1874,72 @@ class ResponseAPITest(CourseTestMixin, TestCase):
     """
     def setUp(self):
         self.setup_course()
+
+    def test_faculty_post(self):
+        """POST request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.faculty.username,
+                password='test'
+            )
+        )
+        project = ProjectFactory.create(
+                            course=self.sandbox_course, title='Activity One')
+        activity = ActivityFactory.create(project=project)
+        r1 = self.client.post(
+            reverse('api-response-list'),
+            {
+                'activity': activity.id
+            }
+        )
+        self.assertEqual(r1.status_code, 403)
+
+    def test_student_post(self):
+        """POST request"""
+        self.assertTrue(
+            self.client.login(
+                username=self.student.username,
+                password='test'
+            )
+        )
+        project = ProjectFactory.create(
+                        course=self.sandbox_course, title='Activity One')
+        activity = ActivityFactory.create(project=project)
+        r1 = self.client.post(
+            reverse('api-response-list'),
+            {
+                'activity': activity.id
+            }
+        )
+        self.assertEqual(r1.status_code, 201)
+
+    def test_post_response_authed(self):
+        """
+        Tests that authed users who make a POST request for
+        a course which they are not members, that it returns forbidden
+        """
+        authed_user = UserFactory.create(
+            first_name='Student',
+            last_name='Two',
+            email='studenttwo@example.com'
+        )
+        self.assertTrue(
+            self.client.login(
+                username=authed_user,
+                password='test'
+            )
+        )
+        project = ProjectFactory.create(
+                        course=self.sandbox_course, title='Activity One')
+        activity = ActivityFactory.create(project=project)
+        r1 = self.client.post(
+            reverse('api-response-list'),
+            {
+                'activity': activity.id
+
+            }
+        )
+        self.assertEqual(r1.status_code, 403)
 
     def test_get_queryset_faculty(self):
         """
