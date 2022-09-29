@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-    _MapContext as MapContext, StaticMap, NavigationControl, Popup
+    _MapContext as MapContext, StaticMap, NavigationControl, Popup, MapRef
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
@@ -21,6 +21,8 @@ import {
 } from '../project-activity-components/common';
 
 import {get, put, post, del, getBoundedViewport } from '../utils';
+import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import Geocoder from 'react-map-gl-geocoder';
 
 export const ProjectMap: React.FC = () => {
     const [viewportState, setViewportState] = useState<ViewportState>(DEFAULT_VIEWPORT_STATE);
@@ -68,6 +70,8 @@ export const ProjectMap: React.FC = () => {
 
     const [isMapLoading, setIsMapLoading] = useState<boolean>(true);
     const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
+    const mapRef = useRef<MapRef>();
+    const geocoderContainerRef = useRef();
 
     const setBaseMap = (baseMap: string) => {
         if (projectData) {
@@ -410,6 +414,12 @@ export const ProjectMap: React.FC = () => {
             }));
     }
 
+    const handleViewportChange = useCallback(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        (newViewport) => setViewportState(newViewport),
+        []
+    );
+
     useEffect(() => {
         const getData = async(): Promise<void> => {
             // Fetch the Project data
@@ -485,54 +495,71 @@ export const ProjectMap: React.FC = () => {
         <>
             {(isMapLoading || isDataLoading) && <LoadingModal />}
             {projectData && (
-                <DeckGL
-                    layers={[
-                        ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
-                        ...mapLayers
-                    ]}
-                    viewState={viewportState}
-                    onViewStateChange={e => setViewportState(e.viewState)} // eslint-disable-line @typescript-eslint/no-unsafe-argument, max-len
-                    width={'100%'}
-                    height={'100%'}
-                    controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
-                    onClick={handleDeckGlClick}
-                    pickingRadius={15}
-                    ref={deckglMap}
-                    ContextProvider={MapContext.Provider}>
-                    <StaticMap
-                        reuseMaps
+                <div style={{ height: '100vh' }}>
+                    <div
+                        ref={geocoderContainerRef}
+                        style={{ position: 'absolute', top: 20, right: 20, zIndex: 1 }}
+                    />
+                    <DeckGL
+                        layers={[
+                            ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
+                            ...mapLayers
+                        ]}
+                        viewState={viewportState}
+                        onViewStateChange={e => setViewportState(e.viewState)} // eslint-disable-line @typescript-eslint/no-unsafe-argument, max-len
                         width={'100%'}
                         height={'100%'}
-                        preventStyleDiffing={true}
-                        mapStyle={projectData.base_map}
-                        mapboxApiAccessToken={TOKEN}
-                        onLoad={(): void => {setIsMapLoading(false); }}/>
-                    {activeEvent && layerVisibility.get(activeEvent.layer) &&
+                        controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
+                        onClick={handleDeckGlClick}
+                        pickingRadius={15}
+                        ref={deckglMap}
+                        ContextProvider={MapContext.Provider}>
+                        <StaticMap
+                            reuseMaps
+                            width={'100%'}
+                            height={'100%'}
+                            preventStyleDiffing={true}
+                            mapStyle={projectData.base_map}
+                            mapboxApiAccessToken={TOKEN}
+                            ref={mapRef}
+                            onLoad={(): void => {setIsMapLoading(false); }}>
+                            <Geocoder
+                                position="top-right"
+                                mapRef={mapRef}
+                                containerRef={geocoderContainerRef}
+                                mapboxApiAccessToken={TOKEN}
+                                reverseGeocode
+                                onViewportChange={handleViewportChange}>
+                            </Geocoder>
+                        </StaticMap>
+
+                        {activeEvent && layerVisibility.get(activeEvent.layer) &&
                         !activeEventDetail && !showAddEventForm && (
-                        <Popup
-                            latitude={activeEvent.location.lng_lat[1]}
-                            longitude={activeEvent.location.lng_lat[0]}
-                            offsetTop={-30}
-                            closeOnClick={false}
-                            onClose={(): void => {setActiveEvent(null);}}>
-                            {activeEvent.media && activeEvent.media[0] && (
-                                <div className={'mapboxgl-popup-image'}
-                                    style={{backgroundImage:
+                            <Popup
+                                latitude={activeEvent.location.lng_lat[1]}
+                                longitude={activeEvent.location.lng_lat[0]}
+                                offsetTop={-30}
+                                closeOnClick={false}
+                                onClose={(): void => {setActiveEvent(null);}}>
+                                {activeEvent.media && activeEvent.media[0] && (
+                                    <div className={'mapboxgl-popup-image'}
+                                        style={{backgroundImage:
                                         'url(' +  activeEvent.media[0].url + ')'}}>
+                                    </div>
+                                )}
+                                <div className={'mapboxgl-popup-text'}>
+                                    <h2>{activeEvent.label}</h2>
+                                    <div className={'event-attr'}>by {activeEvent.owner}</div>
+                                    <div className={'event-summary lt-quill-rendered'}
+                                        dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
                                 </div>
-                            )}
-                            <div className={'mapboxgl-popup-text'}>
-                                <h2>{activeEvent.label}</h2>
-                                <div className={'event-attr'}>by {activeEvent.owner}</div>
-                                <div className={'event-summary lt-quill-rendered'}
-                                    dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
-                            </div>
-                        </Popup>
-                    )}
-                    <div id='map-navigation-control'>
-                        <NavigationControl style={navControlStyle} />
-                    </div>
-                </DeckGL>
+                            </Popup>
+                        )}
+                        <div id='map-navigation-control'>
+                            <NavigationControl style={navControlStyle} />
+                        </div>
+                    </DeckGL>
+                </div>
             )}
             {projectData && (
                 <ProjectMapPane

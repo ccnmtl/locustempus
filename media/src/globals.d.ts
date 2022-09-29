@@ -24,3 +24,5 @@ interface Callable {
 declare class S3Upload extends Callable {
     constructor(settings: S3UploadSettings);
 }
+
+declare module 'react-map-gl-geocoder';
