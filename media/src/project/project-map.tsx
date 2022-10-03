@@ -70,8 +70,8 @@ export const ProjectMap: React.FC = () => {
 
     const [isMapLoading, setIsMapLoading] = useState<boolean>(true);
     const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
-    const mapRef = useRef<MapRef>();
-    const geocoderContainerRef = useRef();
+    const mapRef = useRef<MapRef>(null);
+    const geocoderContainerRef = useRef<HTMLDivElement>(null);
 
     const setBaseMap = (baseMap: string) => {
         if (projectData) {

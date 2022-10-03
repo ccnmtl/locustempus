@@ -138,8 +138,8 @@ export const ActivityMap: React.FC = () => {
     const [alertString, setAlert] = useState<string | null>(null);
     const alertTimeoutId = useRef<number>(0);
     const ALERT_DURUATION = 4000;
-    const mapRef = useRef<MapRef>();
-    const geocoderContainerRef = useRef();
+    const mapRef = useRef<MapRef>(null);
+    const geocoderContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (alertString) {
