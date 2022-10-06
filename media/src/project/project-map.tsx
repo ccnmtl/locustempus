@@ -529,6 +529,7 @@ export const ProjectMap: React.FC = () => {
                                 containerRef={geocoderContainerRef}
                                 mapboxApiAccessToken={TOKEN}
                                 reverseGeocode={true}
+                                minLength={3}
                                 onViewportChange={handleViewportChange}>
                             </Geocoder>
                         </StaticMap>
