@@ -10,7 +10,7 @@ export const ICON_MAPPING = {
 
 type RGBAColor = [number, number, number, number?];
 
-export const ICON_SCALE = 15;
+export const ICON_SCALE = 10;
 export const ICON_SIZE = 3;
 export const ICON_SIZE_ACTIVE = 4;
 export const ICON_COLOR: RGBAColor = [204, 51, 51];
