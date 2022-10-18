@@ -14,9 +14,9 @@
 </div>
 
     {% if project.activity %}
-        <div id="activity-map-container" data-maptoken="{{ token }}" data-activitypk="{{ project.activity.pk }}" data-projectpk="{{ project.pk }}" data-isfaculty="{{ is_faculty }}"></div>
+        <div id="activity-map-container" data-maptoken="{{ token }}" data-activitypk="{{ project.activity.pk }}" data-projectpk="{{ project.pk }}" data-isfaculty="{{ is_faculty }}" data-geocoder={{geocoder}}></div>
     {% else %}
-        <div id="project-map-container" data-basemap="{{ project.base_map }}" data-maptoken="{{ token }}" data-newproject="{{ is_new_project }}"></div>
+        <div id="project-map-container" data-basemap="{{ project.base_map }}" data-maptoken="{{ token }}" data-newproject="{{ is_new_project }}" data-geocoder={{geocoder}}></div>
     {% endif %}
 {% endblock %}
 

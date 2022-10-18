@@ -706,6 +706,7 @@ class ProjectView(LoggedInCourseMixin, View):
             'course': course,
             'project': project,
             'token': getattr(settings, 'MAPBOX_TOKEN', '123abc'),
+            'geocoder': getattr(settings, 'GEOCODER', True),
             'is_faculty': is_faculty,
             'page_type': 'project',
             'is_new_project': new_project

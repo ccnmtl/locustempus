@@ -70,6 +70,7 @@ export const ActivityMap: React.FC = () => {
     const mapContainer: HTMLElement | null =
         document.querySelector('#activity-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
+    const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
     const projectPk = mapContainer && mapContainer.dataset.projectpk;
     const activityPk = mapContainer && mapContainer.dataset.activitypk;
     let isFaculty = false;
@@ -878,15 +879,17 @@ export const ActivityMap: React.FC = () => {
                             mapboxApiAccessToken={TOKEN}
                             ref={mapRef}
                             onLoad={(): void => { setIsMapLoading(false); }}>
-                            <Geocoder
-                                position="top-right"
-                                mapRef={mapRef}
-                                containerRef={geocoderContainerRef}
-                                mapboxApiAccessToken={TOKEN}
-                                reverseGeocode={true}
-                                minLength={3}
-                                onViewportChange={handleViewportChange}>
-                            </Geocoder>
+                            {geocoder === 'True' &&
+                                <Geocoder
+                                    position="top-right"
+                                    mapRef={mapRef}
+                                    containerRef={geocoderContainerRef}
+                                    mapboxApiAccessToken={TOKEN}
+                                    reverseGeocode={true}
+                                    minLength={3}
+                                    onViewportChange={handleViewportChange}>
+                                </Geocoder>
+                            }
                         </StaticMap>
                         {activeEvent && layerVisibility.get(activeEvent.layer) &&
                         !activeEventDetail && !showAddEventForm && (
