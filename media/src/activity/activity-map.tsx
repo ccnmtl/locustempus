@@ -70,7 +70,9 @@ export const ActivityMap: React.FC = () => {
     const mapContainer: HTMLElement | null =
         document.querySelector('#activity-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
-    const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
+    // Hiding this feature for now
+    // const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
+    const geocoder = false;
     const projectPk = mapContainer && mapContainer.dataset.projectpk;
     const activityPk = mapContainer && mapContainer.dataset.activitypk;
     let isFaculty = false;
@@ -879,7 +881,7 @@ export const ActivityMap: React.FC = () => {
                             mapboxApiAccessToken={TOKEN}
                             ref={mapRef}
                             onLoad={(): void => { setIsMapLoading(false); }}>
-                            {geocoder === 'True' &&
+                            {geocoder &&
                                 <Geocoder
                                     position="top-right"
                                     mapRef={mapRef}

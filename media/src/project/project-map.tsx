@@ -29,7 +29,9 @@ export const ProjectMap: React.FC = () => {
     const mapContainer: HTMLElement | null =
         document.querySelector('#project-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
-    const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
+    // Hiding this feature for now
+    // const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
+    const geocoder = false;
     const newProjectFlag = mapContainer ?
         mapContainer.dataset.newproject === 'True': false;
     const pathList = window.location.pathname.split('/');
@@ -524,7 +526,7 @@ export const ProjectMap: React.FC = () => {
                             mapboxApiAccessToken={TOKEN}
                             ref={mapRef}
                             onLoad={(): void => {setIsMapLoading(false); }}>
-                            {geocoder === 'True' &&
+                            {geocoder &&
                                 <Geocoder
                                     position="top-right"
                                     mapRef={mapRef}
