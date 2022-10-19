@@ -1,6 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
-    _MapContext as MapContext, StaticMap, NavigationControl, Popup
+    _MapContext as MapContext, StaticMap, NavigationControl, Popup, MapRef
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
@@ -13,8 +13,12 @@ import { PickInfo } from '@deck.gl/core/lib/deck';
 import { ActivityMapPane } from './activity-map-pane';
 import { LoadingModal } from '../project-activity-components/loading-modal';
 import { Notification } from '../project-activity-components/notification';
+import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import Geocoder from 'react-map-gl-geocoder';
+
 
 import {get, put, post, del, getBoundedViewport } from '../utils';
+
 
 const CURRENT_USER = LocusTempus.currentUser.id;
 
@@ -66,6 +70,9 @@ export const ActivityMap: React.FC = () => {
     const mapContainer: HTMLElement | null =
         document.querySelector('#activity-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
+    // Hiding this feature for now
+    // const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
+    const geocoder = false;
     const projectPk = mapContainer && mapContainer.dataset.projectpk;
     const activityPk = mapContainer && mapContainer.dataset.activitypk;
     let isFaculty = false;
@@ -134,6 +141,8 @@ export const ActivityMap: React.FC = () => {
     const [alertString, setAlert] = useState<string | null>(null);
     const alertTimeoutId = useRef<number>(0);
     const ALERT_DURUATION = 4000;
+    const mapRef = useRef<MapRef>(null);
+    const geocoderContainerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         if (alertString) {
@@ -653,6 +662,11 @@ export const ActivityMap: React.FC = () => {
                 getColor: ICON_COLOR_NEW_EVENT,
             }));
     }
+    const handleViewportChange = useCallback(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+        (newViewport) => setViewportState(newViewport),
+        []
+    );
 
     useEffect(() => {
         // TODO: Refactor this to rededuce complexity
@@ -839,54 +853,73 @@ export const ActivityMap: React.FC = () => {
                     alertString={alertString}
                     closeHandler={() => setAlert(null)} />}
             {projectData && (
-                <DeckGL
-                    layers={[
-                        ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
-                        ...mapLayers
-                    ]}
-                    ref={deckglMap}
-                    viewState={viewportState}
-                    onViewStateChange={e => setViewportState(e.viewState)} // eslint-disable-line @typescript-eslint/no-unsafe-argument, max-len
-                    width={'100%'}
-                    height={'100%'}
-                    controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
-                    onClick={handleDeckGlClick}
-                    pickingRadius={15}
-                    ContextProvider={MapContext.Provider}>
-                    <StaticMap
-                        reuseMaps
+                <div style={{ height: '100vh' }}>
+                    <div
+                        ref={geocoderContainerRef}
+                        style={{ position: 'absolute', top: 20, right: 20, zIndex: 1 }}
+                    />
+                    <DeckGL
+                        layers={[
+                            ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
+                            ...mapLayers
+                        ]}
+                        ref={deckglMap}
+                        viewState={viewportState}
+                        onViewStateChange={e => setViewportState(e.viewState)} // eslint-disable-line @typescript-eslint/no-unsafe-argument, max-len
                         width={'100%'}
                         height={'100%'}
-                        preventStyleDiffing={true}
-                        mapStyle={projectData.base_map}
-                        mapboxApiAccessToken={TOKEN}
-                        onLoad={(): void => { setIsMapLoading(false); }}/>
-                    {activeEvent && layerVisibility.get(activeEvent.layer) &&
+                        controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
+                        onClick={handleDeckGlClick}
+                        pickingRadius={15}
+                        ContextProvider={MapContext.Provider}>
+                        <StaticMap
+                            reuseMaps
+                            width={'100%'}
+                            height={'100%'}
+                            preventStyleDiffing={true}
+                            mapStyle={projectData.base_map}
+                            mapboxApiAccessToken={TOKEN}
+                            ref={mapRef}
+                            onLoad={(): void => { setIsMapLoading(false); }}>
+                            {geocoder &&
+                                <Geocoder
+                                    position="top-right"
+                                    mapRef={mapRef}
+                                    containerRef={geocoderContainerRef}
+                                    mapboxApiAccessToken={TOKEN}
+                                    reverseGeocode={true}
+                                    minLength={3}
+                                    onViewportChange={handleViewportChange}>
+                                </Geocoder>
+                            }
+                        </StaticMap>
+                        {activeEvent && layerVisibility.get(activeEvent.layer) &&
                         !activeEventDetail && !showAddEventForm && (
-                        <Popup
-                            latitude={activeEvent.location.lng_lat[1]}
-                            longitude={activeEvent.location.lng_lat[0]}
-                            offsetTop={-30}
-                            closeOnClick={false}
-                            onClose={(): void => {setActiveEvent(null);}}>
-                            {activeEvent.media && activeEvent.media[0] && (
-                                <div className={'mapboxgl-popup-image'}
-                                    style={{backgroundImage:
+                            <Popup
+                                latitude={activeEvent.location.lng_lat[1]}
+                                longitude={activeEvent.location.lng_lat[0]}
+                                offsetTop={-30}
+                                closeOnClick={false}
+                                onClose={(): void => {setActiveEvent(null);}}>
+                                {activeEvent.media && activeEvent.media[0] && (
+                                    <div className={'mapboxgl-popup-image'}
+                                        style={{backgroundImage:
                                         'url(' +  activeEvent.media[0].url + ')'}}>
+                                    </div>
+                                )}
+                                <div className={'mapboxgl-popup-text'}>
+                                    <h2>{activeEvent.label}</h2>
+                                    <div className={'event-attr'}>by {activeEvent.owner}</div>
+                                    <div className={'event-summary lt-quill-rendered'}
+                                        dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
                                 </div>
-                            )}
-                            <div className={'mapboxgl-popup-text'}>
-                                <h2>{activeEvent.label}</h2>
-                                <div className={'event-attr'}>by {activeEvent.owner}</div>
-                                <div className={'event-summary lt-quill-rendered'}
-                                    dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
-                            </div>
-                        </Popup>
-                    )}
-                    <div id='map-navigation-control'>
-                        <NavigationControl style={navControlStyle} />
-                    </div>
-                </DeckGL>
+                            </Popup>
+                        )}
+                        <div id='map-navigation-control'>
+                            <NavigationControl style={navControlStyle} />
+                        </div>
+                    </DeckGL>
+                </div>
             )}
             {projectData && (
                 <ActivityMapPane
