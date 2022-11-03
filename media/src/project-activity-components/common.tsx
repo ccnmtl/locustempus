@@ -132,3 +132,27 @@ export const DEFAULT_VIEWPORT_STATE = {
     bearing: 0,
     pitch: 0
 };
+
+export interface Context {
+    id: string;
+    text: string;
+}
+
+export interface Results {
+    result: {
+        center: [number, number];
+        context: [Context];
+        geometry: {coordinates: [number, number], type: string;};
+        id: string;
+        language: string;
+        matching_place_name: string;
+        matching_text: string;
+        place_name: string;
+        place_type: [string];
+        properties: {foursquare: string; landmark: boolean; wikidate: string;
+            address: string; category: string;};
+        relevance: number;
+        text: string;
+        type: string;
+    }
+}

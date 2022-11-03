@@ -26,7 +26,7 @@ import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_SIZE_ACTIVE,
     ICON_COLOR, ICON_COLOR_ACTIVE, ICON_COLOR_NEW_EVENT,
     DEFAULT_VIEWPORT_STATE, ViewportState, ProjectData, DeckGLClickEvent,
-    LayerData, EventData, MediaObject, TileSublayerProps
+    LayerData, EventData, MediaObject, TileSublayerProps, Results
 } from '../project-activity-components/common';
 
 export interface ActivityData {
@@ -143,6 +143,9 @@ export const ActivityMap: React.FC = () => {
     const ALERT_DURUATION = 4000;
     const mapRef = useRef<MapRef>(null);
     const geocoderContainerRef = useRef<HTMLDivElement>(null);
+
+    const [showSearchPopup, setShowSearchPopup] = useState<boolean>(false);
+    const [searchResult, setSearchResult] = useState<Results | null>(null);
 
     useEffect(() => {
         if (alertString) {
@@ -576,6 +579,8 @@ export const ActivityMap: React.FC = () => {
     };
 
     function handleDeckGlClick<D>(info: PickInfo<D>, event: DeckGLClickEvent): void {
+        //Close Popup if there is a click after search
+        setShowSearchPopup(false);
         // Cast to provide type def for coordinate
         const infoPrime = info as PickInfo<D> & {coordinate: [number, number]};
 
@@ -597,6 +602,26 @@ export const ActivityMap: React.FC = () => {
             displayAddEventForm(true, mockData);
         }
     }
+
+    const handleSearchPin = (coords: [number, number]) => {
+        if (activeEventEdit) { return; }
+        setShowSearchPopup(false);
+        setActiveEvent(null);
+        setActiveEventDetail(null);
+        setActiveEventEdit(null);
+
+        setActivePosition([coords[1], coords[0]]);
+        // The click data needs to be packed this way so that the type
+        // of mapLayers remains homogenous
+        const mockData = {} as EventData;
+        mockData.lngLat = [coords[0], coords[1]];
+        displayAddEventForm(true, mockData);
+    };
+
+    const handleSearch = (results: Results) => {
+        setSearchResult(results);
+        setShowSearchPopup(true);
+    };
 
     const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
         if (showAddEventForm || activeEventEdit) {
@@ -664,7 +689,7 @@ export const ActivityMap: React.FC = () => {
     }
     const handleViewportChange = useCallback(
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        (newViewport) => setViewportState(newViewport),
+        (newViewport: React.SetStateAction<ViewportState>) => setViewportState(newViewport),
         []
     );
 
@@ -888,7 +913,12 @@ export const ActivityMap: React.FC = () => {
                                     containerRef={geocoderContainerRef}
                                     mapboxApiAccessToken={TOKEN}
                                     reverseGeocode={true}
-                                    minLength={3}
+                                    minLength={4}
+                                    enableEventLogging={false}
+                                    clearAndBlurOnEsc={true}
+                                    onResult={(res: Results) => {
+                                        handleSearch(res);
+                                    }}
                                     onViewportChange={handleViewportChange}>
                                 </Geocoder>
                             }
@@ -912,6 +942,23 @@ export const ActivityMap: React.FC = () => {
                                     <div className={'event-attr'}>by {activeEvent.owner}</div>
                                     <div className={'event-summary lt-quill-rendered'}
                                         dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
+                                </div>
+                            </Popup>
+                        )}
+                        {showSearchPopup && searchResult && (
+                            <Popup
+                                latitude={searchResult.result.center[1]}
+                                longitude={searchResult.result.center[0]}
+                                offsetTop={-30}
+                                closeOnClick={false}
+                                onClose={(): void => {setShowSearchPopup(false);}}>
+                                <div className={'mapboxgl-popup-text'}>
+                                    <h2>{searchResult.result.text}</h2>
+                                    <a
+                                        href='#'
+                                        onClick={() => handleSearchPin(searchResult.result.center)}>
+                                            [add event marker]
+                                    </a>
                                 </div>
                             </Popup>
                         )}
