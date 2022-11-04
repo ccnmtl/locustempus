@@ -36,6 +36,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
     const [fileS3Url, setFileS3Url] = useState<string | null>(null);
     const [source, setSource] = useState<string>('');
     const [caption, setCaption] = useState<string>('');
+    const [alt, setAlt] = useState<string>('');
     const [activeLayerTitle, setActiveLayerTitle] = useState<string>('');
 
     useEffect(() => {
@@ -48,6 +49,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
     useEffect(() => {
         if (activeEventEdit.media.length > 0) {
             setCaption(activeEventEdit.media[0].caption || '');
+            setAlt(activeEventEdit.media[0].alt || '');
             setSource(activeEventEdit.media[0].source || '');
             setFileS3Url(activeEventEdit.media[0].url);
         }
@@ -64,7 +66,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         const media = fileS3Url ? {
-            url: fileS3Url, source: source, caption: caption} : null;
+            url: fileS3Url, source: source, caption: caption, alt: alt} : null;
         updateEvent(
             eventName, description, activeEventEdit.location.lng_lat[1],
             activeEventEdit.location.lng_lat[0],
@@ -108,7 +110,9 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             source={source}
                             setSource={setSource}
                             caption={caption}
-                            setCaption={setCaption}/>
+                            setCaption={setCaption}
+                            alt={alt}
+                            setAlt={setAlt}/>
                     </div>
 
                     <div className={'pane-form-divider'} />
