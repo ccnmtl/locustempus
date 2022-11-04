@@ -165,7 +165,7 @@ class MediaObjectSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = MediaObject
-        fields = ['url', 'source', 'caption']
+        fields = ['url', 'source', 'caption', 'alt']
 
 
 class EventSerializer(serializers.ModelSerializer):
@@ -210,6 +210,7 @@ class EventSerializer(serializers.ModelSerializer):
                 current_media.url = updated_media.get('url', current_media.url)
                 current_media.caption = updated_media.get(
                     'caption', current_media.caption)
+                current_media.alt = updated_media.get('alt', current_media.alt)
                 current_media.source = updated_media.get(
                     'source', current_media.source)
                 current_media.save()

@@ -85,6 +85,7 @@ export interface MediaObject {
     url: string;
     source?: string;
     caption?: string;
+    alt?: string;
 }
 
 export interface EventData {
