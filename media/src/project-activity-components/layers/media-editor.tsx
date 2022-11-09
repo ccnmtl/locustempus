@@ -11,10 +11,13 @@ export interface MediaEditorProps {
     setSource(source: string): void;
     caption: string | null;
     setCaption(caption: string): void;
+    alt: string | null;
+    setAlt(alt: string): void;
 }
 
 export const MediaEditor: React.FC<MediaEditorProps> = (
-    { fileS3Url, setFileS3Url, source, setSource, caption, setCaption }: MediaEditorProps
+    { fileS3Url, setFileS3Url, source, setSource, caption,
+        setCaption, alt, setAlt }: MediaEditorProps
 ) => {
 
     const [fileUploadProgress, setFileUploadProgress] = useState<number>(-1);
@@ -55,6 +58,11 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
     const handleCaption = (e: React.ChangeEvent<HTMLInputElement>): void => {
         e.preventDefault();
         setCaption(e.target.value);
+    };
+
+    const handleAlt = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        e.preventDefault();
+        setAlt(e.target.value);
     };
 
     const handleSource = (e: React.ChangeEvent<HTMLInputElement>): void => {
@@ -119,7 +127,8 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
                     <div className={'row m-0 mb-2 fade-load'}>
                         <div className={'col-4 p-0 position-relative'}>
                             <div className={'lt-pane-section__thumbnail'}>
-                                <img src={fileS3Url} />
+                                <img src={fileS3Url}
+                                    alt={alt || ''}/>
                             </div>
                             <div className={'upload-status'}>
                                 {fileUploadSuccess && (
@@ -152,6 +161,15 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
                                 className={'form-control'}
                                 value={caption || ''}
                                 onChange={handleCaption} />
+                        </div>
+                        <div className={'form-group'}>
+                            <label htmlFor={'form-field__alt'}>Alt Text</label>
+                            <input
+                                type={'text'}
+                                id={'form-field__alt'}
+                                className={'form-control'}
+                                value={alt || ''}
+                                onChange={handleAlt} />
                         </div>
                         <div className={'form-group'}>
                             <label htmlFor={'form-field__imgsrc'}>Source</label>

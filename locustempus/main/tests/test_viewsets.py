@@ -1781,7 +1781,8 @@ class EventAPITest(CourseTestMixin, TestCase):
             'media': [{
                 'url': 'https://some.bucket.example.com/img2.jpg',
                 'caption': '',
-                'source': ''
+                'source': '',
+                'alt': ''
             }]
         }
 

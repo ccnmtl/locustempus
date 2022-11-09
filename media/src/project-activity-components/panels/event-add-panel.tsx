@@ -31,6 +31,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
     const [fileS3Url, setFileS3Url] = useState<string | null>(null);
     const [source, setSource] = useState<string>('');
     const [caption, setCaption] = useState<string>('');
+    const [alt, setAlt] = useState<string>('');
 
     useEffect(() => {
         if (activeLayer && layers.has(activeLayer)) {
@@ -51,7 +52,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
         e.preventDefault();
         if (activePosition) {
             const media = fileS3Url ? {
-                url: fileS3Url, source: source, caption: caption} : null;
+                url: fileS3Url, source: source, caption: caption, alt: alt} : null;
             addEvent(
                 eventName === '' ? 'Untitled Marker' : eventName,
                 description, activePosition[0], activePosition[1], media);
@@ -94,7 +95,9 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                             source={source}
                             setSource={setSource}
                             caption={caption}
-                            setCaption={setCaption}/>
+                            setCaption={setCaption}
+                            alt={alt}
+                            setAlt={setAlt}/>
                     </div>
                     <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group pane-form-group--final'}>

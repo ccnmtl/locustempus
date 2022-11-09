@@ -69,6 +69,7 @@ class MediaObject(models.Model):
     url = models.URLField()
     source = models.TextField(blank=True)
     caption = models.TextField(blank=True)
+    alt = models.TextField(blank=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
