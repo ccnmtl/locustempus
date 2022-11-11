@@ -447,6 +447,18 @@ export const ProjectMap: React.FC = () => {
         (newViewport: React.SetStateAction<ViewportState>) => setViewportState(newViewport),
         []
     );
+    const handleGeocoderViewportChange = useCallback(
+        (newViewport) => {
+            const geocoderDefaultOverrides = { transitionDuration: 1000 };
+
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            return handleViewportChange({
+                ...newViewport,
+                ...geocoderDefaultOverrides
+            });
+        },
+        [handleViewportChange]
+    );
 
     useEffect(() => {
         const getData = async(): Promise<void> => {
@@ -564,7 +576,7 @@ export const ProjectMap: React.FC = () => {
                                     onResult={(res: Results) => {
                                         handleSearch(res);
                                     }}
-                                    onViewportChange={handleViewportChange}>
+                                    onViewportChange={handleGeocoderViewportChange}>
                                 </Geocoder>
                             }
                         </StaticMap>
