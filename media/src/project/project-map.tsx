@@ -17,7 +17,7 @@ import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_SIZE_ACTIVE,
     ICON_COLOR, ICON_COLOR_ACTIVE, ICON_COLOR_NEW_EVENT,
     DEFAULT_VIEWPORT_STATE, ViewportState, ProjectData, ActivityData,
-    LayerData, EventData, MediaObject, DeckGLClickEvent, TileSublayerProps, Results
+    LayerData, EventData, MediaObject, DeckGLClickEvent, TileSublayerProps, Result
 } from '../project-activity-components/common';
 
 import {get, put, post, del, getBoundedViewport } from '../utils';
@@ -77,7 +77,7 @@ export const ProjectMap: React.FC = () => {
     const geocoderContainerRef = useRef<HTMLDivElement>(null);
 
     const [showSearchPopup, setShowSearchPopup] = useState<boolean>(false);
-    const [searchResult, setSearchResult] = useState<Results | null>(null);
+    const [searchResult, setSearchResult] = useState<Result | null>(null);
 
     const setBaseMap = (baseMap: string) => {
         if (projectData) {
@@ -383,10 +383,10 @@ export const ProjectMap: React.FC = () => {
         displayAddEventForm(true, mockData);
     };
 
-    const handleSearch = (results: Results) => {
-        setSearchResult(results);
+    const handleSearch = useCallback((result: Result) => {
+        setSearchResult(result);
         setShowSearchPopup(true);
-    };
+    }, []);
 
     const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
         if (showAddEventForm || activeEventEdit) {
@@ -572,10 +572,7 @@ export const ProjectMap: React.FC = () => {
                                     reverseGeocode={true}
                                     minLength={4}
                                     enableEventLogging={false}
-                                    clearAndBlurOnEsc={true}
-                                    onResult={(res: Results) => {
-                                        handleSearch(res);
-                                    }}
+                                    onResult={handleSearch}
                                     onViewportChange={handleGeocoderViewportChange}>
                                 </Geocoder>
                             }
