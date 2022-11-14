@@ -26,7 +26,7 @@ import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_SIZE_ACTIVE,
     ICON_COLOR, ICON_COLOR_ACTIVE, ICON_COLOR_NEW_EVENT,
     DEFAULT_VIEWPORT_STATE, ViewportState, ProjectData, DeckGLClickEvent,
-    LayerData, EventData, MediaObject, TileSublayerProps, Results
+    LayerData, EventData, MediaObject, TileSublayerProps, Result
 } from '../project-activity-components/common';
 
 export interface ActivityData {
@@ -145,7 +145,7 @@ export const ActivityMap: React.FC = () => {
     const geocoderContainerRef = useRef<HTMLDivElement>(null);
 
     const [showSearchPopup, setShowSearchPopup] = useState<boolean>(false);
-    const [searchResult, setSearchResult] = useState<Results | null>(null);
+    const [searchResult, setSearchResult] = useState<Result | null>(null);
 
     useEffect(() => {
         if (alertString) {
@@ -618,10 +618,10 @@ export const ActivityMap: React.FC = () => {
         displayAddEventForm(true, mockData);
     };
 
-    const handleSearch = (results: Results) => {
-        setSearchResult(results);
+    const handleSearch = useCallback((result: Result) => {
+        setSearchResult(result);
         setShowSearchPopup(true);
-    };
+    }, []);
 
     const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
         if (showAddEventForm || activeEventEdit) {
@@ -691,6 +691,18 @@ export const ActivityMap: React.FC = () => {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         (newViewport: React.SetStateAction<ViewportState>) => setViewportState(newViewport),
         []
+    );
+    const handleGeocoderViewportChange = useCallback(
+        (newViewport) => {
+            const geocoderDefaultOverrides = { transitionDuration: 1000 };
+
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            return handleViewportChange({
+                ...newViewport,
+                ...geocoderDefaultOverrides
+            });
+        },
+        [handleViewportChange]
     );
 
     useEffect(() => {
@@ -915,11 +927,8 @@ export const ActivityMap: React.FC = () => {
                                     reverseGeocode={true}
                                     minLength={4}
                                     enableEventLogging={false}
-                                    clearAndBlurOnEsc={true}
-                                    onResult={(res: Results) => {
-                                        handleSearch(res);
-                                    }}
-                                    onViewportChange={handleViewportChange}>
+                                    onResult={handleSearch}
+                                    onViewportChange={handleGeocoderViewportChange}>
                                 </Geocoder>
                             }
                         </StaticMap>

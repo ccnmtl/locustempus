@@ -139,7 +139,7 @@ export interface Context {
     text: string;
 }
 
-export interface Results {
+export interface Result {
     result: {
         center: [number, number];
         context: [Context];
