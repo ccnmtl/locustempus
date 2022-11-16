@@ -21,8 +21,8 @@ import {
 } from '../project-activity-components/common';
 
 import {get, put, post, del, getBoundedViewport } from '../utils';
-import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import Geocoder from 'react-map-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import Geocoder from '../geocoder.jsx';
 
 export const ProjectMap: React.FC = () => {
     const [viewportState, setViewportState] = useState<ViewportState>(DEFAULT_VIEWPORT_STATE);
@@ -366,9 +366,6 @@ export const ProjectMap: React.FC = () => {
             mockData.lngLat = [infoPrime.coordinate[0], infoPrime.coordinate[1]];
             displayAddEventForm(true, mockData);
         }
-        const input = document.querySelector('.mapboxgl-ctrl-geocoder--input') as HTMLInputElement;
-        input.value = infoPrime.coordinate[1], infoPrime.coordinate[0];
-        input.click();
     }
 
     const handleSearchPin = (coords: [number, number]) => {

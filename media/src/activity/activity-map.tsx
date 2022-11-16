@@ -13,8 +13,8 @@ import { PickInfo } from '@deck.gl/core/lib/deck';
 import { ActivityMapPane } from './activity-map-pane';
 import { LoadingModal } from '../project-activity-components/loading-modal';
 import { Notification } from '../project-activity-components/notification';
-import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
-import Geocoder from 'react-map-gl-geocoder';
+import '@mapbox/mapbox-gl-geocoder/dist/mapbox-gl-geocoder.css';
+import Geocoder from '../geocoder.jsx';
 
 
 import {get, put, post, del, getBoundedViewport } from '../utils';
@@ -601,8 +601,6 @@ export const ActivityMap: React.FC = () => {
             mockData.lngLat = [infoPrime.coordinate[0], infoPrime.coordinate[1]];
             displayAddEventForm(true, mockData);
         }
-        const input = document.querySelector('.mapboxgl-ctrl-geocoder--input') as HTMLInputElement;
-        input.value = '-74.04902033680861,40.75622167878552';
     }
 
     const handleSearchPin = (coords: [number, number]) => {
