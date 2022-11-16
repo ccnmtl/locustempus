@@ -30,8 +30,8 @@ export const ProjectMap: React.FC = () => {
         document.querySelector('#project-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
     // Hiding this feature for now
-    const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
-    // const geocoder = false;
+    // const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
+    const geocoder = false;
     const newProjectFlag = mapContainer ?
         mapContainer.dataset.newproject === 'True': false;
     const pathList = window.location.pathname.split('/');
@@ -571,6 +571,7 @@ export const ProjectMap: React.FC = () => {
                                     mapboxApiAccessToken={TOKEN}
                                     reverseGeocode={true}
                                     minLength={4}
+                                    marker={false}
                                     enableEventLogging={false}
                                     onResult={handleSearch}
                                     onViewportChange={handleGeocoderViewportChange}>

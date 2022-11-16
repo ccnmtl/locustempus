@@ -218,7 +218,7 @@ class Geocoder extends PureComponent {
       transitionDuration: 3000
     })
     onResult(event)
-
+    this.geocoder.clear()
     this.cachedResult = result
     this.geocoder._typeahead.selected = null
     this.showClearIcon()
