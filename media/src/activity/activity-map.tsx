@@ -71,8 +71,8 @@ export const ActivityMap: React.FC = () => {
         document.querySelector('#activity-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
     // Hiding this feature for now
-    // const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
-    const geocoder = false;
+    const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
+    // const geocoder = false;
     const projectPk = mapContainer && mapContainer.dataset.projectpk;
     const activityPk = mapContainer && mapContainer.dataset.activitypk;
     let isFaculty = false;
@@ -601,6 +601,8 @@ export const ActivityMap: React.FC = () => {
             mockData.lngLat = [infoPrime.coordinate[0], infoPrime.coordinate[1]];
             displayAddEventForm(true, mockData);
         }
+        const input = document.querySelector('.mapboxgl-ctrl-geocoder--input') as HTMLInputElement;
+        input.value = '-74.04902033680861,40.75622167878552';
     }
 
     const handleSearchPin = (coords: [number, number]) => {

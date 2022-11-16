@@ -30,8 +30,8 @@ export const ProjectMap: React.FC = () => {
         document.querySelector('#project-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
     // Hiding this feature for now
-    // const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
-    const geocoder = false;
+    const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
+    // const geocoder = false;
     const newProjectFlag = mapContainer ?
         mapContainer.dataset.newproject === 'True': false;
     const pathList = window.location.pathname.split('/');
@@ -366,6 +366,9 @@ export const ProjectMap: React.FC = () => {
             mockData.lngLat = [infoPrime.coordinate[0], infoPrime.coordinate[1]];
             displayAddEventForm(true, mockData);
         }
+        const input = document.querySelector('.mapboxgl-ctrl-geocoder--input') as HTMLInputElement;
+        input.value = infoPrime.coordinate[1], infoPrime.coordinate[0];
+        input.click();
     }
 
     const handleSearchPin = (coords: [number, number]) => {
