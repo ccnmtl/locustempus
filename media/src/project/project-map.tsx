@@ -30,8 +30,8 @@ export const ProjectMap: React.FC = () => {
         document.querySelector('#project-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
     // Hiding this feature for now
-    // const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
-    const geocoder = false;
+    const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
+    // const geocoder = false;
     const newProjectFlag = mapContainer ?
         mapContainer.dataset.newproject === 'True': false;
     const pathList = window.location.pathname.split('/');
@@ -210,7 +210,7 @@ export const ProjectMap: React.FC = () => {
     };
 
     const addEvent = (
-        label: string, description: string, lat: number, lng: number,
+        label: string, datetime: string | null, description: string, lat: number, lng: number,
         mediaObj: MediaObject | null): void => {
         if (!activeLayer) {
             throw new Error('Add Event failed: no active layer is defined');
@@ -219,7 +219,7 @@ export const ProjectMap: React.FC = () => {
             label: label,
             layer: activeLayer,
             description: description,
-            datetime: null,
+            datetime: datetime,
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
@@ -248,13 +248,14 @@ export const ProjectMap: React.FC = () => {
     };
 
     const updateEvent = (
-        label: string, description: string, lat: number, lng: number,
+        label: string,  datetime: string | null, description: string, lat: number, lng: number,
         pk: number, layerPk: number, mediaObj: MediaObject | null): void => {
-        // TODO: implement datetime update
+
         const obj = {
             label: label,
             description: description,
             layer: layerPk,
+            datetime: datetime,
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null

@@ -12,7 +12,7 @@ interface EventAddPanelProps {
     layers: Map<number, LayerData>;
     activeLayer: number | null;
     addEvent(
-        label: string, description: string, lat: number, lng: number,
+        label: string, datetime: string | null, description: string, lat: number, lng: number,
         mediaObj: MediaObject | null): void;
     setActiveTab(val: number): void;
     paneHeaderHeight: number;
@@ -54,7 +54,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
             const media = fileS3Url ? {
                 url: fileS3Url, source: source, caption: caption, alt: alt} : null;
             addEvent(
-                eventName === '' ? 'Untitled Marker' : eventName,
+                eventName === '' ? 'Untitled Marker' : eventName, datetime,
                 description, activePosition[0], activePosition[1], media);
             displayAddEventForm(false);
             setActiveTab(returnTab);
@@ -100,7 +100,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                             setAlt={setAlt}/>
                     </div>
                     <div className={'pane-form-divider'} />
-                    <div className={'form-group pane-form-group pane-form-group--final'}>
+                    <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__description'}>
                             Description
                         </label>
@@ -109,20 +109,20 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                             value={description}
                             onChange={setDescription}/>
                     </div>
-                    {/*
-                        <div className={'pane-form-divider'} />
-                        <div className={'form-group pane-form-group'}>
-                            <label htmlFor={'form-field__date'}>
+
+                    <div className={'pane-form-divider'} />
+                    <div className={'form-group pane-form-group pane-form-group--final'}>
+                        <label htmlFor={'form-field__date'}>
                                 Date
-                            </label>
-                            <input
-                                className={'form-control'}
-                                type={'datetime-local'}
-                                id={'form-field__date'}
-                                value={datetime}
-                                onChange={handleDatetime}/>
-                        </div>
-                      */}
+                        </label>
+                        <input
+                            className={'form-control'}
+                            type={'datetime-local'}
+                            id={'form-field__date'}
+                            value={datetime}
+                            onChange={handleDatetime}/>
+                    </div>
+
                     <div className={'lt-pane-actions'}>
                         <div className={'lt-pane-actions__overlay overlay--event'}></div>
                         <div className={'lt-pane-actions__buttons'}>

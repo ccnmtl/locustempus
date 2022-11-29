@@ -39,7 +39,7 @@ export interface ActivityMapPaneProps {
     showAddEventForm: boolean;
     displayAddEventForm(show: boolean, mockData?: EventData): void;
     activePosition: Position | null;
-    addEvent(label: string,
+    addEvent(label: string, datetime: string | null,
              description: string, lat: number, lng: number, mediaObj: MediaObject | null): void;
     deleteEvent(pk: number, layerPk: number): void;
     activeEvent: EventData | null;
@@ -49,8 +49,8 @@ export interface ActivityMapPaneProps {
     activeEventEdit: EventData | null;
     setActiveEventEdit(d: EventData): void;
     updateEvent(
-        label: string, description: string, lat: number, lng: number, pk: number,
-        layerPk: number, mediaObj: MediaObject | null): void;
+        label: string, datetime: string | null, description: string, lat: number, lng: number,
+        pk: number, layerPk: number, mediaObj: MediaObject | null): void;
     responseData: ResponseData[];
     updateResponse(reflection?: string, status?: ResponseStatus): void;
     createFeedback(responsePk: number, feedback: string): void;

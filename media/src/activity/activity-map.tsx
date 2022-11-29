@@ -71,8 +71,8 @@ export const ActivityMap: React.FC = () => {
         document.querySelector('#activity-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
     // Hiding this feature for now
-    // const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
-    const geocoder = false;
+    const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
+    // const geocoder = false;
     const projectPk = mapContainer && mapContainer.dataset.projectpk;
     const activityPk = mapContainer && mapContainer.dataset.activitypk;
     let isFaculty = false;
@@ -387,7 +387,7 @@ export const ActivityMap: React.FC = () => {
     };
 
     const addEvent = (
-        label: string, description: string, lat: number,
+        label: string, datetime: string | null, description: string, lat: number,
         lng: number, mediaObj: MediaObject | null): void => {
         // Check if the current user can add an event to the current active layer
         // If faculty and the active layer is not a project layer, use the first project layer
@@ -418,7 +418,7 @@ export const ActivityMap: React.FC = () => {
             label: label,
             layer: layerPk,
             description: description,
-            datetime: null,
+            datetime: datetime,
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
@@ -451,12 +451,13 @@ export const ActivityMap: React.FC = () => {
     };
 
     const updateEvent = (
-        label: string, description: string, lat: number, lng: number,
+        label: string, datetime: string | null, description: string, lat: number, lng: number,
         pk: number, layerPk: number, mediaObj: MediaObject | null): void => {
         const obj = {
             label: label,
             description: description,
             layer: layerPk,
+            datetime: datetime,
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
