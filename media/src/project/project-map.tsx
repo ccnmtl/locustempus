@@ -30,8 +30,8 @@ export const ProjectMap: React.FC = () => {
         document.querySelector('#project-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
     // Hiding this feature for now
-    // const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
-    const geocoder = false;
+    const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
+    // const geocoder = false;
     const newProjectFlag = mapContainer ?
         mapContainer.dataset.newproject === 'True': false;
     const pathList = window.location.pathname.split('/');
@@ -75,6 +75,7 @@ export const ProjectMap: React.FC = () => {
     const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
     const mapRef = useRef<MapRef>(null);
     const geocoderContainerRef = useRef<HTMLDivElement>(null);
+    const geocoderRef = useRef<any | null>(null);
 
     const [showSearchPopup, setShowSearchPopup] = useState<boolean>(false);
     const [searchResult, setSearchResult] = useState<Result | null>(null);
@@ -360,6 +361,11 @@ export const ProjectMap: React.FC = () => {
             setActiveEventEdit(null);
             setActivePosition([infoPrime.coordinate[1], infoPrime.coordinate[0]]);
 
+            // eslint-disable-next-line max-len
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+            geocoderRef?.current?.geocoder?.setInput(
+                `${infoPrime.coordinate[1]}, ${infoPrime.coordinate[0]}`);
+
             // The click data needs to be packed this way so that the type
             // of mapLayers remains homogenous
             const mockData = {} as EventData;
@@ -467,7 +473,6 @@ export const ProjectMap: React.FC = () => {
             setProjectData(projData);
 
             const layerVis = new Map<number, boolean>();
-
             // Fetch the layers
             const layers: LayerData[] = [];
             for (const layerUrl of projData.layers) {
@@ -567,6 +572,7 @@ export const ProjectMap: React.FC = () => {
                                 <Geocoder
                                     position="top-right"
                                     mapRef={mapRef}
+                                    ref={geocoderRef}
                                     containerRef={geocoderContainerRef}
                                     mapboxApiAccessToken={TOKEN}
                                     reverseGeocode={true}

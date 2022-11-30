@@ -70,9 +70,7 @@ export const ActivityMap: React.FC = () => {
     const mapContainer: HTMLElement | null =
         document.querySelector('#activity-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
-    // Hiding this feature for now
-    // const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
-    const geocoder = false;
+    const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
     const projectPk = mapContainer && mapContainer.dataset.projectpk;
     const activityPk = mapContainer && mapContainer.dataset.activitypk;
     let isFaculty = false;
@@ -143,6 +141,7 @@ export const ActivityMap: React.FC = () => {
     const ALERT_DURUATION = 4000;
     const mapRef = useRef<MapRef>(null);
     const geocoderContainerRef = useRef<HTMLDivElement>(null);
+    const geocoderRef = useRef<any | null>(null);
 
     const [showSearchPopup, setShowSearchPopup] = useState<boolean>(false);
     const [searchResult, setSearchResult] = useState<Result | null>(null);
@@ -595,6 +594,12 @@ export const ActivityMap: React.FC = () => {
             setActiveEventDetail(null);
             setActiveEventEdit(null);
             setActivePosition([infoPrime.coordinate[1], infoPrime.coordinate[0]]);
+
+            // eslint-disable-next-line max-len
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+            geocoderRef?.current?.geocoder?.setInput(
+                `${infoPrime.coordinate[1]}, ${infoPrime.coordinate[0]}`);
+
             // The click data needs to be packed this way so that the type
             // of mapLayers remains homogenous
             const mockData = {} as EventData;
@@ -710,7 +715,6 @@ export const ActivityMap: React.FC = () => {
         const getData = async(): Promise<void> => {
             // List to hold the event, used to set zoom once all layers are loaded
             let layersForZoom: LayerData[] = [];
-
             // Fetch the Project data
             let projData: ProjectData;
             if (projectPk) {
@@ -922,6 +926,7 @@ export const ActivityMap: React.FC = () => {
                                 <Geocoder
                                     position="top-right"
                                     mapRef={mapRef}
+                                    ref={geocoderRef}
                                     containerRef={geocoderContainerRef}
                                     mapboxApiAccessToken={TOKEN}
                                     reverseGeocode={true}

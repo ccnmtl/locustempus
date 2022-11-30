@@ -25,4 +25,5 @@ declare class S3Upload extends Callable {
     constructor(settings: S3UploadSettings);
 }
 
-declare module 'react-map-gl-geocoder';
+declare module '@mapbox/mapbox-gl-geocoder';
+declare module 'Geocoder';
