@@ -1,3 +1,4 @@
+// code modified from https://github.com/SamSamskies/react-map-gl-geocoder
 import { PureComponent } from 'react';
 import PropTypes from 'prop-types';
 import MapboxGeocoder from '@mapbox/mapbox-gl-geocoder';
