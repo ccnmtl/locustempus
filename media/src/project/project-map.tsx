@@ -391,7 +391,9 @@ export const ProjectMap: React.FC = () => {
 
     const handleSearch = useCallback((result: Result) => {
         setSearchResult(result);
-        setShowSearchPopup(true);
+        if(showAddEventForm === true) {
+            setShowSearchPopup(true);
+        }
     }, []);
 
     const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
