@@ -29,9 +29,12 @@ export const ProjectMap: React.FC = () => {
     const mapContainer: HTMLElement | null =
         document.querySelector('#project-map-container');
     const TOKEN = mapContainer ? mapContainer.dataset.maptoken : '';
-    // Hiding this feature for now
-    const geocoder = mapContainer ? mapContainer.dataset.geocoder : '';
-    // const geocoder = false;
+    let geocoder = null;
+    if (mapContainer && mapContainer.dataset.geocoder === 'True') {
+        geocoder = true;
+    } else {
+        geocoder = false;
+    }
     const newProjectFlag = mapContainer ?
         mapContainer.dataset.newproject === 'True': false;
     const pathList = window.location.pathname.split('/');
@@ -75,7 +78,9 @@ export const ProjectMap: React.FC = () => {
     const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
     const mapRef = useRef<MapRef>(null);
     const geocoderContainerRef = useRef<HTMLDivElement>(null);
-
+    const geocoderRef = useRef<any | null>(null);
+    const stateRef = useRef<any>();
+    stateRef.current = showAddEventForm;
     const [showSearchPopup, setShowSearchPopup] = useState<boolean>(false);
     const [searchResult, setSearchResult] = useState<Result | null>(null);
 
@@ -360,6 +365,10 @@ export const ProjectMap: React.FC = () => {
             setActiveEventDetail(null);
             setActiveEventEdit(null);
             setActivePosition([infoPrime.coordinate[1], infoPrime.coordinate[0]]);
+            // eslint-disable-next-line max-len
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
+            geocoderRef?.current?.geocoder?.setInput(
+                `${infoPrime.coordinate[1]}, ${infoPrime.coordinate[0]}`);
 
             // The click data needs to be packed this way so that the type
             // of mapLayers remains homogenous
@@ -386,7 +395,9 @@ export const ProjectMap: React.FC = () => {
 
     const handleSearch = useCallback((result: Result) => {
         setSearchResult(result);
-        setShowSearchPopup(true);
+        if (stateRef.current === false) {
+            setShowSearchPopup(true);
+        }
     }, []);
 
     const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
@@ -568,10 +579,12 @@ export const ProjectMap: React.FC = () => {
                                 <Geocoder
                                     position="top-right"
                                     mapRef={mapRef}
+                                    ref={geocoderRef}
                                     containerRef={geocoderContainerRef}
                                     mapboxApiAccessToken={TOKEN}
                                     reverseGeocode={true}
                                     minLength={4}
+                                    marker={false}
                                     enableEventLogging={false}
                                     onResult={handleSearch}
                                     onViewportChange={handleGeocoderViewportChange}>
