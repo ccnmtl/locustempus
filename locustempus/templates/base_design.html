@@ -82,7 +82,8 @@
 <script src="{{STATIC_URL}}build/main.js"></script>
 
 {% if SENTRY_DSN %}
-    <script src="https://browser.sentry-cdn.com/5.9.1/bundle.min.js" integrity="sha384-/x1aHz0nKRd6zVUazsV6CbQvjJvr6zQL2CHbQZf3yoLkezyEtZUpqUNnOLW9Nt3v" crossorigin="anonymous">
+    <script src="https://browser.sentry-cdn.com/7.25.0/bundle.min.js" integrity="sha384-sAWci+OD+xB6LxmUoPyE7zbMBw5MAcZtJLLex1A10obajVIyDBDG3ZOP1KE0nj5Q"
+    crossorigin="anonymous">
     </script>
     <script>
      Sentry.init({ dsn: '{{ SENTRY_DSN }}'});
