@@ -248,6 +248,8 @@ export const ProjectMap: React.FC = () => {
                         setActiveEvent(data);
                         goToEvent(data);
                     }
+                } else {
+                    throw new Error('No active layer present.');
                 }
             });
     };
