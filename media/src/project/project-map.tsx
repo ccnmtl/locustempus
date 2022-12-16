@@ -20,7 +20,7 @@ import {
     LayerData, EventData, MediaObject, DeckGLClickEvent, TileSublayerProps, Result
 } from '../project-activity-components/common';
 
-import {get, put, post, del, getBoundedViewport } from '../utils';
+import {get, put, post, del, getBoundedViewport, dateToDatetime } from '../utils';
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import Geocoder from 'react-map-gl-geocoder';
 
@@ -220,11 +220,19 @@ export const ProjectMap: React.FC = () => {
         if (!activeLayer) {
             throw new Error('Add Event failed: no active layer is defined');
         }
+
+        let newDate;
+        if (!datetime){
+            newDate = null;
+        } else {
+            newDate = dateToDatetime(datetime);
+        }
+
         const data = {
             label: label,
             layer: activeLayer,
             description: description,
-            datetime: datetime,
+            datetime: newDate,
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null

@@ -102,6 +102,7 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
 
                         <div className={'lt-quill-rendered'} dangerouslySetInnerHTML={
                             {__html: activeEventDetail.description}}/>
+                        <div>DateTime: {activeEventDetail.datetime}</div>
                         <hr className={'w-75 mt-5'} />
                     </section>
                 )}

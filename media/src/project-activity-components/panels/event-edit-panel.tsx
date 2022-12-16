@@ -100,7 +100,18 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             onChange={handleName} />
                     </div>
                     <div className={'pane-form-divider'} />
-
+                    <div className={'form-group pane-form-group pane-form-group'}>
+                        <label htmlFor={'form-field__date'}>
+                                Date
+                        </label>
+                        <input
+                            className={'form-control'}
+                            type={'date'}
+                            id={'form-field__date'}
+                            value={datetime}
+                            onChange={handleDatetime}/>
+                    </div>
+                    <div className={'pane-form-divider'} />
                     {/* Edit image form */}
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__image'}>Image</label>
@@ -116,7 +127,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                     </div>
 
                     <div className={'pane-form-divider'} />
-                    <div className={'form-group pane-form-group'}>
+                    <div className={'form-group pane-form-group--final'}>
                         <label htmlFor={'form-field__description'}>
                             Description
                         </label>
@@ -124,19 +135,6 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             value={description}
                             onChange={setDescription}/>
                     </div>
-                    <div className={'pane-form-divider'} />
-                    <div className={'form-group pane-form-group pane-form-group--final'}>
-                        <label htmlFor={'form-field__date'}>
-                                Date
-                        </label>
-                        <input
-                            className={'form-control'}
-                            type={'datetime-local'}
-                            id={'form-field__date'}
-                            value={datetime}
-                            onChange={handleDatetime}/>
-                    </div>
-
                     <div className={'lt-pane-actions'}>
                         <div className={'lt-pane-actions__overlay overlay--event'}></div>
                         <div className={'lt-pane-actions__buttons'}>
