@@ -397,7 +397,7 @@ export const ActivityMap: React.FC = () => {
         // Check if the current user can add an event to the current active layer
         // If faculty and the active layer is not a project layer, use the first project layer
         // If student and the active layer is not in layerData, is the first layer in layerData
-        if (!activeLayer) {
+        if (activeLayer === null) {
             throw new Error('Add Event failed: no active layer is defined');
         }
         let layerPk = activeLayer;
@@ -437,26 +437,30 @@ export const ActivityMap: React.FC = () => {
             media: mediaObj ? [mediaObj] : null
         };
         void post<EventData>('/api/event/', data)
-            .then((data) => {
-                if (layerPk) {
+            .then((d) => {
+                if (layerPk !== null) {
                     const updatedLayers = new Map(isFaculty ? projectLayerData : layerData);
                     const layer = updatedLayers.get(layerPk);
 
                     if (layer) {
                         const updatedLayer = {
                             ...layer,
-                            events: [...layer.events, data]
+                            events: [...layer.events, d]
                         };
                         updatedLayers.set(layerPk, updatedLayer);
 
                         const setLayerDataFunc = isFaculty ? setProjectLayerData : setLayerData;
                         setLayerDataFunc(updatedLayers);
 
-                        setActiveEvent(data);
-                        goToEvent(data);
+                        setActiveEvent(d);
+                        goToEvent(d);
                     } else {
-                        throw new Error('Add Event failed: the active layer failed to be located');
+                        throw new Error(
+                            'Activity addEvent failed: ' +
+                                'the active layer failed to be located');
                     }
+                } else {
+                    throw new Error('Activity addEvent failed: no layerPk');
                 }
             });
     };

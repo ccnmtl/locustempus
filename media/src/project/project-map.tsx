@@ -217,7 +217,7 @@ export const ProjectMap: React.FC = () => {
     const addEvent = (
         label: string, datetime: string | null, description: string, lat: number, lng: number,
         mediaObj: MediaObject | null): void => {
-        if (!activeLayer) {
+        if (activeLayer === null) {
             throw new Error('Add Event failed: no active layer is defined');
         }
 
@@ -240,24 +240,25 @@ export const ProjectMap: React.FC = () => {
             media: mediaObj ? [mediaObj] : null
         };
         void post<EventData>('/api/event/', data)
-            .then((data) => {
-                if (activeLayer) {
+            .then((d) => {
+                if (activeLayer !== null) {
                     const updatedLayers = new Map(layerData);
                     const layer = layerData.get(activeLayer);
 
                     if (layer) {
                         const updatedLayer = {
                             ...layer,
-                            events: [...layer.events].concat(data)
+                            events: [...layer.events].concat(d)
                         };
                         updatedLayers.set(activeLayer, updatedLayer);
 
                         setLayerData(updatedLayers);
-                        setActiveEvent(data);
-                        goToEvent(data);
+                        setActiveEvent(d);
+                        goToEvent(d);
                     }
                 } else {
-                    throw new Error('No active layer present.');
+                    throw new Error(
+                        'Project addEvent failed: No active layer present.');
                 }
             });
     };
