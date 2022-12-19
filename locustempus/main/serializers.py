@@ -253,5 +253,5 @@ class LayerSerializer(serializers.ModelSerializer):
         model = Layer
         read_only_fields = ('owner',)
         fields = (
-            'title', 'pk', 'content_object', 'events', 'owner'
+            'title', 'pk', 'content_object', 'events', 'owner', 'color'
         )

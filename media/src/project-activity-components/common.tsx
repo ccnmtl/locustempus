@@ -8,14 +8,24 @@ export const ICON_MAPPING = {
     marker: {x: 0, y: 0, width: 384, height: 512, anchorY: 512, mask: true}
 };
 
-type RGBAColor = [number, number, number, number?];
+export type RGBAColor = [number, number, number, number?];
 
 export const ICON_SCALE = 10;
 export const ICON_SIZE = 3;
 export const ICON_SIZE_ACTIVE = 4;
-export const ICON_COLOR: RGBAColor = [204, 51, 51];
-export const ICON_COLOR_ACTIVE: RGBAColor = [3, 110, 5];
-export const ICON_COLOR_NEW_EVENT: RGBAColor = [0, 51, 255];
+export const ICON_COLOR: { [key: string]: RGBAColor} = {
+    'amber': [255, 202, 40],
+    'blue': [66, 165, 245],
+    'green': [102, 187, 106],
+    'purple': [171, 71, 188],
+    'cyan': [38, 198, 218],
+    'pink': [236, 64, 122],
+    'lime': [212, 225, 87],
+    'orange': [255, 167, 38]
+};
+export const ICON_COLOR_DEFAULT: RGBAColor = [204, 51, 51];
+export const ICON_COLOR_ACTIVE: RGBAColor = [204, 51, 51];
+// export const ICON_COLOR_NEW_EVENT: RGBAColor = [0, 51, 255];
 
 export const BASE_MAPS = new Map([
     ['mapbox://styles/mapbox/streets-v11', 'Street'],
@@ -108,6 +118,7 @@ export interface EventData {
 export interface LayerData {
     pk: number;
     title: string;
+    color: string;
     owner: string;
     events: EventData[];
 }

@@ -10,7 +10,7 @@ export interface LayerProps {
     activeLayer?: number | null;
     setActiveLayer?(pk: number): void;
     deleteLayer?(pk: number): void;
-    updateLayer?(pk: number, title: string): void;
+    updateLayer?(pk: number, title: string, color: string): void;
     layerVisibility?: Map<number, boolean>;
     toggleLayerVisibility?(pk: number): void;
     activeEvent: EventData | null;

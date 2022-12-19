@@ -41,6 +41,7 @@ class Layer(models.Model):
     content_object = GenericForeignKey('content_type', 'object_id')
     created_at = models.DateTimeField(auto_now_add=True)
     modified_at = models.DateTimeField(auto_now=True)
+    color = models.CharField(default='amber', max_length=256)
     created_by = models.ForeignKey(
         User,
         on_delete=models.SET_NULL,

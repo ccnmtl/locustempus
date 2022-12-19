@@ -65,7 +65,7 @@ describe('Activity Stories', function() {
         // cy.get('[data-cy="create-activity-form"]').should('be.visible');
 
         // Enter some instructions
-        cy.get('.ql-editor').type('Add five markers to the map.')
+        cy.get('.ql-editor').type('Add five markers to the map.');
         cy.get('[data-cy="create-activity-save"]').click();
 
         // Verify the activity is saved
@@ -216,7 +216,7 @@ describe('Activity Stories', function() {
         cy.get('[data-cy="layer"]').eq(0).find('[data-cy="layer-title"]')
             .contains('Untitled Layer').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
-            .should('have.class', 'lt-list-group--active');
+            .should('have.class', 'lt-list-group--amber');
         cy.get('[data-cy="layer"]').eq(0)
             .find('[data-icon="eye"]').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
@@ -290,7 +290,7 @@ describe('Activity Stories', function() {
         cy.get('[data-cy="layer"]').eq(0).find('[data-cy="layer-title"]')
             .contains('Untitled Layer').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
-            .should('have.class', 'lt-list-group--active');
+            .should('have.class', 'lt-list-group--amber');
         cy.get('[data-cy="layer"]').eq(0)
             .find('[data-icon="eye"]').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
@@ -346,7 +346,7 @@ describe('Activity Stories', function() {
             .find('[data-cy="layer-prompt"]').should('not.exist');
 
         // Student does not see the responses tab, but does see a response tab
-        cy.get('[data-cy="Responses (0)"]').should('not.exist')
+        cy.get('[data-cy="Responses (0)"]').should('not.exist');
         cy.get('[data-cy="Response"]').click();
         cy.get('[data-cy="activity-response-count"]').should('not.exist');
     });

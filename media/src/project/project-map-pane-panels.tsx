@@ -15,7 +15,7 @@ interface DefaultPanelProps {
     deleteActivity(pk: number): void;
     createActivity(instructions: string): void;
     deleteLayer(pk: number): void;
-    updateLayer(pk: number, title: string): void;
+    updateLayer(pk: number, title: string, color: string): void;
     toggleLayerVisibility(pk: number): void;
     activeLayer: number | null;
     setActiveLayer(pk: number): void;

@@ -33,7 +33,7 @@ export interface ProjectMapPaneProps {
     setActiveLayer(pk: number): void;
     addLayer(): void;
     deleteLayer(pk: number): void;
-    updateLayer(pk: number, title: string): void;
+    updateLayer(pk: number, title: string, color: string): void;
     toggleLayerVisibility(pk: number): void;
     showAddEventForm: boolean;
     displayAddEventForm(show: boolean, mockData?: EventData): void;

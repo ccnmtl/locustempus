@@ -31,7 +31,7 @@ export interface ActivityMapPaneProps {
     setActiveLayer(pk: number): void;
     addLayer(): void;
     deleteLayer(pk: number): void;
-    updateLayer(pk: number, title: string): void;
+    updateLayer(pk: number, title: string, color: string): void;
     layerVisibility: Map<number, boolean>;
     toggleLayerVisibility(pk: number): void;
     toggleResponseVisibility(pk: number): void;

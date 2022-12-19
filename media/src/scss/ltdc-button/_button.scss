@@ -474,3 +474,44 @@
     filter: alpha(opacity=100) !important; /* IE8 and lower */
     background-color: $primary-medium;
 }
+
+.color-btn {
+    border-radius: 3rem;
+    border: 2px solid transparent;
+    &--amber {
+        background-color: $amber-400;
+    }
+    &--blue {
+        background-color: $blue-400;
+    }
+    &--green {
+        background-color: $green-400;
+    }
+    &--red {
+        background-color: $red-400;
+    }
+    &--purple {
+        background-color: $purple-400;
+    }
+    &--cyan {
+        background-color: $cyan-400;
+    }
+    &--pink {
+        background-color: $pink-400;
+    }
+    &--lime {
+        background-color: $lime-400;
+    }
+    &--orange {
+        background-color: $orange-400;
+    }
+}
+
+.color-btn input[type="radio"] {
+    visibility: hidden;
+}
+
+.color-btn:hover {
+    opacity: 0.7;
+    border: 2px solid #ffffff;
+}

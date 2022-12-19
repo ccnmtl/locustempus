@@ -5,7 +5,7 @@ import {
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
 import DeckGL, { Controller, FlyToInterpolator }  from 'deck.gl';
-import { BitmapLayer, IconLayer } from '@deck.gl/layers';
+import { BitmapLayer, IconLayer, IconLayerProps } from '@deck.gl/layers';
 import { TileLayer } from '@deck.gl/geo-layers';
 import { Position } from '@deck.gl/core/utils/positions';
 import { PickInfo } from '@deck.gl/core/lib/deck';
@@ -24,11 +24,12 @@ const CURRENT_USER = LocusTempus.currentUser.id;
 
 import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_SIZE_ACTIVE,
-    ICON_COLOR, ICON_COLOR_ACTIVE, ICON_COLOR_NEW_EVENT,
+    ICON_COLOR, ICON_COLOR_ACTIVE, ICON_COLOR_DEFAULT,
     DEFAULT_VIEWPORT_STATE, ViewportState, ProjectData, DeckGLClickEvent,
     LayerData, EventData, MediaObject, TileSublayerProps, Result, ResponseStatus,
     ResponseData, FeedbackData
 } from '../project-activity-components/common';
+import { layer } from '@fortawesome/fontawesome-svg-core';
 
 export interface ActivityData {
     title: string;
@@ -305,10 +306,11 @@ export const ActivityMap: React.FC = () => {
             });
     };
 
-    const updateLayer = (pk: number, title: string): void => {
+    const updateLayer = (pk: number, title: string, color: string): void => {
         if (isFaculty && projectPk) {
             const obj = {
                 title: title,
+                color: color,
                 content_object: `/api/project/${projectPk}/`
             };
             void put<LayerData>(`/api/layer/${pk}/`, obj)
@@ -320,6 +322,7 @@ export const ActivityMap: React.FC = () => {
         } else if (!isFaculty && responseData.length == 1) {
             const obj = {
                 title: title,
+                color: color,
                 content_object: `/api/response/${responseData[0].pk}/`
             };
             void put<LayerData>(`/api/layer/${pk}/`, obj)
@@ -659,9 +662,8 @@ export const ActivityMap: React.FC = () => {
                 getSize: (d) => {
                     return activeEventDetail && d.pk == activeEventDetail.pk ?
                         ICON_SIZE_ACTIVE : ICON_SIZE; },
-                getColor: (d) => {
-                    return activeEventDetail && d.pk == activeEventDetail.pk ?
-                        ICON_COLOR_ACTIVE : ICON_COLOR; },
+                getColor: () => {
+                    return layer.color ? ICON_COLOR[layer.color] : ICON_COLOR_DEFAULT; },
                 visible: layerVisibility.get(layer.pk) || false
             });
             return acc.concat(MBLayer);
@@ -680,7 +682,7 @@ export const ActivityMap: React.FC = () => {
                 sizeScale: ICON_SCALE,
                 getPosition: (d) => d.lngLat,
                 getSize: ICON_SIZE,
-                getColor: ICON_COLOR_NEW_EVENT,
+                getColor: ICON_COLOR_ACTIVE,
             }));
     }
     const handleViewportChange = useCallback(
@@ -897,7 +899,7 @@ export const ActivityMap: React.FC = () => {
                     // and set its visibility
                     for (const layer of layers) {
                         respMapLayers.push(
-                            new IconLayer<EventData>({
+                            new IconLayer<EventData, IconLayerProps<EventData>>({
                                 id: `response-layer-${layer.pk}`,
                                 data: layer.events,
                                 pickable: true,
@@ -908,7 +910,7 @@ export const ActivityMap: React.FC = () => {
                                 getPosition: (d) => d.location.lng_lat,
                                 onClick: pickEventClickHandler,
                                 getSize: ICON_SIZE,
-                                getColor: ICON_COLOR,
+                                getColor: ICON_COLOR[layer.color],
                             })
                         );
                     }
@@ -1036,7 +1038,7 @@ export const ActivityMap: React.FC = () => {
                                     getPosition: (d) => d.location.lng_lat,
                                     onClick: pickEventClickHandler,
                                     getSize: ICON_SIZE,
-                                    getColor: ICON_COLOR,
+                                    getColor: ICON_COLOR[layer.color],
                                 })
                             );
                         }
