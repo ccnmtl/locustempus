@@ -20,7 +20,7 @@ import {
     LayerData, EventData, MediaObject, DeckGLClickEvent, TileSublayerProps, Result
 } from '../project-activity-components/common';
 
-import {get, put, post, del, getBoundedViewport, dateToDatetime } from '../utils';
+import {get, put, post, del, getBoundedViewport, dateToDatetime, datetimeToDate } from '../utils';
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import Geocoder from 'react-map-gl-geocoder';
 
@@ -483,6 +483,8 @@ export const ProjectMap: React.FC = () => {
         [handleViewportChange]
     );
 
+    const activeElementDate = activeEvent ? datetimeToDate(activeEvent.datetime) : null;
+
     useEffect(() => {
         const getData = async(): Promise<void> => {
             // Fetch the Project data
@@ -620,6 +622,9 @@ export const ProjectMap: React.FC = () => {
                                 <div className={'mapboxgl-popup-text'}>
                                     <h2>{activeEvent.label}</h2>
                                     <div className={'event-attr'}>by {activeEvent.owner}</div>
+                                    {activeEvent.datetime && (
+                                        <div className={'event-attr'}>{activeElementDate}</div>
+                                    )}
                                     <div className={'event-summary lt-quill-rendered'}
                                         dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
                                 </div>

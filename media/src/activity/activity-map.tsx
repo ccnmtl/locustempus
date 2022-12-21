@@ -17,7 +17,7 @@ import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import Geocoder from 'react-map-gl-geocoder';
 
 
-import {get, put, post, del, getBoundedViewport, dateToDatetime } from '../utils';
+import {get, put, post, del, getBoundedViewport, dateToDatetime, datetimeToDate } from '../utils';
 
 
 const CURRENT_USER = LocusTempus.currentUser.id;
@@ -728,6 +728,8 @@ export const ActivityMap: React.FC = () => {
         [handleViewportChange]
     );
 
+    const activeElementDate = activeEvent ? datetimeToDate(activeEvent.datetime) : null;
+
     useEffect(() => {
         // TODO: Refactor this to rededuce complexity
         const getData = async(): Promise<void> => {
@@ -974,6 +976,9 @@ export const ActivityMap: React.FC = () => {
                                 <div className={'mapboxgl-popup-text'}>
                                     <h2>{activeEvent.label}</h2>
                                     <div className={'event-attr'}>by {activeEvent.owner}</div>
+                                    {activeEvent.datetime && (
+                                        <div className={'event-attr'}>{activeElementDate}</div>
+                                    )}
                                     <div className={'event-summary lt-quill-rendered'}
                                         dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
                                 </div>

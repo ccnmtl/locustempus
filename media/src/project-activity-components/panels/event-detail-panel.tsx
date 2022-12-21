@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faArrowLeft, faPencilAlt, faTrashAlt,
 } from '@fortawesome/free-solid-svg-icons';
+import { datetimeToDate } from '../../utils';
 
 interface EventDetailPanelProps {
     activeLayerTitle: string;
@@ -40,6 +41,8 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
     const handleEdit = (): void => {
         setActiveEventEdit(activeEventDetail);
     };
+
+    const activeElementDate = activeEventDetail ? datetimeToDate(activeEventDetail.datetime) : null;
 
     return (
         <>
@@ -102,7 +105,10 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
 
                         <div className={'lt-quill-rendered'} dangerouslySetInnerHTML={
                             {__html: activeEventDetail.description}}/>
-                        <div>DateTime: {activeEventDetail.datetime}</div>
+                        {activeEventDetail.datetime && (
+                            <div>Date: {activeElementDate}</div>
+                        )}
+
                         <hr className={'w-75 mt-5'} />
                     </section>
                 )}

@@ -134,3 +134,7 @@ export const getBoundedViewport = (
 export const dateToDatetime = (date: string) => {
     return moment(date).format('YYYY-MM-DD HH:mm');
 };
+
+export const datetimeToDate = (dateTime: string) => {
+    return moment(dateTime).format('YYYY-MM-DD');
+};

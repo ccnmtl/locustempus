@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MediaEditor } from '../layers/media-editor';
 import { EventData, LayerData, MediaObject } from '../common';
 import ReactQuill from 'react-quill';
+import { datetimeToDate, dateToDatetime } from '../../utils';
 
 
 interface EventEditPanelProps {
@@ -60,7 +61,8 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
     };
 
     const handleDatetime = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setDatetime(e.target.value);
+        const datetime = dateToDatetime(e.target.value);
+        setDatetime(datetime);
     };
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -81,6 +83,8 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
         setActiveEventEdit(null);
     };
 
+    const eventDate = datetimeToDate(datetime);
+
     return (
         <>
             <div className={'pane-content-header pane-content-header--event'}
@@ -99,7 +103,8 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             autoFocus={true}
                             onChange={handleName} />
                     </div>
-                    <div className={'pane-form-divider'} />
+
+                    {/* <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group pane-form-group'}>
                         <label htmlFor={'form-field__date'}>
                                 Date
@@ -108,9 +113,10 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             className={'form-control'}
                             type={'date'}
                             id={'form-field__date'}
-                            value={datetime}
-                            onChange={handleDatetime}/>
-                    </div>
+                            value={eventDate}
+                            onChange={handleDatetime} />
+                    </div> */}
+
                     <div className={'pane-form-divider'} />
                     {/* Edit image form */}
                     <div className={'form-group pane-form-group'}>
