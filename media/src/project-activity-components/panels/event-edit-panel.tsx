@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MediaEditor } from '../layers/media-editor';
 import { EventData, LayerData, MediaObject } from '../common';
 import ReactQuill from 'react-quill';
+import { datetimeToDate, dateToDatetime } from '../../utils';
 
 
 interface EventEditPanelProps {
@@ -9,7 +10,7 @@ interface EventEditPanelProps {
     activeLayer: number | null;
     activeEventEdit: EventData;
     setActiveEventEdit(d: EventData | null): void;
-    updateEvent(label: string, description: string,
+    updateEvent(label: string, datetime: string | null, description: string,
                 lat: number, lng: number, pk: number,
                 layerPk: number, mediaObj: MediaObject | null): void;
     paneHeaderHeight: number;
@@ -60,7 +61,8 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
     };
 
     const handleDatetime = (e: React.ChangeEvent<HTMLInputElement>): void => {
-        setDatetime(e.target.value);
+        const datetime = dateToDatetime(e.target.value);
+        setDatetime(datetime);
     };
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
@@ -68,7 +70,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
         const media = fileS3Url ? {
             url: fileS3Url, source: source, caption: caption, alt: alt} : null;
         updateEvent(
-            eventName, description, activeEventEdit.location.lng_lat[1],
+            eventName, datetime, description, activeEventEdit.location.lng_lat[1],
             activeEventEdit.location.lng_lat[0],
             activeEventEdit.pk, activeEventEdit.layer, media);
         setActiveEventDetail(null);
@@ -80,6 +82,8 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
         e.preventDefault();
         setActiveEventEdit(null);
     };
+
+    const eventDate = datetimeToDate(datetime);
 
     return (
         <>
@@ -99,8 +103,21 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             autoFocus={true}
                             onChange={handleName} />
                     </div>
-                    <div className={'pane-form-divider'} />
 
+                    {/* <div className={'pane-form-divider'} />
+                    <div className={'form-group pane-form-group pane-form-group'}>
+                        <label htmlFor={'form-field__date'}>
+                                Date
+                        </label>
+                        <input
+                            className={'form-control'}
+                            type={'date'}
+                            id={'form-field__date'}
+                            value={eventDate}
+                            onChange={handleDatetime} />
+                    </div> */}
+
+                    <div className={'pane-form-divider'} />
                     {/* Edit image form */}
                     <div className={'form-group pane-form-group'}>
                         <label htmlFor={'form-field__image'}>Image</label>
@@ -116,7 +133,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                     </div>
 
                     <div className={'pane-form-divider'} />
-                    <div className={'form-group pane-form-group pane-form-group--final'}>
+                    <div className={'form-group pane-form-group--final'}>
                         <label htmlFor={'form-field__description'}>
                             Description
                         </label>
@@ -124,20 +141,6 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             value={description}
                             onChange={setDescription}/>
                     </div>
-                    {/*
-                        <div className={'pane-form-divider'} />
-                        <div className={'form-group pane-form-group'}>
-                            <label htmlFor={'form-field__date'}>
-                                Date
-                            </label>
-                            <input
-                                className={'form-control'}
-                                type={'datetime-local'}
-                                id={'form-field__date'}
-                                value={datetime}
-                                onChange={handleDatetime}/>
-                        </div>
-                    */}
                     <div className={'lt-pane-actions'}>
                         <div className={'lt-pane-actions__overlay overlay--event'}></div>
                         <div className={'lt-pane-actions__buttons'}>

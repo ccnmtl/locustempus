@@ -20,7 +20,7 @@ import {
     LayerData, EventData, MediaObject, DeckGLClickEvent, TileSublayerProps, Result
 } from '../project-activity-components/common';
 
-import {get, put, post, del, getBoundedViewport } from '../utils';
+import {get, put, post, del, getBoundedViewport, dateToDatetime, datetimeToDate } from '../utils';
 import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import Geocoder from 'react-map-gl-geocoder';
 
@@ -215,16 +215,24 @@ export const ProjectMap: React.FC = () => {
     };
 
     const addEvent = (
-        label: string, description: string, lat: number, lng: number,
+        label: string, datetime: string | null, description: string, lat: number, lng: number,
         mediaObj: MediaObject | null): void => {
         if (activeLayer === null) {
             throw new Error('Add Event failed: no active layer is defined');
         }
+
+        let newDate;
+        if (!datetime){
+            newDate = null;
+        } else {
+            newDate = dateToDatetime(datetime);
+        }
+
         const data = {
             label: label,
             layer: activeLayer,
             description: description,
-            datetime: null,
+            datetime: newDate,
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
@@ -256,13 +264,14 @@ export const ProjectMap: React.FC = () => {
     };
 
     const updateEvent = (
-        label: string, description: string, lat: number, lng: number,
+        label: string,  datetime: string | null, description: string, lat: number, lng: number,
         pk: number, layerPk: number, mediaObj: MediaObject | null): void => {
-        // TODO: implement datetime update
+
         const obj = {
             label: label,
             description: description,
             layer: layerPk,
+            datetime: datetime,
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
@@ -474,6 +483,8 @@ export const ProjectMap: React.FC = () => {
         [handleViewportChange]
     );
 
+    const activeElementDate = activeEvent ? datetimeToDate(activeEvent.datetime) : null;
+
     useEffect(() => {
         const getData = async(): Promise<void> => {
             // Fetch the Project data
@@ -611,6 +622,9 @@ export const ProjectMap: React.FC = () => {
                                 <div className={'mapboxgl-popup-text'}>
                                     <h2>{activeEvent.label}</h2>
                                     <div className={'event-attr'}>by {activeEvent.owner}</div>
+                                    {activeEvent.datetime && (
+                                        <div className={'event-attr'}>{activeElementDate}</div>
+                                    )}
                                     <div className={'event-summary lt-quill-rendered'}
                                         dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
                                 </div>

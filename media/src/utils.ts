@@ -2,6 +2,7 @@ import DeckGL  from 'deck.gl';
 import { RefObject } from 'react';
 import { WebMercatorViewport } from 'react-map-gl';
 import { LayerData } from './project-activity-components/common';
+import moment from 'moment';
 
 type HTTPMethod = 'GET' | 'PUT' | 'POST' | 'DELETE'
 
@@ -128,4 +129,12 @@ export const getBoundedViewport = (
             'The Deck GL component has not yet been rendered. ' +
                 'This function is being called too soon.');
     }
+};
+
+export const dateToDatetime = (date: string) => {
+    return moment(date).format('YYYY-MM-DD HH:mm');
+};
+
+export const datetimeToDate = (dateTime: string) => {
+    return moment(dateTime).format('YYYY-MM-DD');
 };

@@ -17,7 +17,7 @@ import 'react-map-gl-geocoder/dist/mapbox-gl-geocoder.css';
 import Geocoder from 'react-map-gl-geocoder';
 
 
-import {get, put, post, del, getBoundedViewport } from '../utils';
+import {get, put, post, del, getBoundedViewport, dateToDatetime, datetimeToDate } from '../utils';
 
 
 const CURRENT_USER = LocusTempus.currentUser.id;
@@ -392,7 +392,7 @@ export const ActivityMap: React.FC = () => {
     };
 
     const addEvent = (
-        label: string, description: string, lat: number,
+        label: string, datetime: string | null, description: string, lat: number,
         lng: number, mediaObj: MediaObject | null): void => {
         // Check if the current user can add an event to the current active layer
         // If faculty and the active layer is not a project layer, use the first project layer
@@ -418,12 +418,18 @@ export const ActivityMap: React.FC = () => {
                 throw new Error('Add Event failed: no active layer can be found');
             }
         }
+        let newDate;
+        if (!datetime){
+            newDate = null;
+        } else {
+            newDate = dateToDatetime(datetime);
+        }
 
         const data = {
             label: label,
             layer: layerPk,
             description: description,
-            datetime: null,
+            datetime: newDate,
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
@@ -460,12 +466,13 @@ export const ActivityMap: React.FC = () => {
     };
 
     const updateEvent = (
-        label: string, description: string, lat: number, lng: number,
+        label: string, datetime: string | null, description: string, lat: number, lng: number,
         pk: number, layerPk: number, mediaObj: MediaObject | null): void => {
         const obj = {
             label: label,
             description: description,
             layer: layerPk,
+            datetime: datetime,
             location: {
                 point: {lat: lat, lng: lng},
                 polygon: null
@@ -721,6 +728,8 @@ export const ActivityMap: React.FC = () => {
         [handleViewportChange]
     );
 
+    const activeElementDate = activeEvent ? datetimeToDate(activeEvent.datetime) : null;
+
     useEffect(() => {
         // TODO: Refactor this to rededuce complexity
         const getData = async(): Promise<void> => {
@@ -967,6 +976,9 @@ export const ActivityMap: React.FC = () => {
                                 <div className={'mapboxgl-popup-text'}>
                                     <h2>{activeEvent.label}</h2>
                                     <div className={'event-attr'}>by {activeEvent.owner}</div>
+                                    {activeEvent.datetime && (
+                                        <div className={'event-attr'}>{activeElementDate}</div>
+                                    )}
                                     <div className={'event-summary lt-quill-rendered'}
                                         dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
                                 </div>
