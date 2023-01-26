@@ -730,6 +730,80 @@ export const ActivityMap: React.FC = () => {
 
     const activeElementDate = activeEvent ? datetimeToDate(activeEvent.datetime) : null;
 
+    const filterLayersByDate = (range1: string, range2: string) => {
+        //Take the fellowContributorLayerData whcich holds layers of other contributors,
+        //if any event in those layers fall between range1 and range2 we include the layer
+        //if no date with events, we don't include the layer.
+        //Adjust zoom at the end.
+
+        let layersForZoom: LayerData[] = [];
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+        const rangeEpoch1 = Date.parse(range1);
+        const rangeEpoch2 = Date.parse(range2);
+        const filteredLayers:  Map<number, LayerData> = new Map();
+        [...fellowContributorLayerData.values()].map(x => {
+            const events: EventData[] = x.events;
+            for (let i = 0; i < events.length; i++) {
+                const date = events[i].datetime;
+                const epoch = Date.parse(date);
+                if (date && (epoch >= rangeEpoch1 && epoch <= rangeEpoch2)) {
+                    filteredLayers.set(x.pk, x);
+                }
+            }
+        });
+        setFellowContributorLayerData(filteredLayers);
+        layersForZoom = layersForZoom.concat([...filteredLayers.values()]);
+        const layerVis = layersForZoom.reduce((acc, val) => {
+            acc.set(val.pk, true);
+            return acc;
+        }, new Map<number, boolean>());
+        setLayerVisibility(layerVis);
+        const viewport = getBoundedViewport(layersForZoom, deckglMap, mapPane);
+        setViewportState({
+            latitude: viewport.latitude,
+            longitude: viewport.longitude,
+            zoom: viewport.zoom,
+            bearing: 0,
+            pitch: 0
+        });
+
+    };
+    const resetContributorLayers = async() => {
+        //Reset to the original contributor layer
+        //This is code copy from the getData func. Maybe should be extracted.
+        if (activityPk && CURRENT_USER) {
+            if(!isFaculty && projectData) {
+                let layersForZoom: LayerData[] = [];
+                // Get aggregated layers of other student's work
+                // Fetch the Project layers
+                const aggLayerData: LayerData[] = [];
+                for (const layerUrl of projectData.aggregated_layers) {
+                    aggLayerData.push(await get<LayerData>(layerUrl));
+                }
+
+                const aggLayers = aggLayerData.reduce((acc, val) => {
+                    acc.set(val.pk, val);
+                    return acc;
+                }, new Map<number, LayerData>());
+                setFellowContributorLayerData(aggLayers);
+                layersForZoom = layersForZoom.concat([...aggLayers.values()]);
+                const layerVis = layersForZoom.reduce((acc, val) => {
+                    acc.set(val.pk, true);
+                    return acc;
+                }, new Map<number, boolean>());
+                setLayerVisibility(layerVis);
+                const viewport = getBoundedViewport(layersForZoom, deckglMap, mapPane);
+                setViewportState({
+                    latitude: viewport.latitude,
+                    longitude: viewport.longitude,
+                    zoom: viewport.zoom,
+                    bearing: 0,
+                    pitch: 0
+                });
+            }
+        }
+    };
+
     useEffect(() => {
         // TODO: Refactor this to rededuce complexity
         const getData = async(): Promise<void> => {
