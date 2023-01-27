@@ -744,9 +744,13 @@ export const ActivityMap: React.FC = () => {
         [...fellowContributorLayerData.values()].map(x => {
             const events: EventData[] = x.events;
             for (let i = 0; i < events.length; i++) {
-                const date = events[i].datetime;
-                const epoch = Date.parse(date);
-                if (date && (epoch >= rangeEpoch1 && epoch <= rangeEpoch2)) {
+                const date = Date.parse(events[i].datetime);
+
+                if (date && !(date >= rangeEpoch1 && date <= rangeEpoch2)) {
+                    events.splice(i, 1);
+                    i--;
+                }
+                if (date && (date >= rangeEpoch1 && date <= rangeEpoch2)) {
                     filteredLayers.set(x.pk, x);
                 }
             }
