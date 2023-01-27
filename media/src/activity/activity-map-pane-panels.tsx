@@ -47,6 +47,8 @@ interface DefaultPanelProps {
     setAlert(alert: string | null): void;
     activeResponse: ResponseData | null;
     setActiveResponse(response: ResponseData | null): void;
+    filterLayersByDate(range1: string, range2: string): void;
+    resetContributorLayers(): Promise<void>
 }
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
@@ -58,7 +60,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         setActiveEventDetail, activeEventEdit, projectLayers,
         fellowContributorLayers, responseData, updateResponse, createFeedback,
         updateFeedback, isFaculty, responseLayers, paneHeaderHeight, setAlert,
-        activeResponse, setActiveResponse
+        activeResponse, setActiveResponse, filterLayersByDate, resetContributorLayers
     }: DefaultPanelProps) => {
 
 
@@ -189,6 +191,8 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 setActiveLayer={setActiveLayer}
                                 setActiveEvent={setActiveEvent}
                                 activeEvent={activeEvent}
+                                resetContributorLayers={resetContributorLayers}
+                                filterLayersByDate={filterLayersByDate}
                                 setActiveEventDetail={setActiveEventDetail}
                                 activeEventEdit={activeEventEdit} />
                         )}

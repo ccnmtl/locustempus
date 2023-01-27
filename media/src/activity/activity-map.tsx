@@ -772,7 +772,7 @@ export const ActivityMap: React.FC = () => {
         });
 
     };
-    const resetContributorLayers = async() => {
+    const resetContributorLayers = async(): Promise<void> => {
         //Reset to the original contributor layer
         //This is code copy from the getData func. Maybe should be extracted.
         if (activityPk && CURRENT_USER) {
@@ -1128,6 +1128,8 @@ export const ActivityMap: React.FC = () => {
                     createFeedback={createFeedback}
                     updateFeedback={updateFeedback}
                     responseLayers={responseLayers}
+                    filterLayersByDate={filterLayersByDate}
+                    resetContributorLayers={resetContributorLayers}
                     setAlert={setAlert}/>
             )}
         </>

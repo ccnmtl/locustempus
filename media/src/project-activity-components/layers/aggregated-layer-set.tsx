@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, { useState }  from 'react';
 import { LayerSet } from './layer-set';
 import {LayerData, EventData } from '../common';
 
@@ -12,14 +12,37 @@ interface AggregatedLayerSetProps {
     setActiveEvent(d: EventData): void;
     setActiveEventDetail(d: EventData): void;
     activeEventEdit: EventData | null;
+    filterLayersByDate(range1: string, range2: string): void;
+    resetContributorLayers(): Promise<void>
 }
 
 export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
     {
         layers, layerVisibility, activeLayer, setActiveLayer,
         toggleLayerVisibility, activeEvent, setActiveEvent,
-        setActiveEventDetail, activeEventEdit
+        setActiveEventDetail, activeEventEdit, filterLayersByDate, resetContributorLayers
     }: AggregatedLayerSetProps) => {
+
+    const [range1, setRange1] = useState<string>('');
+    const [range2, setRange2] = useState<string>('');
+
+    const handleRange1 = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        setRange1(e.target.value);
+    };
+    const handleRange2 = (e: React.ChangeEvent<HTMLInputElement>): void => {
+        setRange2(e.target.value);
+    };
+
+    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
+        e.preventDefault();
+        if (range1 && range2) {
+            filterLayersByDate(range1, range2);
+        }
+    };
+    const handleClear = async(e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
+        e.preventDefault();
+        await resetContributorLayers();
+    };
 
     const layerList = [...layers.values()].sort((a, b) => {return b.pk - a.pk;});
     const groupByOwner = layerList.reduce((acc, val) => {
@@ -41,6 +64,39 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
     }, new Map<string, Map<number, LayerData>>());
     return (
         <>
+            {/* <form onSubmit={handleFormSubmit}>
+                <div className='container lt-list-group '>
+                    <div className={'form-group pane-form-group pane-form-group row pb-1'}>
+                        <label className={'col-3'} htmlFor={'form-field__date'}>
+                        Filter Events
+                        </label>
+                        <input
+                            className={'form-control col-4'}
+                            type={'date'}
+                            id={'form-field__date'}
+                            value={range1}
+                            onChange={handleRange1}/>
+                        <p className="col-1 mt-1 pl-2">To</p>
+                        <input
+                            className={'form-control col-4'}
+                            type={'date'}
+                            id={'form-field__date'}
+                            value={range2}
+                            onChange={handleRange2}/>
+                    </div>
+                    <div className='row'>
+                        <button type={'button'}
+                            onClick={handleClear}
+                            className={'btn btn-sm btn-secondary .col-md-3 mr-2'}>
+                            <span className={'lt-button__label'}>Clear</span>
+                        </button>
+                        <button type={'submit'}
+                            className={'btn btn-sm btn-primary .col-md-3'}>
+                            <span className={'lt-button__label'}>Search</span>
+                        </button>
+                    </div>
+                </div>
+            </form> */}
             {[...groupByOwner.entries()].map(([owner, layers], idx) => {
                 return (<React.Fragment key={idx}>
                     <hr/>
