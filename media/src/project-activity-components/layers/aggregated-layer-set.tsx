@@ -39,9 +39,9 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
             filterLayersByDate(range1, range2);
         }
     };
-    const handleClear = async(e: React.MouseEvent<HTMLButtonElement>): Promise<void> => {
+    const handleClear = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
-        await resetContributorLayers();
+        void resetContributorLayers();
     };
 
     const layerList = [...layers.values()].sort((a, b) => {return b.pk - a.pk;});
@@ -84,14 +84,14 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                             value={range2}
                             onChange={handleRange2}/>
                     </div>
-                    <div className='row'>
+                    <div className='row justify-content-md-end'>
                         <button type={'button'}
                             onClick={handleClear}
-                            className={'btn btn-sm btn-secondary .col-md-3 mr-2'}>
+                            className={'btn btn-sm btn-secondary .col-md-3 mr-1'}>
                             <span className={'lt-button__label'}>Clear</span>
                         </button>
                         <button type={'submit'}
-                            className={'btn btn-sm btn-primary .col-md-3'}>
+                            className={'btn btn-sm btn-primary .col-md-3 mr-1'}>
                             <span className={'lt-button__label'}>Search</span>
                         </button>
                     </div>
