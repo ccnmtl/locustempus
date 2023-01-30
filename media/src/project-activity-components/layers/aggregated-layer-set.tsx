@@ -24,7 +24,7 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
     }: AggregatedLayerSetProps) => {
 
     const [range1, setRange1] = useState<string>('');
-    const [range2, setRange2] = useState<string>('');
+    const [range2, setRange2] = useState<string>(new Date().toJSON());
 
     const handleRange1 = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setRange1(e.target.value);
