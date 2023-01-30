@@ -64,8 +64,8 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
     }, new Map<string, Map<number, LayerData>>());
     return (
         <>
-            {/* <form onSubmit={handleFormSubmit}>
-                <div className='container lt-list-group '>
+            <form onSubmit={handleFormSubmit}>
+                <div className='container lt-list-group' data-cy={'filter-section'}>
                     <div className={'form-group pane-form-group pane-form-group row pb-1'}>
                         <label className={'col-3'} htmlFor={'form-field__date'}>
                         Filter Events
@@ -74,6 +74,7 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                             className={'form-control col-4'}
                             type={'date'}
                             id={'form-field__date'}
+                            data-cy={'filter_range_1'}
                             value={range1}
                             onChange={handleRange1}/>
                         <p className="col-1 mt-1 pl-2">To</p>
@@ -81,22 +82,25 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                             className={'form-control col-4'}
                             type={'date'}
                             id={'form-field__date'}
+                            data-cy={'filter_range_2'}
                             value={range2}
                             onChange={handleRange2}/>
                     </div>
                     <div className='row justify-content-md-end'>
                         <button type={'button'}
                             onClick={handleClear}
+                            data-cy={'clear-btn'}
                             className={'btn btn-sm btn-secondary .col-md-3 mr-1'}>
                             <span className={'lt-button__label'}>Clear</span>
                         </button>
                         <button type={'submit'}
+                            data-cy={'search-btn'}
                             className={'btn btn-sm btn-primary .col-md-3 mr-1'}>
                             <span className={'lt-button__label'}>Search</span>
                         </button>
                     </div>
                 </div>
-            </form> */}
+            </form>
             {[...groupByOwner.entries()].map(([owner, layers], idx) => {
                 return (<React.Fragment key={idx}>
                     <hr/>
