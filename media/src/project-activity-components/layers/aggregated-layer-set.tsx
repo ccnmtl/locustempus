@@ -24,7 +24,7 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
     }: AggregatedLayerSetProps) => {
 
     const [range1, setRange1] = useState<string>('');
-    const [range2, setRange2] = useState<string>(new Date().toJSON());
+    const [range2, setRange2] = useState<string>('');
 
     const handleRange1 = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setRange1(e.target.value);
@@ -35,12 +35,14 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        if (range1 && range2) {
+        if (range1.length > 0) {
             filterLayersByDate(range1, range2);
         }
     };
     const handleClear = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
+        setRange1('');
+        setRange2('');
         void resetContributorLayers();
     };
 
@@ -90,12 +92,12 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                         <button type={'button'}
                             onClick={handleClear}
                             data-cy={'clear-btn'}
-                            className={'btn btn-sm btn-secondary .col-md-3 mr-1'}>
+                            className={'btn btn-sm btn-secondary .col-md-3 mr-1 mb-1'}>
                             <span className={'lt-button__label'}>Clear</span>
                         </button>
                         <button type={'submit'}
                             data-cy={'search-btn'}
-                            className={'btn btn-sm btn-primary .col-md-3 mr-1'}>
+                            className={'btn btn-sm btn-primary .col-md-3 mr-1 mb-1'}>
                             <span className={'lt-button__label'}>Search</span>
                         </button>
                     </div>

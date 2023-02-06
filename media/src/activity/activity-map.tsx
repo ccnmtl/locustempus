@@ -735,7 +735,9 @@ export const ActivityMap: React.FC = () => {
         //if any event in those layers fall between range1 and range2 we include the layer
         //if no date with events, we don't include the layer.
         //Adjust zoom at the end.
-
+        if (range2.length < 1) {
+            range2 = datetimeToDate(new Date().toJSON());
+        }
         let layersForZoom: LayerData[] = [];
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const rangeEpoch1 = Date.parse(range1);
