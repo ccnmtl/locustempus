@@ -66,7 +66,7 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
     }, new Map<string, Map<number, LayerData>>());
     return (
         <>
-            <form onSubmit={handleFormSubmit}>
+            {/* <form onSubmit={handleFormSubmit}>
                 <div className='container lt-list-group' data-cy={'filter-section'}>
                     <div className={'form-group pane-form-group pane-form-group row pb-1'}>
                         <label className={'col-3'} htmlFor={'form-field__date'}>
@@ -102,7 +102,7 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                         </button>
                     </div>
                 </div>
-            </form>
+            </form> */}
             {[...groupByOwner.entries()].map(([owner, layers], idx) => {
                 return (<React.Fragment key={idx}>
                     <hr/>

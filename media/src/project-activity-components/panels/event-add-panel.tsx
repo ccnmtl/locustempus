@@ -85,7 +85,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                             autoFocus={true}
                             onChange={handleName} />
                     </div>
-                    <div className={'pane-form-divider'} />
+                    {/* <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group pane-form-group'}>
                         <label htmlFor={'form-field__date'}>
                                 Date
@@ -96,7 +96,7 @@ export const EventAddPanel: React.FC<EventAddPanelProps> = (
                             id={'form-field__date'}
                             value={datetime}
                             onChange={handleDatetime}/>
-                    </div>
+                    </div> */}
                     <div className={'pane-form-divider'} />
                     {/* Add image form */}
                     <div className={'form-group pane-form-group'}>

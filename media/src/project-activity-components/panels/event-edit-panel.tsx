@@ -104,7 +104,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             onChange={handleName} />
                     </div>
 
-                    <div className={'pane-form-divider'} />
+                    {/* <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group pane-form-group'}>
                         <label htmlFor={'form-field__date'}>
                                 Date
@@ -115,7 +115,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                             id={'form-field__date'}
                             value={eventDate}
                             onChange={handleDatetime} />
-                    </div>
+                    </div> */}
 
                     <div className={'pane-form-divider'} />
                     {/* Edit image form */}
