@@ -59,6 +59,8 @@ export interface ActivityMapPaneProps {
     activeTab: number;
     setActiveTab(tab: number): void;
     setAlert(alert: string | null): void;
+    filterLayersByDate(range1: string, range2: string): void;
+    resetContributorLayers(): Promise<void>
 }
 
 export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneProps>((
@@ -73,7 +75,7 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
         setActiveEventEdit, deleteEvent, updateEvent, projectLayers,
         fellowContributorLayers, responseData, updateResponse,
         createFeedback, updateFeedback, responseLayers, activeTab,
-        setActiveTab, setAlert
+        setActiveTab, setAlert, filterLayersByDate, resetContributorLayers
     }: ActivityMapPaneProps, forwardedRef) => {
 
     const projectPaneHeader = useRef<HTMLDivElement>(null);
@@ -260,6 +262,8 @@ export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneP
             isFaculty={isFaculty}
             responseLayers={responseLayers}
             paneHeaderHeight={projectPaneHeaderHeight}
+            resetContributorLayers={resetContributorLayers}
+            filterLayersByDate={filterLayersByDate}
             setAlert={setAlert}/>
     };
 
