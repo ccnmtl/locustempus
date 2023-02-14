@@ -1,0 +1,185 @@
+.contact-page {
+    padding-right: 1rem;
+    padding-left: 1rem;
+    @include media-breakpoint-up(md) {
+        padding-right: 2rem;
+        padding-left: 2rem;
+    }
+    @include media-breakpoint-up(lg) {
+        padding-right: 1rem;
+        padding-left: 1rem;
+    }
+}
+
+.contactform-box {
+    width: 100%;
+    margin: 1rem auto 3rem auto;
+    padding: 0;
+    border: 0;
+    background-color: transparent;
+    @include media-breakpoint-up(sm) {
+        margin: 1rem auto 3rem auto;
+    }
+    @include media-breakpoint-up(md) {
+        margin: 3rem auto 3rem auto;
+    }
+    @include media-breakpoint-up(lg) {
+        width: 55rem;
+    }
+}
+
+.contactform-box textarea {
+    height: 10rem;
+}
+
+.envelope {
+  width: 220px;
+  margin: 8rem auto 3rem auto;
+  height: 120px;
+  position: relative;
+  background-color: #66cc66;
+    -webkit-box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12) !important;
+    box-shadow: 0 2px 4px -1px rgba(0,0,0,.2), 0 4px 5px 0 rgba(0,0,0,.14), 0 1px 10px 0 rgba(0,0,0,.12) !important;
+}
+
+.top-fold,
+.bottom-fold {
+  border-left: 110px solid transparent;
+  border-right: 110px solid transparent;
+  width: 0;
+  height: 0;
+  position: relative;
+}
+
+.top-fold {
+  border-bottom: 80px solid #ff9933;
+  top: -80px;
+  transform-origin: bottom;
+  z-index: 3;
+  transform: rotateX(0deg);
+}
+
+.bottom-fold {
+  border-bottom: 80px solid #339933;
+  top: -40px;
+  z-index: 4;
+}
+
+.left-fold,
+.right-fold {
+  width: 0;
+  height: 0;
+  border-top: 60px solid transparent;
+  border-bottom: 60px solid transparent;
+  top: 0;
+  z-index: 4;
+}
+
+.left-fold {
+  border-left: 110px solid #78adff;
+  position: absolute;
+  left: 0;
+}
+
+.right-fold {
+  border-right: 110px solid #78adff;
+  position: absolute;
+  right: 0;
+}
+
+.back-fold {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 3;
+  top: -35%;
+}
+
+.letter {
+  width: 90%;
+  height: 90%;
+  background: #f6f8e7;
+  margin: 6px auto 0;
+  box-shadow: 0px 0px 2px 0px #909090;
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%);
+  border-radius: 4px;
+  display: flex;
+  flex-direction: column;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+.letter .line {
+  height: 0.5rem;
+  background: #ccc;
+  width: 10%;
+  margin: 0.25rem 1rem;
+}
+
+.letter .line.one {
+  width: 50%;
+  margin-top: 1rem;
+}
+
+.letter .line.two {
+  width: 30%;
+}
+
+.letter .line.three {
+  width: 60%;
+}
+
+.letter .letter-border {
+    height: 10px;
+    width: 100%;
+    background: repeating-linear-gradient(
+        -45deg,
+        #4353ff,
+        #4353ff 8px,
+        transparent 8px,
+        transparent 18px
+    );
+}
+
+.contact-prompt {
+    width: 100%;
+    position: relative;
+    border: none;
+    margin-top: 3rem;
+    &__decor {
+        margin: 0 auto;
+        height: auto;
+        width: 17rem;
+    }
+    &__content {
+        width: 100%;
+        text-align: center;
+    }
+    &__alert {
+        margin: 0 auto;
+        width: 35rem;
+        text-align: center;
+    }
+    &__instructions {
+        width: 100%;
+        text-align: center;
+        padding-top: 1rem;
+        padding-bottom: 1rem;
+    }
+}
+
+.ll-helper {
+    margin: 0 0 0.5rem 0;
+    padding: 0;
+    border: 0;
+    color: #757575;
+    font-style: italic;
+    &--line {
+        font-size: ($font-size-base * 0.8125);
+    }
+    &--block {
+        font-size: $font-size-base;
+    }
+}
