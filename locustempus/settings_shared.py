@@ -29,6 +29,7 @@ INSTALLED_APPS += [  # noqa
     'rest_framework',
     'generic_relations',
     's3sign',
+    'contactus'
 ]
 
 MIDDLEWARE += [ # noqa
@@ -52,6 +53,9 @@ REST_FRAMEWORK = {
     )
 }
 
+CONTACT_US_EMAIL = 'ctl-locustempus@columbia.edu'
+SERVER_EMAIL = 'locustempus-noreply@mail.ctl.columbia.edu'
+EMAIL_SUBJECT_PREFIX = 'Locus Tempus Contact Request'
 
 THUMBNAIL_SUBDIR = "thumbs"
 LOGIN_REDIRECT_URL = "/"

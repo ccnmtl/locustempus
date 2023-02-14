@@ -28,6 +28,7 @@ router.register(r'layer', viewsets.LayerApiView, basename='api-layer')
 router.register(r'event', viewsets.EventApiView, basename='api-event')
 
 urlpatterns = [
+    path('contact/', include('contactus.urls')),
     url(r'^api/', include(router.urls)),
     path('accounts/register/',
          RegistrationView.as_view(form_class=CustomRegistrationForm),
