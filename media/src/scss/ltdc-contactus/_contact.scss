@@ -52,7 +52,7 @@
 }
 
 .top-fold {
-  border-bottom: 80px solid #64b5f6;
+  border-bottom: 80px solid #ff9933;
   top: -80px;
   transform-origin: bottom;
   z-index: 3;
@@ -60,7 +60,7 @@
 }
 
 .bottom-fold {
-  border-bottom: 80px solid #64b5f6;
+  border-bottom: 80px solid #339933;
   top: -40px;
   z-index: 4;
 }
@@ -76,13 +76,13 @@
 }
 
 .left-fold {
-  border-left: 110px solid #218739;
+  border-left: 110px solid #78adff;
   position: absolute;
   left: 0;
 }
 
 .right-fold {
-  border-right: 110px solid #218739;
+  border-right: 110px solid #78adff;
   position: absolute;
   right: 0;
 }
@@ -136,8 +136,8 @@
     width: 100%;
     background: repeating-linear-gradient(
         -45deg,
-        #ff9900,
-        #ff9900 8px,
+        #4353ff,
+        #4353ff 8px,
         transparent 8px,
         transparent 18px
     );
