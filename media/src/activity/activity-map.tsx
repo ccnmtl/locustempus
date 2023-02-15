@@ -731,33 +731,57 @@ export const ActivityMap: React.FC = () => {
     const activeElementDate = activeEvent ? datetimeToDate(activeEvent.datetime) : null;
 
     const filterLayersByDate = (range1: string, range2: string) => {
-        //Take the fellowContributorLayerData whcich holds layers of other contributors,
-        //if any event in those layers fall between range1 and range2 we include the layer
-        //if no date with events, we don't include the layer.
-        //Adjust zoom at the end.
-        if (range2.length < 1) {
-            range2 = datetimeToDate(new Date().toJSON());
-        }
+        // Take the fellowContributorLayerData whcich holds layers of other contributors,
+        // if no date with events, we don't include the layer.
+
         let layersForZoom: LayerData[] = [];
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const rangeEpoch1 = Date.parse(range1);
         const rangeEpoch2 = Date.parse(range2);
         const filteredLayers:  Map<number, LayerData> = new Map();
+
         [...fellowContributorLayerData.values()].map(x => {
             const events: EventData[] = x.events;
             for (let i = 0; i < events.length; i++) {
                 const date = Date.parse(events[i].datetime);
 
-                if (date && !(date >= rangeEpoch1 && date <= rangeEpoch2)) {
-                    events.splice(i, 1);
-                    i--;
-                }
-                if (date && (date >= rangeEpoch1 && date <= rangeEpoch2)) {
-                    filteredLayers.set(x.pk, x);
+                // if there is an end range but no begin
+                if (range1.length < 1 && range2.length > 1) {
+                    if (date && (date > rangeEpoch2)) {
+                        events.splice(i, 1);
+                        i--;
+                    } else {
+                        filteredLayers.set(x.pk, x);
+                    }
+                } // if there is a begin range but no end range
+                else if(range1.length > 1 && range2.length < 1) {
+                    if (date && (date < rangeEpoch1)) {
+                        events.splice(i, 1);
+                        i--;
+                    } else {
+                        filteredLayers.set(x.pk, x);
+                    }
+                } // if begin and end date are the same
+                else if (range1.length > 1 && range2.length > 1 && range1 === range2) {
+                    if(datetimeToDate(events[i].datetime) === range1) {
+                        filteredLayers.set(x.pk, x);
+                    } else {
+                        events.splice(i, 1);
+                        i--;
+                    }
+                } else {
+                    if (date && !(date >= rangeEpoch1 && date <= rangeEpoch2)) {
+                        events.splice(i, 1);
+                        i--;
+                    } else {
+                        filteredLayers.set(x.pk, x);
+                    }
                 }
             }
         });
         setFellowContributorLayerData(filteredLayers);
+
+        // Adjust zoom at the end.
         layersForZoom = layersForZoom.concat([...filteredLayers.values()]);
         const layerVis = layersForZoom.reduce((acc, val) => {
             acc.set(val.pk, true);
@@ -772,8 +796,8 @@ export const ActivityMap: React.FC = () => {
             bearing: 0,
             pitch: 0
         });
-
     };
+
     const resetContributorLayers = async(): Promise<void> => {
         //Reset to the original contributor layer
         //This is code copy from the getData func. Maybe should be extracted.

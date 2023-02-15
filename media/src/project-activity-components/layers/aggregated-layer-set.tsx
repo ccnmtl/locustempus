@@ -35,7 +35,8 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        if (range1.length > 0) {
+        // only filter if there is an input.
+        if (!(range1.length < 1 && range2.length < 1)) {
             filterLayersByDate(range1, range2);
         }
     };
