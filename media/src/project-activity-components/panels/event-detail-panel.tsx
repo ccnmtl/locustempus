@@ -101,13 +101,17 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                 )}
                 {activeEventDetail && (
                     <section className={'lt-pane-section'}>
-                        <div className={'event-attr'}>By {activeEventDetail.owner}</div>
+                        <div className={'event-attr'}>
+                            By {activeEventDetail.owner}
+                        </div>
+                        {activeEventDetail.datetime && (
+                            <div className={'event-attr'}>
+                                Associate date: {activeElementDate}
+                            </div>
+                        )}
 
                         <div className={'lt-quill-rendered'} dangerouslySetInnerHTML={
                             {__html: activeEventDetail.description}}/>
-                        {activeEventDetail.datetime && (
-                            <div>Date: {activeElementDate}</div>
-                        )}
 
                         <hr className={'w-75 mt-5'} />
                     </section>

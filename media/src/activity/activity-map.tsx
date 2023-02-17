@@ -1079,9 +1079,12 @@ export const ActivityMap: React.FC = () => {
                                 )}
                                 <div className={'mapboxgl-popup-text'}>
                                     <h2>{activeEvent.label}</h2>
-                                    <div className={'event-attr'}>by {activeEvent.owner}</div>
+                                    <div className={'event-attr'}>By {activeEvent.owner}</div>
                                     {activeEvent.datetime && (
-                                        <div className={'event-attr'}>{activeElementDate}</div>
+                                        <div className={'event-attr mt-2'}>
+                                            Associated date:&nbsp;
+                                            {activeElementDate}
+                                        </div>
                                     )}
                                     <div className={'event-summary lt-quill-rendered'}
                                         dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}

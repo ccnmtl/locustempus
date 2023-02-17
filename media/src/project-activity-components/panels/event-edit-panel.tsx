@@ -107,7 +107,7 @@ export const EventEditPanel: React.FC<EventEditPanelProps> = (
                     <div className={'pane-form-divider'} />
                     <div className={'form-group pane-form-group pane-form-group'}>
                         <label htmlFor={'form-field__date'}>
-                                Date
+                                Associated date
                         </label>
                         <input
                             className={'form-control'}
