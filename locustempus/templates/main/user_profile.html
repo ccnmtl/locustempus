@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load widget_tweaks %}
+
+{% block title %}
+Profile Page
+{% endblock %}
+
+{% block content %}
+
+<div class="row">
+    <div class="col-md-4">
+        <form action="." method="post">
+            {% csrf_token %}
+            <div class="form-group" style="margin-top: 20px; margin-left: 20px">
+                <h2 style="margin-bottom: 20px">Profile</h2>
+                <div class="input-group profile-input-group">
+                    <span style="margin: auto; margin-right: 20px"> First Name: </span>
+                    <input type="text"
+                        maxlength="50"
+                        class="form-control"
+                        id="profile_first_name"
+                        name="first_name"
+                        value="{{user.first_name}}" />
+
+                </div>
+                <div class="input-group profile-input-group">
+                    <span style="margin: auto; margin-right: 20px"> Last Name: </span>
+                    <input type="text"
+                        maxlength="50"
+                        class="form-control"
+                        id="profile_last_name"
+                        name="last_name"
+                        value="{{user.last_name}}">
+                </div>
+            </div>
+            <div class="form-row invite-add-row" style="margin-top: 20px; margin-left: 20px">
+                <button type="submit" id="profile-update" class="btn btn-primary">Save</button>
+            </div>
+
+        </form>
+    </div>
+</div>
+
+{% endblock %}

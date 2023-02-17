@@ -12,7 +12,19 @@
     button {
         margin-left: 0.5rem;
     }
-} 
+}
+
+.profile-input-group {
+    margin-bottom: 1em;
+
+    input {
+        border-radius: 0.25rem !important;
+    }
+
+    button {
+        margin-left: 0.5rem;
+    }
+}
 
 .email-invite-form-group, .invite-add-row {
     margin-bottom: 1em;

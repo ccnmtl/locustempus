@@ -52,6 +52,8 @@ urlpatterns = [
     url(r'^sign_s3/$', views.SignS3View.as_view()),
     url(r'^dashboard/$', views.DashboardView.as_view(),
         name='course-list-view'),
+    url(r'^dashboard/profile/$', views.UserProfileView.as_view(),
+        name='profile-view'),
     url(r'^course/create/$', views.CourseCreateView.as_view(),
         name='course-create-view'),
     url(r'^course/(?P<pk>\d+)/$', views.CourseDetailView.as_view(),
