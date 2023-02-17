@@ -25,24 +25,57 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
 
     const [range1, setRange1] = useState<string>('');
     const [range2, setRange2] = useState<string>('');
+    const [dateText, setDateText] = useState<string>('All dates');
 
     const handleRange1 = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setRange1(e.target.value);
+
+        if (range2.length < 1) {
+
+            setDateText(e.target.value + ' to present');
+
+        } else if (range2.length > 1 && range2 === e.target.value) {
+
+            setDateText('On ' + e.target.value);
+
+        } else if (range2.length > 1) {
+
+            setDateText(e.target.value + ' to ' + range2);
+
+        }
     };
+
     const handleRange2 = (e: React.ChangeEvent<HTMLInputElement>): void => {
         setRange2(e.target.value);
+
+        if (range1.length < 1) {
+
+            setDateText('Up to ' + e.target.value);
+
+        } else if (range1.length > 1 && range1 === e.target.value) {
+
+            setDateText('On ' + e.target.value);
+
+        } else if (range1.length > 1) {
+
+            setDateText(range1 + ' to ' + e.target.value);
+
+        }
     };
 
     const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        if (range1.length > 0) {
+        // only filter if there is an input.
+        if (!(range1.length < 1 && range2.length < 1)) {
             filterLayersByDate(range1, range2);
         }
     };
+
     const handleClear = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setRange1('');
         setRange2('');
+        setDateText('All dates');
         void resetContributorLayers();
     };
 
@@ -75,6 +108,7 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                         <input
                             className={'form-control col-4'}
                             type={'date'}
+                            max={range2}
                             id={'form-field__date'}
                             data-cy={'filter_range_1'}
                             value={range1}
@@ -83,21 +117,23 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                         <input
                             className={'form-control col-4'}
                             type={'date'}
+                            min={range1}
                             id={'form-field__date'}
                             data-cy={'filter_range_2'}
                             value={range2}
                             onChange={handleRange2}/>
                     </div>
-                    <div className='row justify-content-md-end'>
+                    <div className='row justify-content-end'>
+                        <p className={'mr-3 mb-1'}>{dateText}</p>
                         <button type={'button'}
                             onClick={handleClear}
                             data-cy={'clear-btn'}
-                            className={'btn btn-sm btn-secondary .col-md-3 mr-1 mb-1'}>
+                            className={'btn btn-sm btn-secondary mr-1 mb-1'}>
                             <span className={'lt-button__label'}>Clear</span>
                         </button>
                         <button type={'submit'}
                             data-cy={'search-btn'}
-                            className={'btn btn-sm btn-primary .col-md-3 mr-1 mb-1'}>
+                            className={'btn btn-sm btn-primary mr-1 mb-1'}>
                             <span className={'lt-button__label'}>Search</span>
                         </button>
                     </div>
