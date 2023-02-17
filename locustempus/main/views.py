@@ -801,6 +801,8 @@ class UserProfileView(View):
         user.first_name = request.POST.get('first_name', None)
         user.last_name = request.POST.get('last_name', None)
         user.save()
+        msg = ('Your user profile has been updated.')
+        messages.add_message(self.request, messages.SUCCESS, msg)
 
         return HttpResponseRedirect(
-            reverse('profile-view'))
+            reverse('course-list-view'))
