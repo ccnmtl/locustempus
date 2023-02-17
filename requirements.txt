@@ -109,7 +109,7 @@ django-contact-us==1.1.0
 
 entrypoints==0.4
 
-django-courseaffils==2.2.6
+django-courseaffils==2.3.0
 
 toml==0.10.2
 tomli==2.0.1
