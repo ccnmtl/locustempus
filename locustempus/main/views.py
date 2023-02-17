@@ -1,6 +1,6 @@
 import re
 
-from courseaffils.columbia import WindTemplate, CanvasTemplate
+from courseaffils.columbia import CourseStringTemplate, CanvasTemplate
 from courseaffils.models import Course
 from django.conf import settings
 from django.contrib import messages
@@ -588,12 +588,12 @@ class LTICourseCreate(LoginRequiredMixin, View):
     def groups_from_sis_course_id(self, attrs) -> Tuple[Group, Group]:
         assert isinstance(self.request.user, User)  # nosec
         user = self.request.user
-        st_affil = WindTemplate.to_string(attrs)
+        st_affil = CourseStringTemplate.to_string(attrs)
         group, created = Group.objects.get_or_create(name=st_affil)
         user.groups.add(group)
 
         attrs['member'] = 'fc'
-        fc_affil = WindTemplate.to_string(attrs)
+        fc_affil = CourseStringTemplate.to_string(attrs)
         faculty_group, created = Group.objects.get_or_create(name=fc_affil)
         user.groups.add(faculty_group)
         return (group, faculty_group)
