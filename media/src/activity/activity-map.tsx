@@ -1019,7 +1019,7 @@ export const ActivityMap: React.FC = () => {
                     alertString={alertString}
                     closeHandler={() => setAlert(null)} />}
             {projectData && (
-                <div style={{ height: '100vh' }}>
+                <div style={{ height: 'calc(100vh - 4.125rem)' }}>
                     <div
                         ref={geocoderContainerRef}
                         style={{ position: 'absolute', top: 20, right: 20, zIndex: 1 }}
