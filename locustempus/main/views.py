@@ -777,3 +777,30 @@ class ResetView(View):
         reset_test_models()
 
         return redirect('index-view')
+
+
+class UserProfileView(View):
+    http_method_names = ['get', 'post']
+    template_name = 'main/user_profile.html'
+
+    def get(self, request, *args, **kwargs) -> HttpResponse:
+        user = self.request.user
+        return render(request, self.template_name, {
+            'username': user.username,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+            'page_type': 'roster',
+            'breadcrumb': {
+                'Workspaces': reverse('course-list-view')
+            }
+        })
+
+    def post(self, request, *args, **kwargs) -> HttpResponse:
+
+        user = User.objects.get(id=self.request.user.id)
+        user.first_name = request.POST.get('first_name', None)
+        user.last_name = request.POST.get('last_name', None)
+        user.save()
+
+        return HttpResponseRedirect(
+            reverse('profile-view'))
