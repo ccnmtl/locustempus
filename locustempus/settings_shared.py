@@ -29,7 +29,8 @@ INSTALLED_APPS += [  # noqa
     'rest_framework',
     'generic_relations',
     's3sign',
-    'contactus'
+    'contactus',
+    'waffle',
 ]
 
 MIDDLEWARE += [ # noqa
