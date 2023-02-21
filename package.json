@@ -9,10 +9,10 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "cypress:run": "cypress run",
     "cypress:open": "cypress open",
-    "cypress:test": "start-server-and-test 'make integrationserver' http-get://localhost:8000 'make tileserver' http-get://localhost:8888 cypress:run",
-    "cypress:test-travis": "start-server-and-test 'make integrationserver-travis' http-get://localhost:8000 'make tileserver' http-get://localhost:8888 cypress:run",
-    "integrationserver:webpack": "start-server-and-test 'make integrationserver' http-get://localhost:8000 'make tileserver' http-get://localhost:8888 dev",
-    "cypress:watch": "start-server-and-test integrationserver:webpack http-get://localhost:8000 'make tileserver' http-get://localhost:8888 cypress:open"
+    "cypress:test": "start-server-and-test 'make integrationserver' http-get://127.0.0.1:8000 'make tileserver' http-get://127.0.0.1:8888 cypress:run",
+    "cypress:test-travis": "start-server-and-test 'make integrationserver-travis' http-get://127.0.0.1:8000 'make tileserver' http-get://127.0.0.1:8888 cypress:run",
+    "integrationserver:webpack": "start-server-and-test 'make integrationserver' http-get://127.0.0.1:8000 'make tileserver' http-get://127.0.0.1:8888 dev",
+    "cypress:watch": "start-server-and-test integrationserver:webpack http-get://127.0.0.1:8000 'make tileserver' http-get://127.0.0.1:8888 cypress:open"
   },
   "devDependencies": {
     "@babel/cli": "^7.8.4",
