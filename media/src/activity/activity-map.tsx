@@ -747,7 +747,7 @@ export const ActivityMap: React.FC = () => {
 
                 // if there is an end range but no begin
                 if (range1.length < 1 && range2.length > 1) {
-                    if (date && (date > rangeEpoch2)) {
+                    if (Number.isNaN(date) || (date > rangeEpoch2)) {
                         events.splice(i, 1);
                         i--;
                     } else {
@@ -755,7 +755,7 @@ export const ActivityMap: React.FC = () => {
                     }
                 } // if there is a begin range but no end range
                 else if(range1.length > 1 && range2.length < 1) {
-                    if (date && (date < rangeEpoch1)) {
+                    if (Number.isNaN(date) || (date < rangeEpoch1)) {
                         events.splice(i, 1);
                         i--;
                     } else {
@@ -770,7 +770,7 @@ export const ActivityMap: React.FC = () => {
                         i--;
                     }
                 } else {
-                    if (date && !(date >= rangeEpoch1 && date <= rangeEpoch2)) {
+                    if (Number.isNaN(date) || !(date >= rangeEpoch1 && date <= rangeEpoch2)) {
                         events.splice(i, 1);
                         i--;
                     } else {
