@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MediaEditor } from '../layers/media-editor';
 import { EventData, LayerData, MediaObject } from '../common';
 import ReactQuill from 'react-quill';
+import 'quill-paste-smart';
 import { datetimeToDate, dateToDatetime } from '../../utils';
 
 

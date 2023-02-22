@@ -6,6 +6,7 @@ import {
     faPencilAlt, faTrashAlt, faUserEdit
 } from '@fortawesome/free-solid-svg-icons';
 import ReactQuill from 'react-quill';
+import 'quill-paste-smart';
 
 
 interface ActivityProps {

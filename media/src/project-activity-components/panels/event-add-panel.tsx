@@ -3,6 +3,7 @@ import { Position } from '@deck.gl/core/utils/positions';
 import { MediaEditor } from '../layers/media-editor';
 import { MediaObject } from '../common';
 import ReactQuill from 'react-quill';
+import 'quill-paste-smart';
 import { EventData, LayerData } from '../common';
 
 interface EventAddPanelProps {
