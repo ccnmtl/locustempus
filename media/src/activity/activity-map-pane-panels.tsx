@@ -11,6 +11,7 @@ import {
     faEye, faEyeSlash, faLayerGroup, faArrowLeft
 } from '@fortawesome/free-solid-svg-icons';
 import ReactQuill from 'react-quill';
+import 'quill-paste-smart';
 
 
 interface DefaultPanelProps {
