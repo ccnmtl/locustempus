@@ -535,9 +535,11 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                         key={el.pk}
                         data-cy="response-summary">
                         <div className={'d-flex flex-column'}>
-                            <h3 id={`response-${el.pk}`} data-cy="contributor">
-                                {el.owners.join(', ')}
-                            </h3>
+                            <a href="#" onClick={(): void => {setActiveResponse(el);}}>
+                                <h3 id={`response-${el.pk}`} data-cy="contributor">
+                                    {el.owners.join(', ')}
+                                </h3>
+                            </a>
                             <p
                                 className={'lt-date-display'}>
                                 Last modified on {el.modified_at_formatted}
