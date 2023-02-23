@@ -630,6 +630,9 @@ export const ProjectMap: React.FC = () => {
                                     )}
                                     <div className={'event-summary lt-quill-rendered'}
                                         dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
+                                    <a href="#" className={'lt-button__label'}
+                                        onClick={(): void => {
+                                            setActiveEventDetail(activeEvent);}}>MORE</a>
                                 </div>
                             </Popup>
                         )}
