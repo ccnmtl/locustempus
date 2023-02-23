@@ -106,7 +106,7 @@ export const EventDetailPanel: React.FC<EventDetailPanelProps> = (
                         </div>
                         {activeEventDetail.datetime && (
                             <div className={'event-attr'}>
-                                Associate date: {activeElementDate}
+                                Associated date: {activeElementDate}
                             </div>
                         )}
 
