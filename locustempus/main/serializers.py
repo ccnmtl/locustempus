@@ -70,7 +70,7 @@ class ProjectSerializer(serializers.ModelSerializer):
             aggregated_layers = []
             responses = obj.activity.responses.filter(
                 status__in=[Response.SUBMITTED, Response.REVIEWED]
-            ).exclude(created_by=user)
+            )
             for response in responses:
                 aggregated_layers.extend([
                     reverse(
