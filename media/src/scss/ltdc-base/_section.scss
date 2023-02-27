@@ -259,8 +259,19 @@ figcaption {
 .border {
     &-top {
         border-top: 1px solid #ccc !important;
+        border-bottom: 0;
+        border-left: 0;
+        border-right: 0;
     }
     &-bottom {
         border-bottom: 1px solid #ccc !important;
+        border-top: 0;
+        border-left: 0;
+        border-right: 0;
+   }
+    &-dotted {
+        border-width: inherit;
+        border-style: dotted !important;
+        border-color: $border-color !important;
     }
 }

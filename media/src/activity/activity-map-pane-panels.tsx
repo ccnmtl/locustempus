@@ -170,6 +170,9 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                 )}
                 {activeTab === BASE && (
                     <div className='fade-load'>
+                        <h2 className={'mb-0'}>
+                            Base Event Markers
+                        </h2>
                         <LayerSet
                             layers={projectLayers}
                             addLayer={isFaculty ? addLayer : undefined}
