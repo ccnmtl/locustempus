@@ -1,6 +1,11 @@
 import React, { useState }  from 'react';
 import { LayerSet } from './layer-set';
 import {LayerData, EventData } from '../common';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+    faSlidersH
+} from '@fortawesome/free-solid-svg-icons';
+
 
 interface AggregatedLayerSetProps {
     layers: Map<number, LayerData>;
@@ -99,23 +104,28 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
     }, new Map<string, Map<number, LayerData>>());
     return (
         <>
-            {/* <form onSubmit={handleFormSubmit}>
-                <div className='container lt-list-group' data-cy={'filter-section'}>
-                    <div className={'form-group pane-form-group pane-form-group row pb-1'}>
-                        <label className={'col-3'} htmlFor={'form-field__date'}>
-                        Filter Events
-                        </label>
+            <hr className={'mt-5'} />
+            <h2>Contributors’ responses</h2>
+            <div className={'form-group pane-form-group'}
+                data-cy={'filter-section'}>
+                <form onSubmit={handleFormSubmit}>
+                    <label htmlFor={'form-field__date'}>
+                        <FontAwesomeIcon icon={faSlidersH}/> Filter by date
+                    </label>
+                    <div className={'row mx-0'}>
                         <input
-                            className={'form-control col-4'}
+                            className={'form-control col-5 ml-3'}
                             type={'date'}
                             max={range2}
                             id={'form-field__date'}
                             data-cy={'filter_range_1'}
                             value={range1}
                             onChange={handleRange1}/>
-                        <p className="col-1 mt-1 pl-2">To</p>
+                        <div className=
+                            {'col-1 align-self-center p-0 text-center'}>
+                            to</div>
                         <input
-                            className={'form-control col-4'}
+                            className={'form-control col-5'}
                             type={'date'}
                             min={range1}
                             id={'form-field__date'}
@@ -123,43 +133,44 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                             value={range2}
                             onChange={handleRange2}/>
                     </div>
-                    <div className='row justify-content-end'>
-                        <p className={'mr-3 mb-1'}>{dateText}</p>
-                        <button type={'button'}
+                    <div role={'alert'}
+                        className={'filter-criteria-display text-right'}>
+                        Filtering {dateText}...</div>
+                    <div className={'d-flex justify-content-end px-4'}>
+                        <button
                             onClick={handleClear}
                             data-cy={'clear-btn'}
-                            className={'btn btn-sm btn-secondary mr-1 mb-1'}>
+                            className={'lt-button lt-button--outlined mr-2'}>
                             <span className={'lt-button__label'}>Clear</span>
                         </button>
                         <button type={'submit'}
                             data-cy={'search-btn'}
-                            className={'btn btn-sm btn-primary mr-1 mb-1'}>
+                            className={'lt-button lt-button--solid'}>
                             <span className={'lt-button__label'}>Search</span>
                         </button>
                     </div>
-                </div>
-            </form> */}
+                </form>
+            </div>
             {[...groupByOwner.entries()].map(([owner, layers], idx) => {
                 return (<React.Fragment key={idx}>
-                    <hr/>
-                    <div>
-                        <h2 data-cy={'collaborator-response-name'}>
+                    <div className={'aggregate-box'}>
+                        <h3 data-cy={'collaborator-response-name'}>
                             Response by {owner}
-                        </h2>
+                        </h3>
+                        <LayerSet
+                            layers={layers}
+                            addLayer={undefined}
+                            updateLayer={undefined}
+                            deleteLayer={undefined}
+                            toggleLayerVisibility={toggleLayerVisibility}
+                            layerVisibility={layerVisibility}
+                            activeLayer={activeLayer}
+                            setActiveLayer={setActiveLayer}
+                            setActiveEvent={setActiveEvent}
+                            activeEvent={activeEvent}
+                            setActiveEventDetail={setActiveEventDetail}
+                            activeEventEdit={activeEventEdit} />
                     </div>
-                    <LayerSet
-                        layers={layers}
-                        addLayer={undefined}
-                        updateLayer={undefined}
-                        deleteLayer={undefined}
-                        toggleLayerVisibility={toggleLayerVisibility}
-                        layerVisibility={layerVisibility}
-                        activeLayer={activeLayer}
-                        setActiveLayer={setActiveLayer}
-                        setActiveEvent={setActiveEvent}
-                        activeEvent={activeEvent}
-                        setActiveEventDetail={setActiveEventDetail}
-                        activeEventEdit={activeEventEdit} />
                 </React.Fragment>);
             })}
         </>
