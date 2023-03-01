@@ -16,6 +16,11 @@ PROJECT_APPS = [
 
 USE_TZ = True
 
+ALLOWED_HOSTS = [
+    '127.0.0.1',
+    'localhost',
+]
+
 # A note on installed apps, Django 3+ has automatic appconfig discovery.
 INSTALLED_APPS += [  # noqa
     'bootstrap4',
@@ -30,7 +35,6 @@ INSTALLED_APPS += [  # noqa
     'generic_relations',
     's3sign',
     'contactus',
-    'waffle',
 ]
 
 MIDDLEWARE += [ # noqa
