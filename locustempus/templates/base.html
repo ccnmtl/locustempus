@@ -1,4 +1,3 @@
-{% load compress %}
 
 <!DOCTYPE html>
 
@@ -13,9 +12,7 @@
         <meta name="theme-color" content="#bbdefb">
 
         <!-- Local CSS -->
-        {% compress css %}
         <link href="{{STATIC_URL}}build/main.css" rel="stylesheet">
-        {% endcompress %}
         {% block css %}{% endblock %}
 
         <!-- Standard Meta Data, TBD -->

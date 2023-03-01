@@ -1,5 +1,3 @@
-{% load compress %}
-
 <!DOCTYPE html>
 
 <html lang="en">
@@ -12,9 +10,7 @@
         <!-- The above 2 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
         <!-- Local CSS -->
-        {% compress css %}
         <link href="{{STATIC_URL}}build/main.css" rel="stylesheet">
-        {% endcompress %}
         {% block css %}{% endblock %}
 
         <!-- Standard Meta Data, TBD -->
