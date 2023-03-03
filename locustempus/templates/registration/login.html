@@ -10,17 +10,21 @@
             <h1 class="loginbox__title">Sign in</h1>
         </div>
         <div class="loginbox__body--cuid">
-        {% if CAS_BASE %}
+            
             <h2 class="h6 mb-3 text-center">If you have a Columbia University Network ID (UNI)</h2>
-            <form class="text-center" method="get" action="{{CAS_BASE}}cas/login">
-                <input type="hidden" name="destination" value="http{% if request.is_secure %}s{% endif %}://{{ request.get_host }}/accounts/caslogin/?next={{ next }}" />
+            <form class="text-center" method="get" action="/cas/login">
+                <input type="hidden" name="next" value="/" />
                 <button class="lt-button lt-button--priority mt-3" data-cy="columbia-login" type="submit">
                     <span class='lt-button__label'>Columbia UNI Sign In</span>
                 </button>
-                <p class="small pt-2"><a href="https://cuit.columbia.edu/cuit/manage-my-uni" rel="noopener noreferrer" title="Learn more about UNI" target="_blank">What is a UNI?</a></p>
+                <p class="small pt-2">
+                    <a href="https://cuit.columbia.edu/cuit/manage-my-uni" rel="noopener noreferrer" title="Learn more about UNI" target="_blank">
+                        What is a UNI?
+                    </a>
+                </p>
             </form>
             <hr class="seperator" />
-        {% endif %}
+            
         </div>
         <div class="loginbox__body--local">
         {% if form.errors %}
