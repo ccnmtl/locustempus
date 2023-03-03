@@ -114,7 +114,7 @@ elif 'debian' in distro.linux_distribution()[0].lower():
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'footprints',
+        'NAME': 'locustempus',
         'HOST': '',
         'PORT': 5432,
         'USER': '',
