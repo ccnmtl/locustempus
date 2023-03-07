@@ -743,7 +743,7 @@ export const ActivityMap: React.FC = () => {
         [...fellowContributorLayerData.values()].map(x => {
             const events: EventData[] = x.events;
             for (let i = 0; i < events.length; i++) {
-                const date = Date.parse(events[i].datetime);
+                const date = Date.parse(datetimeToDate(events[i].datetime));
 
                 // if there is an end range but no begin
                 if (range1.length < 1 && range2.length > 1) {
