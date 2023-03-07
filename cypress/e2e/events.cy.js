@@ -40,71 +40,71 @@ describe('Activity Response Stories', function() {
         cy.get('.lt-list-item--caution').click();
 
     });
-    // it('Filter Using Time', function() {
-    //     cy.login_workspace('student-three');
+    it('Filter Using Time', function() {
+        cy.login_workspace('student-three');
 
-    //     cy.get('[data-cy="project-card"]').contains('Activity One').click();
-    //     cy.get('[data-cy="loading-modal"]').should('be.visible');
-    //     cy.get('[data-cy="loading-modal"]').should('not.exist');
+        cy.get('[data-cy="project-card"]').contains('Activity One').click();
+        cy.get('[data-cy="loading-modal"]').should('be.visible');
+        cy.get('[data-cy="loading-modal"]').should('not.exist');
 
-    //     // Navigate to the response tab
-    //     cy.get('[data-cy="Response"]').click();
-    //     //Submit a response to be able to see the filter
-    //     cy.get('[data-cy="Response"]').click();
-    //     cy.get('[data-cy="submit-or-update-response"]').click();
-    //     // make sure it saved
-    //     cy.reload();
-    //     // Wait for the loading icon to go away
-    //     cy.get('[data-cy="loading-modal"]').should('be.visible');
-    //     cy.get('[data-cy="loading-modal"]').should('not.exist');
+        // Navigate to the response tab
+        cy.get('[data-cy="Response"]').click();
+        //Submit a response to be able to see the filter
+        cy.get('[data-cy="Response"]').click();
+        cy.get('[data-cy="submit-or-update-response"]').click();
+        // make sure it saved
+        cy.reload();
+        // Wait for the loading icon to go away
+        cy.get('[data-cy="loading-modal"]').should('be.visible');
+        cy.get('[data-cy="loading-modal"]').should('not.exist');
 
-    //     cy.get('[data-cy="Base Layers"]').click();
-    //     // Make sure all layers are visible
-    //     cy.get('[data-cy="collaborator-response-name"]')
-    //         .should('be.visible');
-    //     cy.get('[data-cy="filter-section"]').should('be.visible');
-    //     cy.get('ul.lt-list-layer').children().should('have.length', 3);
-    //     cy.get('ul.lt-list-layer').children().contains('First Event');
+        cy.get('[data-cy="Base Layers"]').click();
+        // Make sure all layers are visible
+        cy.get('[data-cy="collaborator-response-name"]')
+            .should('be.visible');
+        cy.get('[data-cy="filter-section"]').should('be.visible');
+        cy.get('ul.lt-list-layer').children().should('have.length', 3);
+        cy.get('ul.lt-list-layer').children().contains('First Event');
 
-    //     //Set range
-    //     cy.get('[data-cy="filter_range_1"]').clear().type('2009-12-14');
-    //     cy.get('[data-cy="filter_range_2"]').clear().type('2022-11-24');
-    //     cy.get('[data-cy="search-btn"]').click();
-    //     cy.get('ul.lt-list-layer').children().should('have.length', 2);
-    //     cy.get('ul.lt-list-layer').children().should(
-    //         'not.contain', 'First Event');
+        //Set range
+        cy.get('[data-cy="filter_range_1"]').clear().type('2009-12-14');
+        cy.get('[data-cy="filter_range_2"]').clear().type('2022-11-24');
+        cy.get('[data-cy="search-btn"]').click();
+        cy.get('ul.lt-list-layer').children().should('have.length', 2);
+        cy.get('ul.lt-list-layer').children().should(
+            'not.contain', 'First Event');
 
-    //     // Clear btn
-    //     cy.get('[data-cy="clear-btn"]').click();
-    //     cy.get('ul.lt-list-layer').children().should('have.length', 3);
-    //     cy.get('ul.lt-list-layer').children().contains('First Event');
+        // Clear btn
+        cy.get('[data-cy="clear-btn"]').click();
+        cy.get('ul.lt-list-layer').children().should('have.length', 3);
+        cy.get('ul.lt-list-layer').children().contains('First Event');
 
-    //     // Enter begin date and no end date
-    //     cy.get('[data-cy="filter_range_1"]').clear().type('2009-12-14');
-    //     cy.get('[data-cy="search-btn"]').click();
-    //     cy.get('ul.lt-list-layer').children().should('have.length', 2);
-    //     cy.get('ul.lt-list-layer').children().should(
-    //         'not.contain', 'First Event');
-    //     cy.get('[data-cy="clear-btn"]').click();
+        // Enter begin date and no end date
+        cy.get('[data-cy="filter_range_1"]').clear().type('2009-12-14');
+        cy.get('[data-cy="search-btn"]').click();
+        cy.get('ul.lt-list-layer').children().should('have.length', 2);
+        cy.get('ul.lt-list-layer').children().should(
+            'not.contain', 'First Event');
+        cy.get('[data-cy="clear-btn"]').click();
 
-    //     // Enter end date and no begin date
-    //     cy.get('[data-cy="filter_range_2"]').clear().type('2021-11-24');
-    //     cy.get('[data-cy="search-btn"]').click();
-    //     cy.get('ul.lt-list-layer').children().should('have.length', 2);
-    //     cy.get('ul.lt-list-layer').children().should(
-    //         'not.contain', 'Third Event');
-    //     cy.get('[data-cy="filter_range_1"]').clear();
-    //     cy.get('[data-cy="clear-btn"]').click();
+        // Enter end date and no begin date
+        cy.get('[data-cy="filter_range_2"]').clear().type('2021-11-24');
+        cy.get('[data-cy="search-btn"]').click();
+        cy.get('ul.lt-list-layer').children().should('have.length', 2);
+        cy.get('ul.lt-list-layer').children().should(
+            'not.contain', 'Third Event');
+        cy.get('[data-cy="filter_range_1"]').clear();
+        cy.get('[data-cy="clear-btn"]').click();
 
-    //     // Enter same date
-    //     cy.get('[data-cy="filter_range_1"]').clear().type('2010-08-03');
-    //     cy.get('[data-cy="filter_range_2"]').clear().type('2010-08-03');
-    //     cy.get('[data-cy="search-btn"]').click();
-    //     cy.get('ul.lt-list-layer').children().should('have.length', 1);
-    //     cy.get('ul.lt-list-layer').children().should(
-    //         'contain', 'Second Event');
+        // Enter same date
+        cy.get('[data-cy="filter_range_1"]').clear().type('2010-08-03');
+        cy.get('[data-cy="filter_range_2"]').clear().type('2010-08-03');
+        cy.get('[data-cy="search-btn"]').click();
+        cy.get('ul.lt-list-layer').children().should('have.length', 1);
+        cy.get('ul.lt-list-layer').children().should(
+            'contain', 'Second Event');
 
-    // });
+    });
     it('Cleanup', function() {
         cy.login('superuser', 'test');
 
