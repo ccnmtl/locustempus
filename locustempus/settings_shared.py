@@ -16,13 +16,29 @@ PROJECT_APPS = [
 
 USE_TZ = True
 
+CAS_SERVER_URL = 'https://cas.columbia.edu/cas/'
+CAS_VERSION = '3'
+CAS_ADMIN_REDIRECT = False
+CAS_MAP_AFFILIATIONS = True
+
+# Translate CUIT's CAS user attributes to the Django user model.
+# https://cuit.columbia.edu/content/cas-3-ticket-validation-response
+CAS_APPLY_ATTRIBUTES_TO_USER = True
+CAS_RENAME_ATTRIBUTES = {
+    'givenName': 'first_name',
+    'lastName': 'last_name',
+    'mail': 'email',
+}
+
 # A note on installed apps, Django 3+ has automatic appconfig discovery.
+INSTALLED_APPS.remove('djangowind')  # noqa
 INSTALLED_APPS += [  # noqa
     'bootstrap4',
     'infranil',
     'django_extensions',
     'courseaffils',
     'lti_provider',
+    'django_cas_ng',
     'locustempus.main',
     'widget_tweaks',
     'django_registration',
@@ -38,6 +54,8 @@ MIDDLEWARE += [ # noqa
     'locustempus.main.middleware.WhoDidItMiddleware',
 ]
 
+TEMPLATES[0]['OPTIONS']['context_processors'].remove(  # noqa
+    'djangowind.context.context_processor')
 TEMPLATES[0]['OPTIONS']['context_processors'].extend([  # noqa
     'locustempus.utils.get_sentry_dsn',
 ])
@@ -67,7 +85,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'lti_provider.auth.LTIBackend',
-    'djangowind.auth.SAMLAuthBackend'
+    'django_cas_ng.backends.CASBackend',
 ]
 
 LTI_TOOL_CONFIGURATION = {
@@ -114,7 +132,7 @@ elif 'debian' in distro.linux_distribution()[0].lower():
 DATABASES = {
     'default': {
         'ENGINE': 'django.contrib.gis.db.backends.postgis',
-        'NAME': 'footprints',
+        'NAME': 'locustempus',
         'HOST': '',
         'PORT': 5432,
         'USER': '',

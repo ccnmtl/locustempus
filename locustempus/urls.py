@@ -6,6 +6,7 @@ from django.views.generic import TemplateView
 from django.views.static import serve
 from django_registration.backends.activation.views import RegistrationView
 from rest_framework import routers
+from django_cas_ng import views as cas_views
 
 from locustempus import design
 from locustempus.main.forms import CustomRegistrationForm
@@ -16,8 +17,6 @@ admin.autodiscover()
 
 
 auth_urls = url(r'^accounts/', include('django.contrib.auth.urls'))
-if hasattr(settings, 'CAS_BASE'):
-    auth_urls = url(r'^accounts/', include('djangowind.urls'))
 
 router = routers.DefaultRouter()
 router.register(r'project', viewsets.ProjectApiView, basename='api-project')
@@ -29,6 +28,14 @@ router.register(r'event', viewsets.EventApiView, basename='api-event')
 
 urlpatterns = [
     path('contact/', include('contactus.urls')),
+
+    path('accounts/', include('django.contrib.auth.urls')),
+
+    path('cas/login', cas_views.LoginView.as_view(),
+         name='cas_ng_login'),
+    path('cas/logout', cas_views.LogoutView.as_view(),
+         name='cas_ng_logout'),
+
     url(r'^api/', include(router.urls)),
     path('accounts/register/',
          RegistrationView.as_view(form_class=CustomRegistrationForm),
