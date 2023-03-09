@@ -804,6 +804,20 @@ export const ActivityMap: React.FC = () => {
         if (activityPk && CURRENT_USER) {
             if(!isFaculty && projectData) {
                 let layersForZoom: LayerData[] = [];
+
+                // Fetch the Project layers
+                const layers: LayerData[] = [];
+                for (const layerUrl of projectData.layers) {
+                    layers.push(await get<LayerData>(layerUrl));
+                }
+                const projLayers = layers.reduce((acc, val) => {
+                // Set the layer visibility while we're here
+                    acc.set(val.pk, val);
+                    return acc;
+                }, new Map<number, LayerData>());
+                setProjectLayerData(projLayers);
+                layersForZoom = layersForZoom.concat([...projLayers.values()]);
+
                 // Get aggregated layers of other student's work
                 // Fetch the Project layers
                 const aggLayerData: LayerData[] = [];
