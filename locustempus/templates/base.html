@@ -142,6 +142,18 @@
                                 <span class="lt-list-item__primary-text">Your Workspaces</span>
                                 </a>
                             </li>
+                            <li class="lt-list-item">
+                                <a href="{% url 'profile-view' %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                                <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-user-edit.svg" alt="" /></span>
+                                <span class="lt-list-item__primary-text">Edit Your Profile</span>
+                                </a>
+                            </li>
+                            <li class="lt-list-item">
+                                <a href="/guides/" class="d-flex align-items-center justify-content-start lt-list-item__link">
+                                <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-question-circle.svg" alt="" /></span>
+                                <span class="lt-list-item__primary-text">Get Help</span>
+                                </a>
+                            </li>
                             {% if request.user.is_superuser %}
                             <li class="lt-list-item">
                                 <a href="{% url 'impersonate-search' %}" class="d-flex align-items-center justify-content-start lt-list-item__link">
@@ -229,6 +241,9 @@
     <ul class="navlist--footer">
         <li class="nav-item">
             <a href="/about/">About Locus Tempus</a>
+        </li>
+        <li class="nav-item">
+            <a href="/guides/" title="Get Help">Get Help</a>
         </li>
         <li class="nav-item">
             <a href="/contact/" title="Contact us">Contact Us</a>
