@@ -595,6 +595,7 @@ export const ProjectMap: React.FC = () => {
                                     ref={geocoderRef}
                                     containerRef={geocoderContainerRef}
                                     mapboxApiAccessToken={TOKEN}
+                                    limit={8}
                                     trackProximity={true}
                                     reverseGeocode={true}
                                     minLength={4}
