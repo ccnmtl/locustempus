@@ -3,7 +3,7 @@ import { EventData, LayerData } from '../common';
 import { ConfirmableAction } from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faEye, faEyeSlash, faAngleDown, faAngleRight, faBars, faMapMarker,
+    faEye, faEyeSlash, faAngleDown, faAngleRight, faEdit, faMapMarker,
     faPencilAlt, faTrashAlt, faLightbulb
 } from '@fortawesome/free-solid-svg-icons';
 
@@ -140,7 +140,7 @@ export const Layer: React.FC<LayerProps> = (
                             <span
                                 className={'lt-icons lt-icon-button__icon'}
                                 aria-hidden='true'>
-                                <FontAwesomeIcon icon={faBars}/>
+                                <FontAwesomeIcon icon={faEdit}/>
                             </span>
                         </button>
                         {openLayerMenu && (

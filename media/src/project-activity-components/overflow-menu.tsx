@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect, ReactElement } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faBars } from '@fortawesome/free-solid-svg-icons';
+import { faEdit } from '@fortawesome/free-solid-svg-icons';
 
 interface MenuItem {
     handler(): void;
@@ -173,7 +173,7 @@ export const OverflowMenu: React.FC<OverflowMenuProps> = ({items}: OverflowMenuP
                 <span
                     className={'lt-icons lt-icon-button__icon'}
                     aria-hidden='true'>
-                    <FontAwesomeIcon icon={faBars}/>
+                    <FontAwesomeIcon icon={faEdit}/>
                 </span>
             </button>
             {showMenu && (
