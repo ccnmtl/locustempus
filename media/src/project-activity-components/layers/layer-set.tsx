@@ -1,8 +1,9 @@
 import React  from 'react';
 import { Layer } from './layer';
+import {ResponseLayer} from './responseLayer';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faLayerGroup } from '@fortawesome/free-solid-svg-icons';
-import {LayerData, EventData } from '../common';
+import {LayerData, EventData, ResponseData } from '../common';
 
 // Add LayerVisibility map
 interface LayerSetProps {
@@ -18,13 +19,14 @@ interface LayerSetProps {
     setActiveEvent(d: EventData): void;
     setActiveEventDetail(d: EventData): void;
     activeEventEdit: EventData | null;
+    responseData: ResponseData[] | null;
 }
 
 export const LayerSet: React.FC<LayerSetProps> = (
     {
         layers, layerVisibility, addLayer, deleteLayer, updateLayer, activeLayer,
         setActiveLayer, toggleLayerVisibility, activeEvent, setActiveEvent,
-        setActiveEventDetail, activeEventEdit
+        setActiveEventDetail, activeEventEdit, responseData
     }: LayerSetProps) => {
 
     const layerList = [...layers.values()].sort((a, b) => {return b.pk - a.pk;});
@@ -51,7 +53,7 @@ export const LayerSet: React.FC<LayerSetProps> = (
                     </form>
                 </div>
             )}
-            {layerList && layerList.map(
+            {!responseData &&layerList && layerList.map(
                 (layer, idx) => {
                     return (
                         <Layer
@@ -68,7 +70,28 @@ export const LayerSet: React.FC<LayerSetProps> = (
                             setActiveEventDetail={setActiveEventDetail}
                             activeEventEdit={activeEventEdit}/>
                     );
-                })}
+                })
+            }
+            {(responseData && layerList) && layerList.map(
+                (layer, idx) => {
+                    return (
+                        <ResponseLayer
+                            layer={layer}
+                            deleteLayer={deleteLayer}
+                            updateLayer={updateLayer}
+                            key={idx}
+                            activeLayer={activeLayer}
+                            setActiveLayer={setActiveLayer}
+                            layerVisibility={layerVisibility}
+                            toggleLayerVisibility={toggleLayerVisibility}
+                            activeEvent={activeEvent}
+                            setActiveEvent={setActiveEvent}
+                            setActiveEventDetail={setActiveEventDetail}
+                            responseData={responseData}
+                            activeEventEdit={activeEventEdit}/>
+                    );
+                }
+            )}
         </>
     );
 };
