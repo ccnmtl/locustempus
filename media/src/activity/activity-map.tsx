@@ -26,7 +26,8 @@ import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_SIZE_ACTIVE,
     ICON_COLOR, ICON_COLOR_ACTIVE, ICON_COLOR_NEW_EVENT,
     DEFAULT_VIEWPORT_STATE, ViewportState, ProjectData, DeckGLClickEvent,
-    LayerData, EventData, MediaObject, TileSublayerProps, Result
+    LayerData, EventData, MediaObject, TileSublayerProps, Result, ResponseStatus,
+    ResponseData, FeedbackData
 } from '../project-activity-components/common';
 
 export interface ActivityData {
@@ -34,34 +35,6 @@ export interface ActivityData {
     pk: number;
     description: string;
     instructions: string;
-}
-
-export enum ResponseStatus {
-    DRAFT = 'DRAFT',
-    SUBMITTED = 'SUBMITTED',
-    REVIEWED = 'REVIEWED'
-}
-
-interface FeedbackData {
-    pk: number;
-    body: string;
-    submitted_at_formatted: string;
-    modified_at_formatted: string;
-    feedback_from: string;
-}
-
-export interface ResponseData {
-    pk: number;
-    activity: number;
-    layers: string[];
-    owners: string[];
-    submitted_at: Date;
-    modified_at: Date;
-    submitted_at_formatted: string;
-    modified_at_formatted: string;
-    reflection: string;
-    status: ResponseStatus;
-    feedback: FeedbackData | null;
 }
 
 export const ActivityMap: React.FC = () => {
