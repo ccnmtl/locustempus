@@ -918,6 +918,19 @@ export const ActivityMap: React.FC = () => {
                 for (const layers of respLayers.values()) {
                     layersForZoom = layersForZoom.concat(layers);
                 }
+                const layerVis = layersForZoom.reduce((acc, val) => {
+                    acc.set(val.pk, true);
+                    return acc;
+                }, new Map<number, boolean>());
+                setLayerVisibility(layerVis);
+                const viewport = getBoundedViewport(layersForZoom, deckglMap, mapPane);
+                setViewportState({
+                    latitude: viewport.latitude,
+                    longitude: viewport.longitude,
+                    zoom: viewport.zoom,
+                    bearing: 0,
+                    pitch: 0
+                });
             }
         }
     };
