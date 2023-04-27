@@ -6,12 +6,9 @@ import { LayerData, EventData, ResponseData, ResponseStatus
 } from '../project-activity-components/common';
 import {ActivityData} from './activity-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faEye, faEyeSlash, faLayerGroup, faArrowLeft
-} from '@fortawesome/free-solid-svg-icons';
+import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import ReactQuill from 'react-quill';
 import 'quill-paste-smart';
-import { Layer } from 'deck.gl';
 
 
 interface DefaultPanelProps {

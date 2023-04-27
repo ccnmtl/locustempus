@@ -712,50 +712,99 @@ export const ActivityMap: React.FC = () => {
         const rangeEpoch1 = Date.parse(range1);
         const rangeEpoch2 = Date.parse(range2);
         const filteredLayers:  Map<number, LayerData> = new Map();
+        const authorFilteredLayers = new Map<number, LayerData[]>();
 
-        [...fellowContributorLayerData.values()].map(x => {
-            const events: EventData[] = x.events;
-            for (let i = 0; i < events.length; i++) {
-                const date = Date.parse(datetimeToDate(events[i].datetime));
+        if(!isFaculty) {
+            [...fellowContributorLayerData.values()].map(x => {
+                const events: EventData[] = x.events;
+                for (let i = 0; i < events.length; i++) {
+                    const date = Date.parse(datetimeToDate(events[i].datetime));
 
-                // if there is an end range but no begin
-                if (range1.length < 1 && range2.length > 1) {
-                    if (Number.isNaN(date) || (date > rangeEpoch2)) {
-                        events.splice(i, 1);
-                        i--;
+                    // if there is an end range but no begin
+                    if (range1.length < 1 && range2.length > 1) {
+                        if (Number.isNaN(date) || (date > rangeEpoch2)) {
+                            events.splice(i, 1);
+                            i--;
+                        } else {
+                            filteredLayers.set(x.pk, x);
+                        }
+                    } // if there is a begin range but no end range
+                    else if(range1.length > 1 && range2.length < 1) {
+                        if (Number.isNaN(date) || (date < rangeEpoch1)) {
+                            events.splice(i, 1);
+                            i--;
+                        } else {
+                            filteredLayers.set(x.pk, x);
+                        }
+                    } // if begin and end date are the same
+                    else if (range1.length > 1 && range2.length > 1 && range1 === range2) {
+                        if(datetimeToDate(events[i].datetime) === range1) {
+                            filteredLayers.set(x.pk, x);
+                        } else {
+                            events.splice(i, 1);
+                            i--;
+                        }
                     } else {
-                        filteredLayers.set(x.pk, x);
-                    }
-                } // if there is a begin range but no end range
-                else if(range1.length > 1 && range2.length < 1) {
-                    if (Number.isNaN(date) || (date < rangeEpoch1)) {
-                        events.splice(i, 1);
-                        i--;
-                    } else {
-                        filteredLayers.set(x.pk, x);
-                    }
-                } // if begin and end date are the same
-                else if (range1.length > 1 && range2.length > 1 && range1 === range2) {
-                    if(datetimeToDate(events[i].datetime) === range1) {
-                        filteredLayers.set(x.pk, x);
-                    } else {
-                        events.splice(i, 1);
-                        i--;
-                    }
-                } else {
-                    if (Number.isNaN(date) || !(date >= rangeEpoch1 && date <= rangeEpoch2)) {
-                        events.splice(i, 1);
-                        i--;
-                    } else {
-                        filteredLayers.set(x.pk, x);
+                        if (Number.isNaN(date) || !(date >= rangeEpoch1 && date <= rangeEpoch2)) {
+                            events.splice(i, 1);
+                            i--;
+                        } else {
+                            filteredLayers.set(x.pk, x);
+                        }
                     }
                 }
-            }
-        });
-        setFellowContributorLayerData(filteredLayers);
+            });
+            setFellowContributorLayerData(filteredLayers);
+            // Adjust zoom at the end.
+            layersForZoom = layersForZoom.concat([...filteredLayers.values()]);
+        } else {
+            responseLayers.forEach((val, key) => {
+                val.forEach((obj) => {
+                    const events: EventData[] = obj.events;
+                    for (let i = 0; i < events.length; i++) {
+                        const date = Date.parse(datetimeToDate(events[i].datetime));
 
-        // Adjust zoom at the end.
-        layersForZoom = layersForZoom.concat([...filteredLayers.values()]);
+                        // if there is an end range but no begin
+                        if (range1.length < 1 && range2.length > 1) {
+                            if (Number.isNaN(date) || (date > rangeEpoch2)) {
+                                events.splice(i, 1);
+                                i--;
+                            } else {
+                                authorFilteredLayers.set(key, val);
+                            }
+                        } // if there is a begin range but no end range
+                        else if(range1.length > 1 && range2.length < 1) {
+                            if (Number.isNaN(date) || (date < rangeEpoch1)) {
+                                events.splice(i, 1);
+                                i--;
+                            } else {
+                                authorFilteredLayers.set(key, val);
+                            }
+                        } // if begin and end date are the same
+                        else if (range1.length > 1 && range2.length > 1 && range1 === range2) {
+                            if(datetimeToDate(events[i].datetime) === range1) {
+                                authorFilteredLayers.set(key, val);
+                            } else {
+                                events.splice(i, 1);
+                                i--;
+                            }
+                        } else {
+                            if (Number.isNaN(date) || !(date >= rangeEpoch1 && date <=rangeEpoch2)){
+                                events.splice(i, 1);
+                                i--;
+                            } else {
+                                authorFilteredLayers.set(key, val);
+                            }
+                        }
+                    }
+                });
+            });
+            setResponseLayers(authorFilteredLayers);
+            for (const layers of authorFilteredLayers.values()) {
+                layersForZoom = layersForZoom.concat(layers);
+            }
+        }
+
         const layerVis = layersForZoom.reduce((acc, val) => {
             acc.set(val.pk, true);
             return acc;
@@ -817,6 +866,58 @@ export const ActivityMap: React.FC = () => {
                     bearing: 0,
                     pitch: 0
                 });
+            } else if (isFaculty && projectData) {
+                // Get layers from responses and put them on the map
+                const respLayers = new Map<number, LayerData[]>();
+                const respMapLayers: IconLayer<EventData>[] = [];
+                let layersForZoom: LayerData[] = [];
+                // Fetch the Project layers
+                const layers: LayerData[] = [];
+                for (const layerUrl of projectData.layers) {
+                    layers.push(await get<LayerData>(layerUrl));
+                }
+                const projLayers = layers.reduce((acc, val) => {
+                    // Set the layer visibility while we're here
+                    acc.set(val.pk, val);
+                    return acc;
+                }, new Map<number, LayerData>());
+                setProjectLayerData(projLayers);
+                layersForZoom = layersForZoom.concat([...projLayers.values()]);
+
+                for (const resp of responseData) {
+                    const layers: LayerData[] = [];
+                    for (const layerUrl of resp.layers) {
+                        layers.push(await get<LayerData>(layerUrl));
+                    }
+
+                    // Pack sets of layers, mapping response.pk to sets of layers
+                    respLayers.set(resp.pk, layers);
+
+                    // Then create a Mapbox layer for each response layer
+                    // and set its visibility
+                    for (const layer of layers) {
+                        respMapLayers.push(
+                            new IconLayer<EventData>({
+                                id: `response-layer-${layer.pk}`,
+                                data: layer.events,
+                                pickable: true,
+                                iconAtlas: ICON_ATLAS,
+                                iconMapping: ICON_MAPPING,
+                                getIcon: (): string => 'marker',
+                                sizeScale: ICON_SCALE,
+                                getPosition: (d) => d.location.lng_lat,
+                                onClick: pickEventClickHandler,
+                                getSize: ICON_SIZE,
+                                getColor: ICON_COLOR,
+                            })
+                        );
+                    }
+                }
+
+                setResponseLayers(respLayers);
+                for (const layers of respLayers.values()) {
+                    layersForZoom = layersForZoom.concat(layers);
+                }
             }
         }
     };

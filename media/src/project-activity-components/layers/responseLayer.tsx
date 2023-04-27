@@ -1,10 +1,8 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { EventData, LayerData, ResponseData } from '../common';
-import { ConfirmableAction } from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faEye, faEyeSlash, faAngleDown, faAngleRight, faBars, faMapMarker,
-    faPencilAlt, faTrashAlt, faLightbulb
+    faEye, faEyeSlash, faAngleDown, faAngleRight, faMapMarker, faLightbulb
 } from '@fortawesome/free-solid-svg-icons';
 
 export interface LayerProps {
@@ -29,7 +27,7 @@ export const ResponseLayer: React.FC<LayerProps> = (
         setActiveEventDetail, responseData
     }: LayerProps) => {
     const [openLayerMenu, setOpenLayerMenu] = useState<boolean>(false);
-    const [isLayerCollapsed, setIsLayerCollapsed] = useState<boolean>(false);
+    const [isLayerCollapsed, setIsLayerCollapsed] = useState<boolean>(true);
     const menuRef = useRef<HTMLDivElement>(null);
 
 

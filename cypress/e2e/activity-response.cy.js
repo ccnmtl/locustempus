@@ -27,7 +27,7 @@ describe('Activity Response Stories', function() {
             .contains('Use this space to craft your response');
 
         // Verify basics with the layers
-        cy.get('[data-cy="add-layer"]').should('be.visible')
+        cy.get('[data-cy="add-layer"]').should('be.visible');
 
         // There should be one Untitled layer, and it should be active
         cy.get('[data-cy="layer"]').should('have.length', 1);
@@ -133,7 +133,7 @@ describe('Activity Response Stories', function() {
             .contains('First Layer').should('be.visible');
 
         cy.log('Add a second layer');
-        cy.get('[data-cy="add-layer"]').should('be.visible')
+        cy.get('[data-cy="add-layer"]').should('be.visible');
         cy.get('[data-cy="add-layer"]').click();
 
         // There should be two layers now,
@@ -296,7 +296,7 @@ describe('Activity Response Stories', function() {
 
         cy.get('[data-cy="submit-or-update-response"]').click();
         cy.get('.alert').contains('Your response has been submitted');
-        cy.get('[data-cy="save-as-draft"]').should('not.exist')
+        cy.get('[data-cy="save-as-draft"]').should('not.exist');
         cy.get('[data-cy="submit-or-update-response"]').should('be.visible');
         cy.get('[data-cy="submit-or-update-response"]')
             .contains('Update response');

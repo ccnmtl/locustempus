@@ -3,7 +3,7 @@ import { LayerSet } from './layer-set';
 import {LayerData, EventData, ResponseData } from '../common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faSlidersH
+    faSlidersH, faLayerGroup
 } from '@fortawesome/free-solid-svg-icons';
 
 
@@ -30,7 +30,7 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
         layers, layerVisibility, activeLayer, setActiveLayer,
         toggleLayerVisibility, activeEvent, setActiveEvent,
         setActiveEventDetail, activeEventEdit, filterLayersByDate, resetContributorLayers,
-        responseData, isFaculty, activeResponse, setActiveResponse
+        responseData, isFaculty, setActiveResponse
     }: AggregatedLayerSetProps) => {
 
     const [range1, setRange1] = useState<string>('');
@@ -179,6 +179,14 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                 </form>
             </div>
             {[...groupByOwner.entries()].map(([owner, layers], idx) => {
+                let submitted = '';
+                responseData?.forEach((el) => {
+                    const owners = el.owners;
+                    if(owners.includes(owner)) {
+                        submitted = el.submitted_at_formatted;
+                    }
+                });
+
                 return (<React.Fragment key={idx}>
                     <div className={'aggregate-box'}>
                         {!isFaculty && (
@@ -186,11 +194,29 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                                 Response by {owner}
                             </h3>
                         )}
-                        <a href="#" onClick={(): void => {handleResponseClick(owner);}}>
-                            <h3 id={`response-${idx}`}>
-                                {owner}
-                            </h3>
-                        </a>
+
+                        <div className={'d-flex flex-row'} data-cy={'response-summary'}>
+                            <a href="#" onClick={(): void => {handleResponseClick(owner);}}>
+                                <h3 id={`response-${idx}`} data-cy={'contributor'}>
+                                    {owner}
+                                </h3>
+                            </a>
+                            <button
+                                onClick={(): void => {handleResponseClick(owner);}}
+                                className={'lt-icon-button'}
+                                data-cy="open-response">
+                                <span className={'lt-icons lt-icon-button__icon'}
+                                    aria-hidden='true'>
+                                    <FontAwesomeIcon icon={faLayerGroup}/>
+                                </span>
+                            </button>
+                        </div>
+                        <div className={'d-flex flex-column'}>
+                            <p
+                                className={'lt-date-display'}>
+                                Last modified on {submitted}
+                            </p>
+                        </div>
                         <LayerSet
                             layers={layers}
                             addLayer={undefined}
