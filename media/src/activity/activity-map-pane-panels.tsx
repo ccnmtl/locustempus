@@ -101,6 +101,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
         e: React.MouseEvent<HTMLAnchorElement>): void => {
         e.preventDefault();
         setActiveTab(Number(e.currentTarget.dataset.activeTab));
+        setActiveResponse(null);
     };
 
     const handleSubmitResponse = (e: React.FormEvent<HTMLFormElement>): void => {
