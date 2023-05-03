@@ -4,7 +4,7 @@ import { ConfirmableAction } from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEye, faEyeSlash, faAngleDown, faAngleRight, faEdit, faMapMarker,
-    faPencilAlt, faTrashAlt, faLightbulb, faExclamationCircle
+    faPencilAlt, faTrashAlt, faLightbulb, faExclamationCircle, faAsterisk
 } from '@fortawesome/free-solid-svg-icons';
 
 export interface LayerProps {
@@ -108,9 +108,14 @@ export const Layer: React.FC<LayerProps> = (
             data-cy="layer">
             <div className={'lt-list-group__header'}>
                 {/* Layer title */}
-                <h2 className={'lt-list-group__title order-2 ' +
-                    (isUntitled(layer.title) ? 'text-danger' : '')}  data-cy="layer-title">
-                    {layer.title}
+                <h2 className={'lt-list-group__title order-2'}
+                    data-cy="layer-title">
+                    <span className={
+                        (isUntitled(layer.title) ? 'text-danger' : '')}>
+                        {isUntitled(layer.title) && (
+                            <FontAwesomeIcon icon={faAsterisk}/>
+                        )}
+                        {layer.title}</span>
                 </h2>
                 {/* Layer show-hide and expand-collapse */}
                 <div className="lt-list-group__action leading order-1">
