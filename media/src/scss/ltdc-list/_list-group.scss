@@ -20,6 +20,14 @@
         font-size: 0.875rem !important;
         padding: 0;
         margin: 0 1rem 0 0 !important;
+        &-default {
+            display: inline-block;
+            padding: 0.25rem;
+            color: $on-error;
+            background-color: $error-surface;
+            border: 1px solid #fff;
+            border-radius: 0.25rem;
+        }
     }
     &__action {
         white-space: nowrap;

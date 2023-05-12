@@ -124,6 +124,21 @@
     border: 1px solid #e3e3e3;
 }
 
+.lt-banner-tip-plain {
+    @extend %banner-base;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+    margin: 0.5rem 0 0 0;
+    background-color: transparent;
+    border: transparent;
+    .lt-banner__text {
+        color: $gray-900;
+    }
+    .lt-banner__icon {
+        color: $on-error;
+    }
+}
+
 .lt-impersonate {
     position: fixed;
     top: 0.5rem;

@@ -4,7 +4,7 @@ import { ConfirmableAction } from '../overflow-menu';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faEye, faEyeSlash, faAngleDown, faAngleRight, faEdit, faMapMarker,
-    faPencilAlt, faTrashAlt, faLightbulb
+    faPencilAlt, faTrashAlt, faLightbulb, faExclamationCircle
 } from '@fortawesome/free-solid-svg-icons';
 
 export interface LayerProps {
@@ -92,6 +92,14 @@ export const Layer: React.FC<LayerProps> = (
         }
     };
 
+    const isUntitled = (title: string): boolean => {
+        if(title.toLowerCase() === 'untitled layer') {
+            return true;
+        } else {
+            return false;
+        }
+    };
+
     return (
         <div
             className={'lt-list-group ' +
@@ -100,8 +108,15 @@ export const Layer: React.FC<LayerProps> = (
             data-cy="layer">
             <div className={'lt-list-group__header'}>
                 {/* Layer title */}
-                <h2 className="lt-list-group__title order-2" data-cy="layer-title">
-                    {layer.title}
+                <h2 className={'lt-list-group__title order-2'}
+                    data-cy="layer-title">
+                    {isUntitled(layer.title) ? (
+                        <span className={'lt-list-group__title-default'}>
+                            {layer.title} *
+                        </span>
+                    ):(
+                        <span>{layer.title}</span>
+                    )}
                 </h2>
                 {/* Layer show-hide and expand-collapse */}
                 <div className="lt-list-group__action leading order-1">
@@ -241,6 +256,17 @@ export const Layer: React.FC<LayerProps> = (
                         </ul>
                     ) : (
                         <>
+                            {isUntitled(layer.title) && (
+                                <div data-cy="untitled-prompt" className={'lt-banner-tip-plain'}>
+                                    <span className={'lt-icons lt-banner__icon'}>
+                                        <FontAwesomeIcon icon={faExclamationCircle}/>
+                                    </span>
+                                    <span className={'lt-banner__text'}>
+                                        This layer is untitled. <a href='#'
+                                            onClick=  {handleLayerMenu}>Rename it?</a>
+                                    </span>
+                                </div>
+                            )}
                             {isActiveLayer ? (
                                 <div data-cy="layer-prompt" className={'lt-banner-tip-prompt'}>
                                     <span className={'lt-icons lt-banner__icon'}>
