@@ -157,3 +157,31 @@ export interface Result {
         type: string;
     }
 }
+
+export enum ResponseStatus {
+    DRAFT = 'DRAFT',
+    SUBMITTED = 'SUBMITTED',
+    REVIEWED = 'REVIEWED'
+}
+
+export interface FeedbackData {
+    pk: number;
+    body: string;
+    submitted_at_formatted: string;
+    modified_at_formatted: string;
+    feedback_from: string;
+}
+
+export interface ResponseData {
+    pk: number;
+    activity: number;
+    layers: string[];
+    owners: string[];
+    submitted_at: Date;
+    modified_at: Date;
+    submitted_at_formatted: string;
+    modified_at_formatted: string;
+    reflection: string;
+    status: ResponseStatus;
+    feedback: FeedbackData | null;
+}

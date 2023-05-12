@@ -2,14 +2,11 @@ import React, { useState, useEffect } from 'react';
 import { LayerSet } from '../project-activity-components/layers/layer-set';
 import { AggregatedLayerSet } from '../project-activity-components/layers/aggregated-layer-set';
 import { Activity } from '../project-activity-components/panels/activity';
-import { LayerData, EventData } from '../project-activity-components/common';
-import {
-    ActivityData, ResponseData, ResponseStatus,
-} from './activity-map';
+import { LayerData, EventData, ResponseData, ResponseStatus
+} from '../project-activity-components/common';
+import {ActivityData} from './activity-map';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {
-    faEye, faEyeSlash, faLayerGroup, faArrowLeft
-} from '@fortawesome/free-solid-svg-icons';
+import {faArrowLeft} from '@fortawesome/free-solid-svg-icons';
 import ReactQuill from 'react-quill';
 import 'quill-paste-smart';
 
@@ -186,10 +183,14 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                             setActiveEvent={setActiveEvent}
                             activeEvent={activeEvent}
                             setActiveEventDetail={setActiveEventDetail}
-                            activeEventEdit={activeEventEdit} />
+                            activeEventEdit={activeEventEdit}
+                            responseData={null} />
                         {!isFaculty && (
                             <AggregatedLayerSet
                                 layers={fellowContributorLayers}
+                                isFaculty={isFaculty}
+                                activeResponse={null}
+                                setActiveResponse={setActiveResponse}
                                 toggleLayerVisibility={toggleLayerVisibility}
                                 layerVisibility={layerVisibility}
                                 activeLayer={activeLayer}
@@ -199,6 +200,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 resetContributorLayers={resetContributorLayers}
                                 filterLayersByDate={filterLayersByDate}
                                 setActiveEventDetail={setActiveEventDetail}
+                                responseData={null}
                                 activeEventEdit={activeEventEdit} />
                         )}
                     </div>
@@ -222,6 +224,9 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                 setActiveEvent={setActiveEvent}
                                 setActiveEventDetail={setActiveEventDetail}
                                 activeEventEdit={activeEventEdit}
+                                filterLayersByDate={filterLayersByDate}
+                                isFaculty={isFaculty}
+                                resetContributorLayers={resetContributorLayers}
                                 setAlert={setAlert}/>
                         ) : (<>
                             <section className={'lt-pane-section pb-0 mb-0 border-0'}
@@ -255,6 +260,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                     setActiveEvent={setActiveEvent}
                                     activeEvent={activeEvent}
                                     setActiveEventDetail={setActiveEventDetail}
+                                    responseData={null}
                                     activeEventEdit={activeEventEdit} />
                             </section>
                             <section className={'lt-pane-section'}
@@ -275,14 +281,18 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                             onChange={setReflection}/>
                                     </div>
                                     <div className={'lt-pane-actions'}>
-                                        <div className={'lt-pane-actions__overlay overlay--response'}></div> {/* eslint-disable-line max-len */}
+                                        <div className=
+                                            {'lt-pane-actions__overlay overlay--response'}>
+                                        </div>
                                         <div className={'lt-pane-actions__buttons'}>
                                             {reflectionStatus === 'DRAFT' && (
                                                 <button
                                                     className={'lt-button lt-button--solid mr-3'}
                                                     onClick={handleReflectionSaveDraft}
                                                     data-cy="save-as-draft">
-                                                    <span className={'lt-button__label'}>Save as draft</span> {/* eslint-disable-line max-len */}
+                                                    <span className={'lt-button__label'}>
+                                                        Save as draft
+                                                    </span>
                                                 </button>
                                             )}
                                             <button
@@ -350,13 +360,17 @@ interface FacultySubPanelProps {
     setAlert(alert: string | null): void;
     activeResponse: ResponseData | null;
     setActiveResponse(response: ResponseData | null): void;
+    filterLayersByDate(range1: string, range2: string): void;
+    resetContributorLayers(): Promise<void>
+    isFaculty: boolean;
 }
 
 const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     responseData, createFeedback, updateFeedback, responseLayers,
     activeResponse, setActiveResponse, toggleResponseVisibility, activeEvent,
     setActiveEvent, layerVisibility, setActiveEventDetail, activeEventEdit,
-    setAlert, setActiveLayer, activeLayer
+    setAlert, setActiveLayer, activeLayer, toggleLayerVisibility, filterLayersByDate,
+    resetContributorLayers, isFaculty
 }: FacultySubPanelProps) => {
 
     const [activeResponseLayers, setActiveResponseLayers] =
@@ -413,6 +427,14 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
         }
     };
 
+    const aggLayersFaculty = new Map<number, LayerData>();
+
+    responseLayers.forEach((value, key) => {
+        value.forEach((val) => {
+            aggLayersFaculty.set(val.pk, val);
+        });
+    });
+
     const handleFeedbackCancel = (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault();
         setActiveResponse(null);
@@ -449,7 +471,8 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                     setActiveEventDetail={setActiveEventDetail}
                     activeLayer={activeLayer}
                     setActiveLayer={setActiveLayer}
-                    activeEventEdit={activeEventEdit} />
+                    activeEventEdit={activeEventEdit}
+                    responseData={null} />
             </section>
 
             <section data-cy="contributor-reflection" className={'lt-pane-section'}>
@@ -509,72 +532,33 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                     </form>
                 </div>
             </section>
-        </>) : (<>
-            <section data-cy="activity-response-count" className={'lt-pane-section'}>
-                {responseData.length === 1 ? (
-                    <p>There is {responseData.length} response to this activity.</p>
-                ) : (
-                    <p>There are {responseData.length} responses to this activity.</p>
-                )}
-            </section>
+        </>) : (
+            <>
+                <section data-cy="activity-response-count" className={'lt-pane-section'}>
+                    {responseData.length === 1 ? (
+                        <p>There is {responseData.length} response to this activity.</p>
+                    ) : (
+                        <p>There are {responseData.length} responses to this activity.</p>
+                    )}
+                </section>
+                <AggregatedLayerSet
+                    layers={aggLayersFaculty}
+                    activeResponse={null}
+                    setActiveResponse={setActiveResponse}
+                    toggleLayerVisibility={toggleLayerVisibility}
+                    layerVisibility={layerVisibility}
+                    activeLayer={activeLayer}
+                    isFaculty={isFaculty}
+                    setActiveLayer={setActiveLayer}
+                    setActiveEvent={setActiveEvent}
+                    activeEvent={activeEvent}
+                    resetContributorLayers={resetContributorLayers}
+                    filterLayersByDate={filterLayersByDate}
+                    setActiveEventDetail={setActiveEventDetail}
+                    responseData={responseData}
+                    activeEventEdit={activeEventEdit} />
 
-            {responseData.map((el) => {
-                const responseLayers = el.layers.reduce((acc: boolean[], val) => {
-                    const layerPks = val.split('/');
-                    // Get the layer pk off of the API url
-                    const PK_IDX = layerPks.length - 2;
-                    if (layerPks && layerPks.length >= PK_IDX) {
-                        const layerPk = Number(layerPks[5]);
-                        if (typeof layerPk === 'number') {
-                            acc.push(layerVisibility.get(layerPk) || false);
-                        }
-                    }
-                    return acc;
-                }, []);
 
-                const responseVisible = responseLayers.every((i: boolean) => i);
-                return (
-                    <section
-                        className={'lt-response-summary d-flex'}
-                        aria-labelledby={`response-${el.pk}`}
-                        key={el.pk}
-                        data-cy="response-summary">
-                        <div className={'d-flex flex-column'}>
-                            <a href="#" onClick={(): void => {setActiveResponse(el);}}>
-                                <h3 id={`response-${el.pk}`} data-cy="contributor">
-                                    {el.owners.join(', ')}
-                                </h3>
-                            </a>
-                            <p
-                                className={'lt-date-display'}>
-                                Last modified on {el.modified_at_formatted}
-                            </p>
-                        </div>
-                        <ul className={'lt-list-group__action d-flex'}>
-                            <li><button
-                                onClick={
-                                    (): void => {toggleResponseVisibility(el.pk);}}
-                                className={'lt-icon-button'}
-                                aria-label={responseVisible ? 'Hide layer' : 'Show layer'}>
-                                <span className={'lt-icons lt-icon-button__icon'}
-                                    aria-hidden={responseVisible ? 'false' : 'true'}>
-                                    <FontAwesomeIcon icon={
-                                        responseVisible ? faEye : faEyeSlash}/>
-                                </span>
-                            </button></li>
-                            <li><button
-                                onClick={(): void => {setActiveResponse(el);}}
-                                className={'lt-icon-button'}
-                                data-cy="open-response">
-                                <span className={'lt-icons lt-icon-button__icon'}
-                                    aria-hidden='true'>
-                                    <FontAwesomeIcon icon={faLayerGroup}/>
-                                </span>
-                            </button></li>
-                        </ul>
-                    </section>
-                );
-            })}
-        </>)}
+            </>)}
     </>);
 };

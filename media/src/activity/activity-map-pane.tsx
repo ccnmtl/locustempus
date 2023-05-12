@@ -1,8 +1,7 @@
 import React, { useState, ReactElement, useEffect, useRef } from 'react';
-import {
-    ActivityData, ResponseData, ResponseStatus
-} from './activity-map';
-import { LayerData, EventData, MediaObject } from '../project-activity-components/common';
+import {ActivityData} from './activity-map';
+import { LayerData, EventData, MediaObject, ResponseData, ResponseStatus
+} from '../project-activity-components/common';
 import {OverflowMenu} from '../project-activity-components/overflow-menu';
 import { Position } from '@deck.gl/core/utils/positions';
 import { DefaultPanel } from './activity-map-pane-panels';

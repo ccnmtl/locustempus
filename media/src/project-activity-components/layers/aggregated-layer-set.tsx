@@ -1,9 +1,9 @@
 import React, { useState }  from 'react';
 import { LayerSet } from './layer-set';
-import {LayerData, EventData } from '../common';
+import {LayerData, EventData, ResponseData } from '../common';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
-    faSlidersH
+    faSlidersH, faLayerGroup
 } from '@fortawesome/free-solid-svg-icons';
 
 
@@ -19,13 +19,18 @@ interface AggregatedLayerSetProps {
     activeEventEdit: EventData | null;
     filterLayersByDate(range1: string, range2: string): void;
     resetContributorLayers(): Promise<void>
+    responseData: ResponseData[] | null;
+    isFaculty: boolean;
+    activeResponse: ResponseData | null;
+    setActiveResponse(response: ResponseData | null | undefined): void;
 }
 
 export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
     {
         layers, layerVisibility, activeLayer, setActiveLayer,
         toggleLayerVisibility, activeEvent, setActiveEvent,
-        setActiveEventDetail, activeEventEdit, filterLayersByDate, resetContributorLayers
+        setActiveEventDetail, activeEventEdit, filterLayersByDate, resetContributorLayers,
+        responseData, isFaculty, setActiveResponse
     }: AggregatedLayerSetProps) => {
 
     const [range1, setRange1] = useState<string>('');
@@ -84,6 +89,27 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
         void resetContributorLayers();
     };
 
+    const getResponse = (owner: string) => {
+        if(responseData){
+            for(let i = 0; i < responseData?.length; i++){
+                const ownersArr = responseData[i].owners;
+                if(ownersArr.includes(owner)){
+                    return responseData[i];
+                }
+            }
+        } else {
+            return null;
+        }
+    };
+
+    const handleResponseClick = (owner: string): void => {
+        if(responseData) {
+            const respondata = getResponse(owner);
+            setActiveResponse(respondata);
+        }
+
+    };
+
     const layerList = [...layers.values()].sort((a, b) => {return b.pk - a.pk;});
     const groupByOwner = layerList.reduce((acc, val) => {
         const owner = val.owner;
@@ -104,8 +130,9 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
     }, new Map<string, Map<number, LayerData>>());
     return (
         <>
-            <hr className={'mt-5'} />
-            <h2>Contributors’ responses</h2>
+            {!isFaculty && (
+                <><hr className={'mt-5'} /><h2>Contributors’ responses</h2></>
+            )}
             <div className={'form-group pane-form-group'}
                 data-cy={'filter-section'}>
                 <form onSubmit={handleFormSubmit}>
@@ -152,16 +179,50 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                 </form>
             </div>
             {[...groupByOwner.entries()].map(([owner, layers], idx) => {
+                let submitted = '';
+                responseData?.forEach((el) => {
+                    const owners = el.owners;
+                    if(owners.includes(owner)) {
+                        submitted = el.submitted_at_formatted;
+                    }
+                });
+
                 return (<React.Fragment key={idx}>
                     <div className={'aggregate-box'}>
-                        <h3 data-cy={'collaborator-response-name'}>
-                            Response by {owner}
-                        </h3>
+                        {!isFaculty && (
+                            <h3 data-cy={'collaborator-response-name'}>
+                                Response by {owner}
+                            </h3>
+                        )}
+
+                        <div className={'d-flex flex-row'} data-cy={'response-summary'}>
+                            <a href="#" onClick={(): void => {handleResponseClick(owner);}}>
+                                <h3 id={`response-${idx}`} data-cy={'contributor'}>
+                                    {owner}
+                                </h3>
+                            </a>
+                            <button
+                                onClick={(): void => {handleResponseClick(owner);}}
+                                className={'lt-icon-button'}
+                                data-cy="open-response">
+                                <span className={'lt-icons lt-icon-button__icon'}
+                                    aria-hidden='true'>
+                                    <FontAwesomeIcon icon={faLayerGroup}/>
+                                </span>
+                            </button>
+                        </div>
+                        <div className={'d-flex flex-column'}>
+                            <p
+                                className={'lt-date-display'}>
+                                Last modified on {submitted}
+                            </p>
+                        </div>
                         <LayerSet
                             layers={layers}
                             addLayer={undefined}
                             updateLayer={undefined}
                             deleteLayer={undefined}
+                            responseData={responseData}
                             toggleLayerVisibility={toggleLayerVisibility}
                             layerVisibility={layerVisibility}
                             activeLayer={activeLayer}

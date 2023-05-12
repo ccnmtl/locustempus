@@ -96,6 +96,7 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                         addLayer={addLayer}
                         deleteLayer={deleteLayer}
                         updateLayer={updateLayer}
+                        responseData={null}
                         toggleLayerVisibility={toggleLayerVisibility}
                         activeLayer={activeLayer}
                         setActiveLayer={setActiveLayer}
