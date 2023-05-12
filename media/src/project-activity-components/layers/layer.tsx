@@ -257,14 +257,13 @@ export const Layer: React.FC<LayerProps> = (
                     ) : (
                         <>
                             {isUntitled(layer.title) && (
-                                <div data-cy="untitled-prompt" className={'lt-banner-tip-muted'}>
+                                <div data-cy="untitled-prompt" className={'lt-banner-tip-plain'}>
                                     <span className={'lt-icons lt-banner__icon'}>
                                         <FontAwesomeIcon icon={faExclamationCircle}/>
                                     </span>
                                     <span className={'lt-banner__text'}>
-                                        This layer is untitled,
-                                        <a href='#' onClick={handleLayerMenu}
-                                            className='fw-bold'> Rename?</a>
+                                        This layer is untitled. <a href='#'
+                                            onClick=  {handleLayerMenu}>Rename it?</a>
                                     </span>
                                 </div>
                             )}
