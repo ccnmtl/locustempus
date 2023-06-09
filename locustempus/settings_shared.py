@@ -51,6 +51,7 @@ INSTALLED_APPS += [  # noqa
 
 MIDDLEWARE += [ # noqa
     'django.middleware.csrf.CsrfViewMiddleware',
+    'django_cas_ng.middleware.CASMiddleware',
     'locustempus.main.middleware.WhoDidItMiddleware',
 ]
 
