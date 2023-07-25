@@ -29,7 +29,6 @@ import {
     LayerData, EventData, MediaObject, TileSublayerProps, Result, ResponseStatus,
     ResponseData, FeedbackData
 } from '../project-activity-components/common';
-import { layer } from '@fortawesome/fontawesome-svg-core';
 
 export interface ActivityData {
     title: string;
@@ -120,8 +119,9 @@ export const ActivityMap: React.FC = () => {
     const ALERT_DURUATION = 4000;
     const mapRef = useRef<MapRef>(null);
     const geocoderContainerRef = useRef<HTMLDivElement>(null);
-    const geocoderRef = useRef<any | null>(null);
-    const stateRef = useRef<any>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const geocoderRef = useRef<any>(null);
+    const stateRef = useRef<boolean>();
     stateRef.current = showAddEventForm;
     const [showSearchPopup, setShowSearchPopup] = useState<boolean>(false);
     const [searchResult, setSearchResult] = useState<Result | null>(null);
@@ -1111,7 +1111,7 @@ export const ActivityMap: React.FC = () => {
             });
         };
 
-        getData().finally(() => {setIsDataLoading(false);});
+        void getData().finally(() => {setIsDataLoading(false);});
     }, []);
 
     return (

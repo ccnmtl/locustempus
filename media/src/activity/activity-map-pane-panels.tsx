@@ -367,7 +367,7 @@ interface FacultySubPanelProps {
 
 const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
     responseData, createFeedback, updateFeedback, responseLayers,
-    activeResponse, setActiveResponse, toggleResponseVisibility, activeEvent,
+    activeResponse, setActiveResponse, activeEvent,
     setActiveEvent, layerVisibility, setActiveEventDetail, activeEventEdit,
     setAlert, setActiveLayer, activeLayer, toggleLayerVisibility, filterLayersByDate,
     resetContributorLayers, isFaculty
@@ -429,7 +429,7 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
 
     const aggLayersFaculty = new Map<number, LayerData>();
 
-    responseLayers.forEach((value, key) => {
+    responseLayers.forEach((value) => {
         value.forEach((val) => {
             aggLayersFaculty.set(val.pk, val);
         });

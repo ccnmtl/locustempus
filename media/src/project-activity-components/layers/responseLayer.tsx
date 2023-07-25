@@ -24,7 +24,7 @@ export const ResponseLayer: React.FC<LayerProps> = (
     {
         layer, activeLayer, setActiveLayer,
         layerVisibility, toggleLayerVisibility, activeEvent, setActiveEvent,
-        setActiveEventDetail, responseData
+        setActiveEventDetail
     }: LayerProps) => {
     const [openLayerMenu, setOpenLayerMenu] = useState<boolean>(false);
     const [isLayerCollapsed, setIsLayerCollapsed] = useState<boolean>(true);
