@@ -15,8 +15,8 @@ import { LoadingModal } from '../project-activity-components/loading-modal';
 
 import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_SIZE_ACTIVE,
-    ICON_COLOR, ICON_COLOR_ACTIVE, ICON_COLOR_NEW_EVENT,
-    DEFAULT_VIEWPORT_STATE, ViewportState, ProjectData, ActivityData,
+    ICON_COLOR, ICON_COLOR_DEFAULT, ICON_COLOR_ACTIVE, DEFAULT_VIEWPORT_STATE,
+    ViewportState, ProjectData, ActivityData,
     LayerData, EventData, MediaObject, DeckGLClickEvent, TileSublayerProps, Result
 } from '../project-activity-components/common';
 
@@ -179,9 +179,12 @@ export const ProjectMap: React.FC = () => {
             });
     };
 
-    const updateLayer = (pk: number, title: string): void => {
+    const updateLayer = (pk: number, title: string, color: string): void => {
         void put<LayerData>(
-            `/api/layer/${pk}/`, {title: title, content_object: `/api/project/${projectPk}/`})
+            `/api/layer/${pk}/`, {
+                title: title,
+                color: color,
+                content_object: `/api/project/${projectPk}/`})
             .then((data) => {
                 const layers = new Map(layerData);
                 layers.set(data.pk, data);
@@ -440,9 +443,8 @@ export const ProjectMap: React.FC = () => {
                 getSize: (d) => {
                     return activeEventDetail && d.pk == activeEventDetail.pk ?
                         ICON_SIZE_ACTIVE : ICON_SIZE; },
-                getColor: (d) => {
-                    return activeEventDetail && d.pk == activeEventDetail.pk ?
-                        ICON_COLOR_ACTIVE : ICON_COLOR; },
+                getColor: () => {
+                    return layer.color ? ICON_COLOR[layer.color] : ICON_COLOR_DEFAULT;  },
                 visible: layerVisibility.get(layer.pk) || false
             });
             return acc.concat(MBLayer);
@@ -460,8 +462,8 @@ export const ProjectMap: React.FC = () => {
                 getIcon: () => 'marker',
                 sizeScale: ICON_SCALE,
                 getPosition: (d) => d.lngLat,
-                getSize: ICON_SIZE,
-                getColor: ICON_COLOR_NEW_EVENT,
+                getSize: ICON_SIZE_ACTIVE,
+                getColor: ICON_COLOR_ACTIVE,
             }));
     }
 

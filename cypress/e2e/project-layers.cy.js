@@ -23,14 +23,14 @@ describe('Project Layer Stories (Workspace Detail)', function() {
         cy.get('[data-cy="Base Layers"]').click();
 
         // Verify basics in Base Layers
-        cy.get('[data-cy="add-layer"]').should('be.visible')
+        cy.get('[data-cy="add-layer"]').should('be.visible');
 
         // There should be one Untitled layer, and it should be active
         cy.get('[data-cy="layer"]').should('have.length', 1);
         cy.get('[data-cy="layer"]').eq(0).find('[data-cy="layer-title"]')
             .contains('Untitled Layer').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
-            .should('have.class', 'lt-list-group--active');
+            .should('have.class', 'lt-list-group--amber');
 
         // Layer should be visible
         cy.get('[data-cy="layer"]').eq(0)
@@ -116,7 +116,7 @@ describe('Project Layer Stories (Workspace Detail)', function() {
             .contains('First Layer').should('be.visible');
 
         cy.log('Add a second layer');
-        cy.get('[data-cy="add-layer"]').should('be.visible')
+        cy.get('[data-cy="add-layer"]').should('be.visible');
         cy.get('[data-cy="add-layer"]').click();
 
         // There should be two layers now,
@@ -125,7 +125,7 @@ describe('Project Layer Stories (Workspace Detail)', function() {
         cy.get('[data-cy="layer"]').eq(0).find('[data-cy="layer-title"]')
             .contains('Untitled Layer').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
-            .should('have.class', 'lt-list-group--active');
+            .should('have.class', 'lt-list-group--amber');
         cy.get('[data-cy="layer"]').eq(0)
             .find('[data-icon="eye"]').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
@@ -137,7 +137,7 @@ describe('Project Layer Stories (Workspace Detail)', function() {
         cy.get('[data-cy="layer"]').eq(1).find('[data-cy="layer-title"]')
             .contains('First Layer').should('be.visible');
         cy.get('[data-cy="layer"]').eq(1)
-            .should('not.have.class', 'lt-list-group--active');
+            .should('not.have.class', 'lt-list-group--amber');
 
         cy.log('Delete the 2nd layer');
         cy.get('[data-cy="layer"]').eq(0)
@@ -165,7 +165,7 @@ describe('Project Layer Stories (Workspace Detail)', function() {
         cy.get('[data-cy="layer"]').eq(0).find('[data-cy="layer-title"]')
             .contains('Untitled Layer').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
-            .should('have.class', 'lt-list-group--active');
+            .should('have.class', 'lt-list-group--amber');
         cy.get('[data-cy="layer"]').eq(0)
             .find('[data-icon="eye"]').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)

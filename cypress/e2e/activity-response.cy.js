@@ -34,7 +34,7 @@ describe('Activity Response Stories', function() {
         cy.get('[data-cy="layer"]').eq(0).find('[data-cy="layer-title"]')
             .contains('Untitled Layer').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
-            .should('have.class', 'lt-list-group--active');
+            .should('have.class', 'lt-list-group--amber');
 
         // Layer should be visible
         cy.get('[data-cy="layer"]').eq(0)
@@ -142,7 +142,7 @@ describe('Activity Response Stories', function() {
         cy.get('[data-cy="layer"]').eq(0).find('[data-cy="layer-title"]')
             .contains('Untitled Layer').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
-            .should('have.class', 'lt-list-group--active');
+            .should('have.class', 'lt-list-group--amber');
         cy.get('[data-cy="layer"]').eq(0)
             .find('[data-icon="eye"]').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
@@ -183,7 +183,7 @@ describe('Activity Response Stories', function() {
         cy.get('[data-cy="layer"]').eq(0).find('[data-cy="layer-title"]')
             .contains('Untitled Layer').should('be.visible');
         cy.get('[data-cy="layer"]').eq(0)
-            .should('have.class', 'lt-list-group--active');
+            .should('have.class', 'lt-list-group--amber');
 
         // The layer is appearing with visibility off
         // Bug opened. Update this test to check that the "eye" icon is visible

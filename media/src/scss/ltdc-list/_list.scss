@@ -11,10 +11,50 @@
     &-item {
         border: 1px solid transparent;
     }
-    &-item--active {
-        background-color: $surface-lighter;
-        border: 1px solid $surface-light;
+    &-item--amber {
+        background-color: $amber-100;
+        border: 1px solid $amber-200;
+        color: #b90;
+    }
+    &-item--blue {
+        background-color: $blue-100;
+        border: 1px solid $blue-200;
+        color: #00c;
+    }
+    &-item--red {
+        background-color: $red-100;
+        border: 1px solid $red-200;
         color: #c00;
+    }
+    &-item--purple {
+        background-color: $purple-100;
+        border: 1px solid $purple-200;
+        color: #b0b;
+    }
+    &-item--green {
+        background-color: $green-100;
+        border: 1px solid $green-200;
+        color: #0c0;
+    }
+    &-item--cyan {
+        background-color: $cyan-100;
+        border: 1px solid $cyan-200;
+        color: #0bb;
+    }
+    &-item--pink {
+        background-color: $pink-100;
+        border: 1px solid $pink-200;
+        color: #f6f;
+    }
+    &-item--lime {
+        background-color: $lime-100;
+        border: 1px solid $lime-200;
+        color: #7b0;
+    }
+    &-item--orange {
+        background-color: $orange-100;
+        border: 1px solid $orange-200;
+        color: #c60;
     }
 }
 

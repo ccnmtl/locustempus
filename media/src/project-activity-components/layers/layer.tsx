@@ -12,7 +12,7 @@ export interface LayerProps {
     activeLayer?: number | null;
     setActiveLayer?(pk: number): void;
     deleteLayer?(pk: number): void;
-    updateLayer?(pk: number, title: string): void;
+    updateLayer?(pk: number, title: string, color: string): void;
     layerVisibility?: Map<number, boolean>;
     toggleLayerVisibility?(pk: number): void;
     activeEvent: EventData | null;
@@ -28,13 +28,15 @@ export const Layer: React.FC<LayerProps> = (
         setActiveEventDetail
     }: LayerProps) => {
     const [updatedLayerTitle, setUpdatedLayerTitle] = useState<string>('');
+    const [updatedLayerColor, setUpdatedLayerColor] = useState<string>('amber');
     const [openLayerMenu, setOpenLayerMenu] = useState<boolean>(false);
     const [isLayerCollapsed, setIsLayerCollapsed] = useState<boolean>(false);
     const menuRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
         setUpdatedLayerTitle(layer.title);
-    }, [layer.title]);
+        setUpdatedLayerColor(layer.color);
+    }, [layer.title, layer.color]);
 
     useEffect(() => {
         if (openLayerMenu) {
@@ -56,10 +58,20 @@ export const Layer: React.FC<LayerProps> = (
         setUpdatedLayerTitle(e.target.value);
     };
 
+    const handleUpdatedLayerColor = (
+        e: React.MouseEvent) => {
+        const color = (e.target as HTMLInputElement).value;
+        setUpdatedLayerColor(color);
+        const label = document.getElementById('color-id');
+        if (label) {
+            label.innerHTML = 'Color: ' + color;
+        }
+    };
+
     const handleUpdateLayer = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
         if (updateLayer) {
-            updateLayer(layer.pk, updatedLayerTitle);
+            updateLayer(layer.pk, updatedLayerTitle, updatedLayerColor);
             setOpenLayerMenu(false);
         }
     };
@@ -100,10 +112,14 @@ export const Layer: React.FC<LayerProps> = (
         }
     };
 
+    const COLORLIST = ['amber', 'blue', 'green', 'purple',
+        'cyan', 'pink', 'lime', 'orange'];
+
     return (
         <div
             className={'lt-list-group ' +
-                (isActiveLayer ? 'lt-list-group--active' : '')}
+                (isActiveLayer ? 'lt-list-group--' +
+                (layer.color ? layer.color : 'amber') : '')}
             onClick={handleSetActiveLayer}
             data-cy="layer">
             <div className={'lt-list-group__header'}>
@@ -180,6 +196,46 @@ export const Layer: React.FC<LayerProps> = (
                                                 className={'form-control lt-menu-form__input-text'}
                                                 type="text"
                                                 data-cy={'layer-rename-title'}/>
+                                            <label
+                                                className={'lt-menu-form__label mt-2'}
+                                                id={'color-id'}
+                                                htmlFor={'color-list'}
+                                            >
+                                                Color: {layer.color ? layer.color : 'amber'}
+                                            </label>
+                                            <div
+                                                className={'lt-menu-form__button-group'}
+                                                id={'color-list'}
+                                            >
+                                                {COLORLIST.map((color, i) => (
+                                                    <div
+                                                        key={'color-' + i.toString()}
+                                                        className={
+                                                            'm-1'
+                                                        }
+                                                    >
+                                                        <label
+                                                            className={
+                                                                'btn ' +
+                                                                'color-btn ' +
+                                                                'color-btn--' + color
+                                                            }
+                                                        >
+                                                            <input
+                                                                type={'radio'}
+                                                                id={'layer-' + color}
+                                                                name={'layer-color'}
+                                                                value={color}
+                                                                onClick={handleUpdatedLayerColor}
+                                                                data-cy={'layer-color-' + color}
+                                                                className={
+                                                                    'btn-check'
+                                                                }
+                                                            ></input>
+                                                        </label>
+                                                    </div>
+                                                ))}
+                                            </div>
                                             <div className={'lt-menu-form__button-group'}>
                                                 <button
                                                     type={'button'}
@@ -228,7 +284,8 @@ export const Layer: React.FC<LayerProps> = (
                                     <li key={idx}
                                         className={'lt-list-item lt-list-layer-item' +
                                             (activeEvent && activeEvent.pk === val.pk ?
-                                                ' lt-list-layer-item--active' : '')}>
+                                                ' lt-list-layer-item--' +
+                                                (layer.color ? layer.color : 'amber') : '')}>
                                         <div className={'lt-list-item__link'}
                                             role='button' tabIndex={0}
                                             onClick={(): void => {setActiveEvent(val);}}>
