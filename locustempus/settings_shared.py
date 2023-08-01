@@ -32,9 +32,9 @@ CAS_RENAME_ATTRIBUTES = {
 
 # A note on installed apps, Django 3+ has automatic appconfig discovery.
 INSTALLED_APPS.remove('djangowind')  # noqa
+INSTALLED_APPS.remove('django_markwhat')  # noqa
 INSTALLED_APPS += [  # noqa
     'bootstrap4',
-    'infranil',
     'django_extensions',
     'courseaffils',
     'lti_provider',
@@ -109,12 +109,12 @@ COURSEAFFILS_COURSESTRING_MAPPER = CourseStringMapper
 
 BLOCKED_EMAIL_DOMAINS = ['columbia.edu']
 
-if 'ubuntu' in distro.linux_distribution()[0].lower():
-    if distro.linux_distribution()[1] == '16.04':
+if 'ubuntu' in distro.id().lower():
+    if distro.version() == '16.04':
         # 15.04 and later need this set, but it breaks
         # on trusty.
         SPATIALITE_LIBRARY_PATH = 'mod_spatialite'
-    elif distro.linux_distribution()[1] == '18.04':
+    elif distro.version() == '18.04':
         # On Debian testing/buster, I had to do the following:
         # * Install the sqlite3 and libsqlite3-mod-spatialite packages.
         # * Add the following to writlarge/local_settings.py:
@@ -127,7 +127,7 @@ if 'ubuntu' in distro.linux_distribution()[0].lower():
         # to the library file, but not 'mod_spatialite'. I'll raise
         # this issue with Django.
         SPATIALITE_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/mod_spatialite.so'
-elif 'debian' in distro.linux_distribution()[0].lower():
+elif 'debian' in distro.id().lower():
     SPATIALITE_LIBRARY_PATH = '/usr/lib/x86_64-linux-gnu/mod_spatialite.so'
 
 DATABASES = {
