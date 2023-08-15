@@ -2,8 +2,6 @@
 from locustempus.settings_shared import *
 import os
 
-GDAL_LIBRARY_PATH = '/usr/local/lib'
-
 # docker-compose db container
 DATABASES = {
     'default': {

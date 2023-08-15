@@ -2,7 +2,7 @@ services:
   db:
     image: postgis/postgis:13-3.3
     volumes:
-      - ./data/db:/var/lib/postgresql/data
+      - ./data/db:/var/lib/postgresql@13/data
     ports:
       - 5432:5432
     environment:
