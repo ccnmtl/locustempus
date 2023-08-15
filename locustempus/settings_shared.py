@@ -47,6 +47,7 @@ INSTALLED_APPS += [  # noqa
     's3sign',
     'contactus',
     'waffle',
+    'markdownify.apps.MarkdownifyConfig',
 ]
 
 MIDDLEWARE += [ # noqa
