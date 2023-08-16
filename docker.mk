@@ -31,7 +31,6 @@ $(WHEELHOUSE)/requirements.txt: $(REQUIREMENTS)
 	touch $@
 
 # Run this target to rebuild the django image
-build: $(WHEELHOUSE)/requirements.txt
-	docker build -t $(IMAGE) .
-
-.PHONY: build
+docker:
+	docker compose up
+.PHONY: docker
