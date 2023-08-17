@@ -78,8 +78,9 @@ export const ProjectMap: React.FC = () => {
     const [isDataLoading, setIsDataLoading] = useState<boolean>(true);
     const mapRef = useRef<MapRef>(null);
     const geocoderContainerRef = useRef<HTMLDivElement>(null);
-    const geocoderRef = useRef<any | null>(null);
-    const stateRef = useRef<any>();
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const geocoderRef = useRef<any>(null);
+    const stateRef = useRef<boolean>();
     stateRef.current = showAddEventForm;
     const [showSearchPopup, setShowSearchPopup] = useState<boolean>(false);
     const [searchResult, setSearchResult] = useState<Result | null>(null);
@@ -555,7 +556,7 @@ export const ProjectMap: React.FC = () => {
             }
         };
 
-        getData().finally(() => {setIsDataLoading(false);});
+        void getData().finally(() => {setIsDataLoading(false);});
     }, []);
 
     return (
