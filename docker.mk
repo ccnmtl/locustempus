@@ -31,7 +31,16 @@ $(WHEELHOUSE)/requirements.txt: $(REQUIREMENTS)
 	touch $@
 
 # Run this target to rebuild the django image
-build: $(WHEELHOUSE)/requirements.txt
-	docker build -t $(IMAGE) .
+docker:
+	docker compose up
 
-.PHONY: build
+# Enter a command-line shell in the web container
+docker-shell:
+	docker compose run web bash
+
+# Enter an interactive django shell
+docker-django-shell:
+	docker compose run web python manage.py shell_plus \
+		--settings=$(APP).settings_docker
+
+.PHONY: docker docker-shell docker-django-shell

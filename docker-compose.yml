@@ -1,21 +1,32 @@
-db:
-  image: postgres
-elasticsearch:
-  image: elasticsearch:2
-rabbitmq:
-  image: rabbitmq
-web:
-  image: ccnmtl/locustempus
-  environment:
-    - APP=plexus
-    - SECRET_KEY=dummy-secret-key
-    - SETTINGS=settings_compose
-  command: manage runserver 0.0.0.0:8000
-  volumes:
-    - .:/app/
-  ports:
-    - "8000:8000"
-  links:
-    - db
-    - elasticsearch
-    - rabbitmq
+services:
+  db:
+    image: postgis/postgis:15-3.3
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    healthcheck:
+      test: ["CMD", "pg_isready", "-q", "-U", "postgres", "-d", "postgres"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+  web:
+    build: .
+    command: >
+      sh -c "python manage.py migrate --noinput --settings=locustempus.settings_docker &&
+             python manage.py runserver --settings=locustempus.settings_docker 0.0.0.0:8000"
+    volumes:
+      - .:/src
+    ports:
+      - 8000:8000
+    environment:
+      - POSTGRES_NAME=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    depends_on:
+      db:
+        condition: service_healthy
