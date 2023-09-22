@@ -39,7 +39,7 @@ export const MediaEditor: React.FC<MediaEditorProps> = (
 
         ((): void => {
             new S3Upload({
-                file_dom_selector: e.target.id,
+                file_dom_selector: '#' + e.target.id,
                 s3_sign_put_url: '/sign_s3/',
                 s3_object_name: e.target.value,
                 onProgress: (percent): void => {setFileUploadProgress(Number(percent));},
