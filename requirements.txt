@@ -60,9 +60,6 @@ django-templatetag-sugar==1.0
 django-paging==0.2.5
 django-annoying==0.10.6
 django-appconf==1.0.5
-rcssmin==1.1.0  # django-compressor
-rjsmin==1.2.0  # django-compressor
-django-compressor>=3.1,<4.0
 django-statsd-mozilla==0.4.0
 django-bootstrap4==23.2
 django-debug-toolbar==4.2.0
@@ -82,14 +79,12 @@ django-storages==1.13.2
 djangorestframework==3.14.0
 rest-framework-generic-relations==2.1.0
 
-ccnmtlsettings==1.9.5
+ctlsettings==0.2.0
 
 django-reversion==5.0.1
 text_unidecode==1.3
 
 django-taggit==4.0.0
-
-django-cacheds3storage==0.3.0
 
 nameparser==1.1.0
 oauth2==1.9.0.post1
