@@ -1,6 +1,6 @@
 # flake8: noqa
 from locustempus.settings_shared import *
-from ccnmtlsettings.compose import common
+from ctlsettings.compose import common
 
 locals().update(
     common(
