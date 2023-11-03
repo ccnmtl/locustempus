@@ -3,7 +3,7 @@ import {ActivityData} from './activity-map';
 import { LayerData, EventData, MediaObject, ResponseData, ResponseStatus
 } from '../project-activity-components/common';
 import {OverflowMenu} from '../project-activity-components/overflow-menu';
-import { Position } from '@deck.gl/core/utils/positions';
+import { Position } from 'deck.gl';
 import { DefaultPanel } from './activity-map-pane-panels';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, ProjectCreateEditPanel

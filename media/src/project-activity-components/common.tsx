@@ -1,6 +1,5 @@
 /* A place to set shared settings */
-import { FlyToInterpolator }  from 'deck.gl';
-import { Position } from '@deck.gl/core/utils/positions';
+import { FlyToInterpolator, Position }  from 'deck.gl';
 export const STATIC_URL = LocusTempus.staticUrl;
 
 export const ICON_ATLAS = STATIC_URL + 'img/icon-map-marker.png';

@@ -4,7 +4,7 @@ module.exports = {
         "amd": true,
         "jquery": true,
         "cypress/globals": true,
-        "es6": true
+        "es6": true,
     },
     "plugins": [
         "security",
@@ -75,5 +75,10 @@ module.exports = {
             "plugin:@typescript-eslint/recommended",
             "plugin:@typescript-eslint/recommended-requiring-type-checking",
         ],
-    }]
+    }],
+    "settings": {
+        "react": {
+            "version": "detect",
+        }
+    }
 };

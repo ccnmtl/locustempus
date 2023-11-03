@@ -1,13 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
-import {
-    _MapContext as MapContext, StaticMap, NavigationControl, Popup, MapRef
+import MapContext, {
+    Map as StaticMap, NavigationControl, Popup, MapRef
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
-import DeckGL, { Controller, FlyToInterpolator }  from 'deck.gl';
+import DeckGL, { Controller, FlyToInterpolator, Position }  from 'deck.gl';
 import { BitmapLayer, IconLayer } from '@deck.gl/layers';
 import { TileLayer } from '@deck.gl/geo-layers';
-import { Position } from '@deck.gl/core/utils/positions';
 import { PickInfo } from '@deck.gl/core/lib/deck';
 
 import { ProjectMapPane } from './project-map-pane';
@@ -474,7 +473,7 @@ export const ProjectMap: React.FC = () => {
         []
     );
     const handleGeocoderViewportChange = useCallback(
-        (newViewport) => {
+        (newViewport: ViewportState) => {
             const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
             // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
@@ -581,14 +580,16 @@ export const ProjectMap: React.FC = () => {
                         onClick={handleDeckGlClick}
                         pickingRadius={15}
                         ref={deckglMap}
-                        ContextProvider={MapContext.Provider}>
+                        ContextProvider={MapContext}>
                         <StaticMap
                             reuseMaps
-                            width={'100%'}
-                            height={'100%'}
-                            preventStyleDiffing={true}
+                            style={{
+                                width: '100%',
+                                height: '100%'
+                            }}
+                            styleDiffing={false}
                             mapStyle={projectData.base_map}
-                            mapboxApiAccessToken={TOKEN}
+                            mapboxAccessToken={TOKEN}
                             ref={mapRef}
                             onLoad={(): void => {setIsMapLoading(false); }}>
                             {geocoder &&
@@ -608,64 +609,66 @@ export const ProjectMap: React.FC = () => {
                                     onViewportChange={handleGeocoderViewportChange}>
                                 </Geocoder>
                             }
-                        </StaticMap>
-
-                        {activeEvent && layerVisibility.get(activeEvent.layer) &&
-                        !activeEventDetail && !showAddEventForm && (
-                            <Popup
-                                latitude={activeEvent.location.lng_lat[1]}
-                                longitude={activeEvent.location.lng_lat[0]}
-                                offsetTop={-30}
-                                closeOnClick={false}
-                                onClose={(): void => {setActiveEvent(null);}}>
-                                {activeEvent.media && activeEvent.media[0] && (
-                                    <div className={'mapboxgl-popup-image'}
-                                        style={{backgroundImage:
-                                        'url(' +  activeEvent.media[0].url + ')'}}>
-                                    </div>
-                                )}
-                                <div className={'mapboxgl-popup-text'}>
-                                    <h2>{activeEvent.label}</h2>
-                                    <div className={'event-attr'}>By {activeEvent.owner}</div>
-                                    {activeEvent.datetime && (
-                                        <div className={'event-attr mt-2'}>
-                                            Associated date:&nbsp;
-                                            {activeElementDate}
+                            {activeEvent && layerVisibility.get(activeEvent.layer) &&
+                            !activeEventDetail && !showAddEventForm && (
+                                <Popup
+                                    latitude={activeEvent.location.lng_lat[1]}
+                                    longitude={activeEvent.location.lng_lat[0]}
+                                    offset={30}
+                                    closeButton={true}
+                                    closeOnClick={false}
+                                    onClose={(): void => {setActiveEvent(null);}}>
+                                    {activeEvent.media && activeEvent.media[0] && (
+                                        <div className={'mapboxgl-popup-image'}
+                                            style={{backgroundImage:
+                                            'url(' +  activeEvent.media[0].url + ')'}}>
                                         </div>
                                     )}
-                                    <div className={'event-summary lt-quill-rendered'}
-                                        dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
-                                    <button
-                                        type="button"
-                                        onClick={(): void => {
-                                            setActiveEventDetail(activeEvent);}}
-                                        className={'lt-button btn-sm'}
-                                        data-cy={'event-detail-more'}>
-                                        <span>More</span>
-                                    </button>
-                                </div>
-                            </Popup>
-                        )}
-                        {showSearchPopup && searchResult && (
-                            <Popup
-                                latitude={searchResult.result.center[1]}
-                                longitude={searchResult.result.center[0]}
-                                offsetTop={-30}
-                                closeOnClick={false}
-                                onClose={(): void => {setShowSearchPopup(false);}}>
-                                <div className={'mapboxgl-popup-text'}>
-                                    <h2>{searchResult.result.text}</h2>
-                                    <a
-                                        href='#'
-                                        onClick={() => handleSearchPin(searchResult.result.center)}>
-                                            [add event marker]
-                                    </a>
-                                </div>
-                            </Popup>
-                        )}
-                        <div id='map-navigation-control'>
-                            <NavigationControl style={navControlStyle} />
-                        </div>
+                                    <div className={'mapboxgl-popup-text'}>
+                                        <h2>{activeEvent.label}</h2>
+                                        <div className={'event-attr'}>By {activeEvent.owner}</div>
+                                        {activeEvent.datetime && (
+                                            <div className={'event-attr mt-2'}>
+                                                Associated date:&nbsp;
+                                                {activeElementDate}
+                                            </div>
+                                        )}
+                                        <div className={'event-summary lt-quill-rendered'}
+                                            dangerouslySetInnerHTML={{__html: activeEvent.short_description}}/> {/* eslint-disable-line max-len */}
+                                        <button
+                                            type="button"
+                                            onClick={(): void => {
+                                                setActiveEventDetail(activeEvent);}}
+                                            className={'lt-button btn-sm'}
+                                            data-cy={'event-detail-more'}>
+                                            <span>More</span>
+                                        </button>
+                                    </div>
+                                </Popup>
+                            )}
+                            {showSearchPopup && searchResult && (
+                                <Popup
+                                    latitude={searchResult.result.center[0]}
+                                    longitude={searchResult.result.center[1]}
+                                    offset={30}
+                                    closeOnClick={false}
+                                    onClose={(): void => {setShowSearchPopup(false);}}>
+                                    <div className={'mapboxgl-popup-text'}>
+                                        <h2>{searchResult.result.text}</h2>
+                                        <a
+                                            href='#'
+                                            onClick={() =>
+                                                handleSearchPin(searchResult.result.center)}
+                                        >
+                                                [add event marker]
+                                        </a>
+                                    </div>
+                                </Popup>
+                            )}
+                            <div id='map-navigation-control'>
+                                <NavigationControl style={navControlStyle} />
+                            </div>
+                        </StaticMap>
                     </DeckGL>
                 </div>
             )}

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Position } from '@deck.gl/core/utils/positions';
+import { Position } from 'deck.gl';
 import { MediaEditor } from '../layers/media-editor';
 import { MediaObject } from '../common';
 import ReactQuill from 'react-quill';

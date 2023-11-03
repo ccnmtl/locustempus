@@ -1,6 +1,6 @@
 import DeckGL  from 'deck.gl';
 import { RefObject } from 'react';
-import { WebMercatorViewport } from 'react-map-gl';
+import { WebMercatorViewport } from '@math.gl/web-mercator';
 import { LayerData } from './project-activity-components/common';
 import moment from 'moment';
 
