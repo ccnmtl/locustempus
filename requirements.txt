@@ -1,4 +1,4 @@
-Django==4.2.3
+Django==4.2.7
 psycopg[binary]==3.1.9
 backports.zoneinfo;python_version<"3.9"
 asgiref==3.7.1
