@@ -72,3 +72,8 @@ updates:
   - dependency-name: cryptography
     versions:
     - 3.3.2
+- package-ecosystem: github-actions
+  directory: "/"
+  schedule:
+    interval: daily
+    time: "10:00"
