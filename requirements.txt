@@ -50,7 +50,7 @@ jmespath==1.0.0
 botocore>=1.13.0,<1.35.0
 boto3>=1.9.198,<1.35.0
 
-python-dateutil==2.8.2
+python-dateutil==2.9.0
 
 python-cas==1.6.0
 git+https://github.com/django-cas-ng/django-cas-ng.git
