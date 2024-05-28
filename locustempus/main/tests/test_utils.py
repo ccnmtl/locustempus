@@ -20,8 +20,8 @@ class UtilTest(TestCase):
                                 {'user': user}, 'abc123@columbia.edu')
             self.assertEqual(len(mail.outbox), 1)
             self.assertEqual(mail.outbox[0].subject, 'foo')
-            self.assertEquals(mail.outbox[0].from_email,
-                              'locustempus@example.com')
+            self.assertEqual(mail.outbox[0].from_email,
+                             'locustempus@example.com')
             self.assertTrue(mail.outbox[0].to, ['abc123@columbia.edu'])
 
     def test_sentry_dsn_processor(self):
@@ -40,17 +40,17 @@ class UtilTest(TestCase):
 
         # as student
         lst = get_courses_for_user(student)
-        self.assertEquals(len(lst), 1)
+        self.assertEqual(len(lst), 1)
         self.assertTrue(course in lst)
 
         lst = get_courses_for_instructor(student)
-        self.assertEquals(len(lst), 0)
+        self.assertEqual(len(lst), 0)
 
         # as instructor
         lst = get_courses_for_user(instructor)
-        self.assertEquals(len(lst), 1)
+        self.assertEqual(len(lst), 1)
         self.assertTrue(course in lst)
 
         lst = get_courses_for_instructor(instructor)
-        self.assertEquals(len(lst), 1)
+        self.assertEqual(len(lst), 1)
         self.assertTrue(course in lst)
