@@ -30,7 +30,7 @@ cffi==1.16.0
 cryptography<42.0.9  # pyOpenSSL
 pyOpenSSL==24.1.0
 ndg-httpsclient==0.5.1
-urllib3==2.2.1  # requests
+urllib3==2.2.2  # requests
 chardet==5.2.0  # requests
 idna==3.7  # requests
 certifi==2024.6.2  # requests
