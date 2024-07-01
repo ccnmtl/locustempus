@@ -1,5 +1,5 @@
 Django>=4.2.13,<5
-psycopg[binary]==3.1.9
+psycopg[binary]==3.2.1
 backports.zoneinfo;python_version<"3.9"
 asgiref==3.8.1
 django-s3sign==0.4.0
