@@ -61,7 +61,7 @@
     "popper.js": "^1.16.1",
     "postcss": "^8.1.2",
     "precss": "^4.0.0",
-    "quill-paste-smart": "^1.4.10",
+    "quill-paste-smart": "^2.0.0",
     "react": "~17.0.2",
     "react-dom": "~17.0.2",
     "react-map-gl": "~6.1.19",
