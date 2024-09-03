@@ -2,7 +2,7 @@ import React from 'react';
 
 interface NotificationProps {
     alertString: string;
-    closeHandler(): void;
+    closeHandler(this: void): void;
 }
 
 export const Notification: React.FC<NotificationProps> = (

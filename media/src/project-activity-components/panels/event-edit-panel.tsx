@@ -10,14 +10,14 @@ interface EventEditPanelProps {
     layers: Map<number, LayerData>;
     activeLayer: number | null;
     activeEventEdit: EventData;
-    setActiveEventEdit(d: EventData | null): void;
-    updateEvent(label: string, datetime: string | null, description: string,
+    setActiveEventEdit(this: void, d: EventData | null): void;
+    updateEvent(this: void, label: string, datetime: string | null, description: string,
                 lat: number, lng: number, pk: number,
                 layerPk: number, mediaObj: MediaObject | null): void;
     paneHeaderHeight: number;
     returnTab: number;
-    setActiveTab(val: number): void;
-    setActiveEventDetail(d: EventData | null): void;
+    setActiveTab(this: void, val: number): void;
+    setActiveEventDetail(this: void, d: EventData | null): void;
 }
 
 export const EventEditPanel: React.FC<EventEditPanelProps> = (

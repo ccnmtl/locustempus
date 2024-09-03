@@ -10,19 +10,19 @@ import {
 interface AggregatedLayerSetProps {
     layers: Map<number, LayerData>;
     layerVisibility?: Map<number, boolean>;
-    toggleLayerVisibility?(pk: number): void;
+    toggleLayerVisibility?(this:void, pk: number): void;
     activeLayer?: number | null;
-    setActiveLayer?(pk: number): void;
+    setActiveLayer?(this:void, pk: number): void;
     activeEvent: EventData | null;
-    setActiveEvent(d: EventData): void;
-    setActiveEventDetail(d: EventData): void;
+    setActiveEvent(this:void, d: EventData): void;
+    setActiveEventDetail(this:void, d: EventData): void;
     activeEventEdit: EventData | null;
-    filterLayersByDate(range1: string, range2: string): void;
-    resetContributorLayers(): Promise<void>
+    filterLayersByDate(this:void, range1: string, range2: string): void;
+    resetContributorLayers(this:void): Promise<void>
     responseData: ResponseData[] | null;
     isFaculty: boolean;
     activeResponse: ResponseData | null;
-    setActiveResponse(response: ResponseData | null | undefined): void;
+    setActiveResponse(this:void, response: ResponseData | null | undefined): void;
 }
 
 export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (

@@ -10,14 +10,14 @@ import 'quill-paste-smart';
 
 interface ProjectCreateEditPanelProps {
     isNewProject: boolean;
-    setIsNewProject?(val: boolean): void;
+    setIsNewProject?(this:void, val: boolean): void;
     projectTitle: string;
     projectDescription: string;
     projectBaseMap: string;
-    setBaseMap(baseMap: string): void;
-    updateProject(title: string, description: string, baseMap: string): void;
-    showDefaultMenu(): void;
-    deleteProject(): void;
+    setBaseMap(this:void, baseMap: string): void;
+    updateProject(this:void, title: string, description: string, baseMap: string): void;
+    showDefaultMenu(this:void): void;
+    deleteProject(this:void): void;
     paneHeaderHeight: number;
 }
 

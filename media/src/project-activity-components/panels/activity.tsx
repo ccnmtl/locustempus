@@ -12,9 +12,9 @@ import 'quill-paste-smart';
 interface ActivityProps {
     activity: ActivityData | null;
     isFaculty: boolean;
-    createActivity?(instructions: string): void;
-    updateActivity(instructions: string, pk: number): void;
-    deleteActivity(pk: number): void;
+    createActivity?(this: void, instructions: string): void;
+    updateActivity(this: void, instructions: string, pk: number): void;
+    deleteActivity(this: void, pk: number): void;
 }
 
 export const Activity: React.FC<ActivityProps> = (
@@ -33,16 +33,22 @@ export const Activity: React.FC<ActivityProps> = (
 
     const handleEdit = (e: React.FormEvent<HTMLFormElement>): void => {
         e.preventDefault();
-        activity && updateActivity(instructions, activity.pk);
+        if (activity) {
+            updateActivity(instructions, activity.pk);
+        }
         setShowEditForm(false);
     };
 
     const handleDelete  = (): void => {
-        activity && deleteActivity(activity.pk);
+        if (activity) {
+            deleteActivity(activity.pk);
+        }
     };
 
     useEffect(() => {
-        activity && setInstructions(activity.instructions);
+        if (activity) {
+            setInstructions(activity.instructions);
+        }
     }, [activity]);
 
     if (activity) {

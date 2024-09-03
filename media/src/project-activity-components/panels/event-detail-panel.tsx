@@ -11,10 +11,10 @@ interface EventDetailPanelProps {
     activeLayerTitle: string;
     activeLayer: number | null;
     activeEventDetail: EventData | null;
-    setActiveEventDetail(d: EventData | null): void;
+    setActiveEventDetail(this:void, d: EventData | null): void;
     activeEventEdit: EventData | null;
-    setActiveEventEdit(d: EventData | null): void;
-    deleteEvent(pk: number, layerPk: number): void;
+    setActiveEventEdit(this:void, d: EventData | null): void;
+    deleteEvent(this:void, pk: number, layerPk: number): void;
     showEditMenu: boolean;
     paneHeaderHeight: number;
 }

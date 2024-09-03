@@ -13,13 +13,13 @@ interface MenuItem {
 }
 
 interface ConfirmableActionProps {
-    handler(): void;
+    handler(this: void): void;
     icon: ReactElement;
     label: string;
     confirmationTitle: string;
     confirmationText: string;
     confirmationButtonText: string;
-    setShowMenu(show: boolean): void;
+    setShowMenu(this: void, show: boolean): void;
 }
 
 export const ConfirmableAction: React.FC<ConfirmableActionProps> = ({

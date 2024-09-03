@@ -3,7 +3,7 @@ import {
     ActivityData, EventData, LayerData, MediaObject
 } from '../project-activity-components/common';
 import {OverflowMenu} from '../project-activity-components/overflow-menu';
-import { Position } from '@deck.gl/core/utils/positions';
+import { Position } from '@deck.gl/core';
 import { DefaultPanel } from './project-map-pane-panels';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, ProjectCreateEditPanel
@@ -18,39 +18,39 @@ export interface ProjectMapPaneProps {
     title: string;
     description: string;
     baseMap: string;
-    setBaseMap(baseMap: string): void;
+    setBaseMap(this:void, baseMap: string): void;
     isNewProject: boolean;
-    setIsNewProject(flag: boolean): void;
-    updateProject(title: string, description: string, baseMap: string): void;
-    deleteProject(): void;
+    setIsNewProject(this:void, flag: boolean): void;
+    updateProject(this:void, title: string, description: string, baseMap: string): void;
+    deleteProject(this:void): void;
     layers: Map<number, LayerData>;
     layerVisibility: Map<number, boolean>;
     activity: ActivityData | null;
-    createActivity(instructions: string): void;
-    updateActivity(instructions: string, pk: number): void;
-    deleteActivity(pk: number): void;
+    createActivity(this:void, instructions: string): void;
+    updateActivity(this:void, instructions: string, pk: number): void;
+    deleteActivity(this:void, pk: number): void;
     activeLayer: number | null;
-    setActiveLayer(pk: number): void;
-    addLayer(): void;
-    deleteLayer(pk: number): void;
-    updateLayer(pk: number, title: string, color: string): void;
-    toggleLayerVisibility(pk: number): void;
+    setActiveLayer(this:void, pk: number): void;
+    addLayer(this:void): void;
+    deleteLayer(this:void, pk: number): void;
+    updateLayer(this:void, pk: number, title: string, color: string): void;
+    toggleLayerVisibility(this:void, pk: number): void;
     showAddEventForm: boolean;
-    displayAddEventForm(show: boolean, mockData?: EventData): void;
+    displayAddEventForm(this:void, show: boolean, mockData?: EventData): void;
     activePosition: Position | null;
-    addEvent(label: string, datetime: string | null,
+    addEvent(this:void, label: string, datetime: string | null,
              description: string, lat: number, lng: number, mediaObj: MediaObject | null): void;
-    deleteEvent(pk: number, layerPk: number): void;
+    deleteEvent(this:void, pk: number, layerPk: number): void;
     activeEvent: EventData | null;
-    setActiveEvent(d: EventData): void;
+    setActiveEvent(this:void, d: EventData): void;
     activeEventDetail: EventData | null;
-    setActiveEventDetail(d: EventData): void;
+    setActiveEventDetail(this:void, d: EventData): void;
     activeEventEdit: EventData | null;
-    setActiveEventEdit(d: EventData): void;
-    updateEvent(label: string, datetime: string | null, description: string, lat: number,
+    setActiveEventEdit(this:void, d: EventData): void;
+    updateEvent(this:void, label: string, datetime: string | null, description: string, lat: number,
         lng: number, pk: number, layerPk: number, mediaObj: MediaObject | null): void;
     activeTab: number;
-    setActiveTab(tab: number): void;
+    setActiveTab(this:void, tab: number): void;
 }
 
 export const ProjectMapPane = React.forwardRef<HTMLDivElement, ProjectMapPaneProps>((

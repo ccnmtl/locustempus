@@ -3,7 +3,7 @@ import {ActivityData} from './activity-map';
 import { LayerData, EventData, MediaObject, ResponseData, ResponseStatus
 } from '../project-activity-components/common';
 import {OverflowMenu} from '../project-activity-components/overflow-menu';
-import { Position } from '@deck.gl/core/utils/positions';
+import { Position } from '@deck.gl/core';
 import { DefaultPanel } from './activity-map-pane-panels';
 import {
     EventAddPanel, EventEditPanel, EventDetailPanel, ProjectCreateEditPanel
@@ -17,49 +17,50 @@ export interface ActivityMapPaneProps {
     title: string;
     description: string;
     baseMap: string;
-    setBaseMap(baseMap: string): void;
-    updateProject(title: string, description: string, baseMap: string): void;
-    deleteProject(): void;
+    setBaseMap(this: void, baseMap: string): void;
+    updateProject(this: void, title: string, description: string, baseMap: string): void;
+    deleteProject(this: void): void;
     isFaculty: boolean;
     layers: Map<number, LayerData>;
     projectLayers:  Map<number, LayerData>;
     fellowContributorLayers:  Map<number, LayerData>;
     activity: ActivityData | null;
-    updateActivity(instructions: string, pk: number): void;
-    deleteActivity(pk: number): void;
+    updateActivity(this: void, instructions: string, pk: number): void;
+    deleteActivity(this: void, pk: number): void;
     activeLayer: number | null;
-    setActiveLayer(pk: number): void;
-    addLayer(): void;
-    deleteLayer(pk: number): void;
-    updateLayer(pk: number, title: string, color: string): void;
+    setActiveLayer(this: void, pk: number): void;
+    addLayer(this: void): void;
+    deleteLayer(this: void,pk: number): void;
+    updateLayer(this: void, pk: number, title: string, color: string): void;
     layerVisibility: Map<number, boolean>;
-    toggleLayerVisibility(pk: number): void;
-    toggleResponseVisibility(pk: number): void;
+    toggleLayerVisibility(this: void, pk: number): void;
+    toggleResponseVisibility(this: void, pk: number): void;
     showAddEventForm: boolean;
-    displayAddEventForm(show: boolean, mockData?: EventData): void;
+    displayAddEventForm(this: void, show: boolean, mockData?: EventData): void;
     activePosition: Position | null;
-    addEvent(label: string, datetime: string | null,
+    addEvent(this: void, label: string, datetime: string | null,
              description: string, lat: number, lng: number, mediaObj: MediaObject | null): void;
-    deleteEvent(pk: number, layerPk: number): void;
+    deleteEvent(this: void, pk: number, layerPk: number): void;
     activeEvent: EventData | null;
-    setActiveEvent(d: EventData): void;
+    setActiveEvent(this: void, d: EventData): void;
     activeEventDetail: EventData | null;
-    setActiveEventDetail(d: EventData): void;
+    setActiveEventDetail(this: void, d: EventData): void;
     activeEventEdit: EventData | null;
-    setActiveEventEdit(d: EventData): void;
+    setActiveEventEdit(this: void, d: EventData): void;
     updateEvent(
+        this: void,
         label: string, datetime: string | null, description: string, lat: number, lng: number,
         pk: number, layerPk: number, mediaObj: MediaObject | null): void;
     responseData: ResponseData[];
-    updateResponse(reflection?: string, status?: ResponseStatus): void;
-    createFeedback(responsePk: number, feedback: string): void;
-    updateFeedback(pk: number, responsePk: number, feedback: string): void;
+    updateResponse(this: void, reflection?: string, status?: ResponseStatus): void;
+    createFeedback(this: void, responsePk: number, feedback: string): void;
+    updateFeedback(this: void, pk: number, responsePk: number, feedback: string): void;
     responseLayers: Map<number, LayerData[]>;
     activeTab: number;
-    setActiveTab(tab: number): void;
-    setAlert(alert: string | null): void;
-    filterLayersByDate(range1: string, range2: string): void;
-    resetContributorLayers(): Promise<void>
+    setActiveTab(this: void, tab: number): void;
+    setAlert(this: void, alert: string | null): void;
+    filterLayersByDate(this: void, range1: string, range2: string): void;
+    resetContributorLayers(this: void): Promise<void>
 }
 
 export const ActivityMapPane = React.forwardRef<HTMLDivElement, ActivityMapPaneProps>((
