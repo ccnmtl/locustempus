@@ -13,40 +13,40 @@ import 'quill-paste-smart';
 
 interface DefaultPanelProps {
     activeTab: number;
-    setActiveTab(idx: number): void;
-    addLayer(): void;
+    setActiveTab(this: void, idx: number): void;
+    addLayer(this: void): void;
     description: string;
     layers: Map<number, LayerData>;
     projectLayers:  Map<number, LayerData>;
     fellowContributorLayers: Map<number, LayerData>;
     activity: ActivityData | null;
-    updateActivity(instructions: string, pk: number): void;
-    deleteActivity(pk: number): void;
-    deleteLayer(pk: number): void;
-    updateLayer(pk: number, title: string, color: string): void;
+    updateActivity(this: void, instructions: string, pk: number): void;
+    deleteActivity(this: void, pk: number): void;
+    deleteLayer(this: void, pk: number): void;
+    updateLayer(this: void, pk: number, title: string, color: string): void;
     layerVisibility: Map<number, boolean>;
-    toggleLayerVisibility(pk: number): void;
-    toggleResponseVisibility(pk: number): void;
+    toggleLayerVisibility(this: void, pk: number): void;
+    toggleResponseVisibility(this: void, pk: number): void;
     activeLayer: number | null;
-    setActiveLayer(pk: number): void;
+    setActiveLayer(this: void, pk: number): void;
     activeEvent: EventData | null;
-    setActiveEvent(d: EventData): void;
+    setActiveEvent(this: void, d: EventData): void;
     activeEventDetail: EventData | null;
-    setActiveEventDetail(d: EventData): void;
+    setActiveEventDetail(this: void, d: EventData): void;
     activeEventEdit: EventData | null;
     setActiveEventEdit(d: EventData): void;
     responseData: ResponseData[];
-    updateResponse(reflection?: string, status?: ResponseStatus): void;
-    createFeedback(responsePk: number, feedback: string): void;
-    updateFeedback(pk: number, responsePk: number, feedback: string): void;
+    updateResponse(this: void, reflection?: string, status?: ResponseStatus): void;
+    createFeedback(this: void, responsePk: number, feedback: string): void;
+    updateFeedback(this: void, pk: number, responsePk: number, feedback: string): void;
     isFaculty: boolean;
     responseLayers: Map<number, LayerData[]>;
     paneHeaderHeight: number;
-    setAlert(alert: string | null): void;
+    setAlert(this: void, alert: string | null): void;
     activeResponse: ResponseData | null;
-    setActiveResponse(response: ResponseData | null): void;
-    filterLayersByDate(range1: string, range2: string): void;
-    resetContributorLayers(): Promise<void>
+    setActiveResponse(this: void, response: ResponseData | null): void;
+    filterLayersByDate(this: void, range1: string, range2: string): void;
+    resetContributorLayers(this: void): Promise<void>
 }
 
 export const DefaultPanel: React.FC<DefaultPanelProps> = (
@@ -345,23 +345,23 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
 
 interface FacultySubPanelProps {
     responseData: ResponseData[];
-    createFeedback(responsePk: number, feedback: string): void;
-    updateFeedback(pk: number, responsePk: number, feedback: string): void;
+    createFeedback(this: void, responsePk: number, feedback: string): void;
+    updateFeedback(this: void, pk: number, responsePk: number, feedback: string): void;
     responseLayers: Map<number, LayerData[]>;
     layerVisibility: Map<number, boolean>;
-    toggleLayerVisibility(pk: number): void;
+    toggleLayerVisibility(this: void, pk: number): void;
     toggleResponseVisibility(pk: number): void;
     activeLayer: number | null;
-    setActiveLayer(pk: number): void;
+    setActiveLayer(this: void, pk: number): void;
     activeEvent: EventData | null;
-    setActiveEvent(d: EventData): void;
-    setActiveEventDetail(d: EventData): void;
+    setActiveEvent(this: void, d: EventData): void;
+    setActiveEventDetail(this: void, d: EventData): void;
     activeEventEdit: EventData | null;
-    setAlert(alert: string | null): void;
+    setAlert(this: void, alert: string | null): void;
     activeResponse: ResponseData | null;
-    setActiveResponse(response: ResponseData | null): void;
-    filterLayersByDate(range1: string, range2: string): void;
-    resetContributorLayers(): Promise<void>
+    setActiveResponse(this: void, response: ResponseData | null): void;
+    filterLayersByDate(this: void, range1: string, range2: string): void;
+    resetContributorLayers(this: void): Promise<void>
     isFaculty: boolean;
 }
 

@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Position } from '@deck.gl/core/utils/positions';
+import { Position } from '@deck.gl/core';
 import { MediaEditor } from '../layers/media-editor';
 import { MediaObject } from '../common';
 import ReactQuill from 'react-quill';
@@ -8,14 +8,15 @@ import { EventData, LayerData } from '../common';
 
 interface EventAddPanelProps {
     showAddEventForm: boolean;
-    displayAddEventForm(show: boolean, mockData?: EventData): void;
+    displayAddEventForm(this: void, show: boolean, mockData?: EventData): void;
     activePosition: Position | null;
     layers: Map<number, LayerData>;
     activeLayer: number | null;
     addEvent(
+        this: void,
         label: string, datetime: string | null, description: string, lat: number, lng: number,
         mediaObj: MediaObject | null): void;
-    setActiveTab(val: number): void;
+    setActiveTab(this: void, val: number): void;
     paneHeaderHeight: number;
     returnTab: number;
 }

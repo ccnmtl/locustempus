@@ -8,16 +8,16 @@ import {LayerData, EventData, ResponseData } from '../common';
 // Add LayerVisibility map
 interface LayerSetProps {
     layers: Map<number, LayerData>;
-    addLayer?(): void;
-    deleteLayer?(pk: number): void;
-    updateLayer?(pk: number, title: string, color: string): void;
+    addLayer?(this:void): void;
+    deleteLayer?(this:void, pk: number): void;
+    updateLayer?(this:void, pk: number, title: string, color: string): void;
     layerVisibility?: Map<number, boolean>;
-    toggleLayerVisibility?(pk: number): void;
+    toggleLayerVisibility?(this:void, pk: number): void;
     activeLayer?: number | null;
-    setActiveLayer?(pk: number): void;
+    setActiveLayer?(this:void, pk: number): void;
     activeEvent: EventData | null;
-    setActiveEvent(d: EventData): void;
-    setActiveEventDetail(d: EventData): void;
+    setActiveEvent(this:void, d: EventData): void;
+    setActiveEventDetail(this:void, d: EventData): void;
     activeEventEdit: EventData | null;
     responseData: ResponseData[] | null;
 }

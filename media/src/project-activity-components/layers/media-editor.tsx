@@ -6,13 +6,13 @@ import {
 
 export interface MediaEditorProps {
     fileS3Url: string | null;
-    setFileS3Url(url: string | null): void;
+    setFileS3Url(this:void, url: string | null): void;
     source: string | null;
-    setSource(source: string): void;
+    setSource(this:void, source: string): void;
     caption: string | null;
-    setCaption(caption: string): void;
+    setCaption(this:void, caption: string): void;
     alt: string | null;
-    setAlt(alt: string): void;
+    setAlt(this:void, alt: string): void;
 }
 
 export const MediaEditor: React.FC<MediaEditorProps> = (
