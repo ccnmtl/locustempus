@@ -259,29 +259,31 @@
 
 <script src="{{STATIC_URL}}build/main.js"></script>
 
-{% if SENTRY_DSN %}
-    <script src="https://browser.sentry-cdn.com/5.9.1/bundle.min.js" integrity="sha384-/x1aHz0nKRd6zVUazsV6CbQvjJvr6zQL2CHbQZf3yoLkezyEtZUpqUNnOLW9Nt3v" crossorigin="anonymous">
-    </script>
-    <script>
-     Sentry.init({ dsn: '{{ SENTRY_DSN }}'});
-
-     {% if request.user.is_anonymous %}
-     Sentry.configureScope(function(scope) {
-         scope.setUser({
+<script
+    src="https://js.sentry-cdn.com/69c0138d85c047a0816700e693076038.min.js"
+    crossorigin="anonymous"></script>
+<script>
+    window.sentryOnLoad = function() {
+        Sentry.init({
+            {% if STAGING_ENV %}
+            environment: 'staging'
+            {% else %}
+            environment: 'production'
+            {% endif %}
+        });
+        {% if request.user.is_anonymous %}
+        Sentry.setUser({
             email: 'none',
             id: 'anonymous'
-         });
-     });
-     {% else %}
-     Sentry.configureScope(function(scope) {
-         scope.setUser({
+        });
+        {% else %}
+        Sentry.setUser({
             email: {% if request.user.email %}'{{ request.user.email }}'{% else %}''{% endif %},
             id: '{{ request.user.username }}'
-         });
-     });
-     {% endif %}
-    </script>
-{% endif %}
+        });        
+        {% endif %}
+    };
+</script>
 
 {% block js %}{% endblock %}
 
