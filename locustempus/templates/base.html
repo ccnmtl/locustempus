@@ -77,6 +77,8 @@
         <link rel="icon" href="{{STATIC_URL}}img/favicon.ico">
         <link rel="icon" type="image/png" href="{{STATIC_URL}}img/favicon.png">
 
+        {% include "ctlsettings/sentry_js.html" %}
+
         <meta id="csrf-token" name="csrf-token" content="{{csrf_token}}">
         <script src="{{STATIC_URL}}s3sign/js/s3upload.js"></script>
 
@@ -258,32 +260,6 @@
 {% endblock %}
 
 <script src="{{STATIC_URL}}build/main.js"></script>
-
-<script
-    src="https://js.sentry-cdn.com/69c0138d85c047a0816700e693076038.min.js"
-    crossorigin="anonymous"></script>
-<script>
-    window.sentryOnLoad = function() {
-        Sentry.init({
-            {% if STAGING_ENV %}
-            environment: 'staging'
-            {% else %}
-            environment: 'production'
-            {% endif %}
-        });
-        {% if request.user.is_anonymous %}
-        Sentry.setUser({
-            email: 'none',
-            id: 'anonymous'
-        });
-        {% else %}
-        Sentry.setUser({
-            email: {% if request.user.email %}'{{ request.user.email }}'{% else %}''{% endif %},
-            id: '{{ request.user.username }}'
-        });        
-        {% endif %}
-    };
-</script>
 
 {% block js %}{% endblock %}
 
