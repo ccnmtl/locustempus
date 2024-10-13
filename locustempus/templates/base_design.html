@@ -75,33 +75,9 @@
 </footer>
 {% endblock %}
 
-<script src="{{STATIC_URL}}build/main.js"></script>
+{% include "ctlsettings/sentry_js.html" %}
 
-<script
-    src="https://js.sentry-cdn.com/69c0138d85c047a0816700e693076038.min.js"
-    crossorigin="anonymous"></script>
-<script>
-    window.sentryOnLoad = function() {
-        Sentry.init({
-            {% if STAGING_ENV %}
-            environment: 'staging'
-            {% else %}
-            environment: 'production'
-            {% endif %}
-        });
-        {% if request.user.is_anonymous %}
-        Sentry.setUser({
-            email: 'none',
-            id: 'anonymous'
-        });
-        {% else %}
-        Sentry.setUser({
-            email: {% if request.user.email %}'{{ request.user.email }}'{% else %}''{% endif %},
-            id: '{{ request.user.username }}'
-        });        
-        {% endif %}
-    };
-</script>
+<script src="{{STATIC_URL}}build/main.js"></script>
 
 {% block js %}{% endblock %}
 
