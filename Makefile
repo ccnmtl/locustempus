@@ -1,17 +1,17 @@
 APP=locustempus
 JS_FILES=media/src
 
-all: jenkins js-typecheck cypress-test
+all: jenkins
 .PHONY: all
 
 include *.mk
 
+github-actions: check flake8 test-travis eslint bandit js-typecheck cypress-test-travis
+.PHONY: github-actions
+
 test-travis:
 	$(MANAGE) test --settings=$(APP).settings_travis --noinput
 .PHONY: test-travis
-
-travis: check flake8 test-travis eslint bandit js-typecheck cypress-test-travis
-.PHONY: travis
 
 tileserver: $(PY_SENTINAL)
 	cd tiles && ../$(VE)/bin/python3 ./server.py

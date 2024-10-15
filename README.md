@@ -4,7 +4,7 @@
 ## Quick Start
 Use `make dev`. This is equivalent to running Django's `./manage.py runserver` in one shell and Webpack in another. The output from both will be printed to the shell. Use CTR-C to exit.
 
-To test, use `make all`. This is what Travis and Jenkins runs to build the project.
+To test, use `make all`. This is what Jenkins runs to build the project.
 
 ## JavaScript Stack
 ### Explanation
