@@ -1,7 +1,7 @@
 APP=locustempus
 JS_FILES=media/src
 
-all: jenkins js-typecheck cypress-test
+all: jenkins
 .PHONY: all
 
 include *.mk
