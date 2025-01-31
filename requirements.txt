@@ -33,7 +33,7 @@ ndg-httpsclient==0.5.1
 urllib3==2.2.2  # requests
 chardet==5.2.0  # requests
 idna==3.10  # requests
-certifi==2024.12.14  # requests
+certifi==2025.1.31  # requests
 requests==2.32.1
 astroid==3.2.0
 wrapt==1.17.0
