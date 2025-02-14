@@ -64,7 +64,7 @@ django-bootstrap4==24.4
 django-debug-toolbar==4.4.1
 django-waffle==4.2.0
 django-smoketest==1.2.0
-sentry-sdk==2.20.0
+sentry-sdk==2.21.0
 django-extensions==3.2.1
 
 django-stagingcontext==0.1.0
