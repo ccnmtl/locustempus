@@ -35,7 +35,7 @@
     "requirejs": "~2.3.2",
     "sass": "^1.27.0",
     "sass-loader": "^16.0.0",
-    "sinon": "~19.0.2",
+    "sinon": "~20.0.0",
     "start-server-and-test": "^2.0.0",
     "style-loader": "^4.0.0",
     "webpack": "5.98.0",
