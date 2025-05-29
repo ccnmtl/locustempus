@@ -469,7 +469,6 @@ export const ProjectMap: React.FC = () => {
     }
 
     const handleViewportChange = useCallback(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         (newViewport: React.SetStateAction<ViewportState>) => setViewportState(newViewport),
         []
     );
@@ -570,7 +569,7 @@ export const ProjectMap: React.FC = () => {
                     />
                     <DeckGL
                         layers={[
-                            ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
+                            ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
                             ...mapLayers
                         ]}
                         viewState={viewportState}
