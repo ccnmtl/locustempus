@@ -378,7 +378,6 @@ export const ActivityMap: React.FC = () => {
         }
         let layerPk = activeLayer;
         if (isFaculty && !projectLayerData.has(layerPk)) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const firstLayerPk = projectLayerData.keys().next().value;
             if (typeof firstLayerPk == 'number') {
                 layerPk = firstLayerPk;
@@ -386,7 +385,6 @@ export const ActivityMap: React.FC = () => {
                 throw new Error('Add Event failed: no active layer can be found');
             }
         } else if (!isFaculty && !layerData.has(layerPk)) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
             const firstLayerPk = layerData.keys().next().value;
             if (typeof firstLayerPk == 'number') {
                 layerPk = firstLayerPk;
@@ -686,7 +684,6 @@ export const ActivityMap: React.FC = () => {
             }));
     }
     const handleViewportChange = useCallback(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         (newViewport: React.SetStateAction<ViewportState>) => setViewportState(newViewport),
         []
     );
@@ -710,7 +707,6 @@ export const ActivityMap: React.FC = () => {
         // if no date with events, we don't include the layer.
 
         let layersForZoom: LayerData[] = [];
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const rangeEpoch1 = Date.parse(range1);
         const rangeEpoch2 = Date.parse(range2);
         const filteredLayers:  Map<number, LayerData> = new Map();
