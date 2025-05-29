@@ -1,10 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { ProjectMap } from './project/project-map';
 
-ReactDOM.render(
-    <React.StrictMode>
-        <ProjectMap />
-    </React.StrictMode>,
-    document.getElementById('project-map-container')
-);
+const container = document.getElementById('project-map-container');
+if (container) {
+    const root = createRoot(container);
+    root.render(
+        <React.StrictMode>
+            <ProjectMap />
+        </React.StrictMode>
+    );
+}

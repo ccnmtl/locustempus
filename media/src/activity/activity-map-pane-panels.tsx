@@ -67,7 +67,6 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
     // const [reflectionSubmittedAt, setReflectionSubmittedAt] = useState<string>('');
     const [reflectionModifiedAt, setReflectionModifiedAt] = useState<string>('');
     // TODO: display response status
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [reflectionStatus, setReflectionStatus] = useState<string>('DRAFT');
     const [feedback, setFeedback] = useState<string>('');
     const [feedbackSubmittedDate, setFeedbackSubmittedDate] = useState<string>('');
