@@ -34,7 +34,7 @@ urllib3==2.4.0  # requests
 chardet==5.2.0  # requests
 idna==3.10  # requests
 certifi==2025.4.26  # requests
-requests==2.32.1
+requests==2.32.4
 astroid==3.3.8
 wrapt==1.17.0
 lazy-object-proxy==1.11.0
