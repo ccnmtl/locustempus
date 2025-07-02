@@ -55,7 +55,7 @@ REST_FRAMEWORK = {
     )
 }
 
-CONTACT_US_EMAIL = 'ctl-locustempus@columbia.edu'
+CONTACT_US_EMAIL = 'ctl-dev@columbia.edu'
 SERVER_EMAIL = 'locustempus-noreply@mail.ctl.columbia.edu'
 EMAIL_SUBJECT_PREFIX = 'Locus Tempus Contact Request'
 
