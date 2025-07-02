@@ -4,7 +4,7 @@ You have successfully created a new Locus Tempus site for {{course.title}}.
 
 The Center for Teaching and Learning (CTL) offers instructors a range of support for using Locus Tempus effectively.
 
-CTL learning designers can help you conceptualize and set up projects in Locus Tempus. We are also happy to offer in-person training sessions for your class. Please email us at ctl-dev@columbia.edu to request a consultation or training.
+CTL learning designers can help you conceptualize and set up projects in Locus Tempus. We are also happy to offer in-person training sessions for your class. Please email us at ctl-locustempus@columbia.edu to request a consultation or training.
 
 Locus Tempus is designed and maintained here at the CTL, and we are always eager to receive ideas from the Columbia community – please let us know how it goes! We hope you have a successful semester using Locus Tempus.
 
