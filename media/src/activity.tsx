@@ -1,10 +1,13 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 import { ActivityMap } from './activity/activity-map';
 
-ReactDOM.render(
-    <React.StrictMode>
-        <ActivityMap />
-    </React.StrictMode>,
-    document.getElementById('activity-map-container')
-);
+const container = document.getElementById('activity-map-container');
+if (container) {
+    const root = createRoot(container);
+    root.render(
+        <React.StrictMode>
+            <ActivityMap />
+        </React.StrictMode>
+    );
+}
