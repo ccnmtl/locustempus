@@ -4,7 +4,7 @@ backports.zoneinfo;python_version<"3.9"
 asgiref==3.9.1
 django-s3sign==0.5.1
 pytz==2025.2
-httplib2==0.22.0
+httplib2==0.30.0
 feedparser==6.0.8
 Markdown==3.8 # pyup: < 3
 versiontools==1.9.1
