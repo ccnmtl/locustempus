@@ -28,7 +28,7 @@ coverage==7.10.0
 pyasn1==0.6.0
 cffi==2.0.0
 cryptography<45.0.8  # pyOpenSSL
-pyOpenSSL==25.1.0
+pyOpenSSL==25.2.0
 ndg-httpsclient==0.5.1
 urllib3==2.5.0  # requests
 chardet==5.2.0  # requests
