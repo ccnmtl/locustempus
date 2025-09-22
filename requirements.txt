@@ -80,7 +80,7 @@ rest-framework-generic-relations==2.2.0
 
 ctlsettings==0.4.2
 
-django-reversion==5.1.0
+django-reversion==6.0.0
 text_unidecode==1.3
 
 django-taggit==6.1.0
