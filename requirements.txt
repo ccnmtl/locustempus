@@ -108,7 +108,7 @@ entrypoints==0.4
 django-courseaffils==2.4.0
 
 toml==0.10.2
-tomli==2.2.1
+tomli==2.3.0
 
 django-widget-tweaks==1.5.0
 confusable_homoglyphs==3.3.1
