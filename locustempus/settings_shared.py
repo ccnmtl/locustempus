@@ -31,12 +31,14 @@ INSTALLED_APPS += [  # noqa
     'contactus',
     'waffle',
     'markdownify.apps.MarkdownifyConfig',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE += [ # noqa
     'django.middleware.csrf.CsrfViewMiddleware',
     'django_cas_ng.middleware.CASMiddleware',
     'locustempus.main.middleware.WhoDidItMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
 ]
 
 TEMPLATES[0]['OPTIONS']['context_processors'].extend([  # noqa
