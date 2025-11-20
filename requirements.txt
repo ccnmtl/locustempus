@@ -40,7 +40,7 @@ wrapt==2.0.0
 lazy-object-proxy==1.12.0
 pylint==4.0.0
 six==1.17.0
-faker==38.0.0  # factory_boy
+faker==38.2.0  # factory_boy
 factory_boy==3.3.0
 ldap3==2.9.1
 sqlparse==0.5.0
