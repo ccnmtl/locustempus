@@ -46,7 +46,12 @@
                 {% if request.user.is_anonymous %}
                 <a href="/accounts/login/?next=/" class="user-auth--login">Log in</a>
                 {% else %}
-                <a href="/accounts/logout/?next=/" class="user-auth--logout">Log out</a>
+                <form action="/accounts/logout/?next=/" method="post">
+                    {% csrf_token %}
+                    <button type="submit" class="user-auth--logout" title="Log out">
+                        Log out
+                    </button>
+                </form>
                 {% endif %}
             {% endblock %}
         </nav>
