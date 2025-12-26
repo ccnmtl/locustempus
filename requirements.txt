@@ -88,7 +88,7 @@ nameparser==1.1.0
 oauth2==1.9.0.post1
 oauthlib==3.3.1
 pylti==0.7.0
-django-lti-provider==1.0.0
+django-lti-provider==1.1.0
 
 pyparsing==3.3.1
 edtf==5.0.0 # pyup: <4.0.0
