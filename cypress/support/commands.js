@@ -25,7 +25,7 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', (username, password) => {
-    cy.visit('/accounts/logout/?next=/');
+    cy.get('.user-auth--logout').click();
     cy.clearCookies();
 
     cy.visit('http://localhost:8000/dashboard/');
