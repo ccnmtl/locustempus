@@ -42,7 +42,7 @@ six==1.17.0
 faker==40.4.0  # factory_boy
 factory_boy==3.3.0
 ldap3==2.9.1
-sqlparse==0.5.0
+sqlparse==0.5.4
 s3transfer==0.16.0
 jmespath==1.1.0
 
