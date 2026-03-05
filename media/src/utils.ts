@@ -1,7 +1,7 @@
-import DeckGL  from 'deck.gl';
+// import DeckGL  from 'deck.gl';
 import { RefObject } from 'react';
 import { WebMercatorViewport } from 'react-map-gl';
-import { LayerData } from './project-activity-components/common';
+import { LayerData, DEFAULT_VIEWPORT_STATE } from './project-activity-components/common';
 import moment from 'moment';
 
 type HTTPMethod = 'GET' | 'PUT' | 'POST' | 'DELETE'
@@ -66,7 +66,7 @@ export async function del(url: string): Promise<void> {
 
 export const getBoundedViewport = (
     layers: LayerData[],
-    deckGlRef: RefObject<DeckGL>,
+    deckGlRef: RefObject<{ deck: { width: number, height: number } }>,
     mapPaneRef: RefObject<HTMLDivElement>): WebMercatorViewport => {
     // Returns a viewport object configured to include all event markers
 
@@ -92,13 +92,22 @@ export const getBoundedViewport = (
     }
 
     if (deckGlRef.current !== null) {
+        const width = deckGlRef.current.deck.width || 800; // Fallback to avoid crash
+        const height = deckGlRef.current.deck.height || 600;
+
         const viewportOpt = {
-            width: deckGlRef.current.deck.width,
-            height: deckGlRef.current.deck.height
+            width,
+            height
         };
 
+        if (width <= 0 || height <= 0) {
+            console.warn('Invalid dimensions for viewport, skipping fitBounds', width, height);
+            return new WebMercatorViewport({width: 800, height: 600, ...DEFAULT_VIEWPORT_STATE});
+        }
+
+
         const padding = 50;
-        // The left padding is contingent on if the map pane is visible or isn't.
+        // The left padding depends on whether the map pane is visible.
         // First, assume that the map pane is visible. It doesn't get rendered until
         // after this component is rendered.
         let leftPaddingOffset = 512; // Trust me, the pane is 512px wide
