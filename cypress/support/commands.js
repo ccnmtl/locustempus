@@ -25,16 +25,27 @@
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
 
 Cypress.Commands.add('login', (username, password) => {
-    cy.get('.user-auth--logout').click();
     cy.clearCookies();
-
     cy.visit('http://localhost:8000/dashboard/');
+
+    cy.get('body').then(($body) => {
+        if ($body.find('.user-auth--logout').length > 0) {
+            cy.get('.user-auth--logout').click();
+            cy.clearCookies();
+            cy.visit('http://localhost:8000/dashboard/');
+        }
+    });
+
     cy.get('[data-cy="guest-login"]').click();
     cy.get('[data-cy="guest-login-username"]').type(username).blur();
     cy.get('[data-cy="guest-login-password"]').type(password).blur();
     cy.get('[data-cy="guest-login-submit"]').click();
 
-    cy.get('#cu-privacy-notice-button').click();
+    cy.get('body').then(($body) => {
+        if ($body.find('#cu-privacy-notice-button').length > 0) {
+            cy.get('#cu-privacy-notice-button').click();
+        }
+    });
 });
 
 Cypress.Commands.add('login_workspace', (userName) => {
