@@ -1,9 +1,8 @@
-
 <!DOCTYPE html>
 
 <html lang="en">
     <head>
-	    <title>{% block title %}{% endblock %}{{ flatpage.title }} – Locus Tempus</title>
+        <title>{% block title %}{% endblock %}{{ flatpage.title }} – Locus Tempus</title>
 
         <!-- Required meta tags -->
         <meta charset="utf-8" />
@@ -165,11 +164,18 @@
                             </li>
                             {% endif %}
                             <li class="lt-list-item lt-list-item--caution border-top">
-                                <a href="/accounts/logout/?next=/" class="d-flex align-items-center justify-content-start lt-list-item__link"
-                                    data-cy="sign-out">
-                                <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-sign-out.svg" alt="" /></span>
-                                <span class="lt-list-item__primary-text"><b>Sign out</b></span>
-                                </a>
+
+                                <form action="/accounts/logout/?next=/" method="post">
+                                    {% csrf_token %}
+                                    <button
+                                        type="submit"
+                                        class="user-auth--logout d-flex align-items-center justify-content-start lt-list-item__link"
+                                        data-cy="sign-out">
+                                        <span class='lt-icons lt-list-item__icon' aria-hidden="true"><img src="{{STATIC_URL}}img/icon-sign-out.svg" alt="" /></span>
+                                        <span class="lt-list-item__primary-text"><strong>Sign out</strong></span>
+                                    </button>
+                                </form>
+
                             </li>
                         </ul>
                     </div>
@@ -211,7 +217,7 @@
             {% endif %}
         {% endblock %}
 
-<!-- Dashboard breadcrumb and navigation bar -->        
+<!-- Dashboard breadcrumb and navigation bar -->
         {% if breadcrumb %}
         <div class="nav-dashboard">
             <div class="lt-breadcrumb">
@@ -230,7 +236,7 @@
             {% block page_actions %}{% endblock %}
         </div>
         {% endif %}
-<!-- End Dashboard breadcrumb and navigation bar -->        
+<!-- End Dashboard breadcrumb and navigation bar -->
 
 <!-- Begin content block -->
         {% block content %}{% endblock %}
@@ -251,7 +257,7 @@
             <a href="/contact/" title="Contact us">Contact Us</a>
         </li>
     </ul>
-    
+
     <p class="lt-license">Locus Tempus open-source code is on <a itemprop="license" rel="license noopener noreferrer" href="https://github.com/ccnmtl/locustempus">Github</a> with <a itemprop="license" rel="license noopener noreferrer" href="https://www.gnu.org/licenses/gpl-3.0.en.html">GNU GPLv3</a> license.</p>
 
 
