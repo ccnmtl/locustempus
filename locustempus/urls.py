@@ -46,6 +46,7 @@ urlpatterns = [
     re_path(r'^$', views.IndexView.as_view(), name='index-view'),
     path('admin/', admin.site.urls),
     path('lti/', include('lti_provider.urls')),
+    path('lti13/', include('locustempus.lti.urls')),
     re_path(r'^course/lti/create/$',
             views.LTICourseCreate.as_view(), name='lti-course-create'),
     re_path(r'^course/lti/(?P<context>\w[^/]*)/$',
