@@ -31,11 +31,15 @@ INSTALLED_APPS += [  # noqa
     'contactus',
     'waffle',
     'markdownify.apps.MarkdownifyConfig',
+    'lti_tool',
+    'lti_dynamic_registration',
 ]
 
 MIDDLEWARE += [ # noqa
     'django.middleware.csrf.CsrfViewMiddleware',
     'django_cas_ng.middleware.CASMiddleware',
+    'lti_tool.middleware.LtiLaunchMiddleware',
+    'lti_authentication.middleware.LtiLaunchAuthenticationMiddleware',
     'locustempus.main.middleware.WhoDidItMiddleware',
 ]
 
@@ -68,6 +72,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
     'lti_provider.auth.LTIBackend',
+    'lti_authentication.backends.LtiLaunchAuthenticationBackend',
     'django_cas_ng.backends.CASBackend',
 ]
 
@@ -85,6 +90,10 @@ LTI_TOOL_CONFIGURATION = {
     'frame_width': 1024,
     'frame_height': 1024,
     'allow_ta_access': False
+}
+
+LTI_AUTHENTICATION = {
+    'use_person_sourcedid': True,
 }
 
 COURSEAFFILS_COURSESTRING_MAPPER = CourseStringMapper
