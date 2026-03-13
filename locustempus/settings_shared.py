@@ -160,3 +160,7 @@ if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
     GEOCODER = False
 
 SECURE_REFERRER_POLICY = 'origin'
+
+# Needed for LTI application launches in iframes
+SESSION_COOKIE_SAMESITE = 'None'
+CSRF_COOKIE_SAMESITE = 'None'

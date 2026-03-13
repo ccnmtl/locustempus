@@ -1,5 +1,5 @@
 from django.conf import settings, LazySettings
-from django.http import JsonResponse, HttpResponse
+from django.http import JsonResponse, HttpResponse, HttpResponseBadRequest
 from django.shortcuts import render
 from django.templatetags.static import static
 from django.urls import reverse
@@ -130,6 +130,12 @@ class LtiLaunchView(LtiLaunchBaseView, TemplateView):
     lti_tool_name = None
     course = None
 
+    def get(self, request, *args, **kwargs):
+        return HttpResponseBadRequest(
+            "Enpoint expects a secure LTI Launch POST request from Canvas. "
+            "It cannot be accessed directly."
+        )
+
     def handle_resource_launch(self, request, lti_launch):
         if settings.DEBUG:
             print('All lti_launch data:', lti_launch.get_launch_data())
@@ -155,7 +161,7 @@ class LtiLaunchView(LtiLaunchBaseView, TemplateView):
         except LTICourseContext.DoesNotExist:
             self.course_context = None
 
-        return self.get(request)
+        return self.render_to_response(self.get_context_data())
 
     def get_context_data(self, **kwargs):
         domain = self.request.get_host()
