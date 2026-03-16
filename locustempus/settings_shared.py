@@ -160,3 +160,4 @@ if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
     GEOCODER = False
 
 SECURE_REFERRER_POLICY = 'origin'
+X_FRAME_OPTIONS = 'SAMEORIGIN'
