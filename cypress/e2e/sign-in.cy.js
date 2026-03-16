@@ -4,8 +4,14 @@
 
 describe('Sign-In Stories', function() {
     beforeEach(() => {
-        cy.visit('/accounts/logout/?next=/');
         cy.clearCookies();
+        cy.visit('/');
+        cy.get('body').then(($body) => {
+            if ($body.find('.user-auth--logout').length > 0) {
+                cy.get('.user-auth--logout').click();
+                cy.clearCookies();
+            }
+        });
     });
 
     it('Sign In', function() {
