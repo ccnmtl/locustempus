@@ -43,6 +43,12 @@ MIDDLEWARE += [ # noqa
     'locustempus.main.middleware.WhoDidItMiddleware',
 ]
 
+# Allow framing by Canvas
+MIDDLEWARE = [
+    m for m in MIDDLEWARE
+    if m != 'django.middleware.clickjacking.XFrameOptionsMiddleware'
+]
+
 TEMPLATES[0]['OPTIONS']['context_processors'].extend([  # noqa
     'locustempus.utils.get_sentry_dsn',
 ])
@@ -160,4 +166,3 @@ if ('test' in sys.argv or 'jenkins' in sys.argv or 'validate' in sys.argv
     GEOCODER = False
 
 SECURE_REFERRER_POLICY = 'origin'
-X_FRAME_OPTIONS = 'SAMEORIGIN'
