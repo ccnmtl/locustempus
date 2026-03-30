@@ -122,7 +122,7 @@ urlpatterns += [
 ]
 
 
-if settings.DEBUG:
+if settings.DEVELOPMENT:
     import debug_toolbar
     urlpatterns += [
         re_path(r'^__debug__/', include(debug_toolbar.urls)),
