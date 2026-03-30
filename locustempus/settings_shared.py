@@ -16,6 +16,8 @@ PROJECT_APPS = [
 
 USE_TZ = True
 
+DEVELOPMENT = 'runserver' in sys.argv
+
 # A note on installed apps, Django 3+ has automatic appconfig discovery.
 INSTALLED_APPS += [  # noqa
     'bootstrap4',
@@ -48,6 +50,16 @@ MIDDLEWARE = [
     m for m in MIDDLEWARE
     if m != 'django.middleware.clickjacking.XFrameOptionsMiddleware'
 ]
+
+if DEVELOPMENT:
+    INSTALLED_APPS = [
+        *INSTALLED_APPS,
+        'debug_toolbar',
+    ]
+    MIDDLEWARE = [
+        'debug_toolbar.middleware.DebugToolbarMiddleware',
+        *MIDDLEWARE,
+    ]
 
 TEMPLATES[0]['OPTIONS']['context_processors'].extend([  # noqa
     'locustempus.utils.get_sentry_dsn',
