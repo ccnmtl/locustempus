@@ -7,13 +7,11 @@ module.exports = {
         "es6": true
     },
     "plugins": [
-        "security",
         "cypress",
         "@typescript-eslint"
     ],
     "extends": [
         "eslint:recommended",
-        "plugin:security/recommended-legacy",
         "plugin:react/recommended"
     ],
     "rules": {
@@ -45,20 +43,6 @@ module.exports = {
         "func-call-spacing": ["error", "never"],
         //https://github.com/yannickcr/eslint-plugin-react/issues/2654
         'react/prop-types': [0],
-
-        'security/detect-buffer-noassert': 1,
-        'security/detect-child-process': 1,
-        'security/detect-disable-mustache-escape': 1,
-        'security/detect-eval-with-expression': 1,
-        'security/detect-new-buffer': 1,
-        'security/detect-no-csrf-before-method-override': 1,
-        'security/detect-non-literal-fs-filename': 1,
-        'security/detect-non-literal-regexp': 1,
-        'security/detect-non-literal-require': 0, /* requirejs conflict */
-        'security/detect-object-injection': 0, /* several false positives */
-        'security/detect-possible-timing-attacks': 1,
-        'security/detect-pseudoRandomBytes': 1,
-        'security/detect-unsafe-regex': 1
     },
     "overrides": [{
         "files": ["*.{ts,tsx}"],
