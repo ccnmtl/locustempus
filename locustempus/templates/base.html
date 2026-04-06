@@ -79,7 +79,8 @@
         {% include "ctlsettings/sentry_js.html" %}
 
         <meta id="csrf-token" name="csrf-token" content="{{csrf_token}}">
-        <script src="{{STATIC_URL}}s3sign/js/s3upload.js"></script>
+        <script src="{{STATIC_URL}}s3sign/js/s3upload.js"
+                crossorigin="anonymous"></script>
 
         <script>
             window.LocusTempus = {
@@ -265,7 +266,8 @@
 </footer>
 {% endblock %}
 
-<script src="{{STATIC_URL}}build/main.js"></script>
+<script src="{{STATIC_URL}}build/main.js"
+        crossorigin="anonymous"></script>
 
 {% block js %}{% endblock %}
 

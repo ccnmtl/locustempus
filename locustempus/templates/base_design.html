@@ -82,7 +82,8 @@
 
 {% include "ctlsettings/sentry_js.html" %}
 
-<script src="{{STATIC_URL}}build/main.js"></script>
+<script src="{{STATIC_URL}}build/main.js"
+        crossorigin="anonymous"></script>
 
 {% block js %}{% endblock %}
 

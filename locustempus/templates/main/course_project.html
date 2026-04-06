@@ -22,9 +22,11 @@
 
 {% block js %}
     {% if project.activity %}
-        <script src="{{STATIC_URL}}build/activity.js"></script>
+        <script src="{{STATIC_URL}}build/activity.js"
+                crossorigin="anonymous"></script>
     {% else %}
-        <script src="{{STATIC_URL}}build/project.js"></script>
+        <script src="{{STATIC_URL}}build/project.js"
+                crossorigin="anonymous"></script>
     {% endif %}
 {% endblock %}
 
