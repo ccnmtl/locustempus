@@ -90,9 +90,9 @@ oauthlib==3.3.1
 pylti==0.7.0
 django-lti-provider==1.0.0
 
-pyjwt==2.12.1  # pylti1p3
-jwcrypto==1.5.6  # pylti1p3
-PyLTI1p3==2.0.0  # django-lti
+pyjwt==2.12.1  # pylti1p3next
+jwcrypto==1.5.6  # pylti1p3next
+pylti1p3next==2.0.1  # django-lti
 django-lti==0.10.0
 django-lti-dynamic-registration==0.1.2
 django-lti-authentication==0.2.0
