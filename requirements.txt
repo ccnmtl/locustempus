@@ -3,7 +3,7 @@ psycopg[binary]==3.3.2
 backports.zoneinfo;python_version<"3.9"
 asgiref==3.12.1
 django-s3sign==0.6.0
-pytz==2026.2
+pytz==2026.3.post1
 httplib2==0.32.0
 feedparser==6.0.8
 Markdown==3.10 # pyup: < 3
