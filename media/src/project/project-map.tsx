@@ -1,21 +1,14 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/no-unsafe-member-access */
-/* eslint-disable @typescript-eslint/no-unsafe-return */
-/* eslint-disable @typescript-eslint/no-unsafe-argument */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
     _MapContext as MapContext, StaticMap, NavigationControl, Popup, MapRef
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
-import DeckGL, { FlyToInterpolator }  from 'deck.gl';
+import DeckGL, {
+    Color, DeckGLProps, DeckGLRef, FlyToInterpolator, PickingInfo, Position
+}  from 'deck.gl';
 import { BitmapLayer, IconLayer } from '@deck.gl/layers';
-import { TileLayer } from '@deck.gl/geo-layers';
-// import { PickInfo } from 'deck.gl';
-type Position = [number, number] | [number, number, number];
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-type PickInfo<D> = any;
+import { GeoBoundingBox, TileLayer } from '@deck.gl/geo-layers';
 
 import { ProjectMapPane } from './project-map-pane';
 import { LoadingModal } from '../project-activity-components/loading-modal';
@@ -24,7 +17,7 @@ import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_SIZE_ACTIVE,
     ICON_COLOR, ICON_COLOR_DEFAULT, ICON_COLOR_ACTIVE, DEFAULT_VIEWPORT_STATE,
     ViewportState, ProjectData, ActivityData,
-    LayerData, EventData, MediaObject, DeckGLClickEvent, TileSublayerProps, Result
+    LayerData, EventData, MediaObject, DeckGLClickEvent, Result
 } from '../project-activity-components/common';
 
 import {get, put, post, del, getBoundedViewport, dateToDatetime, datetimeToDate } from '../utils';
@@ -47,7 +40,7 @@ export const ProjectMap: React.FC = () => {
     const pathList = window.location.pathname.split('/');
     const projectPk = pathList[pathList.length - 2];
     const coursePk = pathList[pathList.length - 4];
-    const deckglMap = useRef<any>(null);
+    const deckglMap = useRef<DeckGLRef>(null);
     const mapPane = useRef<HTMLDivElement>(null);
     const [isNewProject, setIsNewProject] = useState<boolean>(newProjectFlag);
     const [projectData, setProjectData] = useState<ProjectData | null>(null);
@@ -74,7 +67,7 @@ export const ProjectMap: React.FC = () => {
         useState<EventData | null>(null);
     const [activity, setActivity] = useState<ActivityData | null>(null);
 
-    const [rasterLayers, setRasterLayers] = useState<TileLayer<string>[]>([]);
+    const [rasterLayers, setRasterLayers] = useState<TileLayer<ImageBitmap>[]>([]);
 
     const [layerVisibility, setLayerVisibility] = useState<Map<number, boolean>>(new Map());
 
@@ -336,7 +329,7 @@ export const ProjectMap: React.FC = () => {
             return;
         }
         const data = {
-            project: parseInt(projectPk, 10),
+            project: projectPk,
             instructions: instructions
         };
         void post<ActivityData>('/api/activity/', data)
@@ -348,7 +341,7 @@ export const ProjectMap: React.FC = () => {
 
     const updateActivity = (instructions: string, pk: number): void => {
         const data = {
-            project: parseInt(projectPk, 10),
+            project: projectPk,
             instructions: instructions
         };
         void put<ActivityData>(`/api/activity/${pk}/`, data)
@@ -371,11 +364,11 @@ export const ProjectMap: React.FC = () => {
         }
     };
 
-    function handleDeckGlClick<D>(info: PickInfo<D>, event: DeckGLClickEvent): void {
+    function handleDeckGlClick<D>(info: PickingInfo<D>, event: DeckGLClickEvent): void {
         //Close Popup if there is a click after search
         setShowSearchPopup(false);
         // Cast to provide type def for coordinate
-        const infoPrime = info;
+        const infoPrime = info as PickingInfo<D> & {coordinate: [number, number]};
 
         // Create on single click, make sure that new event
         // is not created when user intends to pick an existing event
@@ -422,13 +415,13 @@ export const ProjectMap: React.FC = () => {
         }
     }, []);
 
-    const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
+    const pickEventClickHandler = (info: PickingInfo<EventData>): boolean => {
         if (showAddEventForm || activeEventEdit) {
             return false;
         }
 
         // Set the active event
-        setActiveEvent(info.object);
+        setActiveEvent(info.object ?? null);
         setActiveTab(1);
 
         // Returning true prevents event from bubling to map canvas
@@ -451,8 +444,8 @@ export const ProjectMap: React.FC = () => {
                 getSize: (d) => {
                     return activeEventDetail && d.pk == activeEventDetail.pk ?
                         ICON_SIZE_ACTIVE : ICON_SIZE; },
-                getColor: () => {
-                    return (layer.color ? ICON_COLOR[layer.color] : ICON_COLOR_DEFAULT) as any;  },
+                getColor: (): Color => {
+                    return layer.color ? ICON_COLOR[layer.color] : ICON_COLOR_DEFAULT;  },
                 visible: layerVisibility.get(layer.pk) || false
             });
             return acc.concat(MBLayer);
@@ -471,20 +464,18 @@ export const ProjectMap: React.FC = () => {
                 sizeScale: ICON_SCALE,
                 getPosition: (d) => d.lngLat,
                 getSize: ICON_SIZE_ACTIVE,
-                getColor: ICON_COLOR_ACTIVE as any,
+                getColor: ICON_COLOR_ACTIVE,
             }));
     }
 
     const handleViewportChange = useCallback(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
-        (newViewport: any) => setViewportState(newViewport),
+        (newViewport: React.SetStateAction<ViewportState>) => setViewportState(newViewport),
         []
     );
     const handleGeocoderViewportChange = useCallback(
-        (newViewport: any) => {
+        (newViewport: ViewportState) => {
             const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             return handleViewportChange({
                 ...newViewport,
                 ...geocoderDefaultOverrides
@@ -536,23 +527,23 @@ export const ProjectMap: React.FC = () => {
             }
 
             // Instantiate raster layers
-            const rLayers: TileLayer<string>[] = [];
+            const rLayers: TileLayer<ImageBitmap>[] = [];
             for (const layer of projData.raster_layers) {
-                rLayers.push(new TileLayer({
+                rLayers.push(new TileLayer<ImageBitmap>({
                     data: layer.url,
-                    renderSubLayers: ((obj: TileSublayerProps) => {
+                    renderSubLayers: (props) => {
                         const {
-                            bbox: {west, south, east, north}
-                        } = obj.tile;
-                        return new BitmapLayer<string>(({
-                            id: obj.id,
-                            image: obj.data,
+                            west, south, east, north
+                        } = props.tile.bbox as GeoBoundingBox;
+                        return new BitmapLayer({
+                            id: props.id,
+                            image: props.data,
                             bounds: [west, south, east, north],
                             desaturate: 0,
                             transparentColor: [0, 0, 0, 0],
                             tintColor: [255, 255, 255]
-                        }) as any);
-                    }) as any
+                        });
+                    }
                 }));
             }
             setRasterLayers(rLayers);
@@ -566,10 +557,6 @@ export const ProjectMap: React.FC = () => {
         void getData().finally(() => {setIsDataLoading(false);});
     }, []);
 
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const DeckGLAny = DeckGL as any;
-
     return (
         <>
             {(isMapLoading || isDataLoading) && <LoadingModal />}
@@ -579,20 +566,26 @@ export const ProjectMap: React.FC = () => {
                         ref={geocoderContainerRef}
                         style={{ position: 'absolute', top: 20, right: 20, zIndex: 1 }}
                     />
-                    <DeckGLAny
+                    <DeckGL
                         layers={[
-                            ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
+                            ...rasterLayers,
                             ...mapLayers
                         ]}
                         viewState={viewportState}
-                        onViewStateChange={(e: any) => setViewportState(e.viewState)} // eslint-disable-line @typescript-eslint/no-unsafe-argument, max-len
+                        onViewStateChange={
+                            (e): void => setViewportState(e.viewState as ViewportState)}
                         width={'100%'}
                         height={'100%'}
-                        controller={{doubleClickZoom: false} as any} // eslint-disable-line max-len
-                        onClick={handleDeckGlClick as any}
+                        controller={{doubleClickZoom: false}}
+                        onClick={handleDeckGlClick}
                         pickingRadius={15}
                         ref={deckglMap}
-                        ContextProvider={MapContext.Provider as any}>
+                        // react-map-gl 6 types viewport as optional on its
+                        // context, deck.gl 9 requires it. The shapes match at
+                        // runtime; this bridges the two declarations.
+                        ContextProvider={
+                            MapContext.Provider as unknown as
+                                DeckGLProps['ContextProvider']}>
                         <StaticMap
                             reuseMaps
                             width={'100%'}
@@ -677,7 +670,7 @@ export const ProjectMap: React.FC = () => {
                         <div id='map-navigation-control'>
                             <NavigationControl style={navControlStyle} />
                         </div>
-                    </DeckGLAny>
+                    </DeckGL>
                 </div>
             )}
             {projectData && (
