@@ -287,7 +287,6 @@ export const DefaultPanel: React.FC<DefaultPanelProps> = (
                                         <div className={'lt-pane-actions__buttons'}>
                                             {reflectionStatus === 'DRAFT' && (
                                                 <button
-                                                    type={'button'}
                                                     className={'lt-button lt-button--solid mr-3'}
                                                     onClick={handleReflectionSaveDraft}
                                                     data-cy="save-as-draft">
@@ -513,7 +512,6 @@ const FacultySubPanel: React.FC<FacultySubPanelProps> = ({
                             onChange={setFeedback}/>
                         <div className={'text-center mt-3'}>
                             <button
-                                type={'button'}
                                 onClick={handleFeedbackCancel}
                                 className={'lt-button lt-button--outlined mr-3'}
                                 data-cy="cancel-feedback">
