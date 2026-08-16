@@ -2,19 +2,6 @@
 {% load i18n static %}
 {% block title %}Sign up for an account{% endblock %}
 
-{% block extrahead %}
-    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async
-        defer></script>
-{% endblock %}
-
-{% block js %}
-    <script>
-        function enableSubmit() {
-            document.getElementById("reg-submit").disabled = false;
-        }
-    </script>
-{% endblock %}
-
 {% block content %}
 <div class="signupbox row">
     <div class="col-12 col-lg-7">
@@ -152,20 +139,14 @@
             <div class="row mt-5">
                 <div class="col text-center">
                     <button
-                        id="reg-submit"
-                        class="lt-button lt-button--priority mb-4"
+                        class="lt-button lt-button--priority"
                         type="submit"
-                        data-cy="sign-up-submit"
-                        disabled>
+                        data-cy="sign-up-submit">
                         <span class='lt-button__label'>Create my account</span>
                     </button>
-                    <div
-                        class="cf-turnstile mt-2"
-                        data-sitekey="{{ TURNSTILE_SITE_KEY }}"
-                        data-callback="enableSubmit"
-                    ></div>
                 </div>
             </div>
+
         </form>
 
     </div>

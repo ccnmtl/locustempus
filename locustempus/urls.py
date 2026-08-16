@@ -11,7 +11,6 @@ from django_cas_ng import views as cas_views
 from locustempus import design
 from locustempus.main.forms import CustomRegistrationForm
 from locustempus.main import views, viewsets
-from ctlsettings import views as ctl_views
 
 
 admin.autodiscover()
@@ -30,7 +29,6 @@ router.register(r'event', viewsets.EventApiView, basename='api-event')
 urlpatterns = [
     path('contact/', include('contactus.urls')),
 
-    path('accounts/login', ctl_views.LoginAPIView.as_view()),
     path('accounts/', include('django.contrib.auth.urls')),
 
     path('cas/login', cas_views.LoginView.as_view(),
