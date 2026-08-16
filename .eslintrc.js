@@ -14,11 +14,6 @@ module.exports = {
         "eslint:recommended",
         "plugin:react/recommended"
     ],
-    "settings": {
-        "react": {
-            "version": "detect"
-        }
-    },
     "rules": {
         "indent": [
             "error",

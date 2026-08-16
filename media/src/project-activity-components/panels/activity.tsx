@@ -91,7 +91,6 @@ export const Activity: React.FC<ActivityProps> = (
                                 onChange={setInstructions}/>
                             <div className={'text-center mt-3'}>
                                 <button
-                                    type={'button'}
                                     onClick={(): void => setShowEditForm(false)}
                                     className={'lt-button lt-button--outlined mr-3'}
                                     data-cy="edit-activity-cancel">
@@ -127,7 +126,6 @@ export const Activity: React.FC<ActivityProps> = (
                                 onChange={setInstructions}/>
                             <div className={'text-center mt-3'}>
                                 <button
-                                    type={'button'}
                                     onClick={(): void => setShowCreateForm(false)}
                                     className={'lt-button lt-button--outlined mr-3'}
                                     data-cy="create-activity-cancel">

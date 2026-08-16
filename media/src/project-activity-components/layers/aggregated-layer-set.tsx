@@ -165,7 +165,6 @@ export const AggregatedLayerSet: React.FC<AggregatedLayerSetProps> = (
                         Filtering {dateText}...</div>
                     <div className={'d-flex justify-content-end px-4'}>
                         <button
-                            type={'button'}
                             onClick={handleClear}
                             data-cy={'clear-btn'}
                             className={'lt-button lt-button--outlined mr-2'}>

@@ -4,11 +4,11 @@ import {
 } from 'react-map-gl';
 import 'mapbox-gl/dist/mapbox-gl.css';
 // Deck.gl
-import DeckGL, {
-    Color, DeckGLProps, DeckGLRef, FlyToInterpolator, PickingInfo, Position
-}  from 'deck.gl';
+import DeckGL, { Controller, FlyToInterpolator }  from 'deck.gl';
 import { BitmapLayer, IconLayer, IconLayerProps } from '@deck.gl/layers';
-import { GeoBoundingBox, TileLayer } from '@deck.gl/geo-layers';
+import { TileLayer } from '@deck.gl/geo-layers';
+import { Position } from '@deck.gl/core/utils/positions';
+import { PickInfo } from '@deck.gl/core/lib/deck';
 
 import { ActivityMapPane } from './activity-map-pane';
 import { LoadingModal } from '../project-activity-components/loading-modal';
@@ -26,7 +26,7 @@ import {
     ICON_ATLAS, ICON_MAPPING, ICON_SCALE, ICON_SIZE, ICON_SIZE_ACTIVE,
     ICON_COLOR, ICON_COLOR_ACTIVE, ICON_COLOR_DEFAULT,
     DEFAULT_VIEWPORT_STATE, ViewportState, ProjectData, DeckGLClickEvent,
-    LayerData, EventData, MediaObject, Result, ResponseStatus,
+    LayerData, EventData, MediaObject, TileSublayerProps, Result, ResponseStatus,
     ResponseData, FeedbackData
 } from '../project-activity-components/common';
 
@@ -59,7 +59,7 @@ export const ActivityMap: React.FC = () => {
     const [projectData, setProjectData] = useState<ProjectData | null>(null);
     const [responseData, setResponseData] = useState<ResponseData[]>([]);
 
-    const deckglMap = useRef<DeckGLRef>(null);
+    const deckglMap = useRef<DeckGL>(null);
     const mapPane = useRef<HTMLDivElement>(null);
 
     const navControlStyle= {
@@ -86,7 +86,7 @@ export const ActivityMap: React.FC = () => {
     const [responseLayers, setResponseLayers] =
         useState<Map<number, LayerData[]>>(new Map());
 
-    const [rasterLayers, setRasterLayers] = useState<TileLayer<ImageBitmap>[]>([]);
+    const [rasterLayers, setRasterLayers] = useState<TileLayer<string>[]>([]);
 
     // Map to identify which layers should be visible
     const [layerVisibility, setLayerVisibility] =
@@ -570,11 +570,11 @@ export const ActivityMap: React.FC = () => {
         }
     };
 
-    function handleDeckGlClick<D>(info: PickingInfo<D>, event: DeckGLClickEvent): void {
+    function handleDeckGlClick<D>(info: PickInfo<D>, event: DeckGLClickEvent): void {
         //Close Popup if there is a click after search
         setShowSearchPopup(false);
         // Cast to provide type def for coordinate
-        const infoPrime = info as PickingInfo<D> & {coordinate: [number, number]};
+        const infoPrime = info as PickInfo<D> & {coordinate: [number, number]};
 
         // Create on single click, make sure that new event
         // is not created when user intends to pick an existing event
@@ -622,8 +622,8 @@ export const ActivityMap: React.FC = () => {
         }
     }, []);
 
-    const pickEventClickHandler = (info: PickingInfo<EventData>): boolean => {
-        if (showAddEventForm || activeEventEdit || !info.object) {
+    const pickEventClickHandler = (info: PickInfo<EventData>): boolean => {
+        if (showAddEventForm || activeEventEdit) {
             return false;
         }
 
@@ -662,7 +662,7 @@ export const ActivityMap: React.FC = () => {
                 getSize: (d) => {
                     return activeEventDetail && d.pk == activeEventDetail.pk ?
                         ICON_SIZE_ACTIVE : ICON_SIZE; },
-                getColor: (): Color => {
+                getColor: () => {
                     return layer.color ? ICON_COLOR[layer.color] : ICON_COLOR_DEFAULT; },
                 visible: layerVisibility.get(layer.pk) || false
             });
@@ -686,13 +686,15 @@ export const ActivityMap: React.FC = () => {
             }));
     }
     const handleViewportChange = useCallback(
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
         (newViewport: React.SetStateAction<ViewportState>) => setViewportState(newViewport),
         []
     );
     const handleGeocoderViewportChange = useCallback(
-        (newViewport: ViewportState) => {
+        (newViewport) => {
             const geocoderDefaultOverrides = { transitionDuration: 1000 };
 
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             return handleViewportChange({
                 ...newViewport,
                 ...geocoderDefaultOverrides
@@ -980,17 +982,17 @@ export const ActivityMap: React.FC = () => {
             }
 
             // Instantiate raster layers
-            const rLayers: TileLayer<ImageBitmap>[] = [];
+            const rLayers: TileLayer<string>[] = [];
             for (const layer of projData.raster_layers) {
-                rLayers.push(new TileLayer<ImageBitmap>({
+                rLayers.push(new TileLayer({
                     data: layer.url,
-                    renderSubLayers: (props) => {
+                    renderSubLayers: (obj: TileSublayerProps) => {
                         const {
-                            west, south, east, north
-                        } = props.tile.bbox as GeoBoundingBox;
-                        return new BitmapLayer({
-                            id: props.id,
-                            image: props.data,
+                            bbox: {west, south, east, north}
+                        } = obj.tile;
+                        return new BitmapLayer<string>({
+                            id: obj.id,
+                            image: obj.data,
                             bounds: [west, south, east, north],
                             desaturate: 0,
                             transparentColor: [0, 0, 0, 0],
@@ -1127,24 +1129,18 @@ export const ActivityMap: React.FC = () => {
                     />
                     <DeckGL
                         layers={[
-                            ...rasterLayers,
+                            ...rasterLayers as any, // eslint-disable-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-unsafe-assignment, max-len
                             ...mapLayers
                         ]}
                         ref={deckglMap}
                         viewState={viewportState}
-                        onViewStateChange={
-                            (e): void => setViewportState(e.viewState as ViewportState)}
+                        onViewStateChange={e => setViewportState(e.viewState)} // eslint-disable-line @typescript-eslint/no-unsafe-argument, max-len
                         width={'100%'}
                         height={'100%'}
-                        controller={{doubleClickZoom: false}}
+                        controller={{doubleClickZoom: false} as {doubleClickZoom: boolean} & Controller} // eslint-disable-line max-len
                         onClick={handleDeckGlClick}
                         pickingRadius={15}
-                        // react-map-gl 6 types viewport as optional on its
-                        // context, deck.gl 9 requires it. The shapes match at
-                        // runtime; this bridges the two declarations.
-                        ContextProvider={
-                            MapContext.Provider as unknown as
-                                DeckGLProps['ContextProvider']}>
+                        ContextProvider={MapContext.Provider}>
                         <StaticMap
                             reuseMaps
                             width={'100%'}

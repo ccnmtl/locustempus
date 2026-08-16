@@ -1,4 +1,4 @@
-import { DeckGLRef } from 'deck.gl';
+import DeckGL  from 'deck.gl';
 import { RefObject } from 'react';
 import { WebMercatorViewport } from 'react-map-gl';
 import { LayerData } from './project-activity-components/common';
@@ -66,8 +66,8 @@ export async function del(url: string): Promise<void> {
 
 export const getBoundedViewport = (
     layers: LayerData[],
-    deckGlRef: RefObject<DeckGLRef | null>,
-    mapPaneRef: RefObject<HTMLDivElement | null>): WebMercatorViewport => {
+    deckGlRef: RefObject<DeckGL>,
+    mapPaneRef: RefObject<HTMLDivElement>): WebMercatorViewport => {
     // Returns a viewport object configured to include all event markers
 
     const coords: [number, number][] = [];
@@ -91,11 +91,10 @@ export const getBoundedViewport = (
         maxLng = lng > maxLng ? lng : maxLng;
     }
 
-    const deck = deckGlRef.current?.deck;
-    if (deck) {
+    if (deckGlRef.current !== null) {
         const viewportOpt = {
-            width: deck.width,
-            height: deck.height
+            width: deckGlRef.current.deck.width,
+            height: deckGlRef.current.deck.height
         };
 
         const padding = 50;

@@ -13,6 +13,18 @@ updates:
   - dependency-name: react-map-gl
     versions:
     - 6.x
+  - dependency-name: "@danmarshall/deckgl-typings"
+    versions:
+    - 4.5.1
+    - 4.5.4
+    - 4.5.5
+    - 4.5.6
+    - 4.6.0
+    - 4.6.1
+    - 4.7.0
+    - 4.7.1
+    - 4.7.2
+    - 4.8.0
   - dependency-name: cypress
     versions:
     - 6.7.0

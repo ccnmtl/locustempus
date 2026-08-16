@@ -169,7 +169,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                     )}
                     {showBaseMapMenu && !isNewProject && (
                         <div className={'form-group pane-form-group base-map-expanded'}>
-                            <button type={'button'} onClick={toggleBaseMapMenu}
+                            <button onClick={toggleBaseMapMenu}
                                 className={'btn btn__accordion'}>
                                 <span className={'menu-icon'}>
                                     <FontAwesomeIcon icon={faCaretDown}/>
@@ -207,7 +207,7 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                     )}
                     {!showBaseMapMenu && !isNewProject && (
                         <div className={'form-group pane-form-group pane-form-group--final base-map-collapsed'}> {/* eslint-disable-line max-len */}
-                            <button type={'button'} onClick={toggleBaseMapMenu}
+                            <button onClick={toggleBaseMapMenu}
                                 data-cy={'edit-project-basemap'}
                                 className={'btn btn__accordion'}>
                                 <span className={'menu-icon'}>
@@ -224,7 +224,6 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             {isNewProject ? (
                                 <>
                                     <button
-                                        type={'button'}
                                         data-cy="new-project-cancel"
                                         onClick={handleNewProjectCancel}
                                         className={'lt-button lt-button--outlined mr-3'}>
@@ -240,7 +239,6 @@ export const ProjectCreateEditPanel: React.FC<ProjectCreateEditPanelProps> = (
                             ) : (
                                 <>
                                     <button
-                                        type={'button'}
                                         data-cy="edit-project-cancel"
                                         onClick={handleCancel}
                                         className={'lt-button lt-button--outlined mr-3'}>
