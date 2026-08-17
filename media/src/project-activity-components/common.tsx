@@ -1,6 +1,7 @@
 /* A place to set shared settings */
 import { FlyToInterpolator }  from 'deck.gl';
-import { Position } from '@deck.gl/core/utils/positions';
+import { Color, DeckProps, Position } from '@deck.gl/core';
+export type { Position };
 export const STATIC_URL = LocusTempus.staticUrl;
 
 export const ICON_ATLAS = STATIC_URL + 'img/icon-map-marker.png';
@@ -8,7 +9,7 @@ export const ICON_MAPPING = {
     marker: {x: 0, y: 0, width: 384, height: 512, anchorY: 512, mask: true}
 };
 
-export type RGBAColor = [number, number, number, number?];
+export type RGBAColor = Color;
 
 export const ICON_SCALE = 10;
 export const ICON_SIZE = 3;
@@ -55,22 +56,6 @@ export interface RasterLayerData {
     pk: number;
     title: string;
     url: string;
-}
-
-export interface TileSublayerProps {
-    data: {
-        width: number;
-        height: number;
-    },
-    id: string;
-    tile: {
-        bbox: {
-            north: number,
-            south: number,
-            east: number,
-            west: number
-        }
-    },
 }
 
 export interface ProjectData {
@@ -123,9 +108,13 @@ export interface LayerData {
     events: EventData[];
 }
 
-export interface DeckGLClickEvent extends MouseEvent {
-    tapCount?: number
-}
+// The gesture event deck.gl hands to onClick. mjolnir.js sets `tapCount` on tap
+// events at runtime but doesn't declare it on HammerInput, so it's spliced in
+// here. Optional so the handler stays assignable to deck.gl's onClick prop.
+export type DeckGLClickEvent =
+    Parameters<NonNullable<DeckProps['onClick']>>[1] & {
+        tapCount?: number
+    };
 
 export interface ViewportState {
     latitude: number;
