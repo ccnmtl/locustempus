@@ -2,6 +2,19 @@
 
 {% block title %}Sign in{% endblock %}
 
+{% block extrahead %}
+    <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" async
+        defer></script>
+{% endblock %}
+
+{% block js %}
+    <script>
+        function enableSubmit() {
+            document.getElementById("login-local-form__submit").disabled = false;
+        }
+    </script>
+{% endblock %}
+
 {% block content %}
 <div class="loginbox">
     <div class="loginbox__content">
@@ -53,10 +66,15 @@
                 <span class='lt-button__label'>Account Sign In</span>
             </button>
             <button id="login-local-form__submit" class="lt-button lt-button--priority mt-3" data-cy="guest-login-submit" type="submit" {% if not form.errors %}style="display: none;"{% endif %}>
-                <span class='lt-button__label'>Account Sign In</span>
+                <span class='lt-button__label' disabled>Account Sign In</span>
             </button>
             <input type="hidden" name="next" value="{{ next|urlencode }}" />
             <p class="small pt-2"><a href="/accounts/password_reset/" data-cy="forgot-password">Forgot Password?</a></p>
+            <div
+                class="cf-turnstile mt-2"
+                data-sitekey="{{ TURNSTILE_SITE_KEY }}"
+                data-callback="enableSubmit"
+            ></div>
         </form>
             <hr class="seperator" />
         </div>
