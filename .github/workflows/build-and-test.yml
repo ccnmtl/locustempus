@@ -5,11 +5,11 @@ jobs:
     runs-on: ubuntu-24.04
     strategy:
       matrix:
-        python-version: ["3.12"]
+        python-version: ["3.12", "3.14"]
         node-version: [24.x]
     services:
       postgres:
-        image: postgis/postgis:16-master
+        image: postgis/postgis:17-master
         env:
           POSTGRES_PASSWORD: postgres
         options: >-
