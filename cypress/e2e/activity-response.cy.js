@@ -461,7 +461,11 @@ describe('Activity Response Stories', function() {
         // student-one's layer
         // Navigate to the response tab
         cy.get('[data-cy="Response"]').click();
+        cy.get('[data-cy="layer"]').should('have.length', 1);
         cy.get('[data-cy="submit-or-update-response"]').click();
+        cy.get('[data-cy="submit-or-update-response"]')
+            .contains('Update response');
+        cy.get('[data-cy="save-as-draft"]').should('not.exist');
 
         cy.reload();
 
