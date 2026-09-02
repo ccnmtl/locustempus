@@ -12,12 +12,18 @@ describe('Activity Response Stories', function() {
 
         // Navigate to the response tab
         cy.get('[data-cy="Response"]').click();
+        cy.get('[data-cy="layer"]').should('have.length', 1);
+
+        const FLY_TO_DURATION = 1000;
+
         //Create Events
         cy.get('#activity-map-container').click(900, 500);
         cy.get('#form-field__name').clear().type('First Event');
         cy.get('#form-field__date').clear().type('1989-03-21');
         cy.get('#form-field__description').clear().type('Example first event.');
         cy.get('.lt-button--priority').click();
+        cy.get('ul.lt-list-layer').contains('First Event');
+        cy.wait(FLY_TO_DURATION);
 
         cy.get('#activity-map-container').click(900, 490);
         cy.get('#form-field__name').clear().type('Second Event');
@@ -25,15 +31,24 @@ describe('Activity Response Stories', function() {
         cy.get('#form-field__description').clear().type(
             'Example second event.');
         cy.get('.lt-button--priority').click();
+        cy.get('ul.lt-list-layer').contains('Second Event');
+        cy.wait(FLY_TO_DURATION);
 
         cy.get('#activity-map-container').click(900, 480);
         cy.get('#form-field__name').clear().type('Third Event');
         cy.get('#form-field__date').clear().type('2022-11-14');
         cy.get('#form-field__description').clear().type('Example third event.');
         cy.get('.lt-button--priority').click();
+        cy.get('ul.lt-list-layer').contains('Third Event');
 
         // Submit Response
         cy.get('[data-cy="submit-or-update-response"]').click();
+
+        // Don't log out until the submission has actually been persisted --
+        // the button label only flips once the PUT has come back.
+        cy.get('[data-cy="submit-or-update-response"]')
+            .contains('Update response');
+        cy.get('[data-cy="save-as-draft"]').should('not.exist');
 
         // Log Out
         cy.get('[data-cy="authenticated-user-choices"]').click();
@@ -49,9 +64,12 @@ describe('Activity Response Stories', function() {
 
         // Navigate to the response tab
         cy.get('[data-cy="Response"]').click();
-        //Submit a response to be able to see the filter
-        cy.get('[data-cy="Response"]').click();
+        cy.get('[data-cy="layer"]').should('have.length', 1);
         cy.get('[data-cy="submit-or-update-response"]').click();
+        cy.get('[data-cy="submit-or-update-response"]')
+            .contains('Update response');
+        cy.get('[data-cy="save-as-draft"]').should('not.exist');
+
         // make sure it saved
         cy.reload();
         // Wait for the loading icon to go away
