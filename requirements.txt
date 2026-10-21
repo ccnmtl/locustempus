@@ -36,7 +36,7 @@ certifi==2026.10.19  # requests
 requests==2.34.0
 astroid==4.3.0
 wrapt==2.5.0
-lazy-object-proxy==1.12.0
+lazy-object-proxy==1.13.0
 pylint==4.1.1
 six==1.17.0
 faker==40.43.0  # factory_boy
