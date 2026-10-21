@@ -30,7 +30,7 @@ cryptography<50.0.3  # pyOpenSSL
 pyOpenSSL==26.4.0
 ndg-httpsclient==0.5.1
 urllib3==2.8.0  # requests
-chardet==7.6.0  # requests
+chardet==7.7.0  # requests
 idna==3.20  # requests
 certifi==2026.10.19  # requests
 requests==2.34.0
