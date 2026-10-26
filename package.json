@@ -29,7 +29,7 @@
     "eslint-plugin-cypress": "^3.0.0",
     "eslint-plugin-react": "^7.20.6",
     "mini-css-extract-plugin": "^2.1.0",
-    "mocha": "~11.7.0",
+    "mocha": "~12.0.3",
     "postcss-loader": "^8.0.0",
     "requirejs": "~2.3.2",
     "sass": "^1.27.0",
