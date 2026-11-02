@@ -24,7 +24,7 @@ cssselect==1.6.0
 lxml==6.1.0
 fuzzywuzzy==0.18.0
 sure==3.0a2
-pyasn1==0.6.4
+pyasn1==0.6.5
 cffi==2.1.0
 cryptography<50.0.3  # pyOpenSSL
 pyOpenSSL==26.4.0
